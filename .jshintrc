@@ -1,5 +1,18 @@
-{
-    "esversion": 6,
-    "strict": true,
-    "unused": "strict"
+{   
+    "curly": true,
+    "eqnull": true,
+    "esnext": true,
+    "futurehostile": true,
+    "globals": {},
+    "immed": false,
+    "maxlen": 80,
+    "node": true,
+    "quotmark": "double",
+    "trailing": true,
+    "undef": true,
+    "unused": "strict",
+    "eqeqeq": true,
+    "camelcase": true,
+    "funcscope": false,
+    "white": true
 }
