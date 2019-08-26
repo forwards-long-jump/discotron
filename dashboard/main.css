@@ -36,10 +36,18 @@ body {
 }
 
 nav {
-    display: block;
+    display: inline-block;
     background-color: var(--color-background);
     height: 100%;
     width: 400px;
+}
+
+main {
+    display: inline-block;
+    vertical-align: top;
+    height: 100%;
+    overflow-y: auto;
+    width: calc(100% - 405px);
 }
 
 nav ul {
