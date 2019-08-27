@@ -1,4 +1,4 @@
-class Repository {
+class RepositoryModel{
     constructor(url, plugins, pages) {
         this._url = url;
         this._plugins = plugins;

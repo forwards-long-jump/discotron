@@ -1,4 +1,4 @@
-class Guild {
+class GuildModel{
     constructor(id, commandPrefix, allowedChannelIds, enabledPlugins, adminIds, permissions) {
         this._id = id;
         this._commandPrefix = commandPrefix;

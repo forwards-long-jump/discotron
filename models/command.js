@@ -1,4 +1,4 @@
-class Command {
+class CommandModel{
     constructor(triggerType, trigger, help, args, ownersOnly, scope, action) {
         this._triggerType = triggerType;
         this._trigger = trigger;

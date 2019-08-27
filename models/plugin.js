@@ -1,4 +1,4 @@
-class Plugin {
+class PluginModel{
     constructor(name, devName, description, version, prefix, commands, defaultPermission, enabled) {
         this._name = name;
         this._devName = devName;
