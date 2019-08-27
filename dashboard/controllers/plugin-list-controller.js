@@ -1,0 +1,10 @@
+class PluginListController {
+	displayPlugins() {
+
+	}
+
+	onPluginClick() {
+
+	}
+
+}

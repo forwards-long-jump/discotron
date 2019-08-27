@@ -1,0 +1,10 @@
+class WidgetController {
+	onClose() {
+
+	}
+
+	onSave() {
+
+	}
+
+}

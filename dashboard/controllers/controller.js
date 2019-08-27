@@ -1,0 +1,11 @@
+class Controller {
+
+	onPageLoad() {
+
+	}
+
+	loadPage() {
+
+	}
+
+}
