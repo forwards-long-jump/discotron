@@ -1,4 +1,7 @@
 class GuildSettingsController extends Controller {
+    constructor() {
+        
+    }
 
     displayPrefix() {
 

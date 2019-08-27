@@ -1,12 +1,18 @@
-class Plugin {
-    constructor(name, devName, description, version, onLoad, permissions, commands = []) {
-        this._name = name;
-        this._devName = devName;
-        this._desc =  description;
-        this._version =  version;
-        this._onLoad = onLoad;
+class Plugin extends PluginModel {
+    constructor(/* FIXME */) {
+        super();
+    }
 
-        this._commands = commands;
+    toObject() {
+
+    }
+
+    set enabled(enabled) {
+
+    }
+    
+    set prefix(prefix) {
+
     }
 }
 

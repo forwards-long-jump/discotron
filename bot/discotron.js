@@ -1,11 +1,23 @@
-let ownerIds = [];
-let guildIds = [];
+let owners = [];
+let guilds = [];
 let repositories = [];
-let maintenance = false; 
+let botSettings = new BotSettings();
 
+module.exports.onMessage = (message) => {};
+module.exports.onReaction = (reaction) => {};
+module.exports.onJoinGuild = (guild) => {};
 
-module.exports.onMessage = () => {
-    
-};
+module.exports.removeGuild = (guild) => {};
+module.exports.removeRepository = (repository) => {};
+module.exports.addRepository = (url) => {};
 
-// TODO: on...
+module.exports.getRepositories = () => {};
+module.exports.getPlugins = () => {};
+module.exports.getUserInfo = (userDiscordId) => {};
+module.exports.getBotInfo = () => {};
+module.exports.getGuilds = () => {};
+module.exports.deleteOwner = (userDiscordId) => {};
+module.exports.addOwner = (userDiscordId) => {};
+
+function _loadGuilds() {}
+function _loadRepositories() {}

@@ -1,12 +1,60 @@
-class Guild {
+class Guild extends GuildModel {
     constructor(id) {
-        this._id = id;
-        this._allowedChannelIds = [];
-        this._enabledPlugins = [];
-        this._admins = [];
-
-        this._permissions = permissions; // [plugin => permission]
+        super(id);
     }
+
+    isAdmin(userRole) {
+
+    }
+
+    addAdmin(userRole) {
+
+    }
+
+    deleteAdmin(userRole) {
+
+    }
+
+    set prefix() {
+
+    }
+
+    set allowedChannels(discordChannelIds) {
+
+    }
+
+    setPluginEnabled(devname, enabled) {
+
+    }
+
+    setPluginPermission(devname, userRoles) {
+
+    }
+
+    onPlugingLoaded(devname) {
+
+    }
+
+    onPluginDeleted(devname) {
+        
+    }
+
+    _loadPluginPermission(devname) {
+
+    }
+
+    _loadEnabledPlugins() {
+
+    }
+
+    _loadAllowedChannels() {
+
+    }
+
+    _loadPrefix() {
+
+    }
+
 }
 
 module.exports = Guild;

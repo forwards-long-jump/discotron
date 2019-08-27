@@ -1,4 +1,8 @@
-class PluginSettingsWidgetController {
+class PluginSettingsWidgetController extends WidgetController {
+	constructor() {
+
+	}
+
 	onRefreshClick() {
 
 	}

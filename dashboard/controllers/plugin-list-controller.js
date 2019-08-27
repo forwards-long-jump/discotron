@@ -1,4 +1,9 @@
-class PluginListController {
+class PluginListController extends Controller {
+
+	constructor() {
+		
+	}
+
 	displayPlugins() {
 
 	}

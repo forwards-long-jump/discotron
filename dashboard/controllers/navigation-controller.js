@@ -1,5 +1,9 @@
 class NavigationController {
 
+	constructor() {
+		
+	}
+
 	displayOwnerSettings() {
 
 	}

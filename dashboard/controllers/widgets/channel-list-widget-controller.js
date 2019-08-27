@@ -4,4 +4,7 @@ class ChannelListWidgetController extends WidgetController {
 
     }
 
+    _displayChannels() {
+
+    }
 }

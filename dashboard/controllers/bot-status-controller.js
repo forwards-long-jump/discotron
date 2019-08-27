@@ -1,4 +1,8 @@
-class BotStatusController extends {
+class BotStatusController extends Controller {
+
+	constructor() {
+		
+	}
 
 	displayStatus() {
 

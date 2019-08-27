@@ -1,9 +1,23 @@
-class Repository {
-    constructor(url, plugins = [], pages = []) {
-        this._url = url;
-        this._plugins = plugins;
-        this._pages = pages;
-        // TODO: fill arrays
+class Repository extends RepositoryModel {
+    constructor(folderName, url) {
+        super(url);
+        this._folderName = folderName;
+    }
+
+    static clone(url) {
+
+    }
+
+    pull() {
+
+    }
+
+    delete() {
+
+    }
+
+    _deleteFolder() {
+
     }
 }
 

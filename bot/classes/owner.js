@@ -1,0 +1,3 @@
+class Owner extends OwnerModel {
+    
+}

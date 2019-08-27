@@ -1,4 +1,9 @@
-class RepositoryListController {
+class RepositoryListController extends Controller {
+	
+	constructor() {
+
+	}
+
 	displayRepository(repository) {
 
 	}
