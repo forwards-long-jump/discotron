@@ -8,7 +8,7 @@ class GuildSettingsController extends Controller {
     }
 
     onAllowedChannelsClick() {
-
+        //new Widgetmachin(channels, currentlyselectedChan, (lel) => {currentlyselectedChan = lel;} 
     }
 
     onAdminsClick() {

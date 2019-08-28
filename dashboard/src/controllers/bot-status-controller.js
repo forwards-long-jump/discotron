@@ -1,4 +1,4 @@
-class BotStatusController extends Controller {
+window.Discotron.BotStatusController = class extends window.Discotron.Controller {
 
 	constructor() {
 		

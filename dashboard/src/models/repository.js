@@ -1,4 +1,4 @@
-class Repository extends RepositoryModel {
+window.Discotron.Repository = class extends window.Discotron.RepositoryModel {
     constructor(url) {
         // get info from db
         super(url /*, ...*/ );
@@ -17,6 +17,6 @@ class Repository extends RepositoryModel {
     delete() {
 
     }
-}
+};
 
-Repository.prototype._repositories = [];
+window.Discotron.Repository.prototype._repositories = [];

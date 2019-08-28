@@ -1,5 +1,5 @@
-class Plugin extends PluginModel {
-    constructor(devname) {
+window.Discotron.Plugin = class extends window.Discotron.PluginModel {
+    constructor(pluginId) {
         // load from db
         // super(with the info from the db)
 
@@ -20,4 +20,4 @@ class Plugin extends PluginModel {
     }
 }
 
-Plugin.prototype._plugins = [];
+window.Discotron.Plugin.prototype._plugins = [];
