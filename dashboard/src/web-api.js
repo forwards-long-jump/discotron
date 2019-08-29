@@ -3,7 +3,7 @@ class WebAPI {
         this._appToken = appToken;
     }
 
-    sendToBot(name, data) {
+    queryBot(name, data) {
 
     }
 }

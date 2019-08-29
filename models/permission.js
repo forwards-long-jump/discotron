@@ -1,15 +1,27 @@
-class PermissionModel{
-    constructor(usersRoles, plugin) {
+/**
+ * Permission storing its plugin and allowed usersRoles
+ */
+class PermissionModel {
+    /**
+     * Ctor
+     * @param {string} pluginId Id associated to the plugin
+     * @param {array} usersRoles Array of user roles allowed to use the plugin
+     */
+    constructor(pluginId = undefined, usersRoles = []) {
+        this._pluginId = pluginId;
         this._usersRoles = usersRoles;
-        this._plugin = plugin; // necessary to check defaultPermission
     }
 
-    allows(userId) {
-        // TODO :
-        // if (userroles is not empty)
-        //  for userRole in usersroles
-        //   if (userRole.describes(userId)) return true;
-        //  return false
-        // else do according to defaultpermission
+    get pluginId() {
+        return this._pluginId;
     }
+    get usersRoles() {
+        return this._usersRoles;
+    }
+}
+
+if (typeof module !== "undefined" && typeof module.exports !== "undefined") {
+    module.exports = PermissionModel;
+} else {
+    window.Discotron.PermissionModel = PermissionModel;
 }

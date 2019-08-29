@@ -3,9 +3,8 @@
     "eqnull": true,
     "esnext": true,
     "futurehostile": true,
-    "globals": {},
     "immed": false,
-    "maxlen": 80,
+    "maxlen": 160,
     "node": true,
     "quotmark": "double",
     "trailing": true,
@@ -14,5 +13,7 @@
     "eqeqeq": true,
     "camelcase": true,
     "funcscope": false,
-    "white": true
+    "white": true,
+    "-W078": false,
+    "globals": { "window": true }
 }

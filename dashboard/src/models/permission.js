@@ -1,0 +1,1 @@
+window.Discotron.Permission = class extends window.Discotron.PermissionModel {};
