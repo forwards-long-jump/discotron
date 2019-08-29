@@ -1,4 +1,4 @@
-const database = require(__dirname + "/classes/utils/database-helper.js").getDatabase();
+const database = require(__dirname + "/utils/database-helper.js").getDatabase();
 
 
 module.exports.update = (table, fields, values, whereFields, whereValues) => {
