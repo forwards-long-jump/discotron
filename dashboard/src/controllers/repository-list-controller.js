@@ -1,31 +1,58 @@
-class RepositoryListController extends Controller {
-	
+window.Discotron.RepositoryListController = class {
+	/**
+	 * Ctor 
+	 */
 	constructor() {
+		this._loadPage("owner/repository-list.html");
+	}
+
+	/**
+	 * Display the list of repositories and the plugins 
+	 */
+	_displayRepos() {
 
 	}
 
-	displayRepository(repository) {
+	/**
+	 * Add a plugin card
+	 * @param {Plugin} plugin Plugin
+	 */
+	_displayPluginCard(plugin) {
 
 	}
 
-	displayPlugin(plugin) {
+	/**
+	 * Show the plugin settings widget for the selected plugin
+	 */
+	_onPluginClick() {
 
 	}
 
-	onAddRepository() {
+	/**
+	 * Called when add repository button is presse
+	 */
+	_onAddRepository() {
 
 	}
 
-	onRemoveRepository() {
+	/**
+	 * Called when a repository is deleted
+	 */
+	_onRemoveRepository(arg) {
 
 	}
 
-	onUpdateRepository() {
+	/**
+	 * Called when the update button is pressed
+	 */
+	_onUpdateRepository() {
 
 	}
 
-	onPluginClick() {
+	/**
+	 * Called when repo refresh button is pressed
+	 */
+	_onRepositoryStatusRefresh() {
 
 	}
-
-}
+};

@@ -1,15 +1,32 @@
-class PluginListController extends Controller {
-
-	constructor() {
-		
+window.Discotron.PluginListController = class extends window.Discotron.Controller {
+	/**
+	 * Ctor 
+	 * @param {Guild} guild Guild whose plugin settings we display
+	 */
+	constructor(guild) {
+		this._loadPage("admin/plugin-list.html");
 	}
 
-	displayPlugins() {
+	/**
+	 * Add a plugin card, containing a checkbox for enabling, and a permission setting
+	 * @param {Plugin} plugin Plugin
+	 */
+	_displayPluginCard(plugin) {
 
 	}
 
-	onPluginClick() {
+	/**
+	 * Display user/role selector
+	 */
+	_onPluginPermissionClick() {
 
 	}
 
-}
+	/**
+	 * Handle plugin enabling
+	 */
+	_onPluginEnabledClick() {
+
+	}
+
+};

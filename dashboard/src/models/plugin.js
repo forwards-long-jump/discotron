@@ -1,23 +1,43 @@
 window.Discotron.Plugin = class extends window.Discotron.PluginModel {
+    /**
+     * Ctor
+     * @param {string} pluginId Id of the plugin 
+     */
     constructor(pluginId) {
-        // load from db
-        // super(with the info from the db)
-
-        Plugin._plugins.push(this);
+        window.Discotron.Plugin._plugins[pluginId] = this;
     }
 
+    /**
+     * Returns all the plugins of the bot
+     * @returns {object} Associative array {pluginId => Plugin} 
+     */
     static getAll() {
-        return Plugin._plugins;
+        return window.Discotron.Plugin._plugins;
     }
 
+    /**
+     * Reload all the plugins
+     */
     static reload() {
-        Plugin._plugins = [];
+        window.Discotron.Plugin._plugins = [];
         // read all plugins from db
     }
 
-    toObject() {
-
+    /**
+     * Update prefix for this plugin in the database (owner only)
+     * @param {string} prefix 
+     */
+    set prefix(prefix) {
+        // update in web api, owner only
     }
-}
+    
+    /**
+     * Update enabled for this plugin in the database (owner only)
+     * @param {boolean} enabled True if the plugin is to be enabled
+     */
+    set enables(enabled) {
+        
+    }
+};
 
-window.Discotron.Plugin.prototype._plugins = [];
+window.Discotron.Plugin.prototype._plugins = {};

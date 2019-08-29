@@ -1,26 +1,44 @@
-class GuildSettingsController extends Controller {
-    constructor() {
-        
+window.Discotron.GuildSettingsController = class extends window.Discotron.Controller {
+    /**
+     * Ctor
+     * @param {Guild} guild Guild whose settings we must display
+     */
+    constructor(guild) {
+        this._guild = guild;
     }
 
-    displayPrefix() {
+    /**
+     * Displays the form entry concerning the plugin prefix
+     */
+    _displayPrefix() {
 
     }
 
-    onAllowedChannelsClick() {
+    /**
+     * Display channel selector widget
+     */
+    _onAllowedChannelsClick() {
         //new Widgetmachin(channels, currentlyselectedChan, (lel) => {currentlyselectedChan = lel;} 
     }
 
-    onAdminsClick() {
+    /**
+     * Display userRole widget 
+     */
+    _onAdminsClick() {
 
     }
 
-    onAllowedChannelsWidgetSave() {
+    /**
+     * Callback to give to the channel selector widget
+     */
+    _onAllowedChannelsWidgetSave() {
 
     }
 
-    onAdminsWidgetSave() {
+    /**
+     * Callback to give to the user / role selector widget
+     */
+    _onAdminsWidgetSave() {
 
     }
-
-}
+};

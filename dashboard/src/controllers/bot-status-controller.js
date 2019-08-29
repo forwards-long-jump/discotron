@@ -1,31 +1,50 @@
 window.Discotron.BotStatusController = class extends window.Discotron.Controller {
-
+	/**
+	 * Ctor
+	 */
 	constructor() {
-		
+		this._loadPage("owner/bot-status.html");
 	}
 
-	displayStatus() {
-
-	}
-
-	onOwnersClick() {
-
-	}
-
-	onReloadClick() {
+	/**
+	 * Display current status of the bot
+	 */
+	_displayStatus() {
 
 	}
 
-	onMaintenanceToggle() {
+	/**
+	 * Called when the user clicks on the owners pseudo link
+	 */
+	_onOwnersClick() {
+		// Open a widget
+	}
+
+	/**
+	 * Reloads the data on the page
+	 */
+	_onReloadClick() {
 
 	}
 
-	onHelpTextChange() {
+	/**
+	 * Called when the user toggles the maintenance settings
+	 */
+	_onMaintenanceToggle() {
 
 	}
 
-	onOwnersWidgetSave() {
+	/**
+	 * Called when the help text input is changed
+	 */
+	_onHelpTextChange() {
 
 	}
 
-}
+	/**
+	 * Called when the user saves the widget
+	 */
+	_onOwnersWidgetSave() {
+
+	}
+};
