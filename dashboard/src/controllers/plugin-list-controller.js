@@ -1,10 +1,14 @@
 window.Discotron.PluginListController = class extends window.Discotron.Controller {
-	/**
-	 * Ctor 
-	 * @param {Guild} guild Guild whose plugin settings we display
-	 */
-	constructor(guild) {
-		this._loadPage("admin/plugin-list.html");
+    /**
+     * Ctor
+     * @param {object} args Args given by the user in the URL
+     */
+	constructor(args) {
+		this._guild = args._guild;
+		if (this._guild === undefined) {
+			//TODO: redirect
+		}
+		Discotron.Controller._loadPage("admin/plugin-list.html");
 	}
 
 	/**

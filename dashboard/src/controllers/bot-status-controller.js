@@ -3,7 +3,8 @@ window.Discotron.BotStatusController = class extends window.Discotron.Controller
 	 * Ctor
 	 */
 	constructor() {
-		this._loadPage("owner/bot-status.html");
+		super();
+		Discotron.Controller._loadPage("owner/bot-status.html");
 	}
 
 	/**

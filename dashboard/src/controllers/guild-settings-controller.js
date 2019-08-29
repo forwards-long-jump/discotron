@@ -1,10 +1,12 @@
 window.Discotron.GuildSettingsController = class extends window.Discotron.Controller {
     /**
      * Ctor
-     * @param {Guild} guild Guild whose settings we must display
+     * @param {object} args Args given by the user in the URL
      */
-    constructor(guild) {
-        this._guild = guild;
+    constructor(args) {
+        super();
+        this._guild = args.guild;
+        Discotron.Controller._loadPage("admin/guild-settings.html");
     }
 
     /**

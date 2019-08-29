@@ -3,7 +3,7 @@ window.Discotron.RepositoryListController = class {
 	 * Ctor 
 	 */
 	constructor() {
-		this._loadPage("owner/repository-list.html");
+		Discotron.Controller._loadPage("owner/repository-list.html");
 	}
 
 	/**
