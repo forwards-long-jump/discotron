@@ -17,6 +17,8 @@ window.Discotron.Router = class {
         let Controller = controllers[parsedURL.page];
         if (Controller !== undefined) {
             new Controller(parsedURL.args);
+        } else {
+            new Discotron.HelpController();
         }
     }
 

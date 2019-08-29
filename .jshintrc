@@ -15,5 +15,5 @@
     "funcscope": false,
     "white": true,
     "-W078": false,
-    "globals": { "window": true, "Discotron": true }
+    "globals": { "window": true, "Discotron": true, "document": true }
 }
