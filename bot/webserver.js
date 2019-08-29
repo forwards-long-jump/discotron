@@ -12,12 +12,9 @@ module.exports.serveDashboard = () => {
     });
 };
 
-app.listen(config.webServer.port, (error) => {
-    if(error === undefined) {   
-        Logger.log("Started Webserver on port **" + config.webServer.port + "**", "info");
-    }
-    else {
-        Logger.log("Could not start webserver on port **" + config.webServer.port + "**", "err");
-        Logger.log(error, "err");
-    }
+app.listen(config.webServer.port, () => { 
+    Logger.log("Started Webserver on port **" + config.webServer.port + "**", "info");
+}).on("error", (error) => {
+    Logger.log("Could not start webserver on port **" + config.webServer.port + "**", "err");
+    Logger.log(error, "err");
 });
