@@ -1,0 +1,138 @@
+:root {
+    --color-primary: #4f3b78;
+    --color-primary-light: #927fbf;
+    --color-primary-blinding: #c4bbf0;
+    --color-primary-dark: #363b4e;
+
+
+    /* Dark mode */
+    --color-primary-text: #ffffff;
+    --color-background-dark: #181818;
+    --color-background-light: #2e2e2e;
+
+    --color-background: #202020;
+    --color-background-text: #7e7e7e;
+
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    background-color: var(--color-background-dark);
+    margin: 0 auto;
+    font-family: Arial, Helvetica, sans-serif;
+    color: var(--color-primary-text);
+}
+
+.shadow-small {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+}
+
+.shadow-big {
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+}
+
+nav {
+    display: inline-block;
+    background-color: var(--color-background);
+    height: 100%;
+    width: 400px;
+}
+
+main {
+    display: inline-block;
+    vertical-align: top;
+    height: 100%;
+    overflow-y: auto;
+    width: calc(100% - 405px);
+}
+
+nav ul {
+    padding: 20px;
+    margin: 0px;
+    padding-top: 10px;
+}
+
+nav li {
+    list-style-type: none;
+    font-size: 1.2em;
+    margin-top: 20px;
+    color: var(--color-primary-text);
+}
+
+nav li a,
+nav li a:visited {
+    color: var(--color-background-text);
+    text-decoration: none;
+}
+
+nav li a:hover {
+    color: var(--color-primary-text);
+    text-decoration: none;
+}
+
+.server-link {
+    max-width: 300px;
+    overflow: hidden;
+    white-space:nowrap;
+    text-overflow:ellipsis;
+    display: inline-block;
+    vertical-align: bottom;
+}
+
+nav li i {
+    margin-right: 10px;
+    color: var(--color-background-text);
+}
+
+nav li hr {
+    border: 1px solid var(--color-background-dark);
+}
+
+.round {
+    border-radius: 50px;
+}
+
+.server-icon {
+    width: 25px;
+    height: 25px;
+    vertical-align: middle;
+    margin-right: 20px;
+}
+
+#bot-info,
+#user-info {
+    background-color: var(--color-background-light);
+}
+
+#bot-info img {
+    height: 55px;
+    width: 55px;
+    vertical-align: middle;
+    margin: 10px;
+}
+
+#user-info img {
+    height: 35px;
+    width: 35px;
+    vertical-align: middle;
+    margin: 10px;
+    background-color: var(--color-primary-light);
+}
+
+#bot-info span,
+#user-info span {
+    vertical-align: middle;
+    margin-left: 10px;
+}
+
+#user-info {
+    position: absolute;
+    bottom: 1px;
+    left: 0;
+    width: 400px;
+    font-size: 0.95em;
+}

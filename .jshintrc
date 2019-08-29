@@ -1,0 +1,19 @@
+{   
+    "curly": true,
+    "eqnull": true,
+    "esnext": true,
+    "futurehostile": true,
+    "immed": false,
+    "maxlen": 160,
+    "node": true,
+    "quotmark": "double",
+    "trailing": true,
+    "undef": true,
+    "unused": "strict",
+    "eqeqeq": true,
+    "camelcase": true,
+    "funcscope": false,
+    "white": true,
+    "-W078": false,
+    "globals": { "window": true }
+}
