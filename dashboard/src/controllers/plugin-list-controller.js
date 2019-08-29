@@ -4,11 +4,11 @@ window.Discotron.PluginListController = class extends window.Discotron.Controlle
      * @param {object} args Args given by the user in the URL
      */
 	constructor(args) {
+		super("admin/plugin-list.html");
 		this._guild = args._guild;
 		if (this._guild === undefined) {
 			//TODO: redirect
 		}
-		Discotron.Controller._loadPage("admin/plugin-list.html");
 	}
 
 	/**

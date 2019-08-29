@@ -1,9 +1,9 @@
-window.Discotron.RepositoryListController = class {
+window.Discotron.RepositoryListController = class extends window.Discotron.Controller {
 	/**
 	 * Ctor 
 	 */
 	constructor() {
-		Discotron.Controller._loadPage("owner/repository-list.html");
+		super("owner/repository-list.html");
 	}
 
 	/**

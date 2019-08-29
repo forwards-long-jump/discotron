@@ -6,7 +6,7 @@ window.Discotron.utils = {
         request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
         request.send(data);
     },
-    load: (url, targetElement) => {
+    load: (url, targetElement, callback) => {
         // source: https://stackoverflow.com/questions/38132510/equivalent-to-load-without-jquery
         fetch(url)
             .then(function (response) {
@@ -14,6 +14,9 @@ window.Discotron.utils = {
             })
             .then(function (body) {
                 targetElement.innerHTML = body;
+                if(typeof callback === "function") {
+                    callback();
+                }
             });
     }
 };
