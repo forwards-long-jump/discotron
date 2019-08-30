@@ -1,8 +1,15 @@
-<h1>Bot status</h1>
-<p>Discord bot status: online</p>
-<button id="reload-bot">Reload discord bot</button>
-<h1>Bot settings</h2>
-<label>Maintenance mode: </label><input type="checkbox"><br/>
-<!-- Bot status (game played ...) -->
-<label>Help text: </label><input type="text"><br/>
-<a href="#owners">Owners</a>
+<div id="bot-info" class="shadow-small bot-info-status">
+    <img class="shadow-small round" src="https://i.imgur.com/hGhiwLI.png" /><span>DiscoJ#4513 <span
+            class="green-text bot-status">Online</span></span>
+</div>
+
+<h1>Settings</h1>
+<label>Bot status text: </label><input type="text" placeholder="!help"><br /><br>
+<label>Allowed owners</label><input type="button" value="Manage owners"><br><br>
+<h1>Maintenance</h1><br>
+<label>Ignore non-owners: </label>
+<label class="switch">
+    <input type="checkbox" checked>
+    <span class="slider round"></span>
+</label><br><br>
+<label>Restart bot</label><input type="button" class="red" value="Restart"><br>
