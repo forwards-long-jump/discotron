@@ -395,7 +395,8 @@ label {
     bottom: -20px;
     background-color: var(--color-background-light);
     left: -20px;
-    width: calc(100% + 40px);
+    padding: 10px;
+    width: calc(100% + 20px);
     border-radius: 0px 0px 4px 4px;
     text-align: right;
 }
