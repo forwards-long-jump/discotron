@@ -48,6 +48,11 @@ body {
 }
 
 /* Nav */
+#nav-links {
+    max-height: calc(100% - 170px);
+    overflow: auto;
+}
+
 nav {
     display: inline-block;
     background-color: var(--color-background);
@@ -118,12 +123,18 @@ main hr {
     margin-right: 20px;
 }
 
+.page-header {
+    border-radius: 4px 0px 0px 4px;
+    margin-bottom: 20px;
+}
+
+.page-header,
 #bot-info,
 #user-info {
     background-color: var(--color-background-light);
 }
 
-#bot-info img {
+.page-header img, #bot-info img {
     height: 55px;
     width: 55px;
     vertical-align: middle;
@@ -138,6 +149,7 @@ main hr {
     background-color: var(--color-primary-light);
 }
 
+.page-header span,
 #bot-info span,
 #user-info span {
     margin-left: 10px;
@@ -182,6 +194,7 @@ main {
 main a,
 main a:visited {
     color: var(--color-link-text);
+    text-decoration: none;
 }
 
 main h1,
@@ -195,6 +208,7 @@ main h1,
 
 /* Forms */
 button,
+.button-link,
 input,
 textarea,
 select {
@@ -481,7 +495,7 @@ input:checked+.slider:before {
     margin: 5px;
 }
 
-.link {
+.link, .button-link {
     border: none;
     background: none!important;
     color: var(--color-primary-light);
