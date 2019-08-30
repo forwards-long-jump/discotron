@@ -12,6 +12,8 @@ if (!databaseHelper.databaseExists()) {
 databaseHelper.openDatabase();
 
 webserver.serveDashboard();
+webserver.startAPIServer();
+
 
 // TODO: Discord.js init
 // TODO: Load db?
