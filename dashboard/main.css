@@ -99,6 +99,10 @@ nav li hr {
     border: 1px solid var(--color-background-dark);
 }
 
+main hr {
+    border: 1px solid var(--color-background);
+}
+
 .server-link {
     overflow: hidden;
     white-space: nowrap;
@@ -170,7 +174,7 @@ main {
     vertical-align: top;
     overflow-y: auto;
     margin-left: 50px;
-    margin-top: 30px;
+    padding-top: 30px;
     height: calc(100% - 30px);
     width: calc(100% - 455px);
 }
@@ -227,13 +231,15 @@ input[type="submit"]:hover {
 
 input[type="button"]:disabled,
 input[type="submit"]:disabled {
-    opacity: 0.3;
+    background-color: var(--color-background-dark)!important;
+    border: 1px solid var(--color-background-light)!important;
+    color: var(--color-text-dark);
     cursor: default;
 }
 
 input[type="button"]:disabled:hover,
 input[type="submit"]:disabled:hover {
-    background-color: var(--color-primary);
+    background-color: var(--color-background-dark)!important;
 }
 
 label {
