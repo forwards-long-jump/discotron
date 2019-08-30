@@ -140,6 +140,11 @@ nav li hr {
     font-size: 1.3em;
 }
 
+.bot-info-status {
+    border-radius: 5px 0px 0px 5px;
+    margin-bottom: 30px;
+}
+
 #user-info span {
     font-size: 1.1em;
     vertical-align: middle;
@@ -232,6 +237,7 @@ input[type="submit"]:disabled:hover {
 }
 
 label {
+    vertical-align: middle;
     display: inline-block;
     width: 300px;
 }
@@ -280,6 +286,7 @@ label {
     margin: 10px;
     border-radius: 4px;
     display: inline-block;
+    vertical-align: top;
 }
 
 .repository-card-title {
@@ -301,6 +308,15 @@ label {
 
 .green {
     background-color: #2ecc71 !important;
+}
+
+.green-text {
+    color: #2ecc71 !important;
+}
+
+.bot-status {
+    margin-left: 20px;
+    font-size: 1.0em!important;
 }
 
 .small {
@@ -351,7 +367,6 @@ label {
 }
 
 .widget-inner label {
-    vertical-align: middle;
     margin-top: 25px;
 }
 
@@ -450,7 +465,8 @@ input:checked+.slider:before {
     border-radius: 50%;
 }
 
-.user-list-container span, .role-list-container span {
+.user-list-container span,
+.role-list-container span {
     display: inline-block;
     background-color: var(--color-background-dark);
 
