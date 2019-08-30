@@ -181,7 +181,10 @@ main h1 {
 }
 
 /* Forms */
-input {
+button,
+input,
+textarea,
+select {
     /*
     background-color: rgba(255,255,255,0.1);
     */
@@ -193,10 +196,13 @@ input {
     border: none;
 }
 
+select:disabled,
+textarea:disabled,
 input[type="text"]:disabled {
     color: var(--color-text-dark);
 }
 
+button,
 input[type="button"],
 input[type="submit"] {
     background-color: var(--color-primary);
@@ -204,6 +210,7 @@ input[type="submit"] {
     width: 150px;
 }
 
+button,
 input[type="button"]:hover,
 input[type="submit"]:hover {
     background-color: var(--color-primary-light);
@@ -276,10 +283,10 @@ label {
 }
 
 .repository-card-description {
-    color: var(--color-text-dark); 
+    color: var(--color-text-dark);
 }
 
-
+/* Utilities */
 .red {
     background-color: #c0392b !important;
 }
@@ -294,4 +301,146 @@ label {
 
 .small {
     width: 30%;
+}
+
+.clickable {
+    cursor: pointer;
+}
+
+/* Widgets */
+.widget-background {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+}
+
+/* Source: https://stackoverflow.com/questions/396145/how-to-vertically-center-a-div-for-all-browsers */
+.widget-outer {
+    cursor: default;
+    display: table;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+}
+
+.widget-middle {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.widget-inner {
+    margin-left: auto;
+    margin-right: auto;
+    width: 25%;
+    min-width: 600px;
+
+    background-color: var(--color-background);
+    padding: 20px;
+    border-radius: 4px;
+}
+
+.widget-inner label {
+    margin-top: 25px;
+}
+
+.widget-buttons {
+    position: relative;
+    bottom: -20px;
+    background-color: var(--color-background-light);
+    left: -20px;
+    width: calc(100% + 40px);
+    border-radius: 0px 0px 4px 4px;
+    text-align: right;
+}
+
+.widget-buttons .red {
+    background-color: transparent !important;
+}
+
+.widget-buttons .red:hover {
+    text-decoration: underline;
+}
+
+.widget-inner input[type="text"],
+.widget-inner textarea,
+.widget-inner select {
+    background-color: var(--color-background-dark);
+    color: var(--color-text);
+}
+
+.widget-inner textarea {
+    width: calc(100% - 40px);
+    height: 400px;
+    margin-top: 20px;
+}
+
+/* Checkbox sliding, source: https://www.w3schools.com/howto/howto_css_switch.asp */
+/* The switch - the box around the slider */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* The slider */
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--color-background-dark);
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: var(--color-text);
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+input:checked+.slider {
+    background-color: var(--color-primary);
+}
+
+input:focus+.slider {
+    box-shadow: 0 0 1px var(--color-primary);
+}
+
+input:checked+.slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+    border-radius: 34px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
 }
