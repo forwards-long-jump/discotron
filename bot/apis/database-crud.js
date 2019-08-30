@@ -3,6 +3,7 @@ const Logger = require(__dirname + "/../utils/logger.js");
 
 /**
  * Returns whether the given associative array is empty
+ * Source: https://stackoverflow.com/questions/4482686/check-synchronously-if-file-directory-exists-in-node-js
  * @param {object} associativeArray Associative array
  * @returns {boolean} True if the associative array is empty
  */
@@ -93,7 +94,6 @@ module.exports.delete = (table, where) => {
     if (!isEmpty(where)) {
         let parameters = generateParameters(where);
         sql += " WHERE " + parameters.text;
-        console.log(sql)
         database.run(sql, parameters.objParam, (err) => {
                 if (err) {
                     Logger.log("Delete in database failed : " + sql, "err");
