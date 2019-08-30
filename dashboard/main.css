@@ -10,10 +10,11 @@
     --color-text: #f0f0f0;
     --color-text-dark: #7e7e7e;
 
+    --color-background-darkest: #131313;
     --color-background-dark: #181818;
+    --color-background: #202020;
     --color-background-light: #2e2e2e;
     --color-background-lightest: #4e4e4e;
-    --color-background: #202020;
 
     --color-link: #927fbf;
 }
@@ -187,22 +188,110 @@ input {
     color: var(--color-text);
     border-radius: 2px;
     margin: 5px;
-    padding: 10px;
+    padding: 12px;
     background-color: var(--color-background);
     border: none;
+}
+
+input[type="text"]:disabled {
+    color: var(--color-text-dark);
 }
 
 input[type="button"],
 input[type="submit"] {
     background-color: var(--color-primary);
     cursor: pointer;
+    width: 150px;
 }
+
 input[type="button"]:hover,
 input[type="submit"]:hover {
     background-color: var(--color-primary-light);
 }
 
+input[type="button"]:disabled,
+input[type="submit"]:disabled {
+    opacity: 0.3;
+    cursor: default;
+}
+
+input[type="button"]:disabled:hover,
+input[type="submit"]:disabled:hover {
+    background-color: var(--color-primary);
+}
+
 label {
     display: inline-block;
     width: 300px;
+}
+
+/* Repository */
+.repository-header {
+    color: var(--color-text-dark);
+    font-size: 1.1em;
+}
+
+.repository-status {
+    color: var(--color-text-dark);
+    font-size: 0.8em;
+    margin-left: 15px;
+    margin-top: -10px;
+}
+
+.repository-status p {
+    display: inline-block;
+}
+
+.status-circle {
+    display: inline-block;
+    height: 10px;
+    width: 10px;
+    border-radius: 25px;
+    vertical-align: baseline;
+    margin-right: 8px;
+}
+
+.plugin-bar {
+    width: calc(100% - 400px);
+}
+
+.repository-card-container {
+    margin-top: 10px;
+    margin-bottom: 30px;
+}
+
+.repository-card {
+    cursor: pointer;
+    width: 240px;
+    height: 140px;
+    background-color: var(--color-background-darkest);
+    padding: 20px;
+    margin: 10px;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.repository-card-title {
+    font-weight: bold;
+}
+
+.repository-card-description {
+    color: var(--color-text-dark); 
+}
+
+
+.red {
+    background-color: #c0392b !important;
+}
+
+.orange {
+    background-color: #e67e22 !important;
+}
+
+.green {
+    background-color: #2ecc71 !important;
+}
+
+.small {
+    width: 30%;
 }
