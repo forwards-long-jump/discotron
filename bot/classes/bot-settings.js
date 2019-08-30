@@ -1,6 +1,6 @@
-const BotSettingsModel = require(__dirname + "/../models/bot-settings.js");
+const BotSettingsModel = require("./../../models/bot-settings.js");
 
-class BotSettings extends BotSettingsModel{
+class BotSettings extends BotSettingsModel {
     /**
      * Changes the help text displayed by the bot
      * @param {string} helpText New help text

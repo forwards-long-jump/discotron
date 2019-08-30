@@ -6,7 +6,7 @@ class Login {
         this._users = {};
         this._noOwnersRegistered = true;
         this._initialOwnershipSecret = undefined; // Undefined after ownership is claimed
-  
+
         this._handleFirstLaunch();
     }
 
@@ -90,7 +90,7 @@ class Login {
      */
     claimOwnerShip(secret, authToken) {
         if (secret === this._initialOwnershipSecret) {
-            
+
         }
     }
 }

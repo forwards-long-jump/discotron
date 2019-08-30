@@ -1,4 +1,4 @@
-const GuildModel = require(__dirname + "/../models/guild.js");
+const GuildModel = require("./../../models/guild.js");
 
 class Guild extends GuildModel {
     /**
@@ -34,6 +34,16 @@ class Guild extends GuildModel {
             }
         }
         return false;
+    }
+
+    /**
+     * Returns whether the given user is a bot admin on the given guild
+     * @param {string} clientId ID of the client
+     * @param {string} guildId ID of the guild
+     * @returns {boolean} True if the client is bot admin on the guild
+     */
+    static isGuildAdmin(clientId, guildId) {
+        return Guild.get(guildId).isAdmin(clientId);
     }
 
     /**
@@ -100,7 +110,7 @@ class Guild extends GuildModel {
      * @param {string} pluginId 
      */
     onPluginDeleted(pluginId) {
-        
+
     }
 
     /**
