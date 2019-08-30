@@ -5,7 +5,7 @@
 
 <h1>Settings</h1>
 <label>Bot status text: </label><input type="text" placeholder="!help"><br>
-<label>Allowed owners</label><input type="button" class="link" value="Manage owners"><br><br>
+<label>Allowed owners</label><input type="button" class="link" value="Manage owners" onclick="document.querySelector('#demo').style.display = 'block';"><br><br>
 
 <h1>Maintenance</h1><br>
 <label>Ignore non-owners: </label>
@@ -17,3 +17,27 @@
 <label>Restart bot</label><input type="button" class="red" value="Restart"><br>
 <hr>
 <input type="button" value="Save settings" disabled>
+
+<!-- Temp for demo purpose -->
+<div class="widget-background" id="demo" style="display: none;" onclick="this.style.display = 'none';">
+    <div class="widget-outer">
+        <div class="widget-middle">
+            <div class="widget-inner shadow-big">
+                    <span class="widget-header">Owner list</span>
+                    <label>Add a new owner</label><br>
+                    <input type="text" placeholder="Type user / role"><input type="button" value="Add">
+                    <br><br>
+                    <label>Allowed users</label>
+                    <div class="user-list-container">
+                        <span class="shadow-small"><i class="fas fa-user"></i> Blatoy#0001</span>
+                        <span class="shadow-small"><i class="fas fa-user"></i> G Visière#5451</span>
+                    </div>
+
+                <div class="widget-buttons">
+                    <input class="red" type="button" value="Cancel">
+                    <input type="button" value="Apply">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

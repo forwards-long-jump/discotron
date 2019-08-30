@@ -17,7 +17,7 @@
                 of stuff.</p>
         </div>
         <div class="repository-card shadow-big"
-            onclick="document.querySelector('.widget-background').style.display = 'block';">
+            onclick="document.querySelector('#demo').style.display = 'block';">
             <span class="repository-card-title">Space launches</span>
             <p class="repository-card-description">Space launches allows users to see latest space launches in discord.
             </p>
@@ -67,6 +67,31 @@
             <span class="repository-card-title">LelMaker</span>
             <p class="repository-card-description">LelMaker is a module managing lel sentences creation, it can do a lot
                 of stuff.</p>
+        </div>
+    </div>
+</div>
+
+<!-- Temp for demo purpose -->
+<div class="widget-background" id="demo" style="display: none;" onclick="this.style.display = 'none';">
+    <div class="widget-outer">
+        <div class="widget-middle">
+            <div class="widget-inner shadow-big">
+                    <span class="widget-header">Module settings: Space launches</span class="widget-header">
+                        <label>Enabled</label>
+                        <label class="switch">
+                            <input type="checkbox" checked>
+                            <span class="slider round"></span>
+                        </label><br><br>
+                        
+                        <label>Global prefix</label><input type="text" placeholder="Prefix" value="!spc"><br><br>
+                        <label>Logs</label>
+                        <textarea class="logs">
+                        </textarea>
+                <div class="widget-buttons">
+                    <input class="red" type="button" value="Cancel">
+                    <input type="button" value="Apply">
+                </div>
+            </div>
         </div>
     </div>
 </div>
