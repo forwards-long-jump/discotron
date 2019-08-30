@@ -1,10 +1,10 @@
 window.Discotron.utils = {
     post: (url, data) => {
         // source: http://youmightnotneedjquery.com/
-        var request = new XMLHttpRequest();
+        let request = new XMLHttpRequest();
         request.open("POST", url, true);
-        request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
-        request.send(data);
+        request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        request.send(JSON.stringify(data));
     },
     load: (url, targetElement, callback) => {
         // source: https://stackoverflow.com/questions/38132510/equivalent-to-load-without-jquery

@@ -1,3 +1,14 @@
+const Logger = require("../utils/logger.js");
+
+/**
+ * Authentification methods for each level
+ */
+const authLevelCheck = {
+    "owner": require("../classes/owner.js").isOwner,
+    "guildAdmin": require("../classes/guild.js").isGuildAdmin,
+    "everyone": () => true
+};
+
 /**
  * Handles receiving message from dashboard
  */
@@ -6,11 +17,27 @@ let actions = {};
 /**
  * Starts listening on the /api endpoint
  */
-function startAPIServer() {
-    //TODO
-}
+module.exports.onPost = (req, res) => {
+    let clientId = 2; // = getClientId(req.appToken);
 
-startAPIServer();
+    let plugin = req.body.plugin;
+    let action = req.body.action;
+    let data = req.body.action;
+    let appToken = req.body.appToken;
+    let guildId = req.body.guildId;
+    
+    // TODO: check app token
+
+    if (actions[plugin] === undefined || actions[plugin][action] === undefined) {
+        return;
+    }
+
+    let response = actions[plugin][action];
+
+    if (authLevelCheck[response.authLevel](clientId, guildId)) {
+        response.action(data);
+    }
+};
 
 
 /**
@@ -30,9 +57,9 @@ module.exports.getWebAPI = (pluginId) => {
  * @param {string} pluginId     Id of the plugin
  * @param {string} name         Name of the action
  * @param {function} action     Action to trigger, *data* is passed as argument
- * @param {string} [authLevel="connected"]    User "level" required to trigger this action, can be *everyone*, *connected*, *owner*
+ * @param {string} [authLevel="connected"]    User "level" required to trigger this action, can be *everyone*, *guildAdmin*, *owner*
  */
-function registerAction(pluginId, name, action, authLevel = "connected") {
+function registerAction(pluginId, name, action, authLevel = "everyone") {
     if (typeof actions[pluginId] === "undefined") {
         actions[pluginId] = {};
     }
@@ -45,4 +72,5 @@ function registerAction(pluginId, name, action, authLevel = "connected") {
         action: action,
         authLevel: authLevel
     };
+    Logger.log(`Registered action ${name} for plugin ${pluginId}`, "debug");
 }
