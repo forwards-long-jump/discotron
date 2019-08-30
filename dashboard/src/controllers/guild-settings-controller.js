@@ -6,8 +6,6 @@ window.Discotron.GuildSettingsController = class extends window.Discotron.Contro
     constructor(args) {
         super("admin/guild-settings.html", () => {
             this._guild = args.guild;
-            
-            document.querySelector("h1").textContent = "Server settings - " + this._guild;
         });
     }
 

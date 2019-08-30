@@ -480,3 +480,13 @@ input:checked+.slider:before {
     padding: 15px;
     margin: 5px;
 }
+
+.link {
+    border: none;
+    background: none!important;
+    color: var(--color-primary-light);
+    padding-left: 2px;
+    text-align: left;
+    font-size: 0.9em;
+    width: auto!important;
+}
