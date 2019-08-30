@@ -3,8 +3,7 @@ const app = express();
 
 const config = require(__dirname + "/config/config.json");
 const Logger = require(__dirname + "/utils/logger.js");
-
-const onPost = require("./apis/web-api.js").onPost;
+const webAPI = require("./apis/web-api.js");
 
 module.exports.serveDashboard = () => {
     app.use("/dashboard", express.static(__dirname + "/../dashboard"));
@@ -16,7 +15,7 @@ module.exports.serveDashboard = () => {
 
 module.exports.startAPIServer = () => {
     app.use(express.json());
-    app.post("/api", onPost);
+    app.post("/api", webAPI.onPost);
 };
 
 app.listen(config.webServer.port, () => { 

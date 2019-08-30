@@ -20,6 +20,9 @@ let actions = {};
 module.exports.onPost = (req, res) => {
     let clientId = 2; // = getClientId(req.appToken);
 
+    if (req === undefined || req.body === undefined) {
+        return;
+    }
     let plugin = req.body.plugin;
     let action = req.body.action;
     let data = req.body.action;
