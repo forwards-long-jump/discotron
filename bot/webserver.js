@@ -3,6 +3,7 @@ const app = express();
 
 const config = require(__dirname + "/config/config.json");
 const Logger = require(__dirname + "/utils/logger.js");
+const webAPI = require("./apis/web-api.js");
 
 module.exports.serveDashboard = () => {
     app.use("/dashboard", express.static(__dirname + "/../dashboard"));
@@ -12,9 +13,18 @@ module.exports.serveDashboard = () => {
     });
 };
 
+module.exports.startAPIServer = () => {
+    app.use(express.json());
+    app.post("/api", webAPI.onPost);
+};
+
 app.listen(config.webServer.port, () => { 
     Logger.log("Started Webserver on port **" + config.webServer.port + "**", "info");
 }).on("error", (error) => {
     Logger.log("Could not start webserver on port **" + config.webServer.port + "**", "err");
     Logger.log(error, "err");
 });
+
+
+
+

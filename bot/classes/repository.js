@@ -1,4 +1,4 @@
-const RepositoryModel = require(__dirname + "/../models/repository.js");
+const RepositoryModel = require("./../../models/repository.js");
 
 class Repository extends RepositoryModel {
     /**

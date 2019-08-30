@@ -1,4 +1,4 @@
-const PermissionModel = require(__dirname + "/../models/permission.js");
+const PermissionModel = require("./../../models/permission.js");
 
 class Permission extends PermissionModel {
     /**

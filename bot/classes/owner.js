@@ -1,4 +1,4 @@
-const OwnerModel = require(__dirname + "/../models/owner.js");
+const OwnerModel = require("./../../models/owner.js");
 
 class Owner extends OwnerModel {
     /**
@@ -14,7 +14,7 @@ class Owner extends OwnerModel {
      * @param {string} discordUserId 
      */
     static remove(discordUserId) {
-        
+
     }
 
     /**
@@ -30,8 +30,10 @@ class Owner extends OwnerModel {
      * @returns True if an owner exists in the database
      */
     static hasAnyOwner() {
-        
+
     }
 }
 
 Owner.prototype._owners = [];
+
+module.exports = Owner;

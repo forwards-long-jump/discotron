@@ -1,4 +1,4 @@
-const CommandModel = require(__dirname + "/../models/command.js");
+const CommandModel = require("./../../models/command.js");
 
 class Command extends CommandModel {
     constructor(settings) {
@@ -101,11 +101,6 @@ module.exports = Command;
                         commands.push(...)
 
         
-            
-        for command in commands:
-            command.trigger(words, ...) // command.trigger (switch this._triggerType)
-
-            */        
             
         for command in commands:
             command.trigger(words, ...) // command.trigger (switch this._triggerType)

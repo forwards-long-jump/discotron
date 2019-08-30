@@ -1,4 +1,4 @@
-const PluginModel = require(__dirname + "/../models/plugin.js");
+const PluginModel = require("./../../models/plugin.js");
 
 class Plugin extends PluginModel {
     /**
@@ -43,7 +43,7 @@ class Plugin extends PluginModel {
     toObject() {
 
     }
-    
+
     /**
      * Set enabled
      * @param {boolean} enabled 
@@ -51,7 +51,7 @@ class Plugin extends PluginModel {
     set enabled(enabled) {
 
     }
-    
+
     /**
      * Set prefix
      * @param {prefix} prefix 

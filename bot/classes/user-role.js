@@ -1,4 +1,4 @@
-const UserRoleModel = require(__dirname + "/../models/user-role.js");
+const UserRoleModel = require("./../../models/user-role.js");
 
 class UserRole extends UserRoleModel {
     /**
