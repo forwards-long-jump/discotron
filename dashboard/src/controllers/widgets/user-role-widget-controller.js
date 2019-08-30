@@ -9,7 +9,7 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
      * @param {function} onClose Called when user cancels saving
      */
     constructor(guild, usersRoles, onUserRoleSave, displayRoles = true, headerText = "", onClose = () => {}) {
-        super("user-role.html", () => {
+        super("user-role-selector.html", () => {
             onUserRoleSave(this._getUsersRoles());
         }, onClose);
 
