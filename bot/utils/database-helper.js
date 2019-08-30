@@ -26,6 +26,7 @@ module.exports.openDatabase = () => {
     database = new sqlite.Database(config.database.savePath, sqlite.OPEN_READWRITE, (err) => {
         if (err) {
             Logger.log("Could not open database", "error");
+            Logger.log(err, "err");
         }
     });
 };
