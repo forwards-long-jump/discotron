@@ -191,10 +191,14 @@ main {
     width: calc(100% - 455px);
 }
 
-main a,
-main a:visited {
-    color: var(--color-link-text);
+a,
+a:visited {
+    color: var(--color-primary-light);
     text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
 }
 
 main h1,
@@ -204,6 +208,10 @@ main h1,
     margin-bottom: 5px;
     font-weight: bold;
     font-size: 1.3em;
+}
+
+.widget-header {
+    margin-bottom: 20px;
 }
 
 /* Forms */
@@ -254,6 +262,10 @@ input[type="submit"]:disabled {
 input[type="button"]:disabled:hover,
 input[type="submit"]:disabled:hover {
     background-color: var(--color-background-dark)!important;
+}
+
+.switch {
+    margin-top: 10px;
 }
 
 label {
@@ -370,6 +382,11 @@ label {
     width: 100%;
 }
 
+.channel-selector {
+    max-height: 500px;
+    overflow: auto;
+}
+
 .widget-middle {
     display: table-cell;
     vertical-align: middle;
@@ -384,11 +401,11 @@ label {
     background-color: var(--color-background);
     padding: 20px;
     border-radius: 4px;
+
+    max-height: 100%;
+    overflow: auto;
 }
 
-.widget-inner label {
-    margin-top: 25px;
-}
 
 .widget-buttons {
     position: relative;
@@ -504,4 +521,12 @@ input:checked+.slider:before {
     text-align: left;
     font-size: 0.9em;
     width: auto!important;
+}
+
+.link:hover {
+    text-decoration: underline;
+}
+
+.description {
+    color: var(--color-text-dark);
 }
