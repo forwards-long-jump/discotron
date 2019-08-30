@@ -1,21 +1,25 @@
 :root {
-    --color-primary: #4f3b78;
-    --color-primary-light: #927fbf;
-    --color-primary-blinding: #c4bbf0;
-    --color-primary-dark: #363b4e;
-
+    --color-primary-darkest: #1B4F72;
+    --color-primary-dark: #2874A6;
+    --color-primary: #3498DB;
+    --color-primary-light: #5DADE2;
+    --color-primary-lightest: #D6EAF8;
 
     /* Dark mode */
-    --color-primary-text: #ffffff;
+    --color-text-light: #ffffff;
+    --color-text: #f0f0f0;
+    --color-text-dark: #7e7e7e;
+
     --color-background-dark: #181818;
     --color-background-light: #2e2e2e;
-    --color-link-text: #248db9;
-
+    --color-background-lightest: #4e4e4e;
     --color-background: #202020;
-    --color-background-text: #7e7e7e;
 
+    --color-link: #927fbf;
 }
 
+
+/* General */
 html,
 body {
     height: 100%;
@@ -25,9 +29,10 @@ body {
     background-color: var(--color-background-dark);
     margin: 0 auto;
     font-family: Arial, Helvetica, sans-serif;
-    color: var(--color-primary-text);
+    color: var(--color-text);
 }
 
+/* "Components" */
 .shadow-small {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
 }
@@ -36,29 +41,17 @@ body {
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
 }
 
+
+.round {
+    border-radius: 50px;
+}
+
+/* Nav */
 nav {
     display: inline-block;
     background-color: var(--color-background);
     height: 100%;
     width: 400px;
-}
-
-main {
-    display: inline-block;
-    vertical-align: top;
-    height: 100%;
-    overflow-y: auto;
-    width: calc(100% - 405px);
-}
-
-main a,
-main a:visited {
-    color: var(--color-link-text);
-}
-
-main h1 {
-    font-weight: bold;
-    font-size: 1.3em;
 }
 
 nav ul {
@@ -70,41 +63,47 @@ nav ul {
 nav li {
     list-style-type: none;
     font-size: 1.2em;
-    margin-top: 20px;
     color: var(--color-primary-text);
+}
+
+nav .header {
+    padding-top: 20px;
+    padding-bottom: 10px;
 }
 
 nav li a,
 nav li a:visited {
-    color: var(--color-background-text);
+    color: var(--color-text-dark);
     text-decoration: none;
+    padding: 10px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    border-radius: 2px;
+    display: inline-block;
+    width: 335px;
 }
 
 nav li a:hover {
     color: var(--color-primary-text);
     text-decoration: none;
-}
-
-.server-link {
-    max-width: 300px;
-    overflow: hidden;
-    white-space:nowrap;
-    text-overflow:ellipsis;
-    display: inline-block;
-    vertical-align: bottom;
+    background-color: rgba(255, 255, 255, 0.1);
 }
 
 nav li i {
     margin-right: 10px;
-    color: var(--color-background-text);
+    color: var(--color-text-dark);
 }
 
 nav li hr {
     border: 1px solid var(--color-background-dark);
 }
 
-.round {
-    border-radius: 50px;
+.server-link {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    display: inline-block;
+    vertical-align: bottom;
 }
 
 .server-icon {
@@ -136,8 +135,13 @@ nav li hr {
 
 #bot-info span,
 #user-info span {
-    vertical-align: middle;
     margin-left: 10px;
+    font-size: 1.3em;
+}
+
+#user-info span {
+    font-size: 1.1em;
+    vertical-align: middle;
 }
 
 #user-info {
@@ -151,4 +155,54 @@ nav li hr {
 #reload-bot {
     color: var(--color-primary-text);
     background-color: var(--color-background-light);
+}
+
+/* Main */
+
+main {
+    display: inline-block;
+    vertical-align: top;
+    overflow-y: auto;
+    margin-left: 50px;
+    margin-top: 30px;
+    height: calc(100% - 30px);
+    width: calc(100% - 455px);
+}
+
+main a,
+main a:visited {
+    color: var(--color-link-text);
+}
+
+main h1 {
+    font-weight: bold;
+    font-size: 1.3em;
+}
+
+/* Forms */
+input {
+    /*
+    background-color: rgba(255,255,255,0.1);
+    */
+    color: var(--color-text);
+    border-radius: 2px;
+    margin: 5px;
+    padding: 10px;
+    background-color: var(--color-background);
+    border: none;
+}
+
+input[type="button"],
+input[type="submit"] {
+    background-color: var(--color-primary);
+    cursor: pointer;
+}
+input[type="button"]:hover,
+input[type="submit"]:hover {
+    background-color: var(--color-primary-light);
+}
+
+label {
+    display: inline-block;
+    width: 300px;
 }
