@@ -1,14 +1,9 @@
-window.Discotron.GuildSettingsController = class extends window.Discotron.Controller {
+window.Discotron.HelpController = class extends window.Discotron.Controller {
     /**
      * Ctor
-     * @param {object} args Args given by the user in the URL
      */
     constructor(args) {
-        super("admin/guild-settings.html", () => {
-            this._guild = args.guild;
-            
-            document.querySelector("h1").textContent = "Server settings - " + this._guild;
-        });
+        super("index.html");
     }
 
     /**

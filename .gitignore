@@ -94,3 +94,4 @@ typings/
 !.vscode/extensions.json
 token.json
 token.txt
+discotron.db

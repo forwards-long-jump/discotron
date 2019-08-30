@@ -112,14 +112,14 @@ nav li hr {
     height: 55px;
     width: 55px;
     vertical-align: middle;
-    margin: 10px;
+    margin: 20px;
 }
 
 #user-info img {
     height: 35px;
     width: 35px;
     vertical-align: middle;
-    margin: 10px;
+    margin: 20px;
     background-color: var(--color-primary-light);
 }
 

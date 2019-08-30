@@ -1,1 +1,1 @@
-window.Discotron.UserRole = class extends window.Discotron.UserRole {};
+window.Discotron.UserRole = class extends window.Discotron.UserRoleModel {};

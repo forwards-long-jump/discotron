@@ -53,7 +53,7 @@ class Logger {
      * @param {string|object} value Message to display. If it is not a string, it will be displayed on another line.
      * @param {string} severity Severity of the message (can be: err, info, warn, debug)
      */
-    static log(value, severity = "info") {
+    static log(value, severity = "debug") {
         let level = severityToLevel[severity];
 
         if (Logger.level <= level) {

@@ -3,6 +3,9 @@
         "templatePath": "./database/discotron-template.db",
         "savePath": "./database/discotron.db"
     },
+    "webServer": {
+        "port": 47131
+    },
     "spam": {
         "incrementPerUsage" : 40,
         "spamThreshold" : 100,
