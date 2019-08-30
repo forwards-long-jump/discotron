@@ -9,6 +9,7 @@
     --color-primary-text: #ffffff;
     --color-background-dark: #181818;
     --color-background-light: #2e2e2e;
+    --color-link-text: #248db9;
 
     --color-background: #202020;
     --color-background-text: #7e7e7e;
@@ -48,6 +49,16 @@ main {
     height: 100%;
     overflow-y: auto;
     width: calc(100% - 405px);
+}
+
+main a,
+main a:visited {
+    color: var(--color-link-text);
+}
+
+main h1 {
+    font-weight: bold;
+    font-size: 1.3em;
 }
 
 nav ul {
@@ -135,4 +146,9 @@ nav li hr {
     left: 0;
     width: 400px;
     font-size: 0.95em;
+}
+
+#reload-bot {
+    color: var(--color-primary-text);
+    background-color: var(--color-background-light);
 }
