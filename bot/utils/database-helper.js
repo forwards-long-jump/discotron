@@ -1,26 +1,35 @@
 const sqlite = require("sqlite3");
-const config = require(__dirname + "/config/config.json");
+const fs = require("fs");
+const config = require(__dirname + "/../config/config.json");
+
+const Logger = require(__dirname + "/../utils/logger.js");
+
 let database;
 
-function createDatabase() {
-    // TODO: Copy file
-}
+module.exports.databaseExists = () => {
+    return fs.existsSync(config.database.savePath);
+};
 
-function deleteDatabase() {
-    
-}
+module.exports.createDatabase = () => {
+    fs.copyFileSync(config.database.templatePath, config.database.savePath);
+};
 
-function openDatabase() {
-    // Open database
-    database = new sqlite.Database(config.database.savePath, (err) => {
+module.exports.deleteDatabase = () => {
+    fs.unlink(config.database.savePath, (err) => {
         if (err) {
-            // TODO: Copy template if file does not exists
-        } else {
-
+            Logger.log("Could not delete database", "error");
         }
     });
-}
+};
+
+module.exports.openDatabase = () => {
+    database = new sqlite.Database(config.database.savePath, sqlite.OPEN_READWRITE, (err) => {
+        if (err) {
+            Logger.log("Could not open database", "error");
+        }
+    });
+};
 
 module.exports.getDatabase = () => {
-
+    return database;
 };
