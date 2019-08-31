@@ -4,6 +4,10 @@ const RepositoryModel = require("./../../models/repository.js");
 const Plugin = require("./plugin.js");
 const webAPI = require("./../apis/web-api.js").getWebAPI("discotron-dashboard");
 const Logger = require("../utils/logger.js");
+const Git = require("nodegit");
+const crypto = require("crypto");
+
+const db = require("../apis/database-crud.js");
 
 class Repository extends RepositoryModel {
     /**
@@ -51,17 +55,59 @@ class Repository extends RepositoryModel {
     /**
      * Clone a repository from a url, should be used the first time
      * @param {string} url 
-     * @returns {string} Folder name of the downloaded repo
+     * @returns {Promise} Folder name of the downloaded repo
      */
     static clone(url) {
+        return new Promise((resolve, reject) => {
+            let folderName = Repository._generateFolderName(url);
+            Git.Clone(url, __dirname + "/../repositories/" + folderName, {
+                checkoutBranch: "master"
+            }).then((repo) => {
+                db.insert("Repositories", {
+                    repositoryURL: url,
+                    folderName: folderName
+                });
 
+                // Load itself
+                new Repository(folderName, url);
+                resolve(folderName);
+            }).catch((e) => {
+                reject(e);
+            });
+        });
+    }
+
+    /**
+     * Returns a folder name from a git url
+     * @param {string} url 
+     */
+    static _generateFolderName(url) {
+        url = url.replace(/\.git/g, "");
+        url = url.split("/");
+        url = url[url.length - 1];
+        url = url.replace(/[^a-zA-Z0-9\-]/g, "");
+        return url + crypto.createHash("md5").update(url).digest("hex"); // Should rather check if folder exists but we should not have collisions for that
     }
 
     /**
      * Pull from the distant repository, to update the plugins
      */
-    pull() {
-
+    pull() {    
+        let repo;
+        // Source: https://stackoverflow.com/questions/20955393/nodegit-libgit2-for-node-js-how-to-push-and-pull
+        Git.Repository.open(__dirname + "/../repositories/" + this._folderName)
+            .then(function (repository) {
+                repo = repository;
+                return repository.fetch("origin");
+            })
+            .then(function () {
+                return repo.mergeBranches("master", "origin/master");
+            })
+            .then(function (oid) {
+                // cb(null, oid);
+            }).catch((err) => {
+                console.log(err);
+            });
     }
 
     /**
