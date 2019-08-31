@@ -1,3 +1,5 @@
+const webAPI = require("./apis/web-api.js").getWebAPI("discotron-dashboard");
+
 class Login {
     /**
      * Ctor
@@ -92,5 +94,10 @@ class Login {
         if (secret === this._initialOwnershipSecret) {
 
         }
+    }
+
+    static registerActions() {
+        webAPI.registerAction("claim-ownership", (data, reply) => {});
+        webAPI.registerAction("login", (data, reply) => {});
     }
 }

@@ -1,4 +1,5 @@
 const PluginModel = require("./../../models/plugin.js");
+const webAPI = require("./apis/web-api.js").getWebAPI("discotron-dashboard");
 
 class Plugin extends PluginModel {
     /**
@@ -58,6 +59,17 @@ class Plugin extends PluginModel {
      */
     set prefix(prefix) {
 
+    }
+
+    static registerActions() {
+        webAPI.registerAction("get-prefix", (data, reply) => {});
+        webAPI.registerAction("set-prefix", (data, reply) => {}, "owner");
+
+        webAPI.registerAction("get-enabled", (data, reply) => {});
+        webAPI.registerAction("set-enabled", (data, reply) => {}, "owner");
+
+        webAPI.registerAction("get-helptext", (data, reply) => {});
+        webAPI.registerAction("set-helptext", (data, reply) => {}, "owner");
     }
 }
 
