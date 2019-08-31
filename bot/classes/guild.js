@@ -166,6 +166,6 @@ class Guild extends GuildModel {
     }
 }
 
-Guild.prototype._guilds = {};
+Guild._guilds = {};
 
 module.exports = Guild;

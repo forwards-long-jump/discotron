@@ -21,12 +21,17 @@ class CommandModel {
         this._triggerType = options.triggerType;
         this._trigger = options.trigger;
         this._help = options.help;
+        this._args = [];
+        for (let i = 0; i < options.args.length; ++i) {
+            let arg = Object.assign({}, CommandModel.defaultArgSettings, options.args);
+            this._args.push(arg);
+        }
         this._args = options.args;
-        this._ownersOnly = options.action;
-        this._scope = options.ownersOnly;
+        this._ownersOnly = options.ownersOnly;
+        this._scope = options.scope;
         this._requiresMention = options.requiresMention;
         this._bypassSpamDetection = options.bypassSpamDetection;
-        this._action = options.scope;
+        this._action = options.action;
     }
 
     get triggerType() {
@@ -58,16 +63,22 @@ class CommandModel {
     }
 }
 
-CommandModel.prototype.defaultSettings = {
+CommandModel.defaultSettings = {
     triggerType: "command",
     trigger: [], // can be array
     help: "",
-    args: [], // {name: "turn", defaultValue: 0, help: ""}
+    args: [], // {name: "turn", defaultValue: 0, help: "", allowsSpace: false}
     ownersOnly: false,
     scope: "everywhere", // PM, GUILD
     requiresMention: false,
     bypassSpamDetection: false,
-    action: () => []
+    action: () => {}
+};
+
+CommandModel.defaultArgSettings = {
+    name: "",
+    help: "",
+    allowsSpace: false
 };
 
 
