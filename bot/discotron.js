@@ -3,6 +3,7 @@ const Repository = require("./classes/repository.js");
 const Guild = require("./classes/guild.js");
 const Plugin = require("./classes/plugin.js");
 const Logger = require("./utils/logger.js");
+const db = require("./apis/database-crud.js");
 
 const webAPI = require("./apis/web-api.js").getWebAPI("discotron-dashboard");
 
@@ -47,13 +48,21 @@ module.exports.onMessage = (message) => {
 
     */
 
-    if(false) {return;} // TODO: Maintenance && Owner check
-    if(message.author.bot) {return;}
-    if(false) {return;} // TODO: User spamming check
+    if (false) {
+        return;
+    } // TODO: Maintenance && Owner check
+    if (message.author.bot) {
+        return;
+    }
+    if (false) {
+        return;
+    } // TODO: User spamming check
 
     let guild = Guild.get(message.guild.id);
 
-    if(guild !== undefined && !guild.allowedChannelIds.includes(message.channel.id)) { return; }
+    if (guild !== undefined && !guild.allowedChannelIds.includes(message.channel.id)) {
+        return;
+    }
 
     let commands = [];
     let loweredCaseMessage = message.content.toLowerCase();
@@ -63,56 +72,57 @@ module.exports.onMessage = (message) => {
     const plugins = Plugin.getAll();
     for (const pluginId in plugins) {
         const plugin = plugins[pluginId];
-        if(guild !== undefined && !guild.isAdmin(message.author.id) && guild.permissions[pluginId].allows(message.author.id)) { continue; }
+        if (guild !== undefined && !guild.isAdmin(message.author.id) && guild.permissions[pluginId].allows(message.author.id)) {
+            continue;
+        }
 
-        if(isCommand && (guild === undefined || loweredCaseMessage.startsWith(guild.commandPrefix + plugin.prefix))) {
+        if (isCommand && (guild === undefined || loweredCaseMessage.startsWith(guild.commandPrefix + plugin.prefix))) {
             for (let i = 0; i < plugin.commands.command.length; i++) {
                 const command = plugin.commands.command[i];
 
-                if(command.triggeredBy(message, loweredCaseMessage)) {
+                if (command.triggeredBy(message, loweredCaseMessage)) {
                     commands.push(command);
                 }
             }
         }
 
-        if(commands.length === 0) {
+        if (commands.length === 0) {
             for (let i = 0; i < plugin.commands.words.length; i++) {
                 const command = plugin.commands.words[i];
-                if(command.triggeredBy(message, loweredCaseMessage)) {
+                if (command.triggeredBy(message, loweredCaseMessage)) {
                     commands.push(command);
                 }
-            }  
+            }
         }
 
         // Spam detection
-        if(commands.length !== 0) {
+        if (commands.length !== 0) {
             for (let i = 0; i < commands.length; i++) {
                 const command = commands[i];
-                if(!command.bypassSpamDetection) {
+                if (!command.bypassSpamDetection) {
                     // TODO: Spam meter, return if spamming
                     /*if user spam meter > 100
                         user cooldown = 3000 years
                         dm user
                     break;*/
                 }
-            }                     
+            }
         }
 
         // "All"
         for (let i = 0; i < plugin.commands.all.length; i++) {
             const command = plugin.commands.all[i];
-            if(command.triggeredBy(message, loweredCaseMessage)) {
+            if (command.triggeredBy(message, loweredCaseMessage)) {
                 commands.push(command);
             }
-        }  
-        Logger.log(commands);
+        }
+        
         // Trigger valid messages
         const words = message.content.split(" ");
         for (let i = 0; i < commands.length; i++) {
             try {
                 commands[i].doMessageAction(message, words);
-            }
-            catch(error) {
+            } catch (error) {
                 Logger.log("An error occured in plugin: **" + plugin.name + "** while executing command **" + commands[i].trigger + "**", "err");
                 Logger.log(error, "err");
             }
@@ -129,15 +139,18 @@ module.exports.getUserInfo = (userDiscordId) => {};
 module.exports.getBotInfo = () => {};
 
 module.exports.loadRepositories = () => {
-    // TODO: Get repo in DB here
-    let repositories = [{
-        folderName: "test-repo",
-        gitUrl: "https://github.com/gwizzy/test-plugin.git"
-    }];
-
-    for (let i = 0; i < repositories.length; i++) {
-        new Repository(repositories[i].folderName, repositories[i].gitUrl);
-    }
+    db.select("Repositories").then((rows) => {
+        if (rows.length === 0) {
+            Logger.log("No repositories  found.", "warn");
+        } else {
+            for (let i = 0; i < rows.length; i++) {
+                const row = rows[i];
+                Logger.log("Loading repository **" + row.folderName + "**");
+                let r = new Repository(row.folderName, row.gitUrl);
+                r.pull(); // DEBUG, update all repos
+            }
+        }
+    });
 };
 
 module.exports.registerActions = () => {
