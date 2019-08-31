@@ -1,15 +1,6 @@
 const Logger = require("../utils/logger.js");
 
 /**
- * Authentification methods for each level
- */
-const authLevelCheck = {
-    "owner": require("../classes/owner.js").isOwner,
-    "guildAdmin": require("../classes/guild.js").isGuildAdmin,
-    "everyone": () => true
-};
-
-/**
  * Handles receiving message from dashboard
  */
 let actions = {};
@@ -62,6 +53,7 @@ module.exports.getWebAPI = (pluginId) => {
     };
 };
 
+
 /**
  * Register an action to be triggered by a webpage
  * @param {string} pluginId     Id of the plugin
@@ -84,3 +76,12 @@ function registerAction(pluginId, name, action, authLevel = "everyone") {
     };
     Logger.log(`Registered action ${name} for plugin ${pluginId}`, "debug");
 }
+
+/**
+ * Authentification methods for each level
+ */
+const authLevelCheck = {
+    "owner": require("../classes/owner.js").isOwner,
+    "guildAdmin": require("../classes/guild.js").isGuildAdmin,
+    "everyone": () => true
+};

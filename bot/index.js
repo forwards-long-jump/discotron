@@ -1,8 +1,13 @@
-const Logger = require(__dirname + "/utils/logger.js");
+const Logger = require("./utils/logger.js");
+const DiscordJS = require("discord.js");
+const fs = require("fs");
 
-const config = require(__dirname + "/config/config.json");
-const databaseHelper = require(__dirname + "/utils/database-helper.js");
-const webserver = require(__dirname + "/webserver.js");
+const config = require("./config/config.json");
+const databaseHelper = require("./utils/database-helper.js");
+const webserver = require("./webserver.js");
+const discotron = require("./discotron.js");
+
+const discordClient = new DiscordJS.Client();
 
 Logger.setSeverity("debug");
 
@@ -14,7 +19,47 @@ databaseHelper.openDatabase();
 webserver.serveDashboard();
 webserver.startAPIServer();
 
+// TODO: If ownership claimed
+discotron.loadRepositories();
 
-// TODO: Discord.js init
-// TODO: Load db?
+connectToDiscord();
+registerEvents();
 
+function connectToDiscord() {
+    let token;
+    try {
+        token = fs.readFileSync("./config/token.txt",  "utf8");
+    } catch (e) {
+        Logger.log("Could not find token. Makes sure to create **token.txt** in bot/config and put your Discord bot token in it.", "err");
+        process.exit();
+        return;
+    }
+
+    if (token === "") {
+        Logger.log("Empty token in **token.txt**. Please put your Discord bot token in it.", "err");
+        process.exit();
+        return;
+    }
+    
+    Logger.log("Connecting to discord...");
+    discordClient.login(token).then(() => {}).catch((err) => {
+        Logger.log("Could not connect to discord", "err");
+        Logger.log(err.message, "err");
+    });
+}
+
+function registerEvents() {
+    // TODO: Handle error and reaction
+
+    discordClient.on("ready", () => {
+        Logger.log("Logged into Discord as **" + discordClient.user.tag + "**", "info");
+    });
+
+    discordClient.on("message", discotron.onMessage);
+    discordClient.on("messageReactionAdd", discotron.onReaction);
+    discordClient.on("guildCreate", discotron.onJoinGuild);
+    discordClient.on("guildDelete", discotron.onLeaveGuild);
+    discordClient.on("error", () => {
+        // TODO: Handle reconnection and bot status update
+    });
+}

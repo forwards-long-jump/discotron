@@ -1,5 +1,5 @@
 const GuildModel = require("./../../models/guild.js");
-const webAPI = require("./apis/web-api.js").getWebAPI("discotron-dashboard");
+const webAPI = require("./../apis/web-api.js").getWebAPI("discotron-dashboard");
 
 class Guild extends GuildModel {
     /**
@@ -29,6 +29,7 @@ class Guild extends GuildModel {
      * @param {string} clientId 
      */
     isAdmin(clientId) {
+        // TODO: Check user role and check if it has admin permission
         for (let i = 0; i < this._admins.length; ++i) {
             if (this._admins[i].describes(clientId)) {
                 return true;
@@ -165,6 +166,6 @@ class Guild extends GuildModel {
     }
 }
 
-Guild.prototype._guilds = {};
+Guild._guilds = {};
 
 module.exports = Guild;
