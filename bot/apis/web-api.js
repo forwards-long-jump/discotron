@@ -38,9 +38,16 @@ module.exports.onPost = (req, res) => {
     let response = actions[plugin][action];
 
     if (authLevelCheck[response.authLevel](clientId, guildId)) {
-        response.action(data);
+        response.action(data, (requestedData) => {
+            reply(res, requestedData);
+        });
     }
 };
+
+function reply(res, data) {
+    // TODO: 
+
+}
 
 
 /**
@@ -49,8 +56,8 @@ module.exports.onPost = (req, res) => {
  */
 module.exports.getWebAPI = (pluginId) => {
     return {
-        registerAction: function (name, action) {
-            registerAction(pluginId, name, action);
+        registerAction: function (name, action, authLevel = "everyone") {
+            registerAction(pluginId, name, action, authLevel);
         }
     };
 };
