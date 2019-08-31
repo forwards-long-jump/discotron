@@ -18,7 +18,7 @@ class Repository extends RepositoryModel {
         let pagesPath = __dirname + "/../repositories/" + folderName + "/pages"
         if (fs.existsSync(pluginsPath)) {
             fs.readdirSync(__dirname + "/../repositories/" + folderName + "/plugins").forEach(file => {
-                let plugin = new Plugin(file);
+                let plugin = new Plugin(pluginsPath + "/" + file);
                 this._pluginIds.push(plugin.id);
             });
         }
