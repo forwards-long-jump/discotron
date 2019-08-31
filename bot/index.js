@@ -1,8 +1,8 @@
-const Logger = require("./utils/logger.js");
 const DiscordJS = require("discord.js");
 const fs = require("fs");
 
-const config = require("./config/config.json");
+const Logger = require("./utils/logger.js");
+
 const databaseHelper = require("./utils/database-helper.js");
 const webserver = require("./webserver.js");
 const discotron = require("./discotron.js");
@@ -11,15 +11,17 @@ const discordClient = new DiscordJS.Client();
 
 Logger.setSeverity("debug");
 
+// Database
 if (!databaseHelper.databaseExists()) {
     databaseHelper.createDatabase();
 }
 databaseHelper.openDatabase();
 
+// Web server
 webserver.serveDashboard();
 webserver.startAPIServer();
 
-// TODO: If ownership claimed
+// TODO: If ownership claimed only
 discotron.loadRepositories();
 
 connectToDiscord();
