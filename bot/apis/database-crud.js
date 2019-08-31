@@ -1,4 +1,4 @@
-const database = require(__dirname + "/../utils/database-helper.js").getDatabase();
+const databaseHelper = require(__dirname + "/../utils/database-helper.js");
 const Logger = require(__dirname + "/../utils/logger.js");
 
 /**
@@ -52,6 +52,7 @@ function generateValuesForInsert(values) {
 }
 
 module.exports.update = (table, values, where) => {
+    const database = databaseHelper.getDatabase();
     let sql = "UPDATE " + table + " SET ";
 
     let valuesText = "";
@@ -78,6 +79,7 @@ module.exports.update = (table, values, where) => {
 };
 
 module.exports.insert = (table, values) => {
+    const database = databaseHelper.getDatabase();
     let sql = "INSERT INTO " + table;
     let parameters = generateValuesForInsert(values);
     sql += " " + parameters.columns + " VALUES " + parameters.params;
@@ -90,19 +92,21 @@ module.exports.insert = (table, values) => {
 };
 
 module.exports.delete = (table, where) => {
+    const database = databaseHelper.getDatabase();
     let sql = "DELETE FROM " + table;
     if (!isEmpty(where)) {
         let parameters = generateParameters(where);
         sql += " WHERE " + parameters.text;
         database.run(sql, parameters.objParam, (err) => {
-                if (err) {
-                    Logger.log("Delete in database failed : " + sql, "err");
-                }
-            });
+            if (err) {
+                Logger.log("Delete in database failed : " + sql, "err");
+            }
+        });
     }
 };
 
 module.exports.select = (table, fields = [], where = {}) => {
+    const database = databaseHelper.getDatabase();
     return new Promise((resolve, reject) => {
         let sql = "SELECT ";
 
