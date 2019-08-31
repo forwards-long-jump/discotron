@@ -3,6 +3,7 @@ const fs = require("fs");
 const RepositoryModel = require("./../../models/repository.js");
 const Plugin = require("./plugin.js");
 const webAPI = require("./../apis/web-api.js").getWebAPI("discotron-dashboard");
+const Logger = require("../utils/logger.js");
 
 class Repository extends RepositoryModel {
     /**
@@ -16,7 +17,10 @@ class Repository extends RepositoryModel {
 
         let pluginsPath = __dirname + "/../repositories/" + folderName + "/plugins";
         let pagesPath = __dirname + "/../repositories/" + folderName + "/pages";
+        let noPlugins = true;
+
         if (fs.existsSync(pluginsPath)) {
+            noPlugins = false;
             fs.readdirSync(__dirname + "/../repositories/" + folderName + "/plugins").forEach(file => {
                 let plugin = new Plugin(pluginsPath + "/" + file);
                 this._pluginIds.push(plugin.id);
@@ -27,6 +31,10 @@ class Repository extends RepositoryModel {
             fs.readdirSync(__dirname + "/../repositories/" + folderName + "/pages").forEach(file => {
                 // serve page (lel)
             });
+
+            if (noPlugins) {
+                Logger.log("No **plugins** or **pages** folders found for repository stored in **" + folderName + "**!", "warn");
+            }
         }
 
         Repository._repositories.push(this);
