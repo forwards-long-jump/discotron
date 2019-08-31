@@ -5,7 +5,7 @@ class CommandModel {
     /**
      * Ctor
      * @param {object} settings Settings
-     * @param {string} [settings.triggerType = "command"] Type of trigger, can be "command|words|all|reactions" (note: "all" is not affected by spam detection)
+     * @param {string} [settings.triggerType = "command"] Type of trigger, can be "command|words|all|reaction" (note: "all" is not affected by spam detection)
      * @param {string[]} [settings.trigger = []] Word(s) triggering the command
      * @param {string} [settings.help = ""] Describe the command
      * @param {object} [settings.args = []] Arguments of the command : e.g. [{name: "turns", defaultValue: 8, help: "Number of turns"}]

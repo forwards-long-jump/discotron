@@ -1,5 +1,6 @@
 const PluginModel = require("./../../models/plugin.js");
-const webAPI = require("./apis/web-api.js").getWebAPI("discotron-dashboard");
+const Command = require("./command.js");
+const webAPI = require("./../apis/web-api.js").getWebAPI("discotron-dashboard");
 
 class Plugin extends PluginModel {
     /**
@@ -8,6 +9,12 @@ class Plugin extends PluginModel {
      */
     constructor(folder) {
         super();
+        this._commands = {
+            "command": [],
+            "words" : [],
+            "all": [],
+            "reaction" : []
+        };
         this._loadFromFolder(folder);
 
         Plugin._plugins[this.id] = this;
@@ -25,16 +32,22 @@ class Plugin extends PluginModel {
      * @param {string} folder 
      */
     _loadFromFolder(folder) {
-        /*
-        this._name = name;
-        this._id = id;
-        this._description = description;
-        this._version = version;
-        this._prefix = prefix;
-        this._commands = commands;
-        this._defaultPermission = defaultPermission;
-        this._enabled = enabled;
-        */
+        let pluginFile = require(folder + "/index.js");
+        
+        // from file
+        this._name = pluginFile.config.name;
+        this._id = pluginFile.config.id;
+        this._description = pluginFile.config.description;
+        this._defaultPermission = pluginFile.config.defaultPermission;
+        this._version = pluginFile.config.version;
+        for (let i = 0; i < pluginFile.commands.length; i++) {
+            let command = new Command(pluginFile.commands[i]);
+            this._commands[command.triggerType].push(command);
+        }
+        
+        // TODO: read from db
+        this._prefix = "";
+        this._enabled = true;
     }
 
     /**
@@ -73,6 +86,6 @@ class Plugin extends PluginModel {
     }
 }
 
-Plugin.prototype._plugins = {};
+Plugin._plugins = {};
 
 module.exports = Plugin;

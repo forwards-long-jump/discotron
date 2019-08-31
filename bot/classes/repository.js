@@ -1,5 +1,8 @@
+const fs = require("fs");
+
 const RepositoryModel = require("./../../models/repository.js");
-const webAPI = require("./apis/web-api.js").getWebAPI("discotron-dashboard");
+const Plugin = require("./plugin.js");
+const webAPI = require("./../apis/web-api.js").getWebAPI("discotron-dashboard");
 
 class Repository extends RepositoryModel {
     /**
@@ -10,6 +13,21 @@ class Repository extends RepositoryModel {
     constructor(folderName, url) {
         super(url);
         this._folderName = folderName;
+
+        let pluginsPath = __dirname + "/../repositories/" + folderName + "/plugins";
+        let pagesPath = __dirname + "/../repositories/" + folderName + "/pages"
+        if (fs.existsSync(pluginsPath)) {
+            fs.readdirSync(__dirname + "/../repositories/" + folderName + "/plugins").forEach(file => {
+                let plugin = new Plugin(file);
+                this._pluginIds.push(plugin.id);
+            });
+        }
+
+        if (fs.existsSync(pagesPath)) {
+            fs.readdirSync(__dirname + "/../repositories/" + folderName + "/pages").forEach(file => {
+                // serve page (lel)
+            });
+        }
 
         Repository._repositories.push(this);
     }
@@ -75,6 +93,6 @@ class Repository extends RepositoryModel {
     }
 }
 
-Repository.prototype._repositories = [];
+Repository._repositories = [];
 
 module.exports = Repository;
