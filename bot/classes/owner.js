@@ -1,5 +1,5 @@
 const OwnerModel = require("./../../models/owner.js");
-const webAPI = require("./apis/web-api.js").getWebAPI("discotron-dashboard");
+const webAPI = require("./../apis/web-api.js").getWebAPI("discotron-dashboard");
 
 class Owner extends OwnerModel {
     /**
