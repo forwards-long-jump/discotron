@@ -1,4 +1,5 @@
 const RepositoryModel = require("./../../models/repository.js");
+const webAPI = require("./apis/web-api.js").getWebAPI("discotron-dashboard");
 
 class Repository extends RepositoryModel {
     /**
@@ -64,6 +65,13 @@ class Repository extends RepositoryModel {
      */
     _deleteFolder() {
 
+    }
+
+    static registerActions() {
+        webAPI.registerAction("get-repositories", (data, reply) => {}, "owner");
+        webAPI.registerAction("add-repository", (data, reply) => {}, "owner");
+        webAPI.registerAction("remove-repository", (data, reply) => {}, "owner");
+        webAPI.registerAction("update-repository", (data, reply) => {}, "owner");
     }
 }
 

@@ -1,4 +1,5 @@
 const OwnerModel = require("./../../models/owner.js");
+const webAPI = require("./apis/web-api.js").getWebAPI("discotron-dashboard");
 
 class Owner extends OwnerModel {
     /**
@@ -31,6 +32,14 @@ class Owner extends OwnerModel {
      */
     static hasAnyOwner() {
 
+    }
+
+    static registerActions() {
+        webAPI.registerAction("add-owner", (data, reply) => {}, "owner");
+        webAPI.registerAction("remove-owner", (data, reply) => {}, "owner");
+        webAPI.registerAction("get-owners", (data, reply) => {}, "owner");
+        webAPI.registerAction("is-owner", (data, reply) => {});
+        webAPI.registerAction("has-any-owner", (data, reply) => {});
     }
 }
 

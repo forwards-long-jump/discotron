@@ -1,4 +1,5 @@
 const GuildModel = require("./../../models/guild.js");
+const webAPI = require("./apis/web-api.js").getWebAPI("discotron-dashboard");
 
 class Guild extends GuildModel {
     /**
@@ -48,17 +49,9 @@ class Guild extends GuildModel {
 
     /**
      * Adds a bot admin to the guild
-     * @param {UserRole} userRole 
+     * @param {array} usersRoles Array of UserRole 
      */
-    addAdmin(userRole) {
-
-    }
-
-    /**
-     * Removes a bot admin to the guild (note, guild admins are automatically bot admins too)
-     * @param {UserRole} userRole 
-     */
-    deleteAdmin(userRole) {
+    setAdmins(usersRoles) {
 
     }
 
@@ -149,6 +142,27 @@ class Guild extends GuildModel {
         // Do not forget to remove from the static list
     }
 
+    static registerActions() {
+        webAPI.registerAction("get-guilds", (data, reply) => {}, "guildAdmin");
+        webAPI.registerAction("get-members", (data, reply) => {}, "guildAdmin");
+        webAPI.registerAction("get-roles", (data, reply) => {}, "guildAdmin");
+        webAPI.registerAction("get-channels", (data, reply) => {}, "guildAdmin");
+
+        webAPI.registerAction("get-allowed-channels", (data, reply) => {}, "guildAdmin");
+        webAPI.registerAction("set-allowed-channels", (data, reply) => {}, "guildAdmin");
+
+        webAPI.registerAction("get-plugin-enabled", (data, reply) => {}, "guildAdmin");
+        webAPI.registerAction("set-plugin-enabled", (data, reply) => {}, "guildAdmin");
+
+        webAPI.registerAction("get-plugin-permission", (data, reply) => {}, "guildAdmin");
+        webAPI.registerAction("set-plugin-permission", (data, reply) => {}, "guildAdmin");
+
+        webAPI.registerAction("get-prefix", (data, reply) => {}, "guildAdmin");
+        webAPI.registerAction("set-prefix", (data, reply) => {}, "guildAdmin");
+
+        webAPI.registerAction("get-admins", (data, reply) => {}, "guildAdmin");
+        webAPI.registerAction("set-admins", (data, reply) => {}, "guildAdmin");
+    }
 }
 
 Guild.prototype._guilds = {};
