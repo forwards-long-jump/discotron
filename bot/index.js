@@ -3,6 +3,33 @@ const fs = require("fs");
 
 const Logger = require("./utils/logger.js");
 
+let appConfig;
+
+try {
+    appConfig = require("./config/app-config.json");
+    if (typeof appConfig.token === "undefined" || appConfig.token === "") {
+        Logger.log("Missing **token** in **app-config.json**.", "err");
+        process.exit();
+    }
+    if (typeof appConfig.applicationId === "undefined" || appConfig.applicationId === "") {
+        Logger.log("Missing **applicationId** in **app-config.json**.", "err");
+        process.exit();
+    }
+    if (typeof appConfig.oauth2Secret === "undefined" || appConfig.oauth2Secret === "") {
+        Logger.log("Missing **oauth2Secret** in **app-config.json**.", "err");
+        process.exit();
+    }
+    if (typeof appConfig.redirectURI === "undefined" || appConfig.redirectURI === "") {
+        Logger.log("Missing **redirectURI** in **app-config.json**.", "err");
+        process.exit();
+    }
+} catch (err) {
+    Logger.log("Please create **app-config.json** in bot/config.", "err");
+    process.exit();
+    return;
+}
+
+
 const databaseHelper = require("./utils/database-helper.js");
 const webserver = require("./webserver.js");
 const discotron = require("./discotron.js");
@@ -28,23 +55,8 @@ connectToDiscord();
 registerEvents();
 
 function connectToDiscord() {
-    let token;
-    try {
-        token = fs.readFileSync("./config/token.txt",  "utf8");
-    } catch (e) {
-        Logger.log("Could not find token. Makes sure to create **token.txt** in bot/config and put your Discord bot token in it.", "err");
-        process.exit();
-        return;
-    }
-
-    if (token === "") {
-        Logger.log("Empty token in **token.txt**. Please put your Discord bot token in it.", "err");
-        process.exit();
-        return;
-    }
-    
     Logger.log("Connecting to discord...");
-    discordClient.login(token).then(() => {}).catch((err) => {
+    discordClient.login(appConfig.token).then(() => {}).catch((err) => {
         Logger.log("Could not connect to discord", "err");
         Logger.log(err.message, "err");
     });
