@@ -15,6 +15,8 @@
                 <div class="widget-inner shadow-big">
                     <h1>Login</h1>
                     <p>You need to log in with Discord to use the dashboard.</p>
+                    <p style="display: none;" id="login-error" class="red-text">An error occured. Make sure to use the
+                        button below and grant permissions.</p>
                     <div class="widget-buttons">
                         <a id="auth-link" href="" class="button">Log in with discord</a>
                     </div>
@@ -29,12 +31,16 @@
                 <div class="widget-inner shadow-big">
                     <h1>Claim ownership</h1>
                     <p>Please check the bot's console and paste the ownership token here to initialize the bot.</p>
+                    <p style="display: none;" id="claim-error" class="red-text">An error occured. Make sure the
+                        ownership token is correct.<br>If you waited too long, <a href="/login">click here</a> to try
+                        logging into Discord again.</p>
                     <div id="owner-token">
-                        <label>Owner token</label><input type="text" placeholder="Required for first connection"
-                            class="Owner token">
+                        <label>Owner token</label><input id="owner-ship-token" type="text"
+                            placeholder="Required for first connection" class="Owner token">
                     </div>
                     <div class="widget-buttons">
-                        <a id="auth-link" href="" class="button">Claim ownership</a>
+                        <input type="button" value="Claim ownership"
+                            onclick="Discotron.LoginController.claimOwnership()">
                     </div>
                 </div>
             </div>
@@ -54,17 +60,19 @@
     <script>
         window.Discotron = {};
     </script>
+
     <!-- Utils-->
     <script src="/dashboard/src/utils.js"></script>
-    
+
     <!-- Config -->
     <script src="/dashboard/src/config.js"></script>
+
+    <!-- API -->
+    <script src="/dashboard/src/web-api.js"></script>
 
     <!-- Controllers -->
     <script src="/dashboard/src/controllers/login-controller.js"></script>
 
-    <!-- Main -->
-    <script src="/dashboard/src/web-api.js"></script>
 </body>
 
 </html>
