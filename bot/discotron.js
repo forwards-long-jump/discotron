@@ -64,13 +64,13 @@ module.exports.onMessage = (message) => {
         return;
     }
 
-    let commands = [];
     let loweredCaseMessage = message.content.toLowerCase();
 
     let isCommand = guild === undefined || message.startsWith(guild.commandPrefix);
 
     const plugins = Plugin.getAll();
     for (const pluginId in plugins) {
+        let commands = [];
         const plugin = plugins[pluginId];
         if (guild !== undefined && !guild.isAdmin(message.author.id) && guild.permissions[pluginId].allows(message.author.id)) {
             continue;
