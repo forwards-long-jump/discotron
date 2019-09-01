@@ -17,7 +17,7 @@ module.exports.onPost = (req, res) => {
 
     let plugin = req.body.plugin;
     let action = req.body.action;
-    let data = req.body.action;
+    let data = req.body.data;
     let appToken = req.body.appToken;
     let guildId = req.body.guildId;
 
