@@ -9,17 +9,43 @@
 </head>
 
 <body>
-    <div class="widget-background">
+    <div id="login" class="widget-background">
         <div class="widget-outer">
             <div class="widget-middle">
                 <div class="widget-inner shadow-big">
                     <h1>Login</h1>
                     <p>You need to log in with Discord to use the dashboard.</p>
-                    <label>Owner token</label><input type="text" placeholder="Required for first connection"
-                        class="Owner token">
                     <div class="widget-buttons">
-                        <a href="" class="button">Log in with discord</a>
+                        <a id="auth-link" href="" class="button">Log in with discord</a>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="claim-ownership" style="display: none;" class="widget-background">
+        <div class="widget-outer">
+            <div class="widget-middle">
+                <div class="widget-inner shadow-big">
+                    <h1>Claim ownership</h1>
+                    <p>Please check the bot's console and paste the ownership token here to initialize the bot.</p>
+                    <div id="owner-token">
+                        <label>Owner token</label><input type="text" placeholder="Required for first connection"
+                            class="Owner token">
+                    </div>
+                    <div class="widget-buttons">
+                        <a id="auth-link" href="" class="button">Claim ownership</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="logging-in" style="display: none;" class="widget-background">
+        <div class="widget-outer">
+            <div class="widget-middle">
+                <div class="widget-inner shadow-big">
+                    <p>Logging in...</p>
                 </div>
             </div>
         </div>
@@ -28,9 +54,17 @@
     <script>
         window.Discotron = {};
     </script>
+    <!-- Utils-->
+    <script src="/dashboard/src/utils.js"></script>
+    
+    <!-- Config -->
+    <script src="/dashboard/src/config.js"></script>
 
     <!-- Controllers -->
     <script src="/dashboard/src/controllers/login-controller.js"></script>
+
+    <!-- Main -->
+    <script src="/dashboard/src/web-api.js"></script>
 </body>
 
 </html>
