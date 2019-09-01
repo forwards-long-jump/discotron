@@ -19,29 +19,39 @@ class Repository extends RepositoryModel {
         super(url);
         this._folderName = folderName;
 
-        let pluginsPath = __dirname + "/../repositories/" + folderName + "/plugins";
-        let pagesPath = __dirname + "/../repositories/" + folderName + "/pages";
-        let noPlugins = true;
+        this.loadPluginsFromDisk();
+        this.loadPagesFromDisk();
 
+        if (this._pluginIds.length === 0 && this._pages.length === 0) {
+            Logger.log("No **plugins** or **pages** folders found for repository stored in **" + folderName + "**!", "warn");
+        }
+
+        Repository._repositories.push(this);
+    }
+
+    loadPluginsFromDisk() {
+        let pluginsPath = __dirname + "/../repositories/" + this._folderName + "/plugins";
+
+        // TODO: Convert to async
         if (fs.existsSync(pluginsPath)) {
-            noPlugins = false;
-            fs.readdirSync(__dirname + "/../repositories/" + folderName + "/plugins").forEach(file => {
+            fs.readdirSync(__dirname + "/../repositories/" + this._folderName + "/plugins").forEach(file => {
                 let plugin = new Plugin(pluginsPath + "/" + file);
                 this._pluginIds.push(plugin.id);
             });
         }
 
+    }
+
+    loadPagesFromDisk() {
+        let pagesPath = __dirname + "/../repositories/" + this._folderName + "/pages";
+
+        // TODO: Convert to async
         if (fs.existsSync(pagesPath)) {
             fs.readdirSync(__dirname + "/../repositories/" + folderName + "/pages").forEach(file => {
                 // serve page (lel)
             });
-
-            if (noPlugins) {
-                Logger.log("No **plugins** or **pages** folders found for repository stored in **" + folderName + "**!", "warn");
-            }
         }
 
-        Repository._repositories.push(this);
     }
 
     /**
@@ -58,6 +68,7 @@ class Repository extends RepositoryModel {
      * @returns {Promise} Folder name of the downloaded repo
      */
     static clone(url) {
+        Logger.log("Cloning **" + url + "**...");
         return new Promise((resolve, reject) => {
             let folderName = Repository._generateFolderName(url);
             Git.Clone(url, __dirname + "/../repositories/" + folderName, {
@@ -92,19 +103,62 @@ class Repository extends RepositoryModel {
     /**
      * Pull from the distant repository, to update the plugins
      */
-    pull() {    
+    pull() {
+        Logger.log("Updating **" + this._folderName + "**...");
         let repo;
         // Source: https://stackoverflow.com/questions/20955393/nodegit-libgit2-for-node-js-how-to-push-and-pull
         Git.Repository.open(__dirname + "/../repositories/" + this._folderName)
-            .then(function (repository) {
+            .then((repository) => {
                 repo = repository;
                 return repository.fetch("origin");
             })
-            .then(function () {
+            .then(() => {
                 return repo.mergeBranches("master", "origin/master");
             })
-            .then(function (oid) {
-                // cb(null, oid);
+            .then((oid) => {
+                let oldPluginList = this._pluginIds.splice(0);
+                this.loadPluginsFromDisk();
+                this.loadPagesFromDisk();
+
+                let deletedPlugins = [];
+                let createdPlugins = [];
+
+                for (let i = 0; i < oldPluginList.length; i++) {
+                    const oldPluginId = oldPluginList[i];
+
+                    if (!this._pluginIds.includes(oldPluginId)) {
+                        deletedPlugins.push(oldPluginId);
+                    }
+                }
+
+                for (let i = 0; i < this._pluginIds.length; i++) {
+                    const newPluginId = this._pluginIds[i];
+
+                    if (!oldPluginList.includes(newPluginId)) {
+                        createdPlugins.push(newPluginId);
+                    }
+                }
+
+                for (let i = 0; i < deletedPlugins.length; i++) {
+                    deletedPlugins[i].delete();
+                }
+                // TODO:
+                /*
+                - Repository.update() // git pull
+                    - for each already loaded this.plugins
+                        - for each folder in /modules/repo
+                            - if plugin not exist anymore
+                                - plugin.delete() // db: Plugins
+                                    - discotron.notify("plugin-deleted", plugin);
+                            - else if plugin is new
+                                - Plugin.plugins[devName] = new Plugin(...)
+                                    - loadPrefix / disabled from database
+                                    - Discotron.notify("plugin-loaded", this);
+                                    - this.commands.push(new Command(config))
+                                - this.plugins.push(devName);
+                            - else if plugin folder already exists
+                                - Discotron.plugins[devName] = new Plugin(folder, 
+                    */
             }).catch((err) => {
                 console.log(err);
             });
