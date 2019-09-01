@@ -180,14 +180,11 @@ function getAccessToken(authToken) {
  */
 function getDiscordUserId(appToken) {
     return new Promise((resolve, reject) => {
-        console.log(users, appToken);
-        
         if (typeof users[appToken] === "undefined") {
             db.select("Tokens", ["discordUserId", "appToken"], {
                 appToken: appToken
             }).then((rows) => {
                 if (rows.length === 1) {
-                    Logger.log("Loaded one use from database");
                     users[rows[0].appToken] = rows[0].discordUserId;
                     resolve(rows[0].discordUserId);
                 } else {
@@ -195,7 +192,6 @@ function getDiscordUserId(appToken) {
                 }
             }).catch(() => reject);
         } else {
-            Logger.log("Loaded one use from cache");
             resolve(users[appToken]);
         }
     });
