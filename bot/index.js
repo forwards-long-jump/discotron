@@ -1,21 +1,23 @@
+const Logger = require("./utils/logger.js");
+Logger.setSeverity("debug");
+
 const DiscordJS = require("discord.js");
 const fs = require("fs");
 
-const Logger = require("./utils/logger.js");
 
 const databaseHelper = require("./utils/database-helper.js");
-const webserver = require("./webserver.js");
-const discotron = require("./discotron.js");
-
-const discordClient = new DiscordJS.Client();
-
-Logger.setSeverity("debug");
-
 // Database
 if (!databaseHelper.databaseExists()) {
     databaseHelper.createDatabase();
 }
 databaseHelper.openDatabase();
+
+const webserver = require("./webserver.js");
+const discotron = require("./discotron.js");
+
+const discordClient = new DiscordJS.Client();
+
+
 
 // Web server
 webserver.serveDashboard();
@@ -24,13 +26,15 @@ webserver.startAPIServer();
 // TODO: If ownership claimed only
 discotron.loadRepositories();
 
+discotron.registerActions();
+
 connectToDiscord();
 registerEvents();
 
 function connectToDiscord() {
     let token;
     try {
-        token = fs.readFileSync("./config/token.txt",  "utf8");
+        token = fs.readFileSync("./config/token.txt", "utf8");
     } catch (e) {
         Logger.log("Could not find token. Makes sure to create **token.txt** in bot/config and put your Discord bot token in it.", "err");
         process.exit();
@@ -42,7 +46,7 @@ function connectToDiscord() {
         process.exit();
         return;
     }
-    
+
     Logger.log("Connecting to discord...");
     discordClient.login(token).then(() => {}).catch((err) => {
         Logger.log("Could not connect to discord", "err");
