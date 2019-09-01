@@ -1,4 +1,4 @@
-window.Discotron.LoginController = class  /* does not extends Controller because it is not a logged in page*/ {
+window.Discotron.LoginController = class /* does not extends Controller because it is not a logged in page*/ {
     /**
      * Call API to get an app token, saves the app token in localStorage
      * @param {string} authToken Discord given authentification token
@@ -14,20 +14,39 @@ window.Discotron.LoginController = class  /* does not extends Controller because
      * @param {string} secret Secret given to the user in the console     
      * */
     static claimOwnership(authToken, secret) {
-        
+
     }
 
     /**
      * Display secret input if no owners
      */
     static handleOwnershipClaim() {
+
+    }
+
+    /** 
+     * Set URL from config and check what to display
+     */
+    static setupUI() {
+        document.querySelector("#auth-link").href = Discotron.config.oauthURL;
+        let url = new URL(window.location.href);
+        let code = url.searchParams.get("code");
+        console.log(code);
         
+        if(code !== null) {
+            document.querySelector("#logging-in").style.display = "block";
+            document.querySelector("#login").style.display = "none";
+        }
     }
 
     /**
      * Add events to buttons
      */
     static addEvents() {
-        
+
     }
 };
+
+Discotron.LoginController.handleOwnershipClaim();
+Discotron.LoginController.setupUI();
+Discotron.LoginController.addEvents();
