@@ -143,8 +143,16 @@ class Repository extends RepositoryModel {
      * Delete the repository locally and remove it from database
      */
     delete() {
+        for (let i = 0; i < Repository._repositories.length; ++i) {
+            if (Repository._repositories[i] === this) {
+                delete Repository._repositories[i];
+            }
+        }
+
+        db.delete("Repositories", this._folderName);
+        
+        // TODO: delete plugins ?
         this._deleteFolder();
-        // Do not forget to unregister from Repository._repositories
     }
 
     /**
@@ -169,10 +177,28 @@ class Repository extends RepositoryModel {
     }
 
     static registerActions() {
-        webAPI.registerAction("get-repositories", (data, reply) => {}, "owner");
-        webAPI.registerAction("add-repository", (data, reply) => {}, "owner");
-        webAPI.registerAction("remove-repository", (data, reply) => {}, "owner");
-        webAPI.registerAction("update-repository", (data, reply) => {}, "owner");
+        webAPI.registerAction("get-repositories", (data, reply) => {
+            reply(Repository.getAll());
+        }, "owner");
+        webAPI.registerAction("add-repository", (data, reply) => {
+            Repository.clone(data.url);
+        }, "owner");
+        webAPI.registerAction("remove-repository", (data, reply) => {
+            for (let i = 0; i < Repository._repositories.length; ++i) {
+                let repo = Repository._repositories[i];
+                if (repo.url === data.url) {
+                    repo.delete();
+                }
+            }
+        }, "owner");
+        webAPI.registerAction("update-repository", (data, reply) => {
+            for (let i = 0; i < Repository._repositories.length; ++i) {
+                let repo = Repository._repositories[i];
+                if (repo.url === data.url) {
+                    repo.pull();
+                }
+            }
+        }, "owner");
     }
 }
 
