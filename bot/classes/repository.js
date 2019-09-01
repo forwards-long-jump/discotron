@@ -35,6 +35,7 @@ class Repository extends RepositoryModel {
         // TODO: Convert to async
         if (fs.existsSync(pluginsPath)) {
             fs.readdirSync(__dirname + "/../repositories/" + this._folderName + "/plugins").forEach(file => {
+                Logger.log("Building Plugin from folder **" + file + "**", "debug");
                 let plugin = new Plugin(pluginsPath + "/" + file);
                 this._pluginIds.push(plugin.id);
             });
@@ -121,7 +122,6 @@ class Repository extends RepositoryModel {
                 this.loadPagesFromDisk();
 
                 let deletedPlugins = [];
-                let createdPlugins = [];
 
                 for (let i = 0; i < oldPluginList.length; i++) {
                     const oldPluginId = oldPluginList[i];
@@ -131,34 +131,9 @@ class Repository extends RepositoryModel {
                     }
                 }
 
-                for (let i = 0; i < this._pluginIds.length; i++) {
-                    const newPluginId = this._pluginIds[i];
-
-                    if (!oldPluginList.includes(newPluginId)) {
-                        createdPlugins.push(newPluginId);
-                    }
-                }
-
                 for (let i = 0; i < deletedPlugins.length; i++) {
-                    deletedPlugins[i].delete();
+                    Plugin.getAll()[deletedPlugins[i]].delete();
                 }
-                // TODO:
-                /*
-                - Repository.update() // git pull
-                    - for each already loaded this.plugins
-                        - for each folder in /modules/repo
-                            - if plugin not exist anymore
-                                - plugin.delete() // db: Plugins
-                                    - discotron.notify("plugin-deleted", plugin);
-                            - else if plugin is new
-                                - Plugin.plugins[devName] = new Plugin(...)
-                                    - loadPrefix / disabled from database
-                                    - Discotron.notify("plugin-loaded", this);
-                                    - this.commands.push(new Command(config))
-                                - this.plugins.push(devName);
-                            - else if plugin folder already exists
-                                - Discotron.plugins[devName] = new Plugin(folder, 
-                    */
             }).catch((err) => {
                 console.log(err);
             });

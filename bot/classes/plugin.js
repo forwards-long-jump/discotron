@@ -18,11 +18,16 @@ class Plugin extends PluginModel {
 
         this._loadFromFolder(folder);
 
-        // TODO: If already exists, do not load stuff from database
-        //  this._loadFromDatabase()
-        Plugin._plugins[this.id] = this;
+        let oldVersion = Plugin._plugins[this.id];
+        if (oldVersion !== undefined) {
+            this._prefix = oldVersion._prefix;
+            this._enabled = oldVersion._enabled;
+        } else {
+            //  this._loadFromDatabase()
 
-        // TODO: Notify Discotron of new plugin if oldPluginVersion undefined and set prefix
+            // TODO: Notify Discotron of new plugin
+        }
+        Plugin._plugins[this.id] = this;
     }
 
     /**
@@ -59,6 +64,7 @@ class Plugin extends PluginModel {
     }
 
     delete() {
+        delete Plugin._plugins[this.id];
         // TODO: Delete from db
         // TODO: Emit deleted event
     }
