@@ -333,6 +333,9 @@ label {
 .red {
     background-color: #c0392b !important;
 }
+.red-text {
+    color: #c0392b !important;
+}
 
 .orange {
     background-color: #e67e22 !important;
