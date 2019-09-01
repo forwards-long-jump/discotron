@@ -7,14 +7,10 @@ window.Discotron.LoginController = class /* does not extends Controller because 
         let code = url.searchParams.get("code");
         let ownerSecret = document.querySelector("#owner-ship-token").value;
 
-        console.log(code, ownerSecret);
-
         Discotron.WebAPI.queryBot("discotron-dashboard", "claim-ownership", {
             "code": code,
             "ownerSecret": ownerSecret
         }).then((data) => {
-            console.log(data);
-
             switch (data.status) {
                 case "error":
                     Discotron.LoginController._displayContainer("claim-ownership");
@@ -52,8 +48,6 @@ window.Discotron.LoginController = class /* does not extends Controller because 
             Discotron.WebAPI.queryBot("discotron-dashboard", "login", {
                 "code": code
             }).then((data) => {
-                console.log(data);
-
                 switch (data.status) {
                     case "error":
                         Discotron.LoginController._displayContainer("login");
