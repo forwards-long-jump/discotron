@@ -173,12 +173,32 @@ function getAccessToken(authToken) {
 
 /**
  * Returns the client ID associated with the app token
+ * If it is not cached, loads it from database
+ * 
  * @param {string} appToken 
  * @returns Promise
  */
 function getDiscordUserId(appToken) {
-    // return this.users[appToken] ...
-
+    return new Promise((resolve, reject) => {
+        console.log(users, appToken);
+        
+        if (typeof users[appToken] === "undefined") {
+            db.select("Tokens", ["discordUserId", "appToken"], {
+                appToken: appToken
+            }).then((rows) => {
+                if (rows.length === 1) {
+                    Logger.log("Loaded one use from database");
+                    users[rows[0].appToken] = rows[0].discordUserId;
+                    resolve(rows[0].discordUserId);
+                } else {
+                    reject();
+                }
+            }).catch(() => reject);
+        } else {
+            Logger.log("Loaded one use from cache");
+            resolve(users[appToken]);
+        }
+    });
 }
 
 
@@ -224,6 +244,8 @@ function queryDiscordUserId(accessToken) {
 function addUser(discordId, appToken, accessToken, refreshToken, expireDate) {
     return new Promise((resolve, reject) => {
         Logger.log("Discord user with id **" + discordId + "** logged in for the first time.");
+        users[appToken] = discordId;
+
         db.insert("Tokens", {
             discordUserId: discordId,
             accessToken: accessToken,
@@ -251,7 +273,6 @@ function registerActions() {
 }
 
 function setFirstLaunch(firstLaunch_) {
-    // TODO: Log ownerSecret if first launch
     firstLaunch = firstLaunch_;
 }
 
