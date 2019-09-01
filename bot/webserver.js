@@ -11,6 +11,9 @@ module.exports.serveDashboard = () => {
     app.get("/", (req, res) => {
         res.redirect("/dashboard");
     });
+    app.get("/login", (req, res) => {
+        res.redirect("/dashboard/login.html");
+    });
 };
 
 module.exports.startAPIServer = () => {

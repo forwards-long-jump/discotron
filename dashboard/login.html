@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DiscoTron - Connection</title>
+    <link rel="stylesheet" type="text/css" href="main.css" />
+</head>
+
+<body>
+    <div class="widget-background">
+        <div class="widget-outer">
+            <div class="widget-middle">
+                <div class="widget-inner shadow-big">
+                    <h1>Login</h1>
+                    <p>You need to log in with Discord to use the dashboard.</p>
+                    <label>Owner token</label><input type="text" placeholder="Required for first connection"
+                        class="Owner token">
+                    <div class="widget-buttons">
+                        <a href="" class="button">Log in with discord</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.Discotron = {};
+    </script>
+
+    <!-- Controllers -->
+    <script src="/dashboard/src/controllers/login-controller.js"></script>
+</body>
+
+</html>
