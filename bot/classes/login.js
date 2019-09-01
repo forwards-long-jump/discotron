@@ -3,35 +3,44 @@ const Owner = require("./owner.js");
 const uuidv1 = require("uuid/v1");
 const request = require("request");
 const Logger = require("../utils/logger.js");
+const db = require("../apis/database-crud.js");
 
 const appConfig = require("../config/app-config.json");
 
 let users = {};
-let firstLaunch = true;
+let firstLaunch = false;
 let ownerSecret = uuidv1();
 
 let clientSecret = appConfig.oauth2Secret;
 let clientId = appConfig.applicationId;
 let redirectURI = appConfig.redirectURI;
 
+const discordApiUrl = "https://discordapp.com/api/v6/";
 
 function handleLogin(authToken, reply, userOwnerSecret = undefined) {
-    Logger.log("lel")
     if (firstLaunch) {
         if (userOwnerSecret === undefined) {
-            Logger.log("reply first launch");
+            console.log();
+            console.log("                          ===== Ownership token =====");
+            console.log();
+            console.log("  The token below grants owner access once, do NOT give it to someone else.");
+            console.log("  You can use right click on Windows to copy it or middle-click clipboard on Linux");
+            console.log();
+            console.log("                      ------------------------------------");
+            console.log("                      " + ownerSecret);
+            console.log("                      ------------------------------------");
+            console.log();
+
             // First launch, ask for more details
             reply({
                 status: "first-launch"
             });
         } else if (ownerSecret !== userOwnerSecret) {
-            Logger.log("Wrong secret");
             // Wrong secret
             reply({
                 status: "error"
             });
         } else {
-            Logger.log("Query discord");
             // Correct secret, try get app token
             handleDiscordAPIQuery(authToken, reply, true);
         }
@@ -47,19 +56,23 @@ function handleLogin(authToken, reply, userOwnerSecret = undefined) {
  * @param {boolean} addOwner 
  */
 function handleDiscordAPIQuery(authToken, reply, addOwner = false) {
-    getAccessToken(authToken).then((accessToken, refreshToken, expireDate) => {
-        queryDiscordUserId(accessToken).then((discordId) => {
-            let appToken = createAppToken();
-
+    getAccessToken(authToken).then((accessInfo) => {
+        queryDiscordUserId(accessInfo.accessToken).then((discordId) => {
             if (addOwner) {
                 Owner.add(discordId);
+                ownerSecret = undefined;
+                firstLaunch = false;
             }
 
-            addUser(discordId, appToken, accessToken, refreshToken, expireDate);
-
-            reply({
-                status: "success",
-                token: appToken
+            requestAppToken(discordId, accessInfo.accessToken, accessInfo.refreshToken, accessInfo.expireDate).then((appToken) => {
+                reply({
+                    status: "success",
+                    token: appToken
+                });
+            }).catch(() => {
+                reply({
+                    status: "error"
+                });
             });
         }).catch(() => {
             // No clientId scope / invalid code
@@ -76,27 +89,85 @@ function handleDiscordAPIQuery(authToken, reply, addOwner = false) {
 }
 
 /**
+ * Try to load app token from the database and update it, or generate one and save the user
+ * @param {string} discordId 
+ * @param {string} accessToken 
+ * @param {string} refreshToken 
+ * @param {number} expireDate 
+ * @returns {Promise}
+ */
+function requestAppToken(discordId, accessToken, refreshToken, expireDate) {
+    return new Promise((resolve, reject) => {
+        db.select("Tokens", ["appToken"], {
+            discordUserId: discordId
+        }).then((rows) => {
+            // User exists, update it
+            if (rows.length === 1) {
+                Logger.log("Discord user with id **" + discordId + "** logged in using existing informations.");
+                db.update("Tokens", {
+                    accessToken: accessToken,
+                    refreshToken: refreshToken,
+                    expireDate: expireDate
+                }, {
+                    discordUserId: discordId
+                });
+
+                resolve(rows[0].appToken);
+            } else {
+                // User does not exists, create it
+                let appToken = uuidv1();
+                addUser(discordId, appToken, accessToken, refreshToken, expireDate).then(() => {
+                    resolve(appToken);
+                });
+            }
+        });
+    });
+}
+
+/**
  * Queries the discord API to get the access token
  * @param {string} authToken 
  * @returns Promise
  */
 function getAccessToken(authToken) {
-    request.post(
-        "https://discordapp.com/api/v6/oauth2/token", {
-            form: {
-                "client_id": clientId,
-                "client_secret": clientSecret,
-                "grant_type": "authorization_code",
-                "code": authToken,
-                "redirect_uri": redirectURI,
-                "scope": "identify,guilds"
-            }
-        },
-        function (error, response, body) {
-            console.log(error, response, body);
+    return new Promise((resolve, reject) => {
+        Logger.log("Query made to Discord API (OAuth2/token)");
+        request.post(
+            discordApiUrl + "oauth2/token", {
+                form: {
+                    "client_id": clientId,
+                    "client_secret": clientSecret,
+                    "grant_type": "authorization_code",
+                    "code": authToken,
+                    "redirect_uri": redirectURI,
+                    "scope": "identify,guilds"
+                }
+            },
+            (error, response, body) => {
 
-        }
-    );
+                if (error !== null) {
+                    reject();
+                } else {
+                    try {
+                        let answer = JSON.parse(body);
+
+                        if (answer.error !== undefined) {
+                            reject();
+                        } else {
+                            resolve({
+                                accessToken: answer.access_token,
+                                refreshToken: answer.refresh_token,
+                                expireDate: Date.now() + Number.parseInt(answer.expires_in)
+                            });
+                        }
+                    } catch (e) {
+                        reject();
+                    }
+                }
+
+            }
+        );
+    });
 }
 
 
@@ -107,6 +178,7 @@ function getAccessToken(authToken) {
  */
 function getDiscordUserId(appToken) {
     // return this.users[appToken] ...
+
 }
 
 
@@ -117,24 +189,27 @@ function getDiscordUserId(appToken) {
  * @returns Promise
  */
 function queryDiscordUserId(accessToken) {
+    return new Promise((resolve, reject) => {
 
-}
-
-/**
- * Generates a key for the user
- * @returns string
- */
-function createAppToken() {
-    return uuidv1();
-}
-
-/**
- * Generates a key for the user
- * @returns string
- */
-function handleFirstLaunch() {
-    // if Owner.hasAnyOwner()...
-    //         this.noOwnersRegistered = true;
+        Logger.log("Query made to Discord API (users/@me)");
+        request({
+            url: discordApiUrl + "users/@me",
+            headers: {
+                "Authorization": "Bearer " + accessToken
+            }
+        }, (error, response, body) => {
+            if (error === null) {
+                try {
+                    let result = JSON.parse(body);
+                    resolve(result.id);
+                } catch (err) {
+                    reject();
+                }
+            } else {
+                reject();
+            }
+        });
+    });
 }
 
 /**
@@ -144,21 +219,36 @@ function handleFirstLaunch() {
  * @param {string} appToken 
  * @param {string} refreshToken 
  * @param {number} expireDate 
+ * @returns {Promise}
  */
 function addUser(discordId, appToken, accessToken, refreshToken, expireDate) {
-
+    return new Promise((resolve, reject) => {
+        Logger.log("Discord user with id **" + discordId + "** logged in for the first time.");
+        db.insert("Tokens", {
+            discordUserId: discordId,
+            accessToken: accessToken,
+            appToken: appToken,
+            refreshToken: refreshToken,
+            expireDate: expireDate
+        }).then(() => resolve).catch(() => reject);
+    });
 }
 
 function registerActions() {
     webAPI.registerAction("claim-ownership", (data, reply) => {
-        handleLogin(data.code, reply, data.ownerSecret);
+        if (firstLaunch) {
+            handleLogin(data.code, reply, data.ownerSecret);
+        } else {
+            reply({
+                status: "error"
+            });
+        }
     });
 
     webAPI.registerAction("login", (data, reply) => {
         handleLogin(data.code, reply);
     });
 }
-console.log(ownerSecret);
 
 function setFirstLaunch(firstLaunch_) {
     // TODO: Log ownerSecret if first launch
