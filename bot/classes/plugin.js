@@ -15,8 +15,18 @@ class Plugin extends PluginModel {
             "all": [],
             "reaction" : []
         };
+
         this._loadFromFolder(folder);
 
+        let oldVersion = Plugin._plugins[this.id];
+        if (oldVersion !== undefined) {
+            this._prefix = oldVersion._prefix;
+            this._enabled = oldVersion._enabled;
+        } else {
+            //  this._loadFromDatabase()
+
+            // TODO: Notify Discotron of new plugin
+        }
         Plugin._plugins[this.id] = this;
     }
 
@@ -32,6 +42,7 @@ class Plugin extends PluginModel {
      * @param {string} folder 
      */
     _loadFromFolder(folder) {
+        delete require.cache[require.resolve(folder + "/index.js")];
         let pluginFile = require(folder + "/index.js");
         
         // from file
@@ -44,10 +55,18 @@ class Plugin extends PluginModel {
             let command = new Command(pluginFile.commands[i]);
             this._commands[command.triggerType].push(command);
         }
-        
+    }
+
+    _loadInfoFromDatabase() {
         // TODO: read from db
         this._prefix = "";
         this._enabled = true;
+    }
+
+    delete() {
+        delete Plugin._plugins[this.id];
+        // TODO: Delete from db
+        // TODO: Emit deleted event
     }
 
     /**
