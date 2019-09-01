@@ -31,6 +31,7 @@ try {
 
 
 const databaseHelper = require("./utils/database-helper.js");
+const Login = require("./classes/login.js");
 const webserver = require("./webserver.js");
 const discotron = require("./discotron.js");
 
@@ -47,6 +48,8 @@ databaseHelper.openDatabase();
 // Web server
 webserver.serveDashboard();
 webserver.startAPIServer();
+
+Login.registerActions();
 
 // TODO: If ownership claimed only
 discotron.loadRepositories();
