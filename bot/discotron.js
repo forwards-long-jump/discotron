@@ -147,7 +147,7 @@ module.exports.loadRepositories = () => {
                 const row = rows[i];
                 Logger.log("Loading repository **" + row.folderName + "**");
                 let r = new Repository(row.folderName, row.gitUrl);
-                r.pull(); // DEBUG, update all repos
+                // r.pull(); // DEBUG, update all repos
             }
         }
     });
