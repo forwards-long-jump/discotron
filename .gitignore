@@ -92,6 +92,7 @@ typings/
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
-token-oauth2.txt
-token-bot.txt
+oauth2-secret.txt
+token.txt
+application-id.txt
 discotron.db
