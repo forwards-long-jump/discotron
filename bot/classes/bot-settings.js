@@ -5,21 +5,15 @@ class BotSettings extends BotSettingsModel {
     constructor() {
         super();
 
-        // TODO: should remove the rows.length > 0 test once this table is filled
-        // ideally at first startup
         db.select("BotSettings", ["value"], {
             name: "helpText"
         }).then((rows) => {
-            if (rows.length > 0) {
-                this._helpText = rows[0].value;
-            }
+            this._helpText = rows[0].value;
         });
         db.select("BotSettings", ["value"], {
             name: "maintenance"
         }).then((rows) => {
-            if (rows.length > 0) {
-                this._maintenance = rows[0].value === "true";
-            }
+            this._maintenance = rows[0].value === "true";
         });
     }
 
