@@ -5,5 +5,6 @@ if (localStorage.getItem("appToken") === null) {
     Discotron.Router.addEvents();
     Discotron.Router.route(document.location.href);
 
+    Discotron.NavigationController.displayBot();
     Discotron.NavigationController.displayUser();
 }

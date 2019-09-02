@@ -45,6 +45,9 @@ const discotron = require("./discotron.js");
 
 const discordClient = new DiscordJS.Client();
 
+global.discordClient = discordClient;
+
+Logger.setSeverity("debug");
 
 
 // Web server
@@ -68,6 +71,8 @@ function connectToDiscord() {
         Logger.log(err.message, "err");
     });
 }
+
+discotron.registerActions();
 
 function registerEvents() {
     // TODO: Handle error and reaction

@@ -142,9 +142,16 @@ module.exports.registerActions = () => {
             maintenance: botSettings.maintenance
         });
     }, "owner");
+    
+    webAPI.registerAction("get-bot-info", (data, reply) => {
+        reply({
+            avatar: global.discordClient.user.displayAvatarURL,
+            username: global.discordClient.user.tag
+        });
+    }, "everyone");
 
     Owner.registerActions();
     Repository.registerActions();
     Guild.registerActions();
     Plugin.registerActions();
-}
+};
