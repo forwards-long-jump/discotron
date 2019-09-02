@@ -25,8 +25,6 @@ window.Discotron.RepositoryListController = class extends window.Discotron.Contr
 	 * Display the list of repositories and the plugins 
 	 */
 	_displayRepos() {
-		console.log("DIPALYING REPOS");
-
 		Discotron.Repository.getAll().then((repositories) => {
 			if (repositories.length > 0) {
 				document.getElementById("repositories-container").innerHTML = "";
@@ -40,6 +38,9 @@ window.Discotron.RepositoryListController = class extends window.Discotron.Contr
 				let container = document.importNode(template.content, true);
 
 				container.querySelector(".plugin-bar").value = repo.url;
+
+				// Query cards
+				// TODO: Use Discotron.Plugin.getAll()...
 
 				// Update
 				container.querySelector(".pull-repository").onclick = (event) => {
@@ -67,19 +68,11 @@ window.Discotron.RepositoryListController = class extends window.Discotron.Contr
 
 				// Delete
 				container.querySelector(".delete-repository").onclick = (event) => {
-					console.log(this);
-
 					if (confirm("Deleting a repository will erase all related settings, continue?")) {
 						Discotron.WebAPI.queryBot("discotron-dashboard", "remove-repository", {
 							url: repo.url
 						}).then((data) => {
-							console.log("Done deleting", data);
-
-							console.log("Clear cache");
-
 							Discotron.Repository.clearCache();
-							console.log(this, "Display repos");
-
 							this._displayRepos();
 						});
 					}
