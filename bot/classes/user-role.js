@@ -3,6 +3,17 @@ const db = require("./../apis/database-crud.js");
 
 class UserRole extends UserRoleModel {
     /**
+     * Ctor
+     * @param {string} discordId ID of the user or role
+     * @param {string} type Type of the id, "user" or "role"
+     * @param {string} discordId ID of the guild in which this user / role is located
+     */
+    constructor(discordId, type, guildId = undefined) {
+        super(discordId, type);
+        this._guildId = guildId;
+    }
+
+    /**
      * Returns an object describing the user / role
      * @returns {object} {id, type}
      */
@@ -21,7 +32,8 @@ class UserRole extends UserRoleModel {
         if (this.type === "user") {
             return this.discordId === userDiscordId;
         } else {
-            // scratching of the deeskord happy eye       
+            let role = global.discordClient.guilds.get(this._guildId).roles.get(this.discordId);
+            return role.members.has(userDiscordId);
         }
     }
 
@@ -53,13 +65,15 @@ class UserRole extends UserRoleModel {
      * @param {number} id ID of the database entry
      */
     static getById(id) {
-        db.select("UsersRoles", ["discordId", "type"], {
-            id: id
-        }).then((rows) => {
-            if (rows.length === 0) {
-                throw new Error("UserRole inexistant in db");
-            }
-            return new UserRole(rows[0].discordId, rows[0].type === 1 ? "user" : "role");
+        return new Promise((resolve, reject) => {
+            db.select("UsersRoles", ["discordId", "type"], {
+                id: id
+            }).then((rows) => {
+                if (rows.length === 0) {
+                    throw new Error("UserRole inexistant in db");
+                }
+                resolve(new UserRole(rows[0].discordId, rows[0].type === 1 ? "user" : "role"));
+            });
         });
     }
 }
