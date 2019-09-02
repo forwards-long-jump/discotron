@@ -57,26 +57,38 @@ function handleLogin(authToken, reply, userOwnerSecret = undefined) {
  */
 function handleDiscordAPIQuery(authToken, reply, addOwner = false) {
     let accessInfo;
+    let userInfo;
 
     getAccessToken(authToken).then((accessInfo_) => {
 
             accessInfo = accessInfo_;
             return queryDiscordUserId(accessInfo.accessToken);
 
-        }).then((discordId) => {
+        }).then((userInfo_) => {
+            userInfo = userInfo_;
+            if (userInfo.id !== undefined) {
+                if (addOwner) {
+                    Owner.add(userInfo.id);
+                    ownerSecret = undefined;
+                    firstLaunch = false;
+                }
 
-            if (addOwner) {
-                Owner.add(discordId);
-                ownerSecret = undefined;
-                firstLaunch = false;
+                return requestAppToken(userInfo.id, accessInfo.accessToken, accessInfo.refreshToken, accessInfo.expireDate);
+            } else {
+                reply({
+                    status: "error"
+                });
+                return;
             }
-
-            return requestAppToken(discordId, accessInfo.accessToken, accessInfo.refreshToken, accessInfo.expireDate);
         }).then((appToken) => {
 
             reply({
                 status: "success",
-                token: appToken
+                token: appToken,
+                avatar: userInfo.avatar,
+                username: userInfo.username,
+                discriminator: userInfo.discriminator,
+                clientId: userInfo.id
             });
 
         })
@@ -219,7 +231,12 @@ function queryDiscordUserId(accessToken) {
             if (error === null) {
                 try {
                     let result = JSON.parse(body);
-                    resolve(result.id);
+                    resolve({
+                        id: result.id,
+                        avatar: result.avatar,
+                        username: result.username,
+                        discriminator: result.discriminator
+                    });
                 } catch (err) {
                     reject();
                 }
@@ -240,17 +257,15 @@ function queryDiscordUserId(accessToken) {
  * @returns {Promise}
  */
 function addUser(discordId, appToken, accessToken, refreshToken, expireDate) {
-    return new Promise((resolve, reject) => {
-        Logger.log("Discord user with id **" + discordId + "** logged in for the first time.");
-        users[appToken] = discordId;
+    Logger.log("Discord user with id **" + discordId + "** logged in for the first time.");
+    users[appToken] = discordId;
 
-        db.insert("Tokens", {
-            discordUserId: discordId,
-            accessToken: accessToken,
-            appToken: appToken,
-            refreshToken: refreshToken,
-            expireDate: expireDate
-        }).then(() => resolve).catch(() => reject);
+    return db.insert("Tokens", {
+        discordUserId: discordId,
+        accessToken: accessToken,
+        appToken: appToken,
+        refreshToken: refreshToken,
+        expireDate: expireDate
     });
 }
 

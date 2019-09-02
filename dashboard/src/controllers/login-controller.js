@@ -17,8 +17,7 @@ window.Discotron.LoginController = class /* does not extends Controller because 
                     document.querySelector("#claim-error").style.display = "block";
                     break;
                 case "success":
-                    localStorage.setItem("appToken", data.token);
-                    window.location.replace("/dashboard");
+                    Discotron.LoginController._handleSuccess(data);
                     break;
             }
         });
@@ -54,8 +53,7 @@ window.Discotron.LoginController = class /* does not extends Controller because 
                         document.querySelector("#login-error").style.display = "block";
                         break;
                     case "success":
-                        localStorage.setItem("appToken", data.token);
-                        window.location.replace("/dashboard");
+                        Discotron.LoginController._handleSuccess(data);
                         break;
                     case "first-launch":
                         Discotron.LoginController._displayContainer("claim-ownership");
@@ -64,6 +62,15 @@ window.Discotron.LoginController = class /* does not extends Controller because 
             });
 
         }
+    }
+
+    static _handleSuccess(data) {
+        localStorage.setItem("appToken", data.token);
+        localStorage.setItem("username", data.username);
+        localStorage.setItem("discriminator", data.discriminator);
+        localStorage.setItem("avatar", data.avatar);
+        localStorage.setItem("clientId", data.clientId);
+        window.location.replace("/dashboard");
     }
 
     static _displayContainer(containerName) {
@@ -80,6 +87,11 @@ window.Discotron.LoginController = class /* does not extends Controller because 
     }
 };
 
-Discotron.LoginController.handleOwnershipClaim();
-Discotron.LoginController.initPage();
-Discotron.LoginController.addEvents();
+// App token set => we have are already logged in
+if (localStorage.getItem("appToken") !== null) {
+    document.location.replace("/dashboard");
+} else {
+    Discotron.LoginController.handleOwnershipClaim();
+    Discotron.LoginController.initPage();
+    Discotron.LoginController.addEvents();
+}
