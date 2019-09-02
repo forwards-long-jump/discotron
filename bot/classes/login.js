@@ -56,36 +56,38 @@ function handleLogin(authToken, reply, userOwnerSecret = undefined) {
  * @param {boolean} addOwner 
  */
 function handleDiscordAPIQuery(authToken, reply, addOwner = false) {
-    getAccessToken(authToken).then((accessInfo) => {
-        queryDiscordUserId(accessInfo.accessToken).then((discordId) => {
+    let accessInfo;
+
+    getAccessToken(authToken).then((accessInfo_) => {
+
+            accessInfo = accessInfo_;
+            return queryDiscordUserId(accessInfo.accessToken);
+
+        }).then((discordId) => {
+
             if (addOwner) {
                 Owner.add(discordId);
                 ownerSecret = undefined;
                 firstLaunch = false;
             }
 
-            requestAppToken(discordId, accessInfo.accessToken, accessInfo.refreshToken, accessInfo.expireDate).then((appToken) => {
-                reply({
-                    status: "success",
-                    token: appToken
-                });
-            }).catch(() => {
-                reply({
-                    status: "error"
-                });
+            return requestAppToken(discordId, accessInfo.accessToken, accessInfo.refreshToken, accessInfo.expireDate);
+        }).then((appToken) => {
+
+            reply({
+                status: "success",
+                token: appToken
             });
-        }).catch(() => {
+
+        })
+        .catch(() => {
+
             // No clientId scope / invalid code
             reply({
                 status: "error"
             });
+
         });
-    }).catch(() => {
-        // No clientId scope / invalid code
-        reply({
-            status: "error"
-        });
-    });
 }
 
 /**
