@@ -146,6 +146,7 @@ class Repository extends RepositoryModel {
         for (let i = 0; i < Repository._repositories.length; ++i) {
             if (Repository._repositories[i] === this) {
                 delete Repository._repositories[i];
+                break;
             }
         }
 

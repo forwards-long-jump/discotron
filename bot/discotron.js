@@ -126,6 +126,7 @@ module.exports.registerActions = () => {
     webAPI.registerAction("set-bot-config", (data, reply) => {
         if (data === undefined) {
             reply();
+            return;
         }
         if (data.helpText !== undefined) {
             botSettings.helpText = data.helpText;
