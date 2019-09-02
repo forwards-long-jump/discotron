@@ -36,6 +36,23 @@ window.Discotron.RepositoryListController = class extends window.Discotron.Contr
 				let container = document.importNode(template.content, true);
 
 				container.querySelector(".plugin-bar").value = repo.url;
+				container.querySelector(".pull-repository").onclick = (event) => {
+					event.target.disabled = true;
+					event.target.value = "Updating...";
+					Discotron.WebAPI.queryBot("discotron-dashboard", "update-repository", {
+						url: repo.url
+					}).then((data) => {
+						if (data) {
+							event.target.value = "Update succesful";
+						} else {
+							event.target.value = "Could not update";
+						}
+						setTimeout(() => {
+							event.target.disabled = false;
+							event.target.value = "Pull from Master";
+						}, 5000);
+					});
+				};
 				document.getElementById("repositories-container").appendChild(container);
 			}
 		});

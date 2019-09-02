@@ -109,37 +109,42 @@ class Repository extends RepositoryModel {
      */
     pull() {
         Logger.log("Updating **" + this._folderName + "**...");
-        let repo;
-        // Source: https://stackoverflow.com/questions/20955393/nodegit-libgit2-for-node-js-how-to-push-and-pull
-        Git.Repository.open(__dirname + "/../repositories/" + this._folderName)
-            .then((repository) => {
-                repo = repository;
-                return repository.fetch("origin");
-            })
-            .then(() => {
-                return repo.mergeBranches("master", "origin/master");
-            })
-            .then((oid) => {
-                let oldPluginList = this._pluginIds.splice(0);
-                this.loadPluginsFromDisk();
-                this.loadPagesFromDisk();
+        return new Promise((resolve, reject) => {
+            let repo;
+            // Source: https://stackoverflow.com/questions/20955393/nodegit-libgit2-for-node-js-how-to-push-and-pull
+            Git.Repository.open(__dirname + "/../repositories/" + this._folderName)
+                .then((repository) => {
+                    repo = repository;
+                    return repository.fetch("origin");
+                })
+                .then(() => {
+                    return repo.mergeBranches("master", "origin/master");
+                })
+                .then((oid) => {
+                    let oldPluginList = this._pluginIds.splice(0);
+                    this.loadPluginsFromDisk();
+                    this.loadPagesFromDisk();
 
-                let deletedPlugins = [];
+                    let deletedPlugins = [];
 
-                for (let i = 0; i < oldPluginList.length; i++) {
-                    const oldPluginId = oldPluginList[i];
+                    for (let i = 0; i < oldPluginList.length; i++) {
+                        const oldPluginId = oldPluginList[i];
 
-                    if (!this._pluginIds.includes(oldPluginId)) {
-                        deletedPlugins.push(oldPluginId);
+                        if (!this._pluginIds.includes(oldPluginId)) {
+                            deletedPlugins.push(oldPluginId);
+                        }
                     }
-                }
 
-                for (let i = 0; i < deletedPlugins.length; i++) {
-                    Plugin.getAll()[deletedPlugins[i]].delete();
-                }
-            }).catch((err) => {
-                console.log(err);
-            });
+                    for (let i = 0; i < deletedPlugins.length; i++) {
+                        Plugin.getAll()[deletedPlugins[i]].delete();
+                    }
+
+                    resolve();
+                }).catch((err) => {
+                    console.log(err);
+                    reject();
+                });
+        });
     }
 
     /**
@@ -211,10 +216,15 @@ class Repository extends RepositoryModel {
             for (let i = 0; i < Repository._repositories.length; ++i) {
                 let repo = Repository._repositories[i];
                 if (repo.url === data.url) {
-                    repo.pull();
+                    repo.pull().then(() => {
+                        reply(true);
+                    }).catch(() => {
+                        reply(false);
+                    });
+                    return;
                 }
             }
-            reply();
+            reply(false);
         }, "owner");
     }
 }
