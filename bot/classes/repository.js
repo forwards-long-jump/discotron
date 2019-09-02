@@ -166,14 +166,20 @@ class Repository extends RepositoryModel {
      * @returns {object} Object containing {url, pluginIds, pages, status}
      */
     toObject() {
-
+        return {
+            url: super.url,
+            pluginIds: super.pluginIds,
+            pages: super.pages,
+            status: this.getStatus()
+        };
     }
 
     /**
      * @returns {number} Number of commits behind
      */
     getStatus() {
-
+        // TODO:
+        return undefined;
     }
 
     /**
