@@ -1,5 +1,6 @@
 const GuildModel = require("./../../models/guild.js");
 const UserRole = require("./user-role.js");
+const Permission = require("./permission.js");
 const webAPI = require("./../apis/web-api.js").getWebAPI("discotron-dashboard");
 const db = require("./../apis/database-crud.js");
 
@@ -155,7 +156,7 @@ class Guild extends GuildModel {
      * @param {array} userRoles 
      */
     setPluginPermission(pluginId, userRoles) {
-        this._permissions[pluginId] = userRoles;
+        this._permissions[pluginId]._usersRoles = userRoles;
 
         db.delete("Permissions", {
             discordGuildId: this.discordId,
@@ -193,12 +194,14 @@ class Guild extends GuildModel {
      * @param {string} pluginId 
      */
     _loadPluginPermission(pluginId) {
+        this._permissions[pluginId] = new Permission(this.guildId, pluginId, []);
         db.select("Permissions", ["userRoleId"], {
             discordGuildId: this.discordId,
             pluginId: pluginId
         }).then((rows) => {
             for (let i = 0; i < rows.length; ++i) {
-                this._permissions.push(UserRole.getById(rows[i].userRoleId));
+                const userRole = UserRole.getById(rows[i].userRoleId);
+                this._permissions[pluginId]._usersRoles.push(userRole);
             }
         });
     }
