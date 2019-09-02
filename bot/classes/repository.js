@@ -4,6 +4,7 @@ const RepositoryModel = require("./../../models/repository.js");
 const Plugin = require("./plugin.js");
 const webAPI = require("./../apis/web-api.js").getWebAPI("discotron-dashboard");
 const Logger = require("../utils/logger.js");
+const fileHelper = require("../utils/file-helper.js");
 const Git = require("nodegit");
 const crypto = require("crypto");
 
@@ -151,20 +152,24 @@ class Repository extends RepositoryModel {
      * Delete the repository locally and remove it from database
      */
     delete() {
-        for (let i = 0; i < Repository._repositories.length; ++i) {
-            if (Repository._repositories[i] === this) {
-                delete Repository._repositories[i];
-                break;
+        return new Promise((resolve, reject) => {
+            let index = Repository._repositories.indexOf(this);
+            if (index < 0) {
+                return;
             }
-        }
 
-        db.delete("Repositories", this._folderName);
+            Repository._repositories.splice(index, 1);
 
-        let plugins = Plugin.getAll();
-        for (let i = 0; i < this._pluginIds.length; ++i) {
-            plugins[this._pluginIds[i]].delete();
-        }
-        this._deleteFolder();
+            db.delete("Repositories", {folderName: this._folderName}).then(() => {
+                let plugins = Plugin.getAll();
+                for (let i = 0; i < this._pluginIds.length; ++i) {
+                    plugins[this._pluginIds[i]].delete();
+                }
+
+                this._deleteFolder(); // sync
+                resolve();
+            });
+        });
     }
 
     /**
@@ -191,7 +196,7 @@ class Repository extends RepositoryModel {
      * Delete the folder
      */
     _deleteFolder() {
-
+        fileHelper.deleteFolder(__dirname + "/../repositories/" + this._folderName);
     }
 
     static registerActions() {
@@ -207,10 +212,14 @@ class Repository extends RepositoryModel {
             for (let i = 0; i < Repository._repositories.length; ++i) {
                 let repo = Repository._repositories[i];
                 if (repo.url === data.url) {
-                    repo.delete();
+                    repo.delete().then(() => {
+                        reply(true);
+                    });
+                    return;
                 }
             }
-            reply();
+
+            reply(false);
         }, "owner");
         webAPI.registerAction("update-repository", (data, reply) => {
             for (let i = 0; i < Repository._repositories.length; ++i) {

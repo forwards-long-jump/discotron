@@ -25,9 +25,13 @@ window.Discotron.RepositoryListController = class extends window.Discotron.Contr
 	 * Display the list of repositories and the plugins 
 	 */
 	_displayRepos() {
+		console.log("DIPALYING REPOS");
+
 		Discotron.Repository.getAll().then((repositories) => {
 			if (repositories.length > 0) {
 				document.getElementById("repositories-container").innerHTML = "";
+			} else {
+				document.getElementById("repositories-container").innerHTML = "<p class=\"description\">No repositories found. Try adding a public repository using the bar above.</p>";
 			}
 
 			for (let i = 0; i < repositories.length; i++) {
@@ -36,9 +40,12 @@ window.Discotron.RepositoryListController = class extends window.Discotron.Contr
 				let container = document.importNode(template.content, true);
 
 				container.querySelector(".plugin-bar").value = repo.url;
+
+				// Update
 				container.querySelector(".pull-repository").onclick = (event) => {
 					event.target.disabled = true;
 					event.target.value = "Updating...";
+
 					Discotron.WebAPI.queryBot("discotron-dashboard", "update-repository", {
 						url: repo.url
 					}).then((data) => {
@@ -47,12 +54,37 @@ window.Discotron.RepositoryListController = class extends window.Discotron.Contr
 						} else {
 							event.target.value = "Could not update";
 						}
+
+						Discotron.Repository.clearCache();
+						this._displayRepos();
+
 						setTimeout(() => {
 							event.target.disabled = false;
 							event.target.value = "Pull from Master";
 						}, 5000);
 					});
 				};
+
+				// Delete
+				container.querySelector(".delete-repository").onclick = (event) => {
+					console.log(this);
+
+					if (confirm("Deleting a repository will erase all related settings, continue?")) {
+						Discotron.WebAPI.queryBot("discotron-dashboard", "remove-repository", {
+							url: repo.url
+						}).then((data) => {
+							console.log("Done deleting", data);
+
+							console.log("Clear cache");
+
+							Discotron.Repository.clearCache();
+							console.log(this, "Display repos");
+
+							this._displayRepos();
+						});
+					}
+				};
+
 				document.getElementById("repositories-container").appendChild(container);
 			}
 		});
@@ -91,8 +123,8 @@ window.Discotron.RepositoryListController = class extends window.Discotron.Contr
 				} else {
 					document.getElementById("repository-url").value = "";
 					document.getElementById("repository-url").focus();
-					Discotron.Repository.clearCache();
 
+					Discotron.Repository.clearCache();
 					this._displayRepos();
 				}
 			});
