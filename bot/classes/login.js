@@ -199,7 +199,7 @@ function getDiscordUserId(appToken) {
                     users[rows[0].appToken] = rows[0].discordUserId;
                     resolve(rows[0].discordUserId);
                 } else {
-                    reject();
+                    resolve(false);
                 }
             }).catch(() => reject);
         } else {

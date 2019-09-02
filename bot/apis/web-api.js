@@ -1,5 +1,4 @@
 const Logger = require("../utils/logger.js");
-const Login = require("../classes/login.js");
 
 /**
  * Handles receiving message from dashboard
@@ -20,21 +19,22 @@ module.exports.onPost = (req, res) => {
     let appToken = req.body.appToken;
     let guildId = req.body.guildId;
 
-    let clientId = Login.getDiscordUserId(appToken);
-
-    // TODO: check app token
-
     if (actions[plugin] === undefined || actions[plugin][action] === undefined) {
+        reply(res, "invalid-action");
         return;
     }
 
-    let response = actions[plugin][action];
+    Login.getDiscordUserId(appToken).then((clientId) => {
+        let response = actions[plugin][action];
 
-    if (authLevelCheck[response.authLevel](clientId, guildId)) {
-        response.action(data, (requestedData) => {
-            reply(res, requestedData);
-        });
-    }
+        if (authLevelCheck[response.authLevel](clientId, guildId)) {
+            response.action(data, (requestedData) => {
+                reply(res, requestedData);
+            });
+        } else {
+            reply(res, "invalid-app-token");
+        }
+    });
 };
 
 function reply(res, data) {
@@ -87,3 +87,5 @@ const authLevelCheck = {
     "guildAdmin": require("../classes/guild.js").isGuildAdmin,
     "everyone": () => true
 };
+
+const Login = require("../classes/login.js");

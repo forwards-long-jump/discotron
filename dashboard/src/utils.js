@@ -11,9 +11,8 @@ window.Discotron.utils = {
                 if (request.readyState == XMLHttpRequest.DONE) {
                     try {
                         resolve(JSON.parse(request.responseText));
-                    }
-                    catch(e) {
-                        reject(e);
+                    } catch (e) {
+                        resolve(request.responseText);
                     }
                 }
             };
