@@ -47,7 +47,7 @@ class Guild extends GuildModel {
      * @param {string} clientId 
      */
     isAdmin(clientId) {
-        this.admins.forEach((admin) => {
+        this._admins.forEach((admin) => {
             if (admin.describes(clientId)) {
                 return true;
             }
@@ -88,17 +88,18 @@ class Guild extends GuildModel {
      * Loads members of the guild with admin privilege
      */
     loadDiscordAdmins() {
-        // TODO: implement this using the discord.js api
-        /*
-        let admin = new UserRole(discordGuild.ownerId, "user");
-        this._admins.push(admin)
-        for (role in guild.roles) {
-            if (role.hasPermission(admin)) {
-                let role = new UserRole(role.id, "role")
-                this._admins.push(role)
+        let guild = global.discordClient.guilds.get(this.discordId);
+        let admin = new UserRole(guild.ownerID, "user");
+        this._admins.add(admin);
+
+        let roles = guild.roles.array();
+        for (let i = 0; i < roles.length; ++i) {
+            const role = roles[i];
+            if (role.hasPermission("ADMINISTRATOR")) {
+                let userRole = new UserRole(role.id, "role");
+                this._admins.add(userRole);
             }
         }
-        */
     }
 
 
