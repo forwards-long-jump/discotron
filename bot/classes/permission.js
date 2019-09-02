@@ -15,6 +15,14 @@ class Permission extends PermissionModel {
     }
 
     /**
+     * Returns an object describing the permission
+     * @returns {object} {usersRoles}
+     */
+    toObject() {
+        return this.usersRoles.map((userRole) => userRole.toObject());
+    }
+
+    /**
      * Returns whether the user has the right to use the given plugin
      * @param {string} discordUserId
      */
@@ -26,11 +34,11 @@ class Permission extends PermissionModel {
             // Else it's admins only
             return Guild.isGuildAdmin(discordUserId, this.guildId);
         }
-        
+
         for (let i = 0; i < this.usersRoles.length; ++i) {
             if (this.usersRoles[i].describes(discordUserId)) {
                 return true;
-            }   
+            }
         }
         return false;
     }
