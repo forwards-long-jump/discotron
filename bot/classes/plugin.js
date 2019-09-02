@@ -26,7 +26,7 @@ class Plugin extends PluginModel {
         } else {
             this._loadInfoFromDatabase();
 
-            // TODO: Notify Discotron of new plugin
+            global.discotron.trigger("plugin-loaded", this.id);
         }
         Plugin._plugins[this.id] = this;
     }
@@ -95,7 +95,7 @@ class Plugin extends PluginModel {
             pluginId: this.id
         });
 
-        // TODO: Emit deleted event
+        global.discotron.trigger("plugin-deleted", this.id);
     }
 
     /**
