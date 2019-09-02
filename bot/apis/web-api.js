@@ -28,7 +28,7 @@ module.exports.onPost = (req, res) => {
     }
 
     let response = actions[plugin][action];
-
+    
     if (authLevelCheck[response.authLevel](clientId, guildId)) {
         response.action(data, (requestedData) => {
             reply(res, requestedData);

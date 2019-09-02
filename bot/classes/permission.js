@@ -15,12 +15,12 @@ class Permission extends PermissionModel {
      * @param {string} discordUserId
      */
     allows(discordUserId) {
-        // TODO: correct this
-        /*if (this._userIds.contains(user.id)) return true;
-        for (let i = 0; i < this._roleIds.length; ++i) {
-            if (user.hasRole(this._roleIds[i])) return true;
+        for (let i = 0; i < this.usersRoles.length; ++i) {
+            if (this.usersRoles[i].describes(discordUserId)) {
+                return true;
+            }   
         }
-        return false;*/
+        return false;
     }
 }
 
