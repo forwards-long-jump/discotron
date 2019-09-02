@@ -75,9 +75,6 @@ function registerEvents() {
     process.on("SIGUSR2", exitHandler.bind(null, {
         exit: true
     }));
-    process.on("uncaughtException", exitHandler.bind(null, {
-        exit: true
-    }));
 }
 
 function loadConfig() {
