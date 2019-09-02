@@ -26,7 +26,7 @@ class Plugin extends PluginModel {
         } else {
             this._loadInfoFromDatabase();
 
-            global.discotron.trigger("plugin-loaded", this.id);
+            // (DO NOT PICK ME) global.discotron.triggerEvent("plugin-loaded", this.id);
         }
         Plugin._plugins[this.id] = this;
     }
