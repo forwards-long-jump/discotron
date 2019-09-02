@@ -151,7 +151,10 @@ class Repository extends RepositoryModel {
 
         db.delete("Repositories", this._folderName);
         
-        // TODO: delete plugins ?
+        let plugins = Plugin.getAll();
+        for (let i = 0; i < this._pluginIds.length; ++i) {
+            plugins[this._pluginIds[i]].delete();
+        }
         this._deleteFolder();
     }
 
