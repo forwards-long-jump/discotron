@@ -82,8 +82,11 @@ class Repository extends RepositoryModel {
 
                 // Load itself
                 new Repository(folderName, url);
+                Logger.log("Cloning succesful.");
                 resolve(folderName);
             }).catch((e) => {
+                Logger.log("Cloning failed!");
+                Logger.log(e);
                 reject(e);
             });
         });
@@ -151,7 +154,7 @@ class Repository extends RepositoryModel {
         }
 
         db.delete("Repositories", this._folderName);
-        
+
         let plugins = Plugin.getAll();
         for (let i = 0; i < this._pluginIds.length; ++i) {
             plugins[this._pluginIds[i]].delete();
@@ -185,8 +188,7 @@ class Repository extends RepositoryModel {
             reply(Repository.getAll());
         }, "owner");
         webAPI.registerAction("add-repository", (data, reply) => {
-            Repository.clone(data.url);
-            reply();
+            Repository.clone(data.url).then(() => reply(true)).catch(() => reply(false));
         }, "owner");
         webAPI.registerAction("remove-repository", (data, reply) => {
             for (let i = 0; i < Repository._repositories.length; ++i) {
