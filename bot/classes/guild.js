@@ -226,8 +226,9 @@ class Guild extends GuildModel {
             pluginId: pluginId
         }).then((rows) => {
             for (let i = 0; i < rows.length; ++i) {
-                const userRole = UserRole.getById(rows[i].userRoleId);
-                this._permissions[pluginId]._usersRoles.push(userRole);
+                UserRole.getById(rows[i].userRoleId).then((userRole) => {
+                    this._permissions[pluginId]._usersRoles.push(userRole);
+                });
             }
         });
     }
@@ -285,7 +286,9 @@ class Guild extends GuildModel {
             discordGuildId: this.discordId
         }).then((rows) => {
             for (let i = 0; i < rows.length; ++i) {
-                this._admins.add(UserRole.getById(rows[i].userRoleId));
+                UserRole.getById(rows[i].userRoleId).then((userRole) => {
+                    this._admins.add(userRole);
+                });
             }
         });
     }
@@ -369,7 +372,7 @@ class Guild extends GuildModel {
         }, "guildAdmin");
 
         webAPI.registerAction("get-plugin-permission", (data, reply) => {
-            reply(Guild.get(data.guildId).permissions[data.pluginId]);
+            reply(Guild.get(data.guildId).permissions[data.pluginId].toObject());
         }, "guildAdmin");
         webAPI.registerAction("set-plugin-permission", (data, reply) => {
             Guild.get(data.guildId).setPluginPermission(data.pluginId, data.userRoles);
@@ -385,7 +388,7 @@ class Guild extends GuildModel {
         }, "guildAdmin");
 
         webAPI.registerAction("get-admins", (data, reply) => {
-            reply(Guild.get(data.guildId).admins);
+            reply(Array.from(Guild.get(data.guildId).admins));
         }, "guildAdmin");
         webAPI.registerAction("set-admins", (data, reply) => {
             Guild.get(data.guildId).admins = data.admins;
