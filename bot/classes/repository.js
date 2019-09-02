@@ -45,11 +45,11 @@ class Repository extends RepositoryModel {
     }
 
     loadPagesFromDisk() {
-        let pagesPath = __dirname + "/../repositories/" + this._folderName + "/pages";
+        let pagesPath = __dirname + "/../repositories/" + this.folderName + "/pages";
 
         // TODO: Convert to async
         if (fs.existsSync(pagesPath)) {
-            fs.readdirSync(__dirname + "/../repositories/" + folderName + "/pages").forEach(file => {
+            fs.readdirSync(__dirname + "/../repositories/" + this.folderName + "/pages").forEach(file => {
                 // serve page (lel)
             });
         }
@@ -207,9 +207,11 @@ class Repository extends RepositoryModel {
                 return repo.toObject();
             }));
         }, "owner");
+
         webAPI.registerAction("add-repository", (data, reply) => {
             Repository.clone(data.url).then(() => reply(true)).catch(() => reply(false));
         }, "owner");
+
         webAPI.registerAction("remove-repository", (data, reply) => {
             for (let i = 0; i < Repository._repositories.length; ++i) {
                 let repo = Repository._repositories[i];
@@ -223,6 +225,7 @@ class Repository extends RepositoryModel {
 
             reply(false);
         }, "owner");
+
         webAPI.registerAction("update-repository", (data, reply) => {
             for (let i = 0; i < Repository._repositories.length; ++i) {
                 let repo = Repository._repositories[i];
@@ -235,6 +238,26 @@ class Repository extends RepositoryModel {
                     return;
                 }
             }
+            reply(false);
+        }, "owner");
+
+        webAPI.registerAction("get-repository-plugins", (data, reply) => {
+            for (let i = 0; i < Repository._repositories.length; ++i) {
+                let repo = Repository._repositories[i];
+
+                if (repo.url === data.url) {
+                    let plugins = Plugin.getAll();
+                    let pluginObjects = [];
+
+                    for (let j = 0; j < repo.pluginIds.length; ++j) {
+                        pluginObjects.push(plugins[repo.pluginIds].toObject());
+                    }
+
+                    reply(pluginObjects);
+                    return;
+                }
+            }
+
             reply(false);
         }, "owner");
     }
