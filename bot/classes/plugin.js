@@ -58,6 +58,9 @@ class Plugin extends PluginModel {
         }
     }
 
+    /**
+     * Loads prefix and enabled from DB, inserts default values if none found
+     */
     _loadInfoFromDatabase() {
         // default values
         this._prefix = "";
@@ -69,6 +72,12 @@ class Plugin extends PluginModel {
             if (rows.length > 0) {
                 this._prefix = rows[0].prefix;
                 this._enabled = (rows[0].disabled === 0);
+            } else {
+                db.insert("Plugins", {
+                    id: this.id,
+                    prefix: "",
+                    disabled: 0
+                });
             }
         });
     }
@@ -76,9 +85,15 @@ class Plugin extends PluginModel {
     delete() {
         delete Plugin._plugins[this.id];
 
-        db.delete("Plugins", {id: this.id});
-        db.delete("GuildEnabledPlugins", {pluginId: this.id});
-        db.delete("Permissions", {pluginId: this.id});
+        db.delete("Plugins", {
+            id: this.id
+        });
+        db.delete("GuildEnabledPlugins", {
+            pluginId: this.id
+        });
+        db.delete("Permissions", {
+            pluginId: this.id
+        });
 
         // TODO: Emit deleted event
     }
@@ -119,7 +134,11 @@ class Plugin extends PluginModel {
      */
     set enabled(enabled) {
         this._enabled = enabled;
-        db.update("Plugins", {disabled: enabled ? 0 : 1}, {id: this.id});
+        db.update("Plugins", {
+            disabled: enabled ? 0 : 1
+        }, {
+            id: this.id
+        });
     }
 
     /**
@@ -128,7 +147,11 @@ class Plugin extends PluginModel {
      */
     set prefix(prefix) {
         this._prefix = prefix;
-        db.update("Plugins", {prefix: prefix}, {id: this.id});
+        db.update("Plugins", {
+            prefix: prefix
+        }, {
+            id: this.id
+        });
     }
 
     static registerActions() {
