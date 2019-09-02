@@ -51,8 +51,8 @@ class Owner extends OwnerModel {
         webAPI.registerAction("get-owners", (data, reply) => {
             reply(Owner._owners);
         }, "owner");
-        webAPI.registerAction("is-owner", (data, reply) => {
-            reply(Owner.isOwner(data.discordUserId));
+        webAPI.registerAction("is-owner", (data, reply, discordUserId) => {
+            reply(Owner.isOwner(discordUserId));
         });
     }
 

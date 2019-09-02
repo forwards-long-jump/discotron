@@ -3,14 +3,20 @@ window.Discotron.NavigationController = class {
 	 * Display links in the "owner" section
 	 */
 	static displayOwnerSettings() {
-		return new Promise();
+		Discotron.WebAPI.queryBot("discotron-dashboard", "is-owner").then((data) => {
+			if (data) {
+				document.querySelectorAll(".bot-admin-link").forEach((element) => {
+					element.style.display = "list-item";
+				});
+			}
+		});
 	}
 
 	/**
 	 * Display links in the "admin" section
 	 */
 	static displayServers() {
-		return new Promise();
+
 	}
 
 	/**
