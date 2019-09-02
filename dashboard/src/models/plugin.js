@@ -30,13 +30,21 @@ window.Discotron.Plugin = class extends window.Discotron.PluginModel {
     set prefix(prefix) {
         // update in web api, owner only
     }
+
+    get prefix() {
+        return super.prefix;
+    }
     
     /**
      * Update enabled for this plugin in the database (owner only)
      * @param {boolean} enabled True if the plugin is to be enabled
      */
-    set enables(enabled) {
+    set enabled(enabled) {
         
+    }
+
+    get enabled() {
+        return super.enabled;
     }
 };
 

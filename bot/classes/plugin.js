@@ -141,6 +141,10 @@ class Plugin extends PluginModel {
         });
     }
 
+    get enabled() {
+        return super.enabled;
+    }
+
     /**
      * Set prefix
      * @param {prefix} prefix 
@@ -152,6 +156,10 @@ class Plugin extends PluginModel {
         }, {
             id: this.id
         });
+    }
+
+    get prefix() {
+        return super.prefix;
     }
 
     static registerActions() {
