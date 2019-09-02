@@ -36,7 +36,7 @@ class Owner extends OwnerModel {
      * @returns True if user is owner
      */
     static isOwner(discordUserId) {
-        return Owner._owners.has(discordUserId);
+        return discordUserId !== undefined && Owner._owners.has(discordUserId);
     }
 
     static registerActions() {
@@ -51,8 +51,8 @@ class Owner extends OwnerModel {
         webAPI.registerAction("get-owners", (data, reply) => {
             reply(Owner._owners);
         }, "owner");
-        webAPI.registerAction("is-owner", (data, reply) => {
-            reply(Owner.isOwner(data.discordUserId));
+        webAPI.registerAction("is-owner", (data, reply, discordUserId) => {
+            reply(Owner.isOwner(discordUserId));
         });
     }
 

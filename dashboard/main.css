@@ -533,3 +533,7 @@ input:checked+.slider:before {
 .description {
     color: var(--color-text-dark);
 }
+
+.bot-admin-link {
+    display: none;
+}

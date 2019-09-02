@@ -3,7 +3,13 @@ window.Discotron.RepositoryListController = class extends window.Discotron.Contr
 	 * Ctor 
 	 */
 	constructor() {
-		super("owner/repository-list.html");
+		super("owner/repository-list.html", () => {
+			this._addEventListeners();
+		});
+	}
+
+	_addEventListeners() {
+		document.getElementById("add-repository").onclick = this._onAddRepository;
 	}
 
 	/**
@@ -31,8 +37,23 @@ window.Discotron.RepositoryListController = class extends window.Discotron.Contr
 	/**
 	 * Called when add repository button is presse
 	 */
-	_onAddRepository() {
-
+	_onAddRepository(event) {
+		let repoUrl = document.getElementById("repository-url").value;
+		if (repoUrl !== "") {
+			event.target.disabled = true;
+			Discotron.WebAPI.queryBot("discotron-dashboard", "add-repository", {
+				url: repoUrl
+			}).then((data) => {
+				event.target.disabled = false;
+				if (!data) {
+					document.getElementById("repository-error").textContent = "Could not load repository";
+					document.getElementById("repository-url").focus();
+					document.getElementById("repository-url").select();
+				} else {
+					// TODO: Refresh
+				}
+			});
+		}
 	}
 
 	/**

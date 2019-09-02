@@ -9,8 +9,6 @@ let actions = {};
  * Starts listening on the /api endpoint
  */
 module.exports.onPost = (req, res) => {
-    let clientId = 2; // = getClientId(req.appToken);
-
     if (req === undefined || req.body === undefined) {
         return;
     }
@@ -21,19 +19,22 @@ module.exports.onPost = (req, res) => {
     let appToken = req.body.appToken;
     let guildId = req.body.guildId;
 
-    // TODO: check app token
-
     if (actions[plugin] === undefined || actions[plugin][action] === undefined) {
+        reply(res, "invalid-action");
         return;
     }
 
-    let response = actions[plugin][action];
-    
-    if (authLevelCheck[response.authLevel](clientId, guildId)) {
-        response.action(data, (requestedData) => {
-            reply(res, requestedData);
-        });
-    }
+    Login.getDiscordUserId(appToken).then((clientId) => {
+        let response = actions[plugin][action];
+        
+        if (authLevelCheck[response.authLevel](clientId, guildId)) {
+            response.action(data, (requestedData) => {
+                reply(res, requestedData);
+            }, clientId, guildId);
+        } else {
+            reply(res, "invalid-app-token");
+        }
+    });
 };
 
 function reply(res, data) {
@@ -86,3 +87,5 @@ const authLevelCheck = {
     "guildAdmin": require("../classes/guild.js").isGuildAdmin,
     "everyone": () => true
 };
+
+const Login = require("../classes/login.js");

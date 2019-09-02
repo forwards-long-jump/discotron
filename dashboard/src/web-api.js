@@ -10,11 +10,23 @@ window.Discotron.WebAPI = class {
             plugin: plugin,
             action: action,
             data: data,
-            // TODO: send app token
+            appToken: localStorage.appToken
         };
         if (guildId) {
             params.guildId = guildId;
         }
-        return Discotron.utils.post("/api", params);
+
+        return new Promise((resolve, reject) => {
+            Discotron.utils.post("/api", params).then((data) => {
+                if (data === "invalid-app-token") {
+                    localStorage.clear();
+                    window.location.replace("/login");
+                } else {
+                    resolve(data);
+                }
+            }).catch(() => {
+                console.error("Could not query bot");
+            });
+        });
     }
 };
