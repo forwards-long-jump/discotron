@@ -2,6 +2,7 @@ const BotSettings = require("./classes/bot-settings.js");
 const Repository = require("./classes/repository.js");
 const Guild = require("./classes/guild.js");
 const Plugin = require("./classes/plugin.js");
+const Owner = require("./classes/owner.js");
 const Logger = require("./utils/logger.js");
 const db = require("./apis/database-crud.js");
 
@@ -11,42 +12,6 @@ const botSettings = new BotSettings();
 
 module.exports.onMessage = (message) => {
     Logger.log(`__${message.channel.name}__: ${message.content}`);
-
-    /*
-
-    
-        for each plugin
-            if user allowed to use plugin
-                if (command && plugin-prefix) {
-                    for each commands["command"]
-                        if is triggered (words (without prefix), message) // isTrigger also checks ownersOnly, scope)
-                            commands.push(...)
-                if (commands is empty) {
-                    for each commands["words"]
-                        if is triggered (words (in array), message) // isTrigger also checks ownersOnly, scope)
-                            commands.push(...)
-                }
-
-                // spam detection
-                if commands not empty
-                    for command in commands :
-                        if !command.bypassSpamDetection
-                            calculate user spam meter
-                            if user spam meter > 100
-                                user cooldown = 3000 years
-                                dm user
-                            break;
-
-                for each commands["all"]
-                    if is triggered (undefined, message) // isTrigger also checks ownersOnly, scope)
-                        commands.push(...)
-
-        
-            
-        for command in commands:
-            command.trigger(words, ...) // command.trigger (switch this._triggerType)
-
-    */
 
     if (false) {
         return;
@@ -116,7 +81,7 @@ module.exports.onMessage = (message) => {
                 commands.push(command);
             }
         }
-        
+
         // Trigger valid messages
         const words = message.content.split(" ");
         for (let i = 0; i < commands.length; i++) {
@@ -138,6 +103,10 @@ module.exports.onLeaveGuild = (guild) => {};
 module.exports.getUserInfo = (userDiscordId) => {};
 module.exports.getBotInfo = () => {};
 
+module.exports.getBotSettings = () => {
+    return botSettings;
+};
+
 module.exports.loadRepositories = () => {
     db.select("Repositories").then((rows) => {
         if (rows.length === 0) {
@@ -156,6 +125,7 @@ module.exports.loadRepositories = () => {
 module.exports.registerActions = () => {
     webAPI.registerAction("set-bot-config", (data, reply) => {
         if (data === undefined) {
+            reply();
             return;
         }
         if (data.helpText !== undefined) {
@@ -164,6 +134,7 @@ module.exports.registerActions = () => {
         if (data.maintenance !== undefined) {
             botSettings.maintenance = data.maintenance;
         }
+        reply();
     }, "owner");
     webAPI.registerAction("get-bot-config", (data, reply) => {
         reply({
@@ -171,4 +142,9 @@ module.exports.registerActions = () => {
             maintenance: botSettings.maintenance
         });
     }, "owner");
+
+    Owner.registerActions();
+    Repository.registerActions();
+    Guild.registerActions();
+    Plugin.registerActions();
 }
