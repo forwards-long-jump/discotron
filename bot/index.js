@@ -2,35 +2,9 @@ const Logger = require("./utils/logger.js");
 Logger.setSeverity("debug");
 
 const DiscordJS = require("discord.js");
-const fs = require("fs");
-
 
 let appConfig;
-
-try {
-    appConfig = require("./config/app-config.json");
-    if (typeof appConfig.token === "undefined" || appConfig.token === "") {
-        Logger.log("Missing **token** in **app-config.json**.", "err");
-        process.exit();
-    }
-    if (typeof appConfig.applicationId === "undefined" || appConfig.applicationId === "") {
-        Logger.log("Missing **applicationId** in **app-config.json**.", "err");
-        process.exit();
-    }
-    if (typeof appConfig.oauth2Secret === "undefined" || appConfig.oauth2Secret === "") {
-        Logger.log("Missing **oauth2Secret** in **app-config.json**.", "err");
-        process.exit();
-    }
-    if (typeof appConfig.redirectURI === "undefined" || appConfig.redirectURI === "") {
-        Logger.log("Missing **redirectURI** in **app-config.json**.", "err");
-        process.exit();
-    }
-} catch (err) {
-    Logger.log("Please create **app-config.json** in bot/config.", "err");
-    process.exit();
-    return;
-}
-
+loadConfig();
 
 const databaseHelper = require("./utils/database-helper.js");
 // Database
@@ -39,30 +13,28 @@ if (!databaseHelper.databaseExists()) {
 }
 databaseHelper.openDatabase();
 
-const Login = require("./classes/login.js");
 const webserver = require("./webserver.js");
 const discotron = require("./discotron.js");
 
 const discordClient = new DiscordJS.Client();
 
+global.discotron = discotron;
 global.discordClient = discordClient;
 
-Logger.setSeverity("debug");
+discotron.loadOwners();
 
+discotron.loadGuilds().then(() => {
+    discotron.loadRepositories();
 
-// Web server
-webserver.serveDashboard();
-webserver.startAPIServer();
+    // Web server
+    webserver.startAPIServer();
+    webserver.serveDashboard();
 
-Login.registerActions();
+    connectToDiscord();
+    registerEvents();
+    discotron.registerActions();
+});
 
-// TODO: If ownership claimed only
-discotron.loadRepositories();
-
-discotron.registerActions();
-
-connectToDiscord();
-registerEvents();
 
 function connectToDiscord() {
     Logger.log("Connecting to discord...");
@@ -71,8 +43,6 @@ function connectToDiscord() {
         Logger.log(err.message, "err");
     });
 }
-
-discotron.registerActions();
 
 function registerEvents() {
     // TODO: Handle error and reaction
@@ -88,4 +58,31 @@ function registerEvents() {
     discordClient.on("error", () => {
         // TODO: Handle reconnection and bot status update
     });
+}
+
+function loadConfig() {
+    try {
+        appConfig = require("./config/app-config.json");
+        if (typeof appConfig.token === "undefined" || appConfig.token === "") {
+            Logger.log("Missing **token** in **app-config.json**.", "err");
+            process.exit();
+        }
+        if (typeof appConfig.applicationId === "undefined" || appConfig.applicationId === "") {
+            Logger.log("Missing **applicationId** in **app-config.json**.", "err");
+            process.exit();
+        }
+        if (typeof appConfig.oauth2Secret === "undefined" || appConfig.oauth2Secret === "") {
+            Logger.log("Missing **oauth2Secret** in **app-config.json**.", "err");
+            process.exit();
+        }
+        if (typeof appConfig.redirectURI === "undefined" || appConfig.redirectURI === "") {
+            Logger.log("Missing **redirectURI** in **app-config.json**.", "err");
+            process.exit();
+        }
+    } catch (err) {
+        Logger.log("Please create **app-config.json** in bot/config.", "err");
+        process.exit();
+        return;
+    }
+
 }
