@@ -1,10 +1,23 @@
 window.Discotron.utils = {
     post: (url, data) => {
-        // source: http://youmightnotneedjquery.com/
-        let request = new XMLHttpRequest();
-        request.open("POST", url, true);
-        request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-        request.send(JSON.stringify(data));
+        return new Promise((resolve, reject) => {
+            // source: http://youmightnotneedjquery.com/
+            let request = new XMLHttpRequest();
+            request.open("POST", url, true);
+            request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            request.send(JSON.stringify(data));
+
+            request.onreadystatechange = () => {
+                if (request.readyState == XMLHttpRequest.DONE) {
+                    try {
+                        resolve(JSON.parse(request.responseText));
+                    }
+                    catch(e) {
+                        reject(e);
+                    }
+                }
+            };
+        });
     },
     load: (url, targetElement, callback) => {
         // source: https://stackoverflow.com/questions/38132510/equivalent-to-load-without-jquery
@@ -14,7 +27,7 @@ window.Discotron.utils = {
             })
             .then(function (body) {
                 targetElement.innerHTML = body;
-                if(typeof callback === "function") {
+                if (typeof callback === "function") {
                     callback();
                 }
             });

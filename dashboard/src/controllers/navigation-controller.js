@@ -24,7 +24,7 @@ window.Discotron.NavigationController = class {
 	 * Load user status and display it on top
 	 */
 	static displayUser() {
-		return new Promise();
+		document.querySelector("#user-info img").src = `https://cdn.discordapp.com/avatars/${localStorage.getItem("clientId")}/${localStorage.getItem("avatar")}.png`;
+		document.querySelector("#user-info span").textContent = `${localStorage.getItem("username")}#${localStorage.getItem("discriminator")}`;
 	}
 };
-
