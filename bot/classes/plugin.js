@@ -95,7 +95,7 @@ class Plugin extends PluginModel {
             pluginId: this.id
         });
 
-        global.discotron.trigger("plugin-deleted", this.id);
+        global.discotron.triggerEvent("plugin-deleted", this.id);
     }
 
     /**
