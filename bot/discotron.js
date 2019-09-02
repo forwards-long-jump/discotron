@@ -4,11 +4,32 @@ const Guild = require("./classes/guild.js");
 const Plugin = require("./classes/plugin.js");
 const Owner = require("./classes/owner.js");
 const Logger = require("./utils/logger.js");
+const Login = require("./classes/login.js");
 const db = require("./apis/database-crud.js");
 
 const webAPI = require("./apis/web-api.js").getWebAPI("discotron-dashboard");
 
 const botSettings = new BotSettings();
+
+let actions = {};
+
+module.exports.on = (actionName, action) => {
+    if (actions[actionName] === undefined) {
+        actions[actionName] = [];
+    }
+
+    actions[actionName].push(action);
+};
+
+module.exports.triggerEvent = (actionName, data) => {
+    if (actions[actionName] === undefined) {
+        throw new Error("Cannot trigger inexistent action: " + actionName);
+    } else {
+        for (let i = 0; i < actions[actionName].length; i++) {
+            actions[actionName][i](data);
+        }
+    }
+};
 
 module.exports.onMessage = (message) => {
     Logger.log(`__${message.channel.name}__: ${message.content}`);
@@ -96,6 +117,21 @@ module.exports.onMessage = (message) => {
 
 };
 
+module.exports.loadGuilds = () => {
+    return Promise.resolve();
+    return new Promise(() => {
+        // TODO
+    });
+};
+
+module.exports.loadOwners = () => {
+    Owner.getOwners().then((owners) => {
+        if (owners.length === 0) {
+            Login.setFirstLaunch();
+        }
+    });
+};
+
 module.exports.onReaction = (reaction) => {};
 module.exports.onJoinGuild = (guild) => {};
 module.exports.onLeaveGuild = (guild) => {};
@@ -142,7 +178,7 @@ module.exports.registerActions = () => {
             maintenance: botSettings.maintenance
         });
     }, "owner");
-    
+
     webAPI.registerAction("get-bot-info", (data, reply) => {
         reply({
             avatar: global.discordClient.user.displayAvatarURL,
@@ -150,6 +186,8 @@ module.exports.registerActions = () => {
         });
     }, "everyone");
 
+
+    Login.registerActions();
     Owner.registerActions();
     Repository.registerActions();
     Guild.registerActions();

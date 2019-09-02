@@ -55,6 +55,22 @@ class Owner extends OwnerModel {
             reply(Owner.isOwner(data.discordUserId));
         });
     }
+
+    static getOwners() {
+        return new Promise((resolve, reject) => {
+            if (Owner._owners.size === 0) {
+                db.select("Owners").then((rows) => {
+                    for (let i = 0; i < rows.length; i++) {
+                        const row = rows[i];
+                        Owner._owners.add(row.discordUserId);
+                    }
+                    resolve(Array.from(Owner._owners));
+                });
+            } else {
+                resolve(Array.from(Owner._owners));
+            }
+        });
+    }
 }
 
 Owner._owners = new Set([]);

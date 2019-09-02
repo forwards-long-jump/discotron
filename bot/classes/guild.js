@@ -16,7 +16,9 @@ class Guild extends GuildModel {
         this._loadEnabledPlugins();
 
         Guild._guilds[discordId] = this;
-        // discotron.registerEvent(this.onPluginLoaded);
+        
+        global.discotron.on("plugin-loaded", this.onPluginLoaded);
+        global.discotron.on("plugin-deleted", this.onPluginDeleted);
     }
 
     /**
