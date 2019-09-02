@@ -166,14 +166,20 @@ class Repository extends RepositoryModel {
      * @returns {object} Object containing {url, pluginIds, pages, status}
      */
     toObject() {
-
+        return {
+            url: super.url,
+            pluginIds: super.pluginIds,
+            pages: super.pages,
+            status: this.getStatus()
+        };
     }
 
     /**
      * @returns {number} Number of commits behind
      */
     getStatus() {
-
+        // TODO:
+        return undefined;
     }
 
     /**
@@ -185,7 +191,15 @@ class Repository extends RepositoryModel {
 
     static registerActions() {
         webAPI.registerAction("get-repositories", (data, reply) => {
-            reply(Repository.getAll());
+            let repositories = [];
+
+            for (let i = 0; i < Repository.getAll().length; i++) {
+                const repository = Repository.getAll()[i];
+                repositories.push(repository.toObject());
+            }
+
+            reply(repositories);
+
         }, "owner");
         webAPI.registerAction("add-repository", (data, reply) => {
             Repository.clone(data.url).then(() => reply(true)).catch(() => reply(false));

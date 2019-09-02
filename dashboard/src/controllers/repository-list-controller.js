@@ -5,6 +5,7 @@ window.Discotron.RepositoryListController = class extends window.Discotron.Contr
 	constructor() {
 		super("owner/repository-list.html", () => {
 			this._addEventListeners();
+			this._displayRepos();
 		});
 	}
 
@@ -21,7 +22,20 @@ window.Discotron.RepositoryListController = class extends window.Discotron.Contr
 	 * Display the list of repositories and the plugins 
 	 */
 	_displayRepos() {
+		Discotron.Repository.getAll().then((repositories) => {
+			if (repositories.length > 0) {
+				document.getElementById("repositories-container").innerHTML = "";
+			}
 
+			for (let i = 0; i < repositories.length; i++) {
+				const repo = repositories[i];
+				let template = document.getElementById("template-repository-container");
+				let container = document.importNode(template.content, true);
+
+				container.querySelector(".plugin-bar").value = repo.url;
+				document.getElementById("repositories-container").appendChild(container);
+			}
+		});
 	}
 
 	/**

@@ -3,10 +3,10 @@ window.Discotron.Repository = class extends window.Discotron.RepositoryModel {
      * Ctor
      * @param {string} url URL of the repository
      */
-    constructor(url) {
+    constructor(url, pluginIds, pages) {
         // get info from db
-        super(url /*, ...*/ );
-        window.Discotron.Repository._repositories.push(this);
+        super(url, pluginIds, pages);
+        Discotron.Repository._repositories.push(this);
     }
 
     /**
@@ -14,15 +14,26 @@ window.Discotron.Repository = class extends window.Discotron.RepositoryModel {
      * @returns {array} Array of Repositories
      */
     static getAll() {
-        return window.Discotron.Repository._repositories;
+        return new Promise((resolve, reject) => {
+            if (Discotron.Repository._repositories.length === 0) {
+                Discotron.WebAPI.queryBot("discotron-dashboard", "get-repositories").then((data) => {
+                    for (let i = 0; i < data.length; i++) {
+                        const repository = data[i];
+                        new Discotron.Repository(repository.url, repository.pluginIds, repository.pages);
+                    }
+                    resolve(Discotron.Repository._repositories);
+                });
+            } else {
+                resolve(Discotron.Repository._repositories);
+            }
+        });
     }
 
     /**
      * Reload the repositories
      */
     static reload() {
-        window.Discotron.Repository._repositories = [];
-        // build all repos
+        Discotron.Repository._repositories = [];
     }
 
     /**
@@ -41,4 +52,4 @@ window.Discotron.Repository = class extends window.Discotron.RepositoryModel {
     }
 };
 
-window.Discotron.Repository.prototype._repositories = [];
+Discotron.Repository._repositories = [];
