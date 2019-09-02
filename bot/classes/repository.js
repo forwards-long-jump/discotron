@@ -97,12 +97,12 @@ class Repository extends RepositoryModel {
      * Returns a folder name from a git url
      * @param {string} url 
      */
-    static _generateFolderName(url) {
-        url = url.replace(/\.git/g, "");
+    static _generateFolderName(baseUrl) {
+        let url = baseUrl.replace(/\.git/g, "");
         url = url.split("/");
         url = url[url.length - 1];
         url = url.replace(/[^a-zA-Z0-9\-]/g, "");
-        return url + crypto.createHash("md5").update(url).digest("hex"); // Should rather check if folder exists but we should not have collisions for that
+        return url + "-" + crypto.createHash("md5").update(baseUrl).digest("hex"); // Should rather check if folder exists but we should not have collisions for that
     }
 
     /**
@@ -160,7 +160,9 @@ class Repository extends RepositoryModel {
 
             Repository._repositories.splice(index, 1);
 
-            db.delete("Repositories", {folderName: this._folderName}).then(() => {
+            db.delete("Repositories", {
+                folderName: this._folderName
+            }).then(() => {
                 let plugins = Plugin.getAll();
                 for (let i = 0; i < this._pluginIds.length; ++i) {
                     plugins[this._pluginIds[i]].delete();
