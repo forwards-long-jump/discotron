@@ -10,7 +10,10 @@ window.Discotron.RepositoryListController = class extends window.Discotron.Contr
 	}
 
 	_addEventListeners() {
-		document.getElementById("add-repository").onclick = this._onAddRepository;
+		document.getElementById("add-repository").onclick = () => {
+			this._onAddRepository();
+		};
+
 		document.getElementById("repository-url").onkeyup = (e) => {
 			if (e.keyCode === 13) {
 				document.getElementById("add-repository").onclick();
@@ -56,7 +59,7 @@ window.Discotron.RepositoryListController = class extends window.Discotron.Contr
 	/**
 	 * Called when add repository button is presse
 	 */
-	_onAddRepository(event) {
+	_onAddRepository() {
 		let repoUrl = document.getElementById("repository-url").value;
 		if (repoUrl !== "") {
 			document.getElementById("add-repository").disabled = true;
@@ -71,7 +74,9 @@ window.Discotron.RepositoryListController = class extends window.Discotron.Contr
 				} else {
 					document.getElementById("repository-url").value = "";
 					document.getElementById("repository-url").focus();
-					// TODO: Refresh
+					Discotron.Repository.clearCache();
+
+					this._displayRepos();
 				}
 			});
 		}

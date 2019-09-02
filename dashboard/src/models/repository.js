@@ -32,7 +32,7 @@ window.Discotron.Repository = class extends window.Discotron.RepositoryModel {
     /**
      * Reload the repositories
      */
-    static reload() {
+    static clearCache() {
         Discotron.Repository._repositories = [];
     }
 
