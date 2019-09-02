@@ -125,7 +125,7 @@ module.exports.loadRepositories = () => {
 module.exports.registerActions = () => {
     webAPI.registerAction("set-bot-config", (data, reply) => {
         if (data === undefined) {
-            return;
+            reply();
         }
         if (data.helpText !== undefined) {
             botSettings.helpText = data.helpText;
@@ -133,6 +133,7 @@ module.exports.registerActions = () => {
         if (data.maintenance !== undefined) {
             botSettings.maintenance = data.maintenance;
         }
+        reply();
     }, "owner");
     webAPI.registerAction("get-bot-config", (data, reply) => {
         reply({

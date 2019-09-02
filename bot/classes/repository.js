@@ -182,6 +182,7 @@ class Repository extends RepositoryModel {
         }, "owner");
         webAPI.registerAction("add-repository", (data, reply) => {
             Repository.clone(data.url);
+            reply();
         }, "owner");
         webAPI.registerAction("remove-repository", (data, reply) => {
             for (let i = 0; i < Repository._repositories.length; ++i) {
@@ -190,6 +191,7 @@ class Repository extends RepositoryModel {
                     repo.delete();
                 }
             }
+            reply();
         }, "owner");
         webAPI.registerAction("update-repository", (data, reply) => {
             for (let i = 0; i < Repository._repositories.length; ++i) {
@@ -198,6 +200,7 @@ class Repository extends RepositoryModel {
                     repo.pull();
                 }
             }
+            reply();
         }, "owner");
     }
 }

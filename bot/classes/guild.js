@@ -299,6 +299,7 @@ class Guild extends GuildModel {
         }, "guildAdmin");
         webAPI.registerAction("set-allowed-channels", (data, reply) => {
             Guild.get(data.guildId).allowedChannels = data.allowedChannels;
+            reply();
         }, "guildAdmin");
 
         webAPI.registerAction("get-plugin-enabled", (data, reply) => {
@@ -306,6 +307,7 @@ class Guild extends GuildModel {
         }, "guildAdmin");
         webAPI.registerAction("set-plugin-enabled", (data, reply) => {
             Guild.get(data.guildId).setPluginEnabled(data.pluginId, data.enabled);
+            reply();
         }, "guildAdmin");
 
         webAPI.registerAction("get-plugin-permission", (data, reply) => {
@@ -313,6 +315,7 @@ class Guild extends GuildModel {
         }, "guildAdmin");
         webAPI.registerAction("set-plugin-permission", (data, reply) => {
             Guild.get(data.guildId).setPluginPermission(data.pluginId, data.userRoles);
+            reply();
         }, "guildAdmin");
 
         webAPI.registerAction("get-guild-prefix", (data, reply) => {
@@ -320,6 +323,7 @@ class Guild extends GuildModel {
         }, "guildAdmin");
         webAPI.registerAction("set-guild-prefix", (data, reply) => {
             Guild.get(data.guildId).prefix = data.prefix;
+            reply();
         }, "guildAdmin");
 
         webAPI.registerAction("get-admins", (data, reply) => {
@@ -327,6 +331,7 @@ class Guild extends GuildModel {
         }, "guildAdmin");
         webAPI.registerAction("set-admins", (data, reply) => {
             Guild.get(data.guildId).admins = data.admins;
+            reply();
         }, "guildAdmin");
     }
 }

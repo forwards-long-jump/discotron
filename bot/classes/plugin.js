@@ -160,6 +160,7 @@ class Plugin extends PluginModel {
         });
         webAPI.registerAction("set-plugin-prefix", (data, reply) => {
             Plugin._plugins[data.pluginId].prefix = data.prefix;
+            reply();
         }, "everyone");
 
         webAPI.registerAction("get-enabled", (data, reply) => {
@@ -167,6 +168,7 @@ class Plugin extends PluginModel {
         });
         webAPI.registerAction("set-enabled", (data, reply) => {
             Plugin._plugins[data.pluginId].enabled = data.enabled;
+            reply();
         }, "owner");
     }
 }

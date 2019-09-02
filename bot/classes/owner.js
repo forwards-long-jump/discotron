@@ -42,9 +42,11 @@ class Owner extends OwnerModel {
     static registerActions() {
         webAPI.registerAction("add-owner", (data, reply) => {
             Owner.add(data.discordUserId);
+            reply();
         }, "owner");
         webAPI.registerAction("remove-owner", (data, reply) => {
             Owner.remove(data.discordUserId);
+            reply();
         }, "owner");
         webAPI.registerAction("get-owners", (data, reply) => {
             reply(Owner._owners);
