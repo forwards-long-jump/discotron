@@ -8,13 +8,15 @@ class Owner extends OwnerModel {
      * @returns {object} {id, name}
      */
     toObject() {
-        global.discordClient.fetchUser(this.discordId).then((user) => {
-            return {
-                id: user.id,
-                name: user.name
-            };
-        });
-    }
+        return new Promise((resolve, reject) => {
+                global.discordClient.fetchUser(this.discordId).then((user) => {
+                    resolve({
+                        id: user.id,
+                        name: user.name
+                    });
+                });
+            });
+        }
 
     /**
      * Adds an owner
@@ -62,7 +64,7 @@ class Owner extends OwnerModel {
             reply();
         }, "owner");
         webAPI.registerAction("get-owners", (data, reply) => {
-            reply(Owner._owners);
+            reply(Array.from(Owner._owners));
         }, "owner");
         webAPI.registerAction("is-owner", (data, reply) => {
             reply(Owner.isOwner(data.discordUserId));
