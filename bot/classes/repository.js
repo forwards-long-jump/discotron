@@ -185,7 +185,9 @@ class Repository extends RepositoryModel {
 
     static registerActions() {
         webAPI.registerAction("get-repositories", (data, reply) => {
-            reply(Repository.getAll());
+            reply(Repository.getAll().map((repo) => {
+                return repo.toObject();
+            }));
         }, "owner");
         webAPI.registerAction("add-repository", (data, reply) => {
             Repository.clone(data.url).then(() => reply(true)).catch(() => reply(false));

@@ -4,6 +4,21 @@ const db = require("./../apis/database-crud.js");
 
 class Owner extends OwnerModel {
     /**
+     * Returns an object describing the owner
+     * @returns {object} {id, name}
+     */
+    toObject() {
+        return new Promise((resolve, reject) => {
+                global.discordClient.fetchUser(this.discordId).then((user) => {
+                    resolve({
+                        id: user.id,
+                        name: user.name
+                    });
+                });
+            });
+        }
+
+    /**
      * Adds an owner
      * @param {string} discordUserId 
      */
@@ -49,7 +64,7 @@ class Owner extends OwnerModel {
             reply();
         }, "owner");
         webAPI.registerAction("get-owners", (data, reply) => {
-            reply(Owner._owners);
+            reply(Array.from(Owner._owners));
         }, "owner");
         webAPI.registerAction("is-owner", (data, reply, discordUserId) => {
             reply(Owner.isOwner(discordUserId));

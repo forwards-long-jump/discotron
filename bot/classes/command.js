@@ -10,7 +10,16 @@ class Command extends CommandModel {
      * @returns {object} Object containing {triggerType, trigger, help, args, ownersOnly, requires ..........}
      */
     toObject() {
-
+        return {
+            triggerType: this.triggerType,
+            trigger: this.trigger,
+            help: this.help,
+            args: this.args,
+            ownersOnly: this.ownersOnly,
+            requiresMention: this.requiresMention,
+            bypassSpamDetection: this.bypassSpamDetection,
+            scope: this.scope
+        };
     }
 
     /**
@@ -53,27 +62,26 @@ class Command extends CommandModel {
      * @param {array} words 
      */
     doMessageAction(message, words) {
-        
+
         switch (this.triggerType) {
             case "command":
                 let commandArgs = {
                     "all": words.slice(1)
                 };
-                
+
                 for (let i = 0; i < this.args.length; ++i) {
                     // When an arg has "allowsSpace" set, we eat all other args.
-                    if(this.args[i].allowsSpace) {
+                    if (this.args[i].allowsSpace) {
                         commandArgs[this.args[i].name] = words.slice(i + 1).join(" ");
-                        
-                        if(commandArgs[this.args[i].name] === "") {
+
+                        if (commandArgs[this.args[i].name] === "") {
                             commandArgs[this.args[i].name] = this.args[i].defaultValue;
                         }
                         break;
-                    }
-                    else {
+                    } else {
                         commandArgs[this.args[i].name] = (typeof words[i + 1] !== "undefined") ? words[i + 1] : this.args[i].defaultValue;
                     }
-                 }
+                }
                 this.action(message, commandArgs);
                 break;
 
