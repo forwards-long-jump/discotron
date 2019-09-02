@@ -37,7 +37,7 @@ class BotSettings extends BotSettingsModel {
     set maintenance(maintenance) {
         this._maintenance = maintenance;
         db.update("BotSettings", {
-            value: maintenance
+            value: maintenance ? "true" : "false"
         }, {
             name: "maintenance"
         });
