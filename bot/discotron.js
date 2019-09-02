@@ -46,19 +46,19 @@ module.exports.onMessage = (message) => {
 
     let guild = Guild.get(message.guild.id);
 
-    if (guild !== undefined && !guild.allowedChannelIds.includes(message.channel.id)) {
+    if (guild !== undefined && (!guild.allowedChannelIds.includes(message.channel.id) && guild.allowedChannelIds.length > 0)) {
         return;
     }
 
     let loweredCaseMessage = message.content.toLowerCase();
 
-    let isCommand = guild === undefined || message.startsWith(guild.commandPrefix);
+    let isCommand = guild === undefined || message.content.startsWith(guild.commandPrefix);
 
     const plugins = Plugin.getAll();
     for (const pluginId in plugins) {
         let commands = [];
         const plugin = plugins[pluginId];
-        if (guild !== undefined && !guild.isAdmin(message.author.id) && guild.permissions[pluginId].allows(message.author.id)) {
+        if (guild !== undefined && guild.permissions[pluginId].allows(message.author.id)) {
             continue;
         }
 
