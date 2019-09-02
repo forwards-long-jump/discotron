@@ -11,10 +11,14 @@ class Guild extends GuildModel {
      */
     constructor(discordId) {
         super(discordId);
-        
-        global.discotron.on("plugin-loaded", (pluginId) => {this.onPluginLoaded(pluginId);});
-        global.discotron.on("plugin-deleted", (pluginId) => {this.onPluginDeleted(pluginId);});
-        
+
+        global.discotron.on("plugin-loaded", (pluginId) => {
+            this.onPluginLoaded(pluginId);
+        });
+        global.discotron.on("plugin-deleted", (pluginId) => {
+            this.onPluginDeleted(pluginId);
+        });
+
         this._loadPrefix();
         this._loadAdminsFromDatabase();
         this._loadAllowedChannels();
@@ -299,20 +303,35 @@ class Guild extends GuildModel {
         webAPI.registerAction("get-guilds", (data, reply) => {
             reply(Guild._guilds.map(guild => guild.toObject()));
         }, "guildAdmin");
-        webAPI.registerAction("get-members", (data, reply) => {
-            // TODO : need to access discord API
+        webAPI.registerAction("get-members", (data, reply, clientId, guildId) => {
+            let guild = global.discordClient.guilds.get(guildId);
+            let members = guild.members;
+            reply(members.map(member => { return{
+                id: member.user.id,
+                tag: member.user.tag
+            };}));
         }, "guildAdmin");
         webAPI.registerAction("get-roles", (data, reply) => {
-            // TODO : need to access discord API
+            let guild = global.discordClient.guilds.get(guildId);
+            reply(guild.roles.map((role) => {return {
+                id: role.id,
+                name: role.name,
+                color: role.hexColor
+            };}));
         }, "guildAdmin");
         webAPI.registerAction("get-channels", (data, reply) => {
-            // TODO : need to access discord API
+            let guild = global.discordClient.guilds.get(guildId);
+            reply(guild.channels.map((channel) => {return {
+                id: channel.id,
+                name: channel.name,
+                type: channel.type
+            };}));
         }, "guildAdmin");
         webAPI.registerAction("get-guild-where-is-admin", (data, reply, userId) => {
             let guilds = Guild._guilds.filter(guild => guild.isAdmin(userId));
             reply(guilds.map(guild => guild.toObject()));
         });
-        
+
         webAPI.registerAction("get-allowed-channels", (data, reply) => {
             reply(Guild.get(data.guildId).allowedChannels);
         }, "guildAdmin");
