@@ -3,6 +3,16 @@ const db = require("./../apis/database-crud.js");
 
 class UserRole extends UserRoleModel {
     /**
+     * Returns an object describing the user / role
+     * @returns {object} {id, type}
+     */
+    toObject() {
+        return {
+            id: this.discordId,
+            type: this.type
+        };
+    }
+    /**
      * Returns whether the object describes the user, or a role which the user has
      * @param {string} userDiscordId 
      * @returns {boolean} True if this userRole includes given userId 
