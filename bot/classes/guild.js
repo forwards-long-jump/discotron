@@ -43,6 +43,19 @@ class Guild extends GuildModel {
     }
 
     /**
+     * Returns informations about the guild
+     * @returns {object} {id, name, image}
+     */
+    toObject() {
+        let guild = global.discordClient.guilds.get(this.discordId);
+        return {
+            id: this.discordId,
+            name: guild.name,
+            image: guild.iconURL
+        };
+    }
+
+    /**
      * Returns whether the given client ID is a bot admin on the guild
      * @param {string} clientId 
      */
@@ -307,26 +320,32 @@ class Guild extends GuildModel {
         webAPI.registerAction("get-members", (data, reply, clientId, guildId) => {
             let guild = global.discordClient.guilds.get(guildId);
             let members = guild.members;
-            reply(members.map(member => { return{
-                id: member.user.id,
-                tag: member.user.tag
-            };}));
+            reply(members.map(member => {
+                return {
+                    id: member.user.id,
+                    tag: member.user.tag
+                };
+            }));
         }, "guildAdmin");
         webAPI.registerAction("get-roles", (data, reply) => {
             let guild = global.discordClient.guilds.get(guildId);
-            reply(guild.roles.map((role) => {return {
-                id: role.id,
-                name: role.name,
-                color: role.hexColor
-            };}));
+            reply(guild.roles.map((role) => {
+                return {
+                    id: role.id,
+                    name: role.name,
+                    color: role.hexColor
+                };
+            }));
         }, "guildAdmin");
         webAPI.registerAction("get-channels", (data, reply) => {
             let guild = global.discordClient.guilds.get(guildId);
-            reply(guild.channels.map((channel) => {return {
-                id: channel.id,
-                name: channel.name,
-                type: channel.type
-            };}));
+            reply(guild.channels.map((channel) => {
+                return {
+                    id: channel.id,
+                    name: channel.name,
+                    type: channel.type
+                };
+            }));
         }, "guildAdmin");
         webAPI.registerAction("get-guild-where-is-admin", (data, reply, userId) => {
             let guilds = Guild._guilds.filter(guild => guild.isAdmin(userId));
