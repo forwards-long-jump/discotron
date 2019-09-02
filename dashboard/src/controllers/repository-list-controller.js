@@ -10,6 +10,11 @@ window.Discotron.RepositoryListController = class extends window.Discotron.Contr
 
 	_addEventListeners() {
 		document.getElementById("add-repository").onclick = this._onAddRepository;
+		document.getElementById("repository-url").onkeyup = (e) => {
+			if (e.keyCode === 13) {
+				document.getElementById("add-repository").onclick();
+			}
+		};
 	}
 
 	/**
@@ -40,16 +45,18 @@ window.Discotron.RepositoryListController = class extends window.Discotron.Contr
 	_onAddRepository(event) {
 		let repoUrl = document.getElementById("repository-url").value;
 		if (repoUrl !== "") {
-			event.target.disabled = true;
+			document.getElementById("add-repository").disabled = true;
 			Discotron.WebAPI.queryBot("discotron-dashboard", "add-repository", {
 				url: repoUrl
 			}).then((data) => {
-				event.target.disabled = false;
+				document.getElementById("add-repository").disabled = false;
 				if (!data) {
 					document.getElementById("repository-error").textContent = "Could not load repository";
 					document.getElementById("repository-url").focus();
 					document.getElementById("repository-url").select();
 				} else {
+					document.getElementById("repository-url").value = "";
+					document.getElementById("repository-url").focus();
 					// TODO: Refresh
 				}
 			});

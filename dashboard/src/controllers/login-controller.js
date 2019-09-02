@@ -83,7 +83,11 @@ window.Discotron.LoginController = class /* does not extends Controller because 
      * Add events to buttons
      */
     static addEvents() {
-
+        document.getElementById("owner-ship-token").onkeyup = (e) => {
+            if (e.keyCode === 13) {
+                Discotron.LoginController.claimOwnership()
+            }
+        };
     }
 };
 
