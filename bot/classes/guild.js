@@ -11,6 +11,7 @@ class Guild extends GuildModel {
     constructor(discordId) {
         super(discordId);
         this._loadPrefix();
+        this._loadAdmins();
         this._loadAllowedChannels();
         this._loadEnabledPlugins();
 
@@ -54,7 +55,7 @@ class Guild extends GuildModel {
      * Adds a bot admin to the guild
      * @param {array} usersRoles Array of UserRole 
      */
-    setAdmins(usersRoles) {
+    set admins(usersRoles) {
         this._admins = usersRoles;
 
         db.delete("Admins", {
@@ -67,6 +68,23 @@ class Guild extends GuildModel {
                 userRoleId: userRole.getId()
             });
         }
+    }
+
+    /**
+     * Loads members of the guild with admin privilege
+     */
+    loadDiscordAdmins(discordGuild) {
+        // TODO: implement this using the discord.js api
+        /*
+        let admin = new UserRole(discordGuild.ownerId, "user");
+        this._admins.push(admin)
+        for (role in guild.roles) {
+            if (role.hasPermission(admin)) {
+                let role = new UserRole(role.id, "role")
+                this._admins.push(role)
+            }
+        }
+        */
     }
 
 
@@ -209,7 +227,7 @@ class Guild extends GuildModel {
     }
 
     /**
-     * Load prefix from database
+     * Load prefix from database, insert default value in db if none found
      */
     _loadPrefix() {
         db.select("GuildSettings", ["prefix"], {
@@ -217,6 +235,24 @@ class Guild extends GuildModel {
         }).then((rows) => {
             if (rows.length > 0) {
                 this._prefix = rows[0].prefix;
+            } else {
+                db.insert("GuildSettings", {
+                    discordGuildId: this.guildId,
+                    prefix: "!"
+                });
+            }
+        });
+    }
+
+    /**
+     * Loads admins from db, inserts default values if none found
+     */
+    _loadAdminsFromDatabase() {
+        db.select("Admins", ["userRoleId"], {
+            discordGuildId: this.guildId
+        }).then((rows) => {
+            for (let i = 0; i < rows.length; ++i) {
+                this._admins.push(UserRole.getById(rows[i].userRoleId));
             }
         });
     }
