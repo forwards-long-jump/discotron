@@ -4,6 +4,19 @@ const db = require("./../apis/database-crud.js");
 
 class Owner extends OwnerModel {
     /**
+     * Returns an object describing the owner
+     * @returns {object} {id, name}
+     */
+    toObject() {
+        global.discordClient.fetchUser(this.discordId).then((user) => {
+            return {
+                id: user.id,
+                name: user.name
+            };
+        });
+    }
+
+    /**
      * Adds an owner
      * @param {string} discordUserId 
      */
