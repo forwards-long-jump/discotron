@@ -49,7 +49,7 @@ module.exports.onMessage = (message) => {
         guild = Guild.get(message.guild.id);
     }
 
-    if (guild !== undefined && (!guild.allowedChannelIds.includes(message.channel.id) && guild.allowedChannelIds.length > 0)) {
+    if (guild !== undefined && (!guild.allowedChannelIds.has(message.channel.id) && guild.allowedChannelIds.size > 0)) {
         return;
     }
 
