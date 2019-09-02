@@ -10,7 +10,7 @@ window.Discotron.WebAPI = class {
             plugin: plugin,
             action: action,
             data: data,
-            // TODO: send app token
+            appToken: localStorage.appToken
         };
         if (guildId) {
             params.guildId = guildId;
