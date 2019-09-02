@@ -1,4 +1,5 @@
 const Logger = require("../utils/logger.js");
+const Login = require("../classes/login.js");
 
 /**
  * Handles receiving message from dashboard
@@ -9,8 +10,6 @@ let actions = {};
  * Starts listening on the /api endpoint
  */
 module.exports.onPost = (req, res) => {
-    let clientId = 2; // = getClientId(req.appToken);
-
     if (req === undefined || req.body === undefined) {
         return;
     }
@@ -21,6 +20,8 @@ module.exports.onPost = (req, res) => {
     let appToken = req.body.appToken;
     let guildId = req.body.guildId;
 
+    let clientId = Login.getDiscordUserId(appToken);
+
     // TODO: check app token
 
     if (actions[plugin] === undefined || actions[plugin][action] === undefined) {
@@ -28,7 +29,7 @@ module.exports.onPost = (req, res) => {
     }
 
     let response = actions[plugin][action];
-    
+
     if (authLevelCheck[response.authLevel](clientId, guildId)) {
         response.action(data, (requestedData) => {
             reply(res, requestedData);
