@@ -32,12 +32,11 @@ class Guild extends GuildModel {
      * @param {string} clientId 
      */
     isAdmin(clientId) {
-        // TODO: Check user role and check if it has admin permission
-        for (let i = 0; i < this._admins.length; ++i) {
-            if (this._admins[i].describes(clientId)) {
+        this.admins.forEach((admin) => {
+            if (admin.describes(clientId)) {
                 return true;
             }
-        }
+        });
         return false;
     }
 
@@ -56,7 +55,7 @@ class Guild extends GuildModel {
      * @param {array} usersRoles Array of UserRole 
      */
     set admins(usersRoles) {
-        this._admins = usersRoles;
+        this._admins = new Set(usersRoles);
 
         db.delete("Admins", {
             discordGuildId: this.guildId
@@ -106,7 +105,7 @@ class Guild extends GuildModel {
      * @param {array} discordChannelIds 
      */
     set allowedChannels(discordChannelIds) {
-        this._allowedChannelIds = discordChannelIds;
+        this._allowedChannelIds = new Set(discordChannelIds);
         db.delete("AllowedChannels", {
             discordGuildId: this.discordId
         });
@@ -124,7 +123,7 @@ class Guild extends GuildModel {
      * @returns {boolean} True if the plugin is enabled in the guild
      */
     isPluginEnabled(pluginId) {
-        return this.enabledPlugins[pluginId];
+        return this.enabledPlugins.has(pluginId);
     }
 
     /**
@@ -133,13 +132,14 @@ class Guild extends GuildModel {
      * @param {boolean} enabled 
      */
     setPluginEnabled(pluginId, enabled) {
-        this._enabledPlugins[pluginId] = enabled;
         if (enabled) {
+            this._enabledPlugins.add(pluginId);
             db.insert("GuildEnabledPlugins", {
                 pluginId: pluginId,
                 discordGuildId: this.discordId
             });
         } else {
+            this._enabledPlugins.delete(pluginId);
             db.delete("GuildEnabledPlugins", {
                 pluginId: pluginId,
                 discordGuildId: this.discordId
@@ -182,7 +182,8 @@ class Guild extends GuildModel {
      * @param {string} pluginId 
      */
     onPluginDeleted(pluginId) {
-        // TODO
+        delete this.permissions[pluginId];
+        this._enabledPlugins.delete(pluginId);
     }
 
     /**
@@ -208,7 +209,7 @@ class Guild extends GuildModel {
             discordGuildId: this.guildId
         }).then((rows) => {
             for (let i = 0; i < rows.length; ++i) {
-                this._enabledPlugins.push(rows[i].pluginId);
+                this._enabledPlugins.add(rows[i].pluginId);
             }
         });
     }
@@ -221,7 +222,7 @@ class Guild extends GuildModel {
             discordGuildId: this.guildId
         }).then((rows) => {
             for (let i = 0; i < rows.length; ++i) {
-                this._allowedChannelIds.push(rows[i].discordChannelId);
+                this._allowedChannelIds.add(rows[i].discordChannelId);
             }
         });
     }
@@ -252,7 +253,7 @@ class Guild extends GuildModel {
             discordGuildId: this.guildId
         }).then((rows) => {
             for (let i = 0; i < rows.length; ++i) {
-                this._admins.push(UserRole.getById(rows[i].userRoleId));
+                this._admins.add(UserRole.getById(rows[i].userRoleId));
             }
         });
     }

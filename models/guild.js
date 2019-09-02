@@ -6,9 +6,9 @@ class GuildModel {
      * Ctor
      * @param  {string} discordId DiscordId of the guild
      * @param  {string} commandPrefix Prefix of the bot, "!" by default
-     * @param  {array} allowedChannelIds Array of the channel DiscordIds where the bot is allowed
-     * @param  {array} enabledPlugins Array of the plugin Ids the bot is allowed to use in the guild
-     * @param  {array} admins Array of users/roles allowed to change the bot settings in the guild
+     * @param  {set} allowedChannelIds Array of the channel DiscordIds where the bot is allowed
+     * @param  {set} enabledPlugins Set of the plugin Ids the bot is allowed to use in the guild
+     * @param  {set} admins Array of users/roles allowed to change the bot settings in the guild
      * @param  {object} permissions Associative array {plugin Id => permissions} describing for each plugin who has the right tu use it
      */
     constructor(discordId = undefined, commandPrefix = "!", allowedChannelIds = [], enabledPlugins = [], admins = [], permissions = {}) {
