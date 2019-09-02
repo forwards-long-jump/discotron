@@ -15,7 +15,8 @@
     "discord.js": "^11.5.1",
     "express": "^4.17.1",
     "nodegit": "^0.25.1",
-    "sqlite3": "^4.1.0"
+    "sqlite3": "^4.1.0",
+    "uuid": "^3.3.3"
   },
   "author": "Pierre Bürki, Loïck Jeanneret",
   "license": "ISC"

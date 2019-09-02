@@ -14,12 +14,13 @@ module.exports.onPost = (req, res) => {
     if (req === undefined || req.body === undefined) {
         return;
     }
+
     let plugin = req.body.plugin;
     let action = req.body.action;
-    let data = req.body.action;
+    let data = req.body.data;
     let appToken = req.body.appToken;
     let guildId = req.body.guildId;
-    
+
     // TODO: check app token
 
     if (actions[plugin] === undefined || actions[plugin][action] === undefined) {
@@ -36,8 +37,8 @@ module.exports.onPost = (req, res) => {
 };
 
 function reply(res, data) {
-    // TODO: 
-
+    res.setHeader("Content-Type", "application/json");
+    res.end(JSON.stringify(data));
 }
 
 

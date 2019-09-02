@@ -1,19 +1,25 @@
-{   
+{
     "curly": true,
     "eqnull": true,
     "esnext": true,
     "futurehostile": true,
     "immed": false,
-    "maxlen": 160,
+    "maxlen": 200,
     "node": true,
     "quotmark": "double",
     "trailing": true,
     "undef": true,
     "unused": "strict",
     "eqeqeq": true,
-    "camelcase": true,
     "funcscope": false,
     "white": true,
     "-W078": false,
-    "globals": { "window": true, "Discotron": true, "document": true }
+    "globals": {
+        "window": true,
+        "Discotron": true,
+        "document": true,
+        "localStorage": true,
+        "fetch": true,
+        "URL": true
+    }
 }

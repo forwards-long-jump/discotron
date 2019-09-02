@@ -15,6 +15,6 @@ window.Discotron.WebAPI = class {
         if (guildId) {
             params.guildId = guildId;
         }
-        Discotron.utils.post("/api", params);
+        return Discotron.utils.post("/api", params);
     }
-}
+};

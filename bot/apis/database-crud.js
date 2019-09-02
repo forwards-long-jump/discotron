@@ -53,60 +53,82 @@ function generateValuesForInsert(values) {
 
 module.exports.update = (table, values, where) => {
     const database = databaseHelper.getDatabase();
-    let sql = "UPDATE " + table + " SET ";
 
-    let valuesText = "";
-    let params = [];
-    for (let key in values) {
-        valuesText += key + "=?,";
-        params.push(values[key]);
-    }
-    valuesText = valuesText.substr(0, valuesText.length - 1);
+    return new Promise((resolve, reject) => {
+        let sql = "UPDATE " + table + " SET ";
 
-    let whereText = "";
-    for (let key in where) {
-        whereText += key + "=? AND ";
-        params.push(where[key]);
-    }
-    whereText = whereText.substr(0, whereText.length - 5);
-
-    sql += valuesText + " WHERE " + whereText;
-    database.run(sql, params, (err) => {
-        if (err) {
-            Logger.log("Update in database failed : " + sql, "err");
+        let valuesText = "";
+        let params = [];
+        for (let key in values) {
+            valuesText += key + "=?,";
+            params.push(values[key]);
         }
+        valuesText = valuesText.substr(0, valuesText.length - 1);
+
+        let whereText = "";
+        for (let key in where) {
+            whereText += key + "=? AND ";
+            params.push(where[key]);
+        }
+        whereText = whereText.substr(0, whereText.length - 5);
+
+        sql += valuesText + " WHERE " + whereText;
+        database.run(sql, params, (err) => {
+            if (err) {
+                Logger.log("Update in database failed : " + sql, "err");
+                reject();
+            }
+            else {
+                resolve();
+            }
+        });
     });
 };
 
 module.exports.insert = (table, values) => {
     const database = databaseHelper.getDatabase();
-    let sql = "INSERT INTO " + table;
-    let parameters = generateValuesForInsert(values);
-    sql += " " + parameters.columns + " VALUES " + parameters.params;
 
-    database.run(sql, parameters.data, (err) => {
-        if (err) {
-            Logger.log("Insert in database failed : " + sql, "err");
-        }
+    return new Promise((resolve, reject) => {
+        let sql = "INSERT INTO " + table;
+        let parameters = generateValuesForInsert(values);
+        sql += " " + parameters.columns + " VALUES " + parameters.params;
+
+        database.run(sql, parameters.data, (err) => {
+            if (err) {
+                Logger.log("Insert in database failed : " + sql, "err");
+                reject();
+            }
+            else {
+                resolve();
+            }
+        });
     });
 };
 
 module.exports.delete = (table, where) => {
     const database = databaseHelper.getDatabase();
-    let sql = "DELETE FROM " + table;
-    if (!isEmpty(where)) {
-        let parameters = generateParameters(where);
-        sql += " WHERE " + parameters.text;
-        database.run(sql, parameters.objParam, (err) => {
-            if (err) {
-                Logger.log("Delete in database failed : " + sql, "err");
-            }
-        });
-    }
+
+    return new Promise((resolve, reject) => {
+        let sql = "DELETE FROM " + table;
+        if (!isEmpty(where)) {
+            let parameters = generateParameters(where);
+            sql += " WHERE " + parameters.text;
+            database.run(sql, parameters.objParam, (err) => {
+                if (err) {
+                    Logger.log("Delete in database failed : " + sql, "err");
+                    reject();
+                }
+                else {
+                    resolve();
+                }
+            });
+        }
+    });
 };
 
 module.exports.select = (table, fields = [], where = {}) => {
     const database = databaseHelper.getDatabase();
+
     return new Promise((resolve, reject) => {
         let sql = "SELECT ";
 
