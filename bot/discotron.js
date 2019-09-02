@@ -109,7 +109,7 @@ module.exports.onMessage = (message) => {
 
         // Trigger valid messages
         const words = message.content.split(" ");
-  
+
         for (let i = 0; i < commands.length; i++) {
             try {
                 commands[i].doMessageAction(message, words);
@@ -227,10 +227,17 @@ module.exports.registerActions = () => {
     }, "owner");
 
     webAPI.registerAction("get-bot-info", (data, reply) => {
-        reply({
-            avatar: global.discordClient.user.displayAvatarURL,
-            username: global.discordClient.user.tag
-        });
+        if (global.discordClient.user !== null) {
+            reply({
+                avatar: global.discordClient.user.displayAvatarURL,
+                username: global.discordClient.user.tag
+            });
+        } else {
+            reply({
+                avatar: "/dashboard/images/outage.png",
+                username: "Bot offline"
+            });
+        }
     }, "everyone");
 
 
