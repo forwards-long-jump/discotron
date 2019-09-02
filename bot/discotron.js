@@ -116,7 +116,7 @@ module.exports.onMessage = (message) => {
                 commands.push(command);
             }
         }
-        
+
         // Trigger valid messages
         const words = message.content.split(" ");
         for (let i = 0; i < commands.length; i++) {
@@ -171,4 +171,10 @@ module.exports.registerActions = () => {
             maintenance: botSettings.maintenance
         });
     }, "owner");
-}
+    webAPI.registerAction("get-bot-info", (data, reply) => {
+        reply({
+            avatar: global.discordClient.user.displayAvatarURL,
+            username: global.discordClient.user.tag
+        });
+    }, "everyone");
+};
