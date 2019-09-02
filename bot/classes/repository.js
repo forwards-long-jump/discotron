@@ -151,7 +151,7 @@ class Repository extends RepositoryModel {
         }
 
         db.delete("Repositories", this._folderName);
-        
+
         let plugins = Plugin.getAll();
         for (let i = 0; i < this._pluginIds.length; ++i) {
             plugins[this._pluginIds[i]].delete();
@@ -182,7 +182,9 @@ class Repository extends RepositoryModel {
 
     static registerActions() {
         webAPI.registerAction("get-repositories", (data, reply) => {
-            reply(Repository.getAll());
+            reply(Repository.getAll().map((repo) => {
+                return repo.toObject();
+            }));
         }, "owner");
         webAPI.registerAction("add-repository", (data, reply) => {
             Repository.clone(data.url);
