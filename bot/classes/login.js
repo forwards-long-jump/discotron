@@ -9,7 +9,7 @@ const appConfig = require("../config/app-config.json");
 
 let users = {};
 let firstLaunch = false;
-let ownerSecret = uuidv1();
+let ownerSecret;
 
 let clientSecret = appConfig.oauth2Secret;
 let clientId = appConfig.applicationId;
@@ -35,7 +35,7 @@ function handleLogin(authToken, reply, userOwnerSecret = undefined) {
             reply({
                 status: "first-launch"
             });
-        } else if (ownerSecret !== userOwnerSecret) {
+        } else if (ownerSecret === undefined || ownerSecret !== userOwnerSecret) {
             // Wrong secret
             reply({
                 status: "error"
@@ -282,8 +282,9 @@ function registerActions() {
     });
 }
 
-function setFirstLaunch(firstLaunch_) {
-    firstLaunch = firstLaunch_;
+function setFirstLaunch() {
+    firstLaunch = true;
+    ownerSecret = uuidv1();
 }
 
 module.exports.setFirstLaunch = setFirstLaunch;
