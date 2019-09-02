@@ -19,6 +19,7 @@ window.Discotron.WebAPI = class {
         return new Promise((resolve, reject) => {
             Discotron.utils.post("/api", params).then((data) => {
                 if (data === "invalid-app-token") {
+                    localStorage.clear();
                     window.location.replace("/login");
                 } else {
                     resolve(data);
