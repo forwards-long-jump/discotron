@@ -23,7 +23,7 @@ module.exports.on = (actionName, action) => {
 
 module.exports.triggerEvent = (actionName, data) => {
     if (actions[actionName] === undefined) {
-        throw new Error("Cannot trigger inexistent action: " + actionName);
+        Logger.log("Cannot trigger inexistent action: **" + actionName +"**", "warn");
     } else {
         for (let i = 0; i < actions[actionName].length; i++) {
             actions[actionName][i](data);
@@ -46,19 +46,19 @@ module.exports.onMessage = (message) => {
 
     let guild = Guild.get(message.guild.id);
 
-    if (guild !== undefined && !guild.allowedChannelIds.includes(message.channel.id)) {
+    if (guild !== undefined && (!guild.allowedChannelIds.includes(message.channel.id) && guild.allowedChannelIds.length > 0)) {
         return;
     }
 
     let loweredCaseMessage = message.content.toLowerCase();
 
-    let isCommand = guild === undefined || message.startsWith(guild.commandPrefix);
+    let isCommand = guild === undefined || message.content.startsWith(guild.commandPrefix);
 
     const plugins = Plugin.getAll();
     for (const pluginId in plugins) {
         let commands = [];
         const plugin = plugins[pluginId];
-        if (guild !== undefined && !guild.isAdmin(message.author.id) && guild.permissions[pluginId].allows(message.author.id)) {
+        if (guild !== undefined && guild.permissions[pluginId].allows(message.author.id)) {
             continue;
         }
 
@@ -118,10 +118,50 @@ module.exports.onMessage = (message) => {
 };
 
 module.exports.loadGuilds = () => {
-    return Promise.resolve();
-    return new Promise(() => {
-        // TODO
+    return new Promise((resolve, reject) => {
+        db.select("GuildSettings", ["discordGuildId"]).then((rows) => {
+            for (let i = 0; i < rows.length; ++i) {
+                new Guild(rows[i].discordGuildId);
+            }
+            resolve();
+        });
     });
+};
+
+module.exports.updateGuilds = () => {
+    let oldGuildIds = Object.keys(Guild.getAll());
+    let newGuildIds = global.discordClient.guilds.map((guild) => {return guild.id;});
+
+    // Delete abandonned guilds and add new ones
+    let addedGuilds = [];
+    let removedGuilds = [];
+    for (let i = 0; i < newGuildIds.length; ++i) {
+        const guildId = newGuildIds[i];
+        if (!oldGuildIds.includes(guildId)) {
+            addedGuilds.push(guildId);
+        }
+    }
+    for (let i = 0; i < oldGuildIds.length; ++i) {
+        const guildId = oldGuildIds[i];
+        if (!newGuildIds.includes(guildId)) {
+            removedGuilds.push(guildId);
+        }
+    }
+
+    for (let i = 0; i < addedGuilds.length; ++i) {
+        const guildId = addedGuilds[i];
+        new Guild(guildId);
+    }
+    for (let i = 0; i < removedGuilds.length; ++i) {
+        const guildId = removedGuilds[i];
+        Guild.get(guildId).delete();
+    }
+
+    // Load *native* admins
+    for (let i = 0; i < newGuildIds.length; ++i) {
+        const guildId = newGuildIds[i];
+        Guild.get(guildId).loadDiscordAdmins();
+    }
 };
 
 module.exports.loadOwners = () => {

@@ -31,6 +31,7 @@ discotron.loadGuilds().then(() => {
     webserver.serveDashboard();
 
     connectToDiscord();
+
     registerEvents();
     discotron.registerActions();
 });
@@ -49,6 +50,7 @@ function registerEvents() {
 
     discordClient.on("ready", () => {
         Logger.log("Logged into Discord as **" + discordClient.user.tag + "**", "info");
+        discotron.updateGuilds();
     });
 
     discordClient.on("message", discotron.onMessage);

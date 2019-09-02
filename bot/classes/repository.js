@@ -191,15 +191,9 @@ class Repository extends RepositoryModel {
 
     static registerActions() {
         webAPI.registerAction("get-repositories", (data, reply) => {
-            let repositories = [];
-
-            for (let i = 0; i < Repository.getAll().length; i++) {
-                const repository = Repository.getAll()[i];
-                repositories.push(repository.toObject());
-            }
-
-            reply(repositories);
-
+            reply(Repository.getAll().map((repo) => {
+                return repo.toObject();
+            }));
         }, "owner");
         webAPI.registerAction("add-repository", (data, reply) => {
             Repository.clone(data.url).then(() => reply(true)).catch(() => reply(false));
