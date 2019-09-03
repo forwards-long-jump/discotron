@@ -40,7 +40,11 @@ window.Discotron.Plugin = class extends window.Discotron.PluginModel {
      * @param {string} prefix 
      */
     set prefix(prefix) {
-        // update in web api, owner only
+        this._prefix = prefix;
+        Discotron.WebAPI.queryBot("discotron-dashboard", "set-plugin-prefix", {
+            prefix: prefix,
+            pluginId: this._id
+        });
     }
 
     get prefix() {
@@ -52,7 +56,11 @@ window.Discotron.Plugin = class extends window.Discotron.PluginModel {
      * @param {boolean} enabled True if the plugin is to be enabled
      */
     set enabled(enabled) {
-
+        this._enabled = enabled;
+        Discotron.WebAPI.queryBot("discotron-dashboard", "set-enabled", {
+            enabled: enabled,
+            pluginId: this._id
+        });
     }
 
     get enabled() {

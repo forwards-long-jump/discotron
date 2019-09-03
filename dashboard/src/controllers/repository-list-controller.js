@@ -55,7 +55,8 @@ window.Discotron.RepositoryListController = class extends window.Discotron.Contr
 
 							cardContainer.querySelector(".repository-card").onclick = () => {
 								new Discotron.PluginSettingsWidgetController(plugin, (settings) => {
-									// TOOD: Save this to db
+									plugin.enabled = settings.enabled;
+									plugin.prefix = settings.globalPrefix;
 								});
 							};
 
