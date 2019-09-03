@@ -12,7 +12,6 @@ window.Discotron.PluginSettingsWidgetController = class extends window.Discotron
 
 		this._plugin = plugin;
 
-		this._addEvents();
 		this._displaySettings();
 	}
 

@@ -14,7 +14,6 @@ window.Discotron.ChannelListWidgetController = class extends window.Discotron.Wi
         this._channels = channels;
         this._selectedChannels = selectedChannels;
 
-        this._addEvents();
         this._displayChannels();
     }
 
@@ -31,7 +30,7 @@ window.Discotron.ChannelListWidgetController = class extends window.Discotron.Wi
      * Add events to the checkboxes if needed to track selected channel state
      */
     _addEvents() {
-
+        super._addEvents();
     }
 
     /**
