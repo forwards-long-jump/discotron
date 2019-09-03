@@ -7,8 +7,9 @@ class BotSettingsModel {
      * @param {string} helpText Text displayed in the help of the bot
      * @param {boolean} maintenance True to only allow the owner(s) to use the bot
      */
-    constructor(helpText = "", maintenance = false) {
+    constructor(helpText = "", maintenance = false, statusText = "") {
         this._helpText = helpText;
+        this._statusText = statusText;
         this._maintenance = maintenance;
     }
 
@@ -17,6 +18,13 @@ class BotSettingsModel {
      */
     get helpText() {
         return this._helpText;
+    }
+
+    /**
+     * Get status text
+     */
+    get statusText() {
+        return this._statusText;
     }
 
     /**
