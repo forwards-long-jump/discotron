@@ -7,126 +7,16 @@
 
 <h2>Authorized users / groups</h2>-->
 <div class="page-header" class="shadow-small bot-info-status">
-    <img class="shadow-small round" src="https://i.imgur.com/lE5ijHX.png" /><span>United Mapmakers of
+    <img id="header-icon" class="shadow-small round" src="https://i.imgur.com/lE5ijHX.png" /><span id="guild-name">United Mapmakers of
         Awesomenauts</span>
 </div>
 
 <h1>Guild settings</h1>
-<label>Commands prefix </label><input type="text" value="!" placeholder="!"><br><br>
+<label>Commands prefix </label><input id="prefix" type="text" value="!" placeholder="!"><br><br>
 <h1>Permissions</h1>
 <label>Lock bot to channels</label><input onclick="document.querySelector('#demo').style.display = 'block';"
     type="button" class="link" value="Manage channel locking"><br>
 <label>Plugin permissions</label><a href="#plugin-list" class="button-link">Manage plugins</a><br>
 <br>
 <hr><br>
-<input type="button" value="Save settings" disabled><br><br>
-
-<!-- Temp for demo purpose -->
-<div class="widget-background" id="demo" style="display: block;" onclick="this.style.display = 'none';">
-    <div class="widget-outer">
-        <div class="widget-middle">
-            <div class="widget-inner shadow-big">
-                <span class="widget-header">Allowed channel list</span>
-                <p class="description">If all channels are selected, the bot will be allowed to post in future new
-                    channels as well.</p>
-                <div class="channel-selector">
-                    <label class="channel-selector-channel">#general</label>
-                    <label class="switch">
-                        <input type="checkbox" checked>
-                        <span class="slider round"></span>
-                    </label>
-                    <label class="channel-selector-channel">#announcements</label>
-                    <label class="switch">
-                        <input type="checkbox" checked>
-                        <span class="slider round"></span>
-                    </label>
-                    <label class="channel-selector-channel">#spam</label>
-                    <label class="switch">
-                        <input type="checkbox" checked>
-                        <span class="slider round"></span>
-                    </label>
-                    <label class="channel-selector-channel">#memes</label>
-                    <label class="switch">
-                        <input type="checkbox" checked>
-                        <span class="slider round"></span>
-                    </label>
-                    <label class="channel-selector-channel">#respect-chan</label>
-                    <label class="switch">
-                        <input type="checkbox" checked>
-                        <span class="slider round"></span>
-                    </label>
-                    <label class="channel-selector-channel">#rules</label>
-                    <label class="switch">
-                        <input type="checkbox" checked>
-                        <span class="slider round"></span>
-                    </label>
-                    <label class="channel-selector-channel">#general</label>
-                    <label class="switch">
-                        <input type="checkbox" checked>
-                        <span class="slider round"></span>
-                    </label>
-                    <label class="channel-selector-channel">#announcements</label>
-                    <label class="switch">
-                        <input type="checkbox" checked>
-                        <span class="slider round"></span>
-                    </label>
-                    <label class="channel-selector-channel">#spam</label>
-                    <label class="switch">
-                        <input type="checkbox" checked>
-                        <span class="slider round"></span>
-                    </label>
-                    <label class="channel-selector-channel">#memes</label>
-                    <label class="switch">
-                        <input type="checkbox" checked>
-                        <span class="slider round"></span>
-                    </label>
-                    <label class="channel-selector-channel">#respect-chan</label>
-                    <label class="switch">
-                        <input type="checkbox" checked>
-                        <span class="slider round"></span>
-                    </label>
-                    <label class="channel-selector-channel">#rules</label>
-                    <label class="switch">
-                        <input type="checkbox" checked>
-                        <span class="slider round"></span>
-                    </label>
-                    <label class="channel-selector-channel">#general</label>
-                    <label class="switch">
-                        <input type="checkbox" checked>
-                        <span class="slider round"></span>
-                    </label>
-                    <label class="channel-selector-channel">#announcements</label>
-                    <label class="switch">
-                        <input type="checkbox" checked>
-                        <span class="slider round"></span>
-                    </label>
-                    <label class="channel-selector-channel">#spam</label>
-                    <label class="switch">
-                        <input type="checkbox" checked>
-                        <span class="slider round"></span>
-                    </label>
-                    <label class="channel-selector-channel">#memes</label>
-                    <label class="switch">
-                        <input type="checkbox" checked>
-                        <span class="slider round"></span>
-                    </label>
-                    <label class="channel-selector-channel">#respect-chan</label>
-                    <label class="switch">
-                        <input type="checkbox" checked>
-                        <span class="slider round"></span>
-                    </label>
-                    <label class="channel-selector-channel">#rules</label>
-                    <label class="switch">
-                        <input type="checkbox" checked>
-                        <span class="slider round"></span>
-                    </label>
-                </div>
-
-                <div class="widget-buttons">
-                    <input class="red" type="button" value="Cancel">
-                    <input type="button" value="Apply">
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+<input type="button" id="save" value="Save settings" disabled><br><br>

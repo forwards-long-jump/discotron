@@ -36,12 +36,10 @@ window.Discotron.NavigationController = class {
 				for (let i in guilds) {
 					const guild = guilds[i];
 					
-					let serverLink = document.importNode(template.content, true);
-					
-					let icon = (guild.iconURL === null) ? "/dashboard/images/outage.png" : guild.iconURL;
+					let serverLink = document.importNode(template.content, true);					
 
 					serverLink.querySelector(".server-link").href += guild.discordId;
-					serverLink.querySelector(".server-icon").src = icon;
+					serverLink.querySelector(".server-icon").src = guild.iconURL;
 					serverLink.querySelector(".server-link").innerHTML += guild.name;
 					serverLinksContainer.appendChild(serverLink);
 				}
