@@ -8,6 +8,7 @@ window.Discotron.Router = class {
         let parsedURL = Discotron.Router._parseURL(url);
 
         const controllers = {
+            "home": Discotron.HelpController,
             "bot-status": Discotron.BotStatusController,
             "plugin-list": Discotron.PluginListController,
             "repository-list": Discotron.RepositoryListController,
