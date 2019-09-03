@@ -265,7 +265,8 @@ input[type="submit"]:disabled:hover {
 }
 
 .switch {
-    margin-top: 10px;
+    margin-top: 8px;
+    margin-bottom: 8px;
 }
 
 label {
@@ -536,4 +537,8 @@ input:checked+.slider:before {
 
 .bot-admin-link {
     display: none;
+}
+
+.channel-selector-channel {
+    width: 450px;
 }

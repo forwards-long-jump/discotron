@@ -22,6 +22,7 @@ class PluginModel {
         this._commands = commands;
         this._defaultPermission = defaultPermission;
         this._enabled = enabled;
+        this._logs = []; // TODO
     }
 
     get name() {
@@ -47,6 +48,9 @@ class PluginModel {
     }
     get enabled() {
         return this._enabled;
+    }
+    get logs() {
+        return this._logs;
     }
 }
 

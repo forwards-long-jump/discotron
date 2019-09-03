@@ -17,7 +17,6 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
         this._usersRoles = usersRoles;
         this._displayRoles = displayRoles;
 
-        this._addEvents();
         this._displayUserRoleSelector();
     }
 
