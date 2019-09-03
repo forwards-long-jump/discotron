@@ -27,7 +27,7 @@ class Command extends CommandModel {
      * @param {array} words Message content without server-prefix and plugin-prefix (if there was any)
      * @param {Discord.DiscordMessage} discordMessage 
      */
-    triggeredBy(discordMessage, loweredCaseMessage) {
+    triggeredBy(discordMessage, loweredCaseMessage, prefixes) {
 
         // TODO: ownersOnly, scope, etc
         if (this.ownersOnly && !Owner.isOwner(discordMessage.author.id)) {
@@ -36,7 +36,7 @@ class Command extends CommandModel {
 
         switch (this._triggerType) {
             case "command":
-                return (loweredCaseMessage.startsWith(this.trigger));
+                return (loweredCaseMessage.startsWith(prefixes + this.trigger));
 
             case "words":
                 return this.trigger.every((t) => {

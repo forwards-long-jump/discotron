@@ -4,6 +4,7 @@ const RepositoryModel = require("./../../models/repository.js");
 const Plugin = require("./plugin.js");
 const webAPI = require("./../apis/web-api.js").getWebAPI("discotron-dashboard");
 const Logger = require("../utils/logger.js");
+const fileHelper = require("../utils/file-helper.js");
 const Git = require("nodegit");
 const crypto = require("crypto");
 
@@ -44,11 +45,11 @@ class Repository extends RepositoryModel {
     }
 
     loadPagesFromDisk() {
-        let pagesPath = __dirname + "/../repositories/" + this._folderName + "/pages";
+        let pagesPath = __dirname + "/../repositories/" + this.folderName + "/pages";
 
         // TODO: Convert to async
         if (fs.existsSync(pagesPath)) {
-            fs.readdirSync(__dirname + "/../repositories/" + folderName + "/pages").forEach(file => {
+            fs.readdirSync(__dirname + "/../repositories/" + this.folderName + "/pages").forEach(file => {
                 // serve page (lel)
             });
         }
@@ -96,12 +97,12 @@ class Repository extends RepositoryModel {
      * Returns a folder name from a git url
      * @param {string} url 
      */
-    static _generateFolderName(url) {
-        url = url.replace(/\.git/g, "");
+    static _generateFolderName(baseUrl) {
+        let url = baseUrl.replace(/\.git/g, "");
         url = url.split("/");
         url = url[url.length - 1];
         url = url.replace(/[^a-zA-Z0-9\-]/g, "");
-        return url + crypto.createHash("md5").update(url).digest("hex"); // Should rather check if folder exists but we should not have collisions for that
+        return url + "-" + crypto.createHash("md5").update(baseUrl).digest("hex"); // Should rather check if folder exists but we should not have collisions for that
     }
 
     /**
@@ -109,57 +110,68 @@ class Repository extends RepositoryModel {
      */
     pull() {
         Logger.log("Updating **" + this._folderName + "**...");
-        let repo;
-        // Source: https://stackoverflow.com/questions/20955393/nodegit-libgit2-for-node-js-how-to-push-and-pull
-        Git.Repository.open(__dirname + "/../repositories/" + this._folderName)
-            .then((repository) => {
-                repo = repository;
-                return repository.fetch("origin");
-            })
-            .then(() => {
-                return repo.mergeBranches("master", "origin/master");
-            })
-            .then((oid) => {
-                let oldPluginList = this._pluginIds.splice(0);
-                this.loadPluginsFromDisk();
-                this.loadPagesFromDisk();
+        return new Promise((resolve, reject) => {
+            let repo;
+            // Source: https://stackoverflow.com/questions/20955393/nodegit-libgit2-for-node-js-how-to-push-and-pull
+            Git.Repository.open(__dirname + "/../repositories/" + this._folderName)
+                .then((repository) => {
+                    repo = repository;
+                    return repository.fetch("origin");
+                })
+                .then(() => {
+                    return repo.mergeBranches("master", "origin/master");
+                })
+                .then((oid) => {
+                    let oldPluginList = this._pluginIds.splice(0);
+                    this.loadPluginsFromDisk();
+                    this.loadPagesFromDisk();
 
-                let deletedPlugins = [];
+                    let deletedPlugins = [];
 
-                for (let i = 0; i < oldPluginList.length; i++) {
-                    const oldPluginId = oldPluginList[i];
+                    for (let i = 0; i < oldPluginList.length; i++) {
+                        const oldPluginId = oldPluginList[i];
 
-                    if (!this._pluginIds.includes(oldPluginId)) {
-                        deletedPlugins.push(oldPluginId);
+                        if (!this._pluginIds.includes(oldPluginId)) {
+                            deletedPlugins.push(oldPluginId);
+                        }
                     }
-                }
 
-                for (let i = 0; i < deletedPlugins.length; i++) {
-                    Plugin.getAll()[deletedPlugins[i]].delete();
-                }
-            }).catch((err) => {
-                console.log(err);
-            });
+                    for (let i = 0; i < deletedPlugins.length; i++) {
+                        Plugin.getAll()[deletedPlugins[i]].delete();
+                    }
+
+                    resolve();
+                }).catch((err) => {
+                    console.log(err);
+                    reject();
+                });
+        });
     }
 
     /**
      * Delete the repository locally and remove it from database
      */
     delete() {
-        for (let i = 0; i < Repository._repositories.length; ++i) {
-            if (Repository._repositories[i] === this) {
-                delete Repository._repositories[i];
-                break;
+        return new Promise((resolve, reject) => {
+            let index = Repository._repositories.indexOf(this);
+            if (index < 0) {
+                return;
             }
-        }
 
-        db.delete("Repositories", this._folderName);
+            Repository._repositories.splice(index, 1);
 
-        let plugins = Plugin.getAll();
-        for (let i = 0; i < this._pluginIds.length; ++i) {
-            plugins[this._pluginIds[i]].delete();
-        }
-        this._deleteFolder();
+            db.delete("Repositories", {
+                folderName: this._folderName
+            }).then(() => {
+                let plugins = Plugin.getAll();
+                for (let i = 0; i < this._pluginIds.length; ++i) {
+                    plugins[this._pluginIds[i]].delete();
+                }
+
+                this._deleteFolder(); // sync
+                resolve();
+            });
+        });
     }
 
     /**
@@ -186,7 +198,7 @@ class Repository extends RepositoryModel {
      * Delete the folder
      */
     _deleteFolder() {
-
+        fileHelper.deleteFolder(__dirname + "/../repositories/" + this._folderName);
     }
 
     static registerActions() {
@@ -195,26 +207,38 @@ class Repository extends RepositoryModel {
                 return repo.toObject();
             }));
         }, "owner");
+
         webAPI.registerAction("add-repository", (data, reply) => {
             Repository.clone(data.url).then(() => reply(true)).catch(() => reply(false));
         }, "owner");
+
         webAPI.registerAction("remove-repository", (data, reply) => {
             for (let i = 0; i < Repository._repositories.length; ++i) {
                 let repo = Repository._repositories[i];
                 if (repo.url === data.url) {
-                    repo.delete();
+                    repo.delete().then(() => {
+                        reply(true);
+                    });
+                    return;
                 }
             }
-            reply();
+
+            reply(false);
         }, "owner");
+
         webAPI.registerAction("update-repository", (data, reply) => {
             for (let i = 0; i < Repository._repositories.length; ++i) {
                 let repo = Repository._repositories[i];
                 if (repo.url === data.url) {
-                    repo.pull();
+                    repo.pull().then(() => {
+                        reply(true);
+                    }).catch(() => {
+                        reply(false);
+                    });
+                    return;
                 }
             }
-            reply();
+            reply(false);
         }, "owner");
     }
 }

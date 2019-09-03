@@ -147,11 +147,19 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
         // TODO: update db 
     }
 
+    get prefix() {
+        return super.prefix;
+    }
+
     /**
      * Set allowed channels
      */
     set allowedChannelIds(allowedChannelIds) {
         // TODO: update db
+    }
+
+    get allowedChannelIds() {
+        return super.allowedChannelIds;
     }
 
     /**

@@ -97,6 +97,10 @@ class Guild extends GuildModel {
         }
     }
 
+    get admins() {
+        return super.admins;
+    }
+
     /**
      * Loads members of the guild with admin privilege
      */
@@ -129,6 +133,10 @@ class Guild extends GuildModel {
         });
     }
 
+    get prefix() {
+        return super.prefix;
+    }
+
     /**
      * Set allowed channels
      * @param {array} discordChannelIds 
@@ -144,6 +152,10 @@ class Guild extends GuildModel {
                 discordChannelId: discordChannelIds[i]
             });
         }
+    }
+
+    get allowedChannels() {
+        return super.allowedChannels;
     }
 
     /**

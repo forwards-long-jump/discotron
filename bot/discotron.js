@@ -23,7 +23,7 @@ module.exports.on = (actionName, action) => {
 
 module.exports.triggerEvent = (actionName, data) => {
     if (actions[actionName] === undefined) {
-        Logger.log("Cannot trigger inexistent action: **" + actionName +"**", "warn");
+        Logger.log("Cannot trigger inexistent action: **" + actionName + "**", "warn");
     } else {
         for (let i = 0; i < actions[actionName].length; i++) {
             actions[actionName][i](data);
@@ -44,9 +44,12 @@ module.exports.onMessage = (message) => {
         return;
     } // TODO: User spamming check
 
-    let guild = Guild.get(message.guild.id);
+    let guild;
+    if (message.guild !== null) {
+        guild = Guild.get(message.guild.id);
+    }
 
-    if (guild !== undefined && (!guild.allowedChannelIds.includes(message.channel.id) && guild.allowedChannelIds.length > 0)) {
+    if (guild !== undefined && (!guild.allowedChannelIds.has(message.channel.id) && guild.allowedChannelIds.size > 0)) {
         return;
     }
 
@@ -58,7 +61,8 @@ module.exports.onMessage = (message) => {
     for (const pluginId in plugins) {
         let commands = [];
         const plugin = plugins[pluginId];
-        if (guild !== undefined && guild.permissions[pluginId].allows(message.author.id)) {
+
+        if (guild !== undefined && !guild.permissions[pluginId].allows(message.author.id)) {
             continue;
         }
 
@@ -66,7 +70,7 @@ module.exports.onMessage = (message) => {
             for (let i = 0; i < plugin.commands.command.length; i++) {
                 const command = plugin.commands.command[i];
 
-                if (command.triggeredBy(message, loweredCaseMessage)) {
+                if (command.triggeredBy(message, loweredCaseMessage, guild.commandPrefix + plugin.prefix)) {
                     commands.push(command);
                 }
             }
@@ -105,6 +109,7 @@ module.exports.onMessage = (message) => {
 
         // Trigger valid messages
         const words = message.content.split(" ");
+
         for (let i = 0; i < commands.length; i++) {
             try {
                 commands[i].doMessageAction(message, words);
@@ -130,7 +135,9 @@ module.exports.loadGuilds = () => {
 
 module.exports.updateGuilds = () => {
     let oldGuildIds = Object.keys(Guild.getAll());
-    let newGuildIds = global.discordClient.guilds.map((guild) => {return guild.id;});
+    let newGuildIds = global.discordClient.guilds.map((guild) => {
+        return guild.id;
+    });
 
     // Delete abandonned guilds and add new ones
     let addedGuilds = [];
@@ -220,10 +227,17 @@ module.exports.registerActions = () => {
     }, "owner");
 
     webAPI.registerAction("get-bot-info", (data, reply) => {
-        reply({
-            avatar: global.discordClient.user.displayAvatarURL,
-            username: global.discordClient.user.tag
-        });
+        if (global.discordClient.user !== null) {
+            reply({
+                avatar: global.discordClient.user.displayAvatarURL,
+                username: global.discordClient.user.tag
+            });
+        } else {
+            reply({
+                avatar: "/dashboard/images/outage.png",
+                username: "Bot offline"
+            });
+        }
     }, "everyone");
 
 

@@ -28,6 +28,8 @@ window.Discotron.RepositoryListController = class extends window.Discotron.Contr
 		Discotron.Repository.getAll().then((repositories) => {
 			if (repositories.length > 0) {
 				document.getElementById("repositories-container").innerHTML = "";
+			} else {
+				document.getElementById("repositories-container").innerHTML = "<p class=\"description\">No repositories found. Try adding a public repository using the bar above.</p>";
 			}
 
 			for (let i = 0; i < repositories.length; i++) {
@@ -36,6 +38,63 @@ window.Discotron.RepositoryListController = class extends window.Discotron.Contr
 				let container = document.importNode(template.content, true);
 
 				container.querySelector(".plugin-bar").value = repo.url;
+				let cardListContainer = container.querySelector(".repository-card-container");
+
+				// Query cards
+				Discotron.Plugin.getAll().then((plugins) => {
+					let pluginFound = false;
+					for (let pluginId in plugins) {
+						const plugin = plugins[pluginId];
+						if (repo.pluginIds.includes(pluginId)) {
+							pluginFound = true;
+							
+							let cardTemplate = document.getElementById("template-card");
+							let cardContainer = document.importNode(cardTemplate.content, true);
+							cardContainer.querySelector(".repository-card-title").textContent = plugin.name;
+							cardContainer.querySelector(".repository-card-description").textContent = plugin.description;
+
+							cardListContainer.appendChild(cardContainer);
+						}
+					}
+
+					if (!pluginFound) {
+						cardListContainer.innerHTML = "<p class=\"description\">No plugin found in this repository.</p>";
+					}
+				});
+
+				// Update
+				container.querySelector(".pull-repository").onclick = (event) => {
+					event.target.disabled = true;
+					event.target.value = "Updating...";
+
+					Discotron.WebAPI.queryBot("discotron-dashboard", "update-repository", {
+						url: repo.url
+					}).then((data) => {
+						if (data) {
+							event.target.value = "Update succesful";
+						} else {
+							event.target.value = "Could not update";
+						}
+
+						Discotron.Repository.clearCache();
+						Discotron.Plugin.clearCache();
+						this._displayRepos();
+					});
+				};
+
+				// Delete
+				container.querySelector(".delete-repository").onclick = (event) => {
+					if (confirm("Deleting a repository will erase all related settings, continue?")) {
+						Discotron.WebAPI.queryBot("discotron-dashboard", "remove-repository", {
+							url: repo.url
+						}).then((data) => {
+							Discotron.Repository.clearCache();
+							Discotron.Plugin.clearCache();
+							this._displayRepos();
+						});
+					}
+				};
+
 				document.getElementById("repositories-container").appendChild(container);
 			}
 		});
@@ -74,8 +133,9 @@ window.Discotron.RepositoryListController = class extends window.Discotron.Contr
 				} else {
 					document.getElementById("repository-url").value = "";
 					document.getElementById("repository-url").focus();
-					Discotron.Repository.clearCache();
 
+					Discotron.Repository.clearCache();
+					Discotron.Plugin.clearCache();
 					this._displayRepos();
 				}
 			});

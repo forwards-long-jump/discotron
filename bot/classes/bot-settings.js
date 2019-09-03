@@ -30,6 +30,10 @@ class BotSettings extends BotSettingsModel {
         });
     }
 
+    get helpText() {
+        return super.helpText;
+    }
+
     /**
      * Set if the bot should be put in maintenance (=owner only) mode or not
      * @param {boolean} maintenance State of the maintenance mode of the bot
@@ -41,6 +45,10 @@ class BotSettings extends BotSettingsModel {
         }, {
             name: "maintenance"
         });
+    }
+
+    get maintenance() {
+        return super.maintenance;
     }
 }
 
