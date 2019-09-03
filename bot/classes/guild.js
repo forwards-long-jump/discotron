@@ -51,6 +51,7 @@ class Guild extends GuildModel {
         return {
             id: this.discordId,
             name: guild.name,
+            nameAcronym: guild.nameAcronym,
             image: guild.iconURL
         };
     }
@@ -60,12 +61,14 @@ class Guild extends GuildModel {
      * @param {string} clientId 
      */
     isAdmin(clientId) {
+        let isadmin = false;
         this._admins.forEach((admin) => {
             if (admin.describes(clientId)) {
-                return true;
+                isadmin = true;
+                return false;
             }
         });
-        return false;
+        return isadmin;
     }
 
     /**
@@ -106,14 +109,14 @@ class Guild extends GuildModel {
      */
     loadDiscordAdmins() {
         let guild = global.discordClient.guilds.get(this.discordId);
-        let admin = new UserRole(guild.ownerID, "user");
+        let admin = new UserRole(guild.ownerID, "user", this.discordId);
         this._admins.add(admin);
 
         let roles = guild.roles.array();
         for (let i = 0; i < roles.length; ++i) {
             const role = roles[i];
             if (role.hasPermission("ADMINISTRATOR")) {
-                let userRole = new UserRole(role.id, "role");
+                let userRole = new UserRole(role.id, "role", this.discordId);
                 this._admins.add(userRole);
             }
         }
@@ -232,13 +235,13 @@ class Guild extends GuildModel {
      * @param {string} pluginId 
      */
     _loadPluginPermission(pluginId) {
-        this._permissions[pluginId] = new Permission(this.discordId, pluginId, []);
+        this._permissions[pluginId] = new Permission(pluginId, [], this.discordId);
         db.select("Permissions", ["userRoleId"], {
             discordGuildId: this.discordId,
             pluginId: pluginId
         }).then((rows) => {
             for (let i = 0; i < rows.length; ++i) {
-                UserRole.getById(rows[i].userRoleId).then((userRole) => {
+                UserRole.getById(rows[i].userRoleId, this.discordId).then((userRole) => {
                     this._permissions[pluginId]._usersRoles.push(userRole);
                 });
             }
@@ -298,7 +301,7 @@ class Guild extends GuildModel {
             discordGuildId: this.discordId
         }).then((rows) => {
             for (let i = 0; i < rows.length; ++i) {
-                UserRole.getById(rows[i].userRoleId).then((userRole) => {
+                UserRole.getById(rows[i].userRoleId, this.discordId).then((userRole) => {
                     this._admins.add(userRole);
                 });
             }
@@ -330,7 +333,11 @@ class Guild extends GuildModel {
 
     static registerActions() {
         webAPI.registerAction("get-guilds", (data, reply) => {
-            reply(Guild._guilds.map(guild => guild.toObject()));
+            let guilds = {};
+            for (const guildId in Guild.getAll()) {
+                guilds[guildId] = Guild.get(guildId).toObject();
+            }
+            reply(guilds);
         }, "guildAdmin");
         webAPI.registerAction("get-members", (data, reply, clientId, guildId) => {
             let guild = global.discordClient.guilds.get(guildId);
@@ -362,9 +369,15 @@ class Guild extends GuildModel {
                 };
             }));
         }, "guildAdmin");
-        webAPI.registerAction("get-guild-where-is-admin", (data, reply, userId) => {
-            let guilds = Guild._guilds.filter(guild => guild.isAdmin(userId));
-            reply(guilds.map(guild => guild.toObject()));
+        webAPI.registerAction("get-guilds-where-is-admin", (data, reply, userId) => {
+            let guilds = [];
+            for (const guildId in Guild._guilds) {
+                const guild = Guild.get(guildId);
+                if (guild.isAdmin(userId)) {
+                    guilds.push(guild.toObject());
+                }
+            }
+            reply(guilds);
         });
 
         webAPI.registerAction("get-allowed-channels", (data, reply) => {

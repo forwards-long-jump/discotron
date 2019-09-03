@@ -7,5 +7,6 @@ if (localStorage.getItem("appToken") === null) {
 
     Discotron.NavigationController.displayOwnerSettings();
     Discotron.NavigationController.displayBot();
+    Discotron.NavigationController.displayServers();
     Discotron.NavigationController.displayUser();
 }
