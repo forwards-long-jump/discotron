@@ -37,7 +37,6 @@ window.Discotron.NavigationController = class {
 					const guild = guilds[i];
 					
 					let serverLink = document.importNode(template.content, true);
-					console.log(guild);
 					
 					let icon = (guild.iconURL === null) ? "/dashboard/images/outage.png" : guild.iconURL;
 

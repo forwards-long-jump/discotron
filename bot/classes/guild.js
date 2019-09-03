@@ -64,7 +64,7 @@ class Guild extends GuildModel {
         let isadmin = false;
         this._admins.forEach((admin) => {
             if (admin.describes(clientId)) {
-                isadmin =true;
+                isadmin = true;
                 return false;
             }
         });
