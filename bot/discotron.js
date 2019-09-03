@@ -33,13 +33,14 @@ module.exports.triggerEvent = (actionName, data) => {
 
 module.exports.onMessage = (message) => {
     Logger.log(`__#${message.channel.name}__ <${message.author.tag}>: ${message.content}`);
-
-    if (false) {
-        return;
-    } // TODO: Maintenance && Owner check
     if (message.author.bot) {
         return;
     }
+
+    if (botSettings.maintenance && !Owner.isOwner(message.author.id)) {
+        return;
+    }
+
     if (false) {
         return;
     } // TODO: User spamming check
@@ -62,13 +63,15 @@ module.exports.onMessage = (message) => {
         let commands = [];
         const plugin = plugins[pluginId];
 
-        if(!plugin.enabled) {
+        if (!plugin.enabled) {
             continue;
         }
 
         if (guild !== undefined && !guild.permissions[pluginId].allows(message.author.id)) {
             continue;
         }
+
+        // TODO: Check if plugin enabled in guild
 
         if (isCommand && (guild === undefined || loweredCaseMessage.startsWith(guild.commandPrefix + plugin.prefix))) {
             for (let i = 0; i < plugin.commands.command.length; i++) {
