@@ -8,39 +8,31 @@ window.Discotron.PluginSettingsWidgetController = class extends window.Discotron
 	constructor(plugin, onPluginSettingsSave, onClose = () => {}) {
 		super("plugin-settings.html", () => {
 			onPluginSettingsSave(this._getPluginSettings());
+		}, () => {
+
+			this._plugin = plugin;
+			this._displaySettings();
 		}, onClose);
-
-		this._plugin = plugin;
-
-		this._displaySettings();
 	}
 
 	/**
 	 * 
 	 */
 	_getPluginSettings() {
-
-	}
-
-	/**
-	 * Add events to the page elements
-	 */
-	_addEvents() {
-
+		return {
+			enabled: this._widgetContainer.querySelector(".enabled-checkbox").checked,
+			globalPrefix: this._widgetContainer.querySelector(".global-prefix").value
+		};
 	}
 
 	/**
 	 * Display a form allowing to change plugin settings
 	 */
 	_displaySettings() {
-		
-	}
+		this._widgetContainer.querySelector(".enabled-checkbox").checked = this._plugin.enabled;
+		this._widgetContainer.querySelector(".logs").value = this._plugin.logs.join("\r\n");
+		this._widgetContainer.querySelector(".global-prefix").value = this._plugin.prefix;
 
-	/**
-	 * Display a form allowing to change plugin settings
-	 */
-	_displayLogs() {
-		
 	}
 
 	/**
