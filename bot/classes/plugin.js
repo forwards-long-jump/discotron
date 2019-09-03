@@ -124,7 +124,8 @@ class Plugin extends PluginModel {
             version: this.version,
             commands: commandObjs,
             defaultPermission: this.defaultPermission,
-            enabled: this.enabled
+            enabled: this.enabled,
+            prefix: this.prefix
         };
     }
 
@@ -166,6 +167,7 @@ class Plugin extends PluginModel {
         webAPI.registerAction("get-plugin-prefix", (data, reply) => {
             reply(Plugin._plugins[data.pluginId].prefix);
         });
+
         webAPI.registerAction("set-plugin-prefix", (data, reply) => {
             Plugin._plugins[data.pluginId].prefix = data.prefix;
             reply();
@@ -174,9 +176,21 @@ class Plugin extends PluginModel {
         webAPI.registerAction("get-enabled", (data, reply) => {
             reply(Plugin._plugins[data.pluginId].enabled);
         });
+
         webAPI.registerAction("set-enabled", (data, reply) => {
             Plugin._plugins[data.pluginId].enabled = data.enabled;
             reply();
+        }, "owner");
+
+        webAPI.registerAction("get-plugins", (data, reply) => {
+            let pluginsObjects = [];
+            for (const key in Plugin.getAll()) {
+                if (Plugin.getAll().hasOwnProperty(key)) {
+                    pluginsObjects.push(Plugin.getAll()[key].toObject());
+                }
+            }
+
+            reply(pluginsObjects);
         }, "owner");
     }
 }

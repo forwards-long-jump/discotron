@@ -240,26 +240,6 @@ class Repository extends RepositoryModel {
             }
             reply(false);
         }, "owner");
-
-        webAPI.registerAction("get-repository-plugins", (data, reply) => {
-            for (let i = 0; i < Repository._repositories.length; ++i) {
-                let repo = Repository._repositories[i];
-
-                if (repo.url === data.url) {
-                    let plugins = Plugin.getAll();
-                    let pluginObjects = [];
-
-                    for (let j = 0; j < repo.pluginIds.length; ++j) {
-                        pluginObjects.push(plugins[repo.pluginIds].toObject());
-                    }
-
-                    reply(pluginObjects);
-                    return;
-                }
-            }
-
-            reply(false);
-        }, "owner");
     }
 }
 

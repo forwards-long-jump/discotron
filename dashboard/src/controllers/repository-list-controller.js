@@ -38,9 +38,29 @@ window.Discotron.RepositoryListController = class extends window.Discotron.Contr
 				let container = document.importNode(template.content, true);
 
 				container.querySelector(".plugin-bar").value = repo.url;
+				let cardListContainer = container.querySelector(".repository-card-container");
 
 				// Query cards
-				// TODO: Use Discotron.Plugin.getAll()...
+				Discotron.Plugin.getAll().then((plugins) => {
+					let pluginFound = false;
+					for (let pluginId in plugins) {
+						const plugin = plugins[pluginId];
+						if (repo.pluginIds.includes(pluginId)) {
+							pluginFound = true;
+							
+							let cardTemplate = document.getElementById("template-card");
+							let cardContainer = document.importNode(cardTemplate.content, true);
+							cardContainer.querySelector(".repository-card-title").textContent = plugin.name;
+							cardContainer.querySelector(".repository-card-description").textContent = plugin.description;
+
+							cardListContainer.appendChild(cardContainer);
+						}
+					}
+
+					if (!pluginFound) {
+						cardListContainer.innerHTML = "<p class=\"description\">No plugin found in this repository.</p>";
+					}
+				});
 
 				// Update
 				container.querySelector(".pull-repository").onclick = (event) => {
@@ -57,12 +77,8 @@ window.Discotron.RepositoryListController = class extends window.Discotron.Contr
 						}
 
 						Discotron.Repository.clearCache();
+						Discotron.Plugin.clearCache();
 						this._displayRepos();
-
-						setTimeout(() => {
-							event.target.disabled = false;
-							event.target.value = "Pull from Master";
-						}, 5000);
 					});
 				};
 
@@ -73,6 +89,7 @@ window.Discotron.RepositoryListController = class extends window.Discotron.Contr
 							url: repo.url
 						}).then((data) => {
 							Discotron.Repository.clearCache();
+							Discotron.Plugin.clearCache();
 							this._displayRepos();
 						});
 					}
@@ -118,6 +135,7 @@ window.Discotron.RepositoryListController = class extends window.Discotron.Contr
 					document.getElementById("repository-url").focus();
 
 					Discotron.Repository.clearCache();
+					Discotron.Plugin.clearCache();
 					this._displayRepos();
 				}
 			});
