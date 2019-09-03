@@ -5,15 +5,37 @@ window.Discotron.GuildSettingsController = class extends window.Discotron.Contro
      */
     constructor(args) {
         super("admin/guild-settings.html", () => {
-            this._guild = args.guild;
+            this._guildId = args.guild;
+
+            if (this._guildId === undefined) {
+                window.location.replace("/dashboard");
+            }
+            Discotron.Guild.getAll().then((guilds) => {
+                this._guild = guilds[this._guildId];
+                if (this._guild === undefined) {
+                    window.location.replace("/dashboard");
+                }
+
+                this._displayHeader();
+                this._displayPrefix();
+            });
+            this._addEvents();
         });
+    }
+
+    /**
+     * Displays the image of the guild and its name
+     */
+    _displayHeader() {
+        document.getElementById("header-icon").src = this._guild.iconURL;
+        document.getElementById("guild-name").textContent = this._guild.name;
     }
 
     /**
      * Displays the form entry concerning the plugin prefix
      */
     _displayPrefix() {
-
+        document.getElementById("prefix").value = this._guild.prefix;
     }
 
     /**
@@ -42,5 +64,18 @@ window.Discotron.GuildSettingsController = class extends window.Discotron.Contro
      */
     _onAdminsWidgetSave() {
 
+    }
+
+    _addEvents() {
+        document.getElementById("prefix").onkeydown = (e) => {
+            document.getElementById("save").disabled = false;
+            if (e.keyCode === 13) {
+                document.getElementById("save").click();
+            }
+        };
+        document.getElementById("save").onclick = () => {
+            document.getElementById("save").disabled = true;
+            this._guild.prefix = document.getElementById("prefix").value;
+        };
     }
 };

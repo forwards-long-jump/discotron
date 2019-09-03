@@ -14,7 +14,7 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
         super(discordId, commandPrefix, allowedChannelIds, enabledPlugins, admins, permissions);
 
         this._name = name;
-        this._iconURL = iconURL;
+        this._iconURL = (iconURL === null) ? "/dashboard/images/outage.png" : iconURL;
 
         // Load as needed
         this._members = []; // ids
@@ -65,7 +65,7 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
      */
     static _loadAll() {
         return new Promise((resolve, reject) => {
-            // WebApi.queryBot("get-guilds").then((guildsToObject'ed) => {
+            // WebApi.queryBot("get-guilds").then((guildbject'ed) => {
             //    foreach guild
             //          create permissions
             //          new Guild(guild.id, )
@@ -188,11 +188,14 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
      * @param {string} prefix 
      */
     set prefix(prefix) {
-        // TODO: update db 
+        this._commandPrefix = prefix;
+        Discotron.WebAPI.queryBot("discotron-dashboard", "set-guild-prefix", {
+            prefix: prefix
+        }, this.discordId).then(() => {});
     }
 
     get prefix() {
-        return super.prefix;
+        return super.commandPrefix;
     }
 
     /**
