@@ -12,6 +12,7 @@ window.Discotron.HelpController = class extends window.Discotron.Controller {
      * Displays help
      */
     _displayHelp() {
+        document.getElementById("bot-invite-link").href = Discotron.config.inviteLink;
         // Query cards
         Discotron.Plugin.getAll().then((plugins) => {
 
@@ -54,8 +55,8 @@ window.Discotron.HelpController = class extends window.Discotron.Controller {
                             commandContainer.querySelector(".command-args").textContent += "<" + arg.name + ">";
                         }
                     }
-                    
-                    if(command.args.length === 0) {
+
+                    if (command.args.length === 0) {
                         commandContainer.querySelector(".command-args").textContent = "(no args)";
                     }
 
