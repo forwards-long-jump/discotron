@@ -38,12 +38,18 @@ discotron.loadGuilds().then(() => {
 
 
 function connectToDiscord() {
-    Logger.log("Connecting to discord...");
-    discordClient.login(appConfig.token).then(() => {}).catch((err) => {
-        Logger.log("Could not connect to discord", "err");
-        Logger.log(err.message, "err");
+    return new Promise((resolve, reject) => {
+        Logger.log("Connecting to discord...");
+        discordClient.login(appConfig.token).then(() => {
+            resolve();
+        }).catch((err) => {
+            Logger.log("Could not connect to discord", "err");
+            Logger.log(err.message, "err");
+        });
     });
 }
+
+global.discordClient._connectToDiscord = connectToDiscord;
 
 function registerEvents() {
     // TODO: Handle error and reaction
@@ -51,6 +57,7 @@ function registerEvents() {
     discordClient.on("ready", () => {
         Logger.log("Logged into Discord as **" + discordClient.user.tag + "**", "info");
         discotron.updateGuilds();
+        discotron.updateStatus();
     });
 
     discordClient.on("message", discotron.onMessage);
