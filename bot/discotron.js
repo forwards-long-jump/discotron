@@ -129,7 +129,7 @@ module.exports.onMessage = (message) => {
             const command = commands[i];
             if (command.scope === "everywhere" || (command.scope === "pm" && guild === undefined) || (command.scope === "guild" && guild !== undefined)) {
                 try {
-                    command.doMessageAction(message, words);
+                    command.doMessageAction(message, words, plugin.getApiObject());
                 } catch (error) {
                     Logger.log("An error occured in plugin: **" + plugin.name + "** while executing command **" + command.trigger + "**", "err");
                     Logger.log(error, "err");

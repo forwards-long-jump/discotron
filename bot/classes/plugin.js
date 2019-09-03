@@ -2,6 +2,7 @@ const PluginModel = require("./../../models/plugin.js");
 const Command = require("./command.js");
 const webAPI = require("./../apis/web-api.js").getWebAPI("discotron-dashboard");
 const db = require("./../apis/database-crud.js");
+const Logger = require("../utils/logger.js");
 
 class Plugin extends PluginModel {
     /**
@@ -25,10 +26,22 @@ class Plugin extends PluginModel {
             this._enabled = oldVersion._enabled;
         } else {
             this._loadInfoFromDatabase();
-
             global.discotron.triggerEvent("plugin-loaded", this.id);
         }
+
+        if (typeof this._onLoad === "function") {
+            this._onLoad(this.getApiObject());
+        }
         Plugin._plugins[this.id] = this;
+    }
+
+    getApiObject() {
+        return {
+            discotron: global.discotron,
+            discordClient: global.discordClient,
+            plugin: this,
+            Logger: Logger
+        };
     }
 
     /**
@@ -52,6 +65,7 @@ class Plugin extends PluginModel {
         this._description = pluginFile.config.description;
         this._defaultPermission = pluginFile.config.defaultPermission;
         this._version = pluginFile.config.version;
+        this._onLoad = pluginFile.config.onLoad;
         for (let i = 0; i < pluginFile.commands.length; i++) {
             let command = new Command(pluginFile.commands[i]);
             this._commands[command.triggerType].push(command);
