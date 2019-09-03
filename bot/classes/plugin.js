@@ -125,8 +125,27 @@ class Plugin extends PluginModel {
             commands: commandObjs,
             defaultPermission: this.defaultPermission,
             enabled: this.enabled,
-            prefix: this.prefix
+            prefix: this.prefix,
+            logs: this.logs
         };
+    }
+
+    /**
+     * Log something into the dashboard
+     * @param {object} value 
+     */
+    log(value) {
+        let date = new Date();
+        let displayedDate = `[${date.toLocaleDateString()} ${date.toLocaleTimeString()}]`;
+        if (typeof this.value === "string") {
+            this._logs.push(displayedDate + " " + value);
+        } else {
+            try {
+                this._logs.push(displayedDate + " " + JSON.stringify(value, null, 4));
+            } catch (e) {
+                this._logs.push(displayedDate + " " + value);
+            }
+        }
     }
 
     /**
@@ -165,18 +184,30 @@ class Plugin extends PluginModel {
 
     static registerActions() {
         webAPI.registerAction("get-plugin-prefix", (data, reply) => {
-            reply(Plugin._plugins[data.pluginId].prefix);
+            if (Plugin._plugins[data.pluginId] !== undefined) {
+                reply(Plugin._plugins[data.pluginId].prefix);
+            } else {
+                reply(false);
+            }
         });
 
-        webAPI.registerAction("set-plugin-prefix", (data, reply) => {    
+        webAPI.registerAction("get-plugin-logs", (data, reply) => {
+            reply(Plugin._plugins[data.pluginId].logs);
+        }, "owner");
+
+        webAPI.registerAction("set-plugin-prefix", (data, reply) => {
             Plugin._plugins[data.pluginId].prefix = data.prefix;
             reply();
         }, "owner");
-        
+
         webAPI.registerAction("get-enabled", (data, reply) => {
-            reply(Plugin._plugins[data.pluginId].enabled);
+            if (Plugin._plugins[data.pluginId] !== undefined) {
+                reply(Plugin._plugins[data.pluginId].enabled);
+            } else {
+                reply(false);
+            }
         });
-        
+
         webAPI.registerAction("set-enabled", (data, reply) => {
             Plugin._plugins[data.pluginId].enabled = data.enabled;
             reply();

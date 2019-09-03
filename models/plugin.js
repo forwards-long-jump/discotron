@@ -12,8 +12,9 @@ class PluginModel {
      * @param {object} commands Object containing arrays of Command objects, grouped by trigger type
      * @param {string} defaultPermission Who can access the command if no permissions are set by the server owner, can be *everyone*, *admin*
      * @param {boolean} enabled True if plugin is enabled by the bot owner
+     * @param {array} logs List of logs the plugin can output to
      */
-    constructor(id = "", name = "", description = "", version = "", prefix = "", commands = {}, defaultPermission = "everyone", enabled = true) {
+    constructor(id = "", name = "", description = "", version = "", prefix = "", commands = {}, defaultPermission = "everyone", enabled = true, logs = []) {
         this._name = name;
         this._id = id;
         this._description = description;
@@ -22,7 +23,7 @@ class PluginModel {
         this._commands = commands;
         this._defaultPermission = defaultPermission;
         this._enabled = enabled;
-        this._logs = []; // TODO
+        this._logs = logs;
     }
 
     get name() {
