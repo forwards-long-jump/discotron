@@ -537,3 +537,7 @@ input:checked+.slider:before {
 .bot-admin-link {
     display: none;
 }
+
+.channel-selector-channel {
+    width: 450px;
+}

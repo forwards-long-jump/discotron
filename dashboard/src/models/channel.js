@@ -11,6 +11,18 @@ window.Discotron.Channel = class {
         this._type = type;
     }
 
+    get name() {
+        return this._name;
+    }
+
+    get id() {
+        return this._id;
+    }
+    
+    get type() {
+        return this._type;
+    }
+
     /**
      * Returns all the channels of a given guild
      * @param {string} discordGuildId Discord id of the guild
