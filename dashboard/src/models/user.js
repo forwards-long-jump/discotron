@@ -10,7 +10,7 @@ window.Discotron.User = class {
         this._id = id;
         this._avatarURL = avatarURL;
 
-        window.Discotron.User.prototype._users[id] = this;
+        Discotron.User._users[id] = this;
     }
 
     /**
@@ -24,13 +24,24 @@ window.Discotron.User = class {
             // new User();
         });
     }
-    
+
     /**
      * Get a user from its id (or load it?)
      * @param {string} id 
      */
     static get(id) {
-        return window.Discotron.User._users[id];
+        return new Promise((resolve, reject) => {
+            if (Discotron.User._users[id] === undefined) {
+                // Since the user should be loaded if he was in a guild, we are here trying to fetch an out-of-guild user (typically for the owner)
+                Discotron.WebAPI.queryBot("discotron-dashboard", "get-user-info", {
+                    discordId: id
+                }).then((userObj) => {
+                    resolve(new Discotron.User(userObj.name, userObj.id, userObj.avatarURL));
+                });
+            } else {
+                resolve(Discotron.User._users[id]);
+            }
+        });
     }
 
     /**
@@ -41,4 +52,4 @@ window.Discotron.User = class {
     }
 };
 
-window.Discotron.User.prototype._users = {}; // id: User
+window.Discotron.User._users = {}; // id: User

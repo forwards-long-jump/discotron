@@ -95,12 +95,12 @@ window.Discotron.BotStatusController = class extends window.Discotron.Controller
 
 		saveSettingsButton.onclick = () => {
 			saveSettingsButton.disabled = true;
-			
+
 			Discotron.WebAPI.queryBot("discotron-dashboard", "set-bot-config", {
 				statusText: document.getElementById("bot-status").value,
 				maintenance: document.getElementById("maintenance-enabled").checked
 			}).then((data) => {
-				
+
 			});
 		};
 
@@ -112,6 +112,21 @@ window.Discotron.BotStatusController = class extends window.Discotron.Controller
 					restartButton.value = "Restart";
 					restartButton.disabled = false;
 				}
+			});
+		};
+
+		document.getElementById("owners-selector").onclick = () => {
+			Discotron.WebAPI.queryBot("discotron-dashboard", "get-owner-ids").then((owners) => {
+				let userRoles = owners.map((owner) => {
+					return new Discotron.UserRole(owner, "user");
+				});
+				new Discotron.UserRoleWidgetController(undefined, userRoles, (newOwners) => {
+					Discotron.WebAPI.queryBot("discotron-dashboard", "set-owners", {
+						discordUsersIds: newOwners.map((userRole) => {
+							return userRole.discordId;
+						})
+					}).then(() => {});
+				}, false, "Owner list", false, () => {});
 			});
 		};
 	}

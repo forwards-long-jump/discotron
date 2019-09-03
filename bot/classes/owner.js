@@ -4,45 +4,24 @@ const db = require("./../apis/database-crud.js");
 
 class Owner extends OwnerModel {
     /**
-     * Returns an object describing the owner
-     * @returns {object} {id, name}
+     * Set the owners. The given array must not be empty, else nothing will happen
+     * @param {array} discordUserId Array of user ids 
      */
-    toObject() {
-        return new Promise((resolve, reject) => {
-                global.discordClient.fetchUser(this.discordId).then((user) => {
-                    resolve({
-                        id: user.id,
-                        name: user.name
-                    });
-                });
-            });
+    static setOwner(discordUserIds) 
+    {
+        if (discordUserIds.length === 0) {
+            return;
         }
 
-    /**
-     * Adds an owner
-     * @param {string} discordUserId 
-     */
-    static add(discordUserId) {
-        Owner._owners.add(discordUserId);
-        db.insert("Owners", {
-            discordUserId: discordUserId
-        });
+        Owner._owners = new Set(discordUserIds);
 
-    }
+        db.delete("Owners", {}, true);
 
-    /**
-     * Removes an owner. Note: does nothing if removing the owner leaves the bot an orphan
-     * @param {string} discordUserId 
-     */
-    static remove(discordUserId) {
-        Owner._owners.delete(discordUserId);
-        db.select("Owners").then((rows) => {
-            if (rows.length > 1) {
-                db.delete("Owners", {
-                    discordUserId: discordUserId
-                });
-            }
-        });
+        for (let i = 0; i < discordUserIds.length; ++i) {
+            db.insert("Owners", {
+                discordUserId: discordUserIds[i]
+            });
+        }
     }
 
     /**
@@ -55,15 +34,11 @@ class Owner extends OwnerModel {
     }
 
     static registerActions() {
-        webAPI.registerAction("add-owner", (data, reply) => {
-            Owner.add(data.discordUserId);
+        webAPI.registerAction("set-owners", (data, reply) => {
+            Owner.setOwners(data.discordUserIds);
             reply();
         }, "owner");
-        webAPI.registerAction("remove-owner", (data, reply) => {
-            Owner.remove(data.discordUserId);
-            reply();
-        }, "owner");
-        webAPI.registerAction("get-owners", (data, reply) => {
+        webAPI.registerAction("get-owner-ids", (data, reply) => {
             reply(Array.from(Owner._owners));
         }, "owner");
         webAPI.registerAction("is-owner", (data, reply, discordUserId) => {
