@@ -71,13 +71,21 @@ module.exports.onMessage = (message) => {
             continue;
         }
 
+        let prefix = "";
+
+        if (guild !== undefined) {
+            prefix += guild.commandPrefix;
+        }
+
+        prefix += plugin.prefix;
+
         // TODO: Check if plugin enabled in guild
 
-        if (isCommand && (guild === undefined || loweredCaseMessage.startsWith(guild.commandPrefix + plugin.prefix))) {
+        if (isCommand && (loweredCaseMessage.startsWith(prefix))) {
             for (let i = 0; i < plugin.commands.command.length; i++) {
                 const command = plugin.commands.command[i];
 
-                if (command.triggeredBy(message, loweredCaseMessage, guild.commandPrefix + plugin.prefix)) {
+                if (command.triggeredBy(message, loweredCaseMessage, prefix)) {
                     commands.push(command);
                 }
             }
