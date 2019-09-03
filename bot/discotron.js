@@ -32,7 +32,7 @@ module.exports.triggerEvent = (actionName, data) => {
 };
 
 module.exports.onMessage = (message) => {
-    Logger.log(`__${message.channel.name}__: ${message.content}`);
+    Logger.log(`__#${message.channel.name}__ <${message.author.tag}>: ${message.content}`);
 
     if (false) {
         return;
@@ -61,6 +61,10 @@ module.exports.onMessage = (message) => {
     for (const pluginId in plugins) {
         let commands = [];
         const plugin = plugins[pluginId];
+
+        if(!plugin.enabled) {
+            continue;
+        }
 
         if (guild !== undefined && !guild.permissions[pluginId].allows(message.author.id)) {
             continue;
