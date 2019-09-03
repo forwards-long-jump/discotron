@@ -51,6 +51,7 @@ class Guild extends GuildModel {
         return {
             id: this.discordId,
             name: guild.name,
+            nameAcronym: guild.nameAcronym,
             image: guild.iconURL
         };
     }
@@ -332,7 +333,11 @@ class Guild extends GuildModel {
 
     static registerActions() {
         webAPI.registerAction("get-guilds", (data, reply) => {
-            reply(Guild._guilds.map(guild => guild.toObject()));
+            let guilds = {};
+            for (const guildId in Guild.getAll()) {
+                guilds[guildId] = Guild.get(guildId).toObject();
+            }
+            reply(guilds);
         }, "guildAdmin");
         webAPI.registerAction("get-members", (data, reply, clientId, guildId) => {
             let guild = global.discordClient.guilds.get(guildId);
@@ -365,13 +370,14 @@ class Guild extends GuildModel {
             }));
         }, "guildAdmin");
         webAPI.registerAction("get-guilds-where-is-admin", (data, reply, userId) => {
-            let guildIds = [];
+            let guilds = [];
             for (const guildId in Guild._guilds) {
-                if (Guild.get(guildId).isAdmin(userId)) {
-                    guildIds.push(guildId);
+                const guild = Guild.get(guildId);
+                if (guild.isAdmin(userId)) {
+                    guilds.push(guild.toObject());
                 }
             }
-            reply(guildIds);
+            reply(guilds);
         });
 
         webAPI.registerAction("get-allowed-channels", (data, reply) => {
