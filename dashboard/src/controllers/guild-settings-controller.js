@@ -9,6 +9,7 @@ window.Discotron.GuildSettingsController = class extends window.Discotron.Contro
 
             if (this._guildId === undefined) {
                 window.location.replace("/dashboard");
+                return;
             }
             Discotron.Guild.getAll().then((guilds) => {
                 this._guild = guilds[this._guildId];
