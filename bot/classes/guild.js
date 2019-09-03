@@ -50,6 +50,7 @@ class Guild extends GuildModel {
         let guild = global.discordClient.guilds.get(this.discordId);
         return {
             id: this.discordId,
+            prefix: this.commandPrefix,
             name: guild.name,
             nameAcronym: guild.nameAcronym,
             image: guild.iconURL
@@ -127,8 +128,8 @@ class Guild extends GuildModel {
      * Set bot prefix on the guild
      * @param {string} prefix 
      */
-    set prefix(prefix) {
-        this._prefix = prefix;
+    set commandPrefix(prefix) {
+        this._commandPrefix = prefix;
         db.update("GuildSettings", {
             prefix: prefix
         }, {
@@ -136,8 +137,8 @@ class Guild extends GuildModel {
         });
     }
 
-    get prefix() {
-        return super.prefix;
+    get commandPrefix() {
+        return super.commandPrefix;
     }
 
     /**
@@ -235,7 +236,7 @@ class Guild extends GuildModel {
      * @param {string} pluginId 
      */
     _loadPluginPermission(pluginId) {
-        this._permissions[pluginId] = new Permission(pluginId, [], this.discordId);
+        this._permissions[pluginId] = new Permission(this.discordId, pluginId, []);
         db.select("Permissions", ["userRoleId"], {
             discordGuildId: this.discordId,
             pluginId: pluginId
@@ -282,7 +283,7 @@ class Guild extends GuildModel {
             discordGuildId: this.discordId
         }).then((rows) => {
             if (rows.length > 0) {
-                this._prefix = rows[0].prefix;
+                this._commandPrefix = rows[0].prefix;
             } else {
                 db.insert("GuildSettings", {
                     discordGuildId: this.discordId,
@@ -332,7 +333,7 @@ class Guild extends GuildModel {
     }
 
     static registerActions() {
-        webAPI.registerAction("get-guilds", (data, reply) => {
+        webAPI.registerAction("get-guilds", (data, reply, userId, guildId) => {
             let guilds = {};
             for (const guildId in Guild.getAll()) {
                 guilds[guildId] = Guild.get(guildId).toObject();
@@ -349,7 +350,7 @@ class Guild extends GuildModel {
                 };
             }));
         }, "guildAdmin");
-        webAPI.registerAction("get-roles", (data, reply) => {
+        webAPI.registerAction("get-roles", (data, reply, userId, guildId) => {
             let guild = global.discordClient.guilds.get(guildId);
             reply(guild.roles.map((role) => {
                 return {
@@ -359,7 +360,7 @@ class Guild extends GuildModel {
                 };
             }));
         }, "guildAdmin");
-        webAPI.registerAction("get-channels", (data, reply) => {
+        webAPI.registerAction("get-channels", (data, reply, userId, guildId) => {
             let guild = global.discordClient.guilds.get(guildId);
             reply(guild.channels.map((channel) => {
                 return {
@@ -380,43 +381,43 @@ class Guild extends GuildModel {
             reply(guilds);
         });
 
-        webAPI.registerAction("get-allowed-channels", (data, reply) => {
-            reply(Guild.get(data.guildId).allowedChannels);
+        webAPI.registerAction("get-allowed-channels", (data, reply, userId, guildId) => {
+            reply(Guild.get(guildId).allowedChannels);
         }, "guildAdmin");
-        webAPI.registerAction("set-allowed-channels", (data, reply) => {
-            Guild.get(data.guildId).allowedChannels = data.allowedChannels;
+        webAPI.registerAction("set-allowed-channels", (data, reply, userId, guildId) => {
+            Guild.get(guildId).allowedChannels = data.allowedChannels;
             reply();
         }, "guildAdmin");
 
-        webAPI.registerAction("get-plugin-enabled", (data, reply) => {
-            reply(Guild.get(data.guildId).isPluginEnabled(data.pluginId));
+        webAPI.registerAction("get-plugin-enabled", (data, reply, userId, guildId) => {
+            reply(Guild.get(guildId).isPluginEnabled(data.pluginId));
         }, "guildAdmin");
-        webAPI.registerAction("set-plugin-enabled", (data, reply) => {
-            Guild.get(data.guildId).setPluginEnabled(data.pluginId, data.enabled);
+        webAPI.registerAction("set-plugin-enabled", (data, reply, userId, guildId) => {
+            Guild.get(guildId).setPluginEnabled(data.pluginId, data.enabled);
             reply();
         }, "guildAdmin");
 
-        webAPI.registerAction("get-plugin-permission", (data, reply) => {
-            reply(Guild.get(data.guildId).permissions[data.pluginId].toObject());
+        webAPI.registerAction("get-plugin-permission", (data, reply, userId, guildId) => {
+            reply(Guild.get(guildId).permissions[data.pluginId].toObject());
         }, "guildAdmin");
-        webAPI.registerAction("set-plugin-permission", (data, reply) => {
-            Guild.get(data.guildId).setPluginPermission(data.pluginId, data.userRoles);
+        webAPI.registerAction("set-plugin-permission", (data, reply, userId, guildId) => {
+            Guild.get(guildId).setPluginPermission(data.pluginId, data.userRoles);
             reply();
         }, "guildAdmin");
 
-        webAPI.registerAction("get-guild-prefix", (data, reply) => {
-            reply(Guild.get(data.guildId).prefix);
+        webAPI.registerAction("get-guild-prefix", (data, reply, userId, guildId) => {
+            reply(Guild.get(guildId).commandPrefix);
         }, "guildAdmin");
-        webAPI.registerAction("set-guild-prefix", (data, reply) => {
-            Guild.get(data.guildId).prefix = data.prefix;
+        webAPI.registerAction("set-guild-prefix", (data, reply, userId, guildId) => {
+            Guild.get(guildId).commandPrefix = data.prefix;
             reply();
         }, "guildAdmin");
 
-        webAPI.registerAction("get-admins", (data, reply) => {
-            reply(Array.from(Guild.get(data.guildId).admins));
+        webAPI.registerAction("get-admins", (data, reply, userId, guildId) => {
+            reply(Array.from(Guild.get(guildId).admins));
         }, "guildAdmin");
-        webAPI.registerAction("set-admins", (data, reply) => {
-            Guild.get(data.guildId).admins = data.admins;
+        webAPI.registerAction("set-admins", (data, reply, userId, guildId) => {
+            Guild.get(guildId).admins = data.admins;
             reply();
         }, "guildAdmin");
     }
