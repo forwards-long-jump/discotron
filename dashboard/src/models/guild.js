@@ -21,8 +21,42 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
         this._roles = {}; // id: Role
         this._channels = {};
 
-        window.Discotron.Guild._guilds[discordId] = this;
+        Discotron.Guild._guilds[discordId] = this;
+    }
 
+    /**
+     * Get name
+     */
+    get name() {
+        return this._name;
+    }
+
+    /**
+     * Get icon URL
+     */
+    get iconURL() {
+        return this._iconURL;
+    }
+
+    /**
+     * Get members
+     */
+    get members() {
+        return this._members;
+    }
+
+    /**
+     * Get roles
+     */
+    get roles() {
+        return this._roles;
+    }
+
+    /**
+     * Get channels
+     */
+    get channels() {
+        return this._channels;
     }
 
     /**
@@ -60,14 +94,25 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
     static _loadRoles() {
         // Trigger Roles.getGuildRoles
     }
-    
-    
+
+
     /**
      * Check if guilds are loaded and return them in a promise
      */
     static getAll() {
-        // TODO
-        return new Promise();
+        return new Promise((resolve, reject) => {
+            if (Object.keys(Discotron.Guild._guilds).length === 0) {
+                Discotron.WebAPI.queryBot("discotron-dashboard", "get-guilds-where-is-admin").then((guilds) => {
+                    for (const guildId in guilds) {
+                        let obj = guilds[guildId];
+                        new Discotron.Guild(obj.id, obj.name, obj.image, obj.prefix, new Set([]), new Set([]), new Set([]), {});
+                    }
+                    resolve(Discotron.Guild._guilds);
+                });
+            } else {
+                resolve(Discotron.Guild._guilds);
+            }
+        });
     }
 
     /**
@@ -118,9 +163,8 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
     /**
      * Reloads the guilds
      */
-    static reload() {
-        window.Discotron.Guild._guilds = {};
-        // loadAll()
+    static clearCache() {
+        Discotron.Guild._guilds = {};
     }
 
     /**
@@ -138,7 +182,7 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
     deleteAdmin(userRole) {
         // webapi.querybot("delete-admin-couz");
     }
-    
+
     /**
      * Set prefix for guild command
      * @param {string} prefix 
@@ -183,4 +227,4 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
     }
 };
 
-window.Discotron.Guild.prototype._guilds = {};
+window.Discotron.Guild._guilds = {};
