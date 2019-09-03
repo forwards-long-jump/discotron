@@ -1,23 +1,25 @@
 <div class="page-header" class="shadow-small bot-info-status">
-    <img class="shadow-small round" src="https://i.imgur.com/hGhiwLI.png" /><span>DiscoJ#4513 <span
-            class="green-text bot-status">Online</span></span>
+    <img id="bot-avatar" class="shadow-small round" src="" />
+    <span id="bot-name"></span>
 </div>
 
 <h1>Settings</h1>
-<label>Bot status text: </label><input type="text" placeholder="!help"><br>
+<label>Bot status text: </label><input id="bot-status" type="text" placeholder="!help"><br>
 <label>Allowed owners</label><input type="button" class="link" value="Manage owners"
     onclick="document.querySelector('#demo').style.display = 'block';"><br><br>
 
 <h1>Maintenance</h1><br>
 <label>Ignore non-owners: </label>
 <label class="switch">
-    <input type="checkbox" checked>
+    <input id="maintenance-enabled" type="checkbox" checked>
     <span class="slider round"></span>
-</label><br><br>
+</label>
 
-<label>Restart bot</label><input type="button" class="red" value="Restart"><br>
+<br>
+
+<label>Restart bot</label><input id="restart-bot" type="button" class="red" value="Restart"><br>
 <hr>
-<input type="button" value="Save settings" disabled>
+<input type="button" id="save-settings" value="Save settings" disabled>
 
 <!-- Temp for demo purpose -->
 <div class="widget-background" id="demo" style="display: none;" onclick="this.style.display = 'none';">

@@ -15,6 +15,11 @@ class BotSettings extends BotSettingsModel {
         }).then((rows) => {
             this._maintenance = rows[0].value === "true";
         });
+        db.select("BotSettings", ["value"], {
+            name: "botStatus"
+        }).then((rows) => {
+            this._statusText = rows[0].value;
+        });
     }
 
     /**
@@ -30,8 +35,35 @@ class BotSettings extends BotSettingsModel {
         });
     }
 
+    setBotPresence() {
+        global.discordClient.user.setPresence({
+            game: {
+                name: this.statusText
+            },
+            status: this.maintenance ? "dnd" : "online"
+        }).then().catch();
+    }
+
     get helpText() {
         return super.helpText;
+    }
+
+    /**
+     * Changes the status text displayed by the bot
+     * @param {string} statusText New status text
+     */
+    set statusText(statusText) {
+        this._statusText = statusText;
+        db.update("BotSettings", {
+            value: statusText
+        }, {
+            name: "botStatus"
+        });
+        this.setBotPresence();
+    }
+
+    get statusText() {
+        return super.statusText;
     }
 
     /**

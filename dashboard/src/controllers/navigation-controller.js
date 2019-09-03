@@ -30,7 +30,7 @@ window.Discotron.NavigationController = class {
 			if (Object.keys(guilds).length > 0) {				
 				document.querySelector(".description").style.display = "none";
 
-				let serverLinksContainer = document.getElementById("nav-links");
+				let serverLinksContainer = document.querySelector("#nav-links ul");
 				let template = document.getElementById("template-server-link");
 
 				for (let i in guilds) {

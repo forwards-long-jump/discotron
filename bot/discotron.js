@@ -179,6 +179,10 @@ module.exports.loadOwners = () => {
     });
 };
 
+module.exports.updateStatus = () => {
+    botSettings.setBotPresence();
+};
+
 module.exports.onReaction = (reaction) => {};
 module.exports.onJoinGuild = (guild) => {};
 module.exports.onLeaveGuild = (guild) => {};
@@ -208,7 +212,7 @@ module.exports.loadRepositories = () => {
 module.exports.registerActions = () => {
     webAPI.registerAction("set-bot-config", (data, reply) => {
         if (data === undefined) {
-            reply();
+            reply(false);
             return;
         }
         if (data.helpText !== undefined) {
@@ -217,12 +221,27 @@ module.exports.registerActions = () => {
         if (data.maintenance !== undefined) {
             botSettings.maintenance = data.maintenance;
         }
+        if (data.statusText !== undefined) {
+            botSettings.statusText = data.statusText;
+        }
         reply();
     }, "owner");
+
     webAPI.registerAction("get-bot-config", (data, reply) => {
         reply({
             helpText: botSettings.helpText,
-            maintenance: botSettings.maintenance
+            botStatus: botSettings.statusText,
+            maintenance: botSettings.maintenance,
+            status: global.discordClient.status
+        });
+    }, "owner");
+
+    webAPI.registerAction("restart-bot", (data, reply) => {
+        Logger.log("Restarting bot...");
+        global.discordClient.destroy().then(() => {
+            global.discordClient._connectToDiscord().then(() => {
+                reply(true);
+            });
         });
     }, "owner");
 
