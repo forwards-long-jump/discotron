@@ -100,7 +100,7 @@ window.Discotron.BotStatusController = class extends window.Discotron.Controller
 				statusText: document.getElementById("bot-status").value,
 				maintenance: document.getElementById("maintenance-enabled").checked
 			}).then((data) => {
-				saveSettingsButton.disabled = false;
+				
 			});
 		};
 
@@ -110,6 +110,7 @@ window.Discotron.BotStatusController = class extends window.Discotron.Controller
 			Discotron.WebAPI.queryBot("discotron-dashboard", "restart-bot").then((data) => {
 				if (data === true) {
 					restartButton.value = "Restart";
+					restartButton.disabled = false;
 				}
 			});
 		};
