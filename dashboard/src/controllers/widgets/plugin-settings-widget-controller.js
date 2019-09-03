@@ -29,6 +29,8 @@ window.Discotron.PluginSettingsWidgetController = class extends window.Discotron
 	 * Display a form allowing to change plugin settings
 	 */
 	_displaySettings() {
+		this._widgetContainer.querySelector(".module-name").textContent = this._plugin.name;
+		this._widgetContainer.querySelector(".module-version").textContent = this._plugin.version;
 		this._widgetContainer.querySelector(".enabled-checkbox").checked = this._plugin.enabled;
 		this._widgetContainer.querySelector(".logs").value = this._plugin.logs.join("\r\n");
 		this._widgetContainer.querySelector(".global-prefix").value = this._plugin.prefix;

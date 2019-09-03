@@ -47,15 +47,22 @@ window.Discotron.RepositoryListController = class extends window.Discotron.Contr
 						const plugin = plugins[pluginId];
 						if (repo.pluginIds.includes(pluginId)) {
 							pluginFound = true;
-							
+
 							let cardTemplate = document.getElementById("template-card");
 							let cardContainer = document.importNode(cardTemplate.content, true);
 							cardContainer.querySelector(".repository-card-title").textContent = plugin.name;
 							cardContainer.querySelector(".repository-card-description").textContent = plugin.description;
 
+							cardContainer.querySelector(".repository-card").onclick = () => {
+								new Discotron.PluginSettingsWidgetController(plugin, (settings) => {
+									// TOOD: Save this to db
+								});
+							};
+
 							cardListContainer.appendChild(cardContainer);
 						}
 					}
+
 
 					if (!pluginFound) {
 						cardListContainer.innerHTML = "<p class=\"description\">No plugin found in this repository.</p>";
