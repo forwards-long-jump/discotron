@@ -126,11 +126,14 @@ module.exports.onMessage = (message) => {
         const words = message.content.split(" ");
 
         for (let i = 0; i < commands.length; i++) {
-            try {
-                commands[i].doMessageAction(message, words);
-            } catch (error) {
-                Logger.log("An error occured in plugin: **" + plugin.name + "** while executing command **" + commands[i].trigger + "**", "err");
-                Logger.log(error, "err");
+            const command = commands[i];
+            if (command.scope === "everywhere" || (command.scope === "pm" && guild === undefined) || (command.scope === "guild" && guild !== undefined)) {
+                try {
+                    command.doMessageAction(message, words);
+                } catch (error) {
+                    Logger.log("An error occured in plugin: **" + plugin.name + "** while executing command **" + command.trigger + "**", "err");
+                    Logger.log(error, "err");
+                }
             }
         }
     }

@@ -34,6 +34,10 @@ class Command extends CommandModel {
             return false;
         }
 
+        if (this.requiresMention && !discordMessage.isMentioned(global.discordClient.user)) {
+            return false;
+        }
+
         switch (this._triggerType) {
             case "command":
                 return (loweredCaseMessage.startsWith(prefixes + this.trigger));
