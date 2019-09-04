@@ -542,3 +542,17 @@ input:checked+.slider:before {
 .channel-selector-channel {
     width: 450px;
 }
+
+.deletable {
+    cursor: pointer;
+    position: relative;
+}
+
+.deletion-hover {
+    position: relative;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    display: block;
+}
