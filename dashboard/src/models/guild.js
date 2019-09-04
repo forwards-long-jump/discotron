@@ -54,31 +54,22 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
 
     /**
      * Get channels
-     */
-    get channels() {
-        return this._channels;
-    }
-
-    /**
-     * Load all the guilds where user is admin (and bot is present) basic informations 
      * @returns {Promise}
      */
-    static _loadAll() {
+    getChannels() {
         return new Promise((resolve, reject) => {
-            // WebApi.queryBot("get-guilds").then((guildbject'ed) => {
-            //    foreach guild
-            //          create permissions
-            //          new Guild(guild.id, )
-            // });
+            if (Object.keys(this._channels).length === 0) {
+                Discotron.Channel.getGuildChannels(this.discordId).then((channels) => {
+                    for (let i = 0; i < channels.length; i++) {
+                        const channel = channels[i];
+                        this._channels[channel.id] = channel;
+                    }
+                    resolve(this._channels);
+                });
+            } else {
+                resolve(this._channels);
+            }
         });
-    }
-
-    /**
-     * Load channels using WebAPI
-     * @returns {Promise}
-     */
-    static _loadChannels() {
-        // Trigger Roles.getGuildChannels
     }
 
     /**
@@ -105,28 +96,13 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
                 Discotron.WebAPI.queryBot("discotron-dashboard", "get-guilds-where-is-admin").then((guilds) => {
                     for (const guildId in guilds) {
                         let obj = guilds[guildId];
-                        new Discotron.Guild(obj.id, obj.name, obj.image, obj.prefix, new Set([]), new Set([]), new Set([]), {});
+                        new Discotron.Guild(obj.id, obj.name, obj.image, obj.prefix, new Set(obj.allowedChannelIds), new Set(obj.enabledPluginIds), new Set([]), {});
                     }
                     resolve(Discotron.Guild._guilds);
                 });
             } else {
                 resolve(Discotron.Guild._guilds);
             }
-        });
-    }
-
-    /**
-     * Returns the channels of the guild
-     * @returns {array} Array of Channels
-     */
-    getChannels() {
-        return new Promise((resolve, reject) => {
-            // if this.channel is not empty
-            //    resolve();
-            // else
-            // channels.push(Channel.getGuildChannels(this._id))
-            // resolve()
-            // });
         });
     }
 
@@ -202,7 +178,10 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
      * Set allowed channels
      */
     set allowedChannelIds(allowedChannelIds) {
-        // TODO: update db
+        this._allowedChannelIds = allowedChannelIds;
+        Discotron.WebAPI.queryBot("discotron-dashboard", "set-allowed-channels", {
+            allowedChannelIds: allowedChannelIds
+        }, this.discordId);
     }
 
     get allowedChannelIds() {

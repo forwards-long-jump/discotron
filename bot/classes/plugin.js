@@ -2,6 +2,7 @@ const PluginModel = require("./../../models/plugin.js");
 const Command = require("./command.js");
 const webAPI = require("./../apis/web-api.js").getWebAPI("discotron-dashboard");
 const db = require("./../apis/database-crud.js");
+const Logger = require("../utils/logger.js");
 
 class Plugin extends PluginModel {
     /**
@@ -25,10 +26,22 @@ class Plugin extends PluginModel {
             this._enabled = oldVersion._enabled;
         } else {
             this._loadInfoFromDatabase();
-
             global.discotron.triggerEvent("plugin-loaded", this.id);
         }
+
+        if (typeof this._onLoad === "function") {
+            this._onLoad(this.getApiObject());
+        }
         Plugin._plugins[this.id] = this;
+    }
+
+    getApiObject() {
+        return {
+            discotron: global.discotron,
+            discordClient: global.discordClient,
+            plugin: this,
+            Logger: Logger
+        };
     }
 
     /**
@@ -52,6 +65,7 @@ class Plugin extends PluginModel {
         this._description = pluginFile.config.description;
         this._defaultPermission = pluginFile.config.defaultPermission;
         this._version = pluginFile.config.version;
+        this._onLoad = pluginFile.config.onLoad;
         for (let i = 0; i < pluginFile.commands.length; i++) {
             let command = new Command(pluginFile.commands[i]);
             this._commands[command.triggerType].push(command);
@@ -104,18 +118,16 @@ class Plugin extends PluginModel {
      */
     toObject() {
         let commandObjs = [];
-        for (let i = 0; i < this.commands.command; ++i) {
-            commandObjs.push(this.commands.command.toObject());
+        for (const type in this.commands) {
+            if (this.commands.hasOwnProperty(type)) {
+                const commands = this.commands[type];
+                for (let i = 0; i < commands.length; i++) {
+                    const command = commands[i];
+                    commandObjs.push(command.toObject());
+                }
+            }
         }
-        for (let i = 0; i < this.commands.words; ++i) {
-            commandObjs.push(this.commands.words.toObject());
-        }
-        for (let i = 0; i < this.commands.all; ++i) {
-            commandObjs.push(this.commands.all.toObject());
-        }
-        for (let i = 0; i < this.commands.reaction; ++i) {
-            commandObjs.push(this.commands.reaction.toObject());
-        }
+
 
         return {
             name: this.name,
@@ -125,8 +137,27 @@ class Plugin extends PluginModel {
             commands: commandObjs,
             defaultPermission: this.defaultPermission,
             enabled: this.enabled,
-            prefix: this.prefix
+            prefix: this.prefix,
+            logs: this.logs
         };
+    }
+
+    /**
+     * Log something into the dashboard
+     * @param {object} value 
+     */
+    log(value) {
+        let date = new Date();
+        let displayedDate = `[${date.toLocaleDateString()} ${date.toLocaleTimeString()}]`;
+        if (typeof this.value === "string") {
+            this._logs.push(displayedDate + " " + value);
+        } else {
+            try {
+                this._logs.push(displayedDate + " " + JSON.stringify(value, null, 4));
+            } catch (e) {
+                this._logs.push(displayedDate + " " + value);
+            }
+        }
     }
 
     /**
@@ -165,16 +196,28 @@ class Plugin extends PluginModel {
 
     static registerActions() {
         webAPI.registerAction("get-plugin-prefix", (data, reply) => {
-            reply(Plugin._plugins[data.pluginId].prefix);
+            if (Plugin._plugins[data.pluginId] !== undefined) {
+                reply(Plugin._plugins[data.pluginId].prefix);
+            } else {
+                reply(false);
+            }
         });
+
+        webAPI.registerAction("get-plugin-logs", (data, reply) => {
+            reply(Plugin._plugins[data.pluginId].logs);
+        }, "owner");
 
         webAPI.registerAction("set-plugin-prefix", (data, reply) => {
             Plugin._plugins[data.pluginId].prefix = data.prefix;
             reply();
-        }, "everyone");
+        }, "owner");
 
         webAPI.registerAction("get-enabled", (data, reply) => {
-            reply(Plugin._plugins[data.pluginId].enabled);
+            if (Plugin._plugins[data.pluginId] !== undefined) {
+                reply(Plugin._plugins[data.pluginId].enabled);
+            } else {
+                reply(false);
+            }
         });
 
         webAPI.registerAction("set-enabled", (data, reply) => {

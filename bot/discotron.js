@@ -3,6 +3,7 @@ const Repository = require("./classes/repository.js");
 const Guild = require("./classes/guild.js");
 const Plugin = require("./classes/plugin.js");
 const Owner = require("./classes/owner.js");
+const SpamUser = require("./classes/spam-user.js");
 const Logger = require("./utils/logger.js");
 const Login = require("./classes/login.js");
 const db = require("./apis/database-crud.js");
@@ -32,14 +33,15 @@ module.exports.triggerEvent = (actionName, data) => {
 };
 
 module.exports.onMessage = (message) => {
-    Logger.log(`__${message.channel.name}__: ${message.content}`);
-
-    if (false) {
-        return;
-    } // TODO: Maintenance && Owner check
+    Logger.log(`__#${message.channel.name}__ <${message.author.tag}>: ${message.content}`);
     if (message.author.bot) {
         return;
     }
+
+    if (botSettings.maintenance && !Owner.isOwner(message.author.id)) {
+        return;
+    }
+
     if (false) {
         return;
     } // TODO: User spamming check
@@ -62,15 +64,29 @@ module.exports.onMessage = (message) => {
         let commands = [];
         const plugin = plugins[pluginId];
 
+        if (!plugin.enabled) {
+            continue;
+        }
+
         if (guild !== undefined && !guild.permissions[pluginId].allows(message.author.id)) {
             continue;
         }
 
-        if (isCommand && (guild === undefined || loweredCaseMessage.startsWith(guild.commandPrefix + plugin.prefix))) {
+        let prefix = "";
+
+        if (guild !== undefined) {
+            prefix += guild.commandPrefix;
+        }
+
+        prefix += plugin.prefix;
+
+        // TODO: Check if plugin enabled in guild
+
+        if (isCommand && (loweredCaseMessage.startsWith(prefix))) {
             for (let i = 0; i < plugin.commands.command.length; i++) {
                 const command = plugin.commands.command[i];
 
-                if (command.triggeredBy(message, loweredCaseMessage, guild.commandPrefix + plugin.prefix)) {
+                if (command.triggeredBy(message, loweredCaseMessage, prefix)) {
                     commands.push(command);
                 }
             }
@@ -86,15 +102,15 @@ module.exports.onMessage = (message) => {
         }
 
         // Spam detection
-        if (commands.length !== 0) {
+        if (commands.length !== 0 && !Owner.isOwner(message.author.id)) {
             for (let i = 0; i < commands.length; i++) {
                 const command = commands[i];
                 if (!command.bypassSpamDetection) {
-                    // TODO: Spam meter, return if spamming
-                    /*if user spam meter > 100
-                        user cooldown = 3000 years
-                        dm user
-                    break;*/
+                    SpamUser.onAction(message.author);
+                    if (SpamUser.isRestricted(message.author)) {
+                        commands = [];
+                    }
+                    break;
                 }
             }
         }
@@ -111,11 +127,14 @@ module.exports.onMessage = (message) => {
         const words = message.content.split(" ");
 
         for (let i = 0; i < commands.length; i++) {
-            try {
-                commands[i].doMessageAction(message, words);
-            } catch (error) {
-                Logger.log("An error occured in plugin: **" + plugin.name + "** while executing command **" + commands[i].trigger + "**", "err");
-                Logger.log(error, "err");
+            const command = commands[i];
+            if (command.scope === "everywhere" || (command.scope === "pm" && guild === undefined) || (command.scope === "guild" && guild !== undefined)) {
+                try {
+                    command.doMessageAction(message, words, plugin.getApiObject());
+                } catch (error) {
+                    Logger.log("An error occured in plugin: **" + plugin.name + "** while executing command **" + command.trigger + "**", "err");
+                    Logger.log(error, "err");
+                }
             }
         }
     }

@@ -16,13 +16,15 @@
 <body>
     <nav class="shadow-small">
         <div id="bot-info" class="shadow-small">
-            <img class="shadow-small round" src="" />
-            <span></span>
+            <a href="#home">
+                <img class="shadow-small round" src="" />
+                <span></span>
+            </a>
         </div>
         <div id="nav-links">
             <template id="template-server-link">
-                    <li><a class="server-link" href="#guild-settings?guild="><img
-                        class="server-icon shadow-small round"/></a></li>
+                <li><a class="server-link" href="#guild-settings?guild="><img
+                            class="server-icon shadow-small round" /></a></li>
             </template>
             <ul>
                 <li class="header bot-admin-link">Bot administration</li>
@@ -46,6 +48,9 @@
     <script>
         window.Discotron = {};
     </script>
+
+    <!-- Config -->
+    <script src="/dashboard/config/config.js"></script>
 
     <!-- Utils-->
     <script src="/dashboard/src/utils.js"></script>

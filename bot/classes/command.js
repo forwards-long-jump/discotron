@@ -34,6 +34,10 @@ class Command extends CommandModel {
             return false;
         }
 
+        if (this.requiresMention && !discordMessage.isMentioned(global.discordClient.user)) {
+            return false;
+        }
+
         switch (this._triggerType) {
             case "command":
                 return (loweredCaseMessage.startsWith(prefixes + this.trigger));
@@ -61,7 +65,7 @@ class Command extends CommandModel {
      * @param {Discord.Message} message 
      * @param {array} words 
      */
-    doMessageAction(message, words) {
+    doMessageAction(message, words, apiCollection) {
 
         switch (this.triggerType) {
             case "command":
@@ -82,15 +86,15 @@ class Command extends CommandModel {
                         commandArgs[this.args[i].name] = (typeof words[i + 1] !== "undefined") ? words[i + 1] : this.args[i].defaultValue;
                     }
                 }
-                this.action(message, commandArgs);
+                this.action(message, commandArgs, apiCollection);
                 break;
 
             case "words":
-                this.action(message, words);
+                this.action(message, words, apiCollection);
                 break;
 
             default:
-                this.action(message);
+                this.action(message, undefined, apiCollection);
                 break;
         }
     }

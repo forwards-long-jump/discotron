@@ -48,12 +48,15 @@ class Guild extends GuildModel {
      */
     toObject() {
         let guild = global.discordClient.guilds.get(this.discordId);
+
         return {
             id: this.discordId,
             prefix: this.commandPrefix,
             name: guild.name,
             nameAcronym: guild.nameAcronym,
-            image: guild.iconURL
+            image: guild.iconURL,
+            allowedChannelIds: Array.from(this.allowedChannelIds),
+            enabledPluginIds: Array.from(this.enabledPlugins)
         };
     }
 
@@ -145,8 +148,9 @@ class Guild extends GuildModel {
      * Set allowed channels
      * @param {array} discordChannelIds 
      */
-    set allowedChannels(discordChannelIds) {
+    set allowedChannelIds(discordChannelIds) {
         this._allowedChannelIds = new Set(discordChannelIds);
+
         db.delete("AllowedChannels", {
             discordGuildId: this.discordId
         });
@@ -158,8 +162,8 @@ class Guild extends GuildModel {
         }
     }
 
-    get allowedChannels() {
-        return super.allowedChannels;
+    get allowedChannelIds() {
+        return super.allowedChannelIds;
     }
 
     /**
@@ -360,6 +364,7 @@ class Guild extends GuildModel {
                 };
             }));
         }, "guildAdmin");
+
         webAPI.registerAction("get-channels", (data, reply, userId, guildId) => {
             let guild = global.discordClient.guilds.get(guildId);
             reply(guild.channels.map((channel) => {
@@ -370,6 +375,7 @@ class Guild extends GuildModel {
                 };
             }));
         }, "guildAdmin");
+
         webAPI.registerAction("get-guilds-where-is-admin", (data, reply, userId) => {
             let guilds = [];
             for (const guildId in Guild._guilds) {
@@ -382,10 +388,11 @@ class Guild extends GuildModel {
         });
 
         webAPI.registerAction("get-allowed-channels", (data, reply, userId, guildId) => {
-            reply(Guild.get(guildId).allowedChannels);
+            reply(Guild.get(guildId).allowedChannelIds);
         }, "guildAdmin");
+
         webAPI.registerAction("set-allowed-channels", (data, reply, userId, guildId) => {
-            Guild.get(guildId).allowedChannels = data.allowedChannels;
+            Guild.get(guildId).allowedChannelIds = data.allowedChannelIds;
             reply();
         }, "guildAdmin");
 

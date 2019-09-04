@@ -35,6 +35,15 @@ window.Discotron.LoginController = class /* does not extends Controller because 
      * Set URL from config and check what to display
      */
     static initPage() {
+        if (Discotron.config === undefined || Discotron.config.oauthURL === undefined || Discotron.config.inviteLink === undefined) {
+            document.querySelector("h1").style.display = "none";
+            document.querySelector("#login > div > div > div > p:nth-child(2)").textContent = "Bot installation is not complete, please check the installation guide and create the missing configuration file.";
+            document.querySelector(".widget-buttons").style.display = "none";
+            document.querySelector("#login-error").style.display = "block";
+            document.querySelector("#login-error").innerHTML = "Could not load <b>dashboard/config/config.js</b>";
+            return;
+        }
+
         document.querySelector("#auth-link").href = Discotron.config.oauthURL;
 
         let url = new URL(window.location.href);

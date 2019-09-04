@@ -50,12 +50,19 @@ window.Discotron.RepositoryListController = class extends window.Discotron.Contr
 
 							let cardTemplate = document.getElementById("template-card");
 							let cardContainer = document.importNode(cardTemplate.content, true);
-							cardContainer.querySelector(".repository-card-title").textContent = plugin.name;
+							cardContainer.querySelector(".repository-card-title").textContent = (plugin.enabled ? "" : "[Disabled] ") + plugin.name;
 							cardContainer.querySelector(".repository-card-description").textContent = plugin.description;
+
+							let cardTitle = cardContainer.querySelector(".repository-card-title");
 
 							cardContainer.querySelector(".repository-card").onclick = () => {
 								new Discotron.PluginSettingsWidgetController(plugin, (settings) => {
-									// TOOD: Save this to db
+									// Query API
+									plugin.enabled = settings.enabled;
+									plugin.prefix = settings.globalPrefix;
+
+									// Update card
+									cardTitle.textContent = (plugin.enabled ? "" : "[Disabled] ") + plugin.name;
 								});
 							};
 
@@ -63,9 +70,22 @@ window.Discotron.RepositoryListController = class extends window.Discotron.Contr
 						}
 					}
 
+					for (let i = 0; i < repo.pages.length; i++) {
+						const page = repo.pages[i];
+						pluginFound = true;
+
+						let cardTemplate = document.getElementById("template-card");
+						let cardContainer = document.importNode(cardTemplate.content, true);
+						cardContainer.querySelector(".repository-card-title").textContent = "Page: /" + page;
+						cardContainer.querySelector(".repository-card-description").innerHTML = "Web page accessible <a href=\"/" + page + "\">here</a>";
+
+						cardListContainer.appendChild(cardContainer);
+
+					}
+
 
 					if (!pluginFound) {
-						cardListContainer.innerHTML = "<p class=\"description\">No plugin found in this repository.</p>";
+						cardListContainer.innerHTML = "<p class=\"description\">No plugin / pages found in this repository.</p>";
 					}
 				});
 

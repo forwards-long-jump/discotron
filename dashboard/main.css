@@ -134,7 +134,15 @@ main hr {
     background-color: var(--color-background-light);
 }
 
-.page-header img, #bot-info img {
+#bot-info a {
+    color: var(--color-text);
+}
+#bot-info a:hover {
+    text-decoration: none;
+}
+
+.page-header img,
+#bot-info img {
     height: 55px;
     width: 55px;
     vertical-align: middle;
@@ -253,15 +261,15 @@ input[type="submit"]:hover {
 
 input[type="button"]:disabled,
 input[type="submit"]:disabled {
-    background-color: var(--color-background-dark)!important;
-    border: 1px solid var(--color-background-light)!important;
+    background-color: var(--color-background-dark) !important;
+    border: 1px solid var(--color-background-light) !important;
     color: var(--color-text-dark);
     cursor: default;
 }
 
 input[type="button"]:disabled:hover,
 input[type="submit"]:disabled:hover {
-    background-color: var(--color-background-dark)!important;
+    background-color: var(--color-background-dark) !important;
 }
 
 .switch {
@@ -322,6 +330,17 @@ label {
     vertical-align: top;
 }
 
+.plugin-help {
+    width: calc(100% - 100px);
+    background-color: var(--color-background-darkest);
+    padding: 20px;
+    margin: 10px;
+    border-radius: 4px;
+    display: inline-block;
+    vertical-align: top;
+}
+
+
 .repository-card-title {
     font-weight: bold;
 }
@@ -334,6 +353,7 @@ label {
 .red {
     background-color: #c0392b !important;
 }
+
 .red-text {
     color: #c0392b !important;
 }
@@ -352,7 +372,7 @@ label {
 
 .bot-status {
     margin-left: 20px;
-    font-size: 1.0em!important;
+    font-size: 1.0em !important;
 }
 
 .small {
@@ -517,14 +537,15 @@ input:checked+.slider:before {
     margin: 5px;
 }
 
-.link, .button-link {
+.link,
+.button-link {
     border: none;
-    background: none!important;
+    background: none !important;
     color: var(--color-primary-light);
     padding-left: 2px;
     text-align: left;
     font-size: 0.9em;
-    width: auto!important;
+    width: auto !important;
 }
 
 .link:hover {
@@ -555,4 +576,36 @@ input:checked+.slider:before {
     height: 100%;
     width: 100%;
     display: block;
+}
+
+.plugin-help-header {
+    font-size: 1.2em;
+    display: block;
+}
+
+.plugin-help > span {
+    display: block;
+}
+
+.plugin-description {
+    margin-top: 10px;
+}
+
+.command-entry {
+    display: block;
+    margin-top: 20px;
+    font-size: 0.9em;
+}
+
+.command-args {
+    color: var(--color-text-dark);
+    display: inline-block;
+    width: 150px;
+}
+
+.command {
+    font-weight: bold;
+    color: var(--color-primary-light);
+    display: inline-block;
+    width: 200px;
 }

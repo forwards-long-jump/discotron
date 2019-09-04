@@ -1,7 +1,21 @@
 <div class="page-header" class="shadow-small bot-info-status">
-    <img class="shadow-small round" src="https://i.imgur.com/lE5ijHX.png" /><span>United Mapmakers of
-        Awesomenauts</span>
+    <img id="header-icon" class="shadow-small round" src="" /><span id="guild-name"></span>
 </div>
+
+<a id="go-back" href="#guild-settings?guild=">Go back to guild settings</a><hr>
+<h1>Loaded plugins list</h1>
+
+<template id="template-card">
+    <div class="repository-card shadow-big">
+        <span class="repository-card-title"></span>
+        <p class="repository-card-description"></p>
+    </div>
+</template>
+
+<div id="plugin-container">
+
+</div>
+<!--
 
 <h1>Module list</h1>
 <div class="repository-container">
@@ -55,43 +69,4 @@
         </div>
     </div>
 </div>
-
-<!-- Temp for demo purpose -->
-<div class="widget-background" id="demo" style="display: none;" onclick="this.style.display = 'none';">
-    <div class="widget-outer">
-        <div class="widget-middle">
-            <div class="widget-inner shadow-big">
-                <span class="widget-header">Module settings: Lelmaker</span>
-                <label>Plugin enabled</label>
-                <label class="switch">
-                    <input type="checkbox" checked>
-                    <span class="slider round"></span>
-                </label><br><br>
-                <label>Grant permission to user / role</label><br>
-                <input type="text" placeholder="Type user / role"><input type="button" value="Add"><br><br>
-                <label>Allowed users</label>
-                <div class="user-list-container">
-                    <span class="shadow-small"><i class="fas fa-user"></i> Blatoy#0001</span>
-                    <span class="shadow-small"><i class="fas fa-user"></i> G Visière#5451</span>
-                </div><br>
-                <label>Allowed roles</label><br>
-                <div class="role-list-container">
-                    <span style="color: white;"><i class="fas fa-users"></i> everyone</span>
-                    <span><i style="color: rgb(121, 43, 43);" class="fas fa-users"></i> admin</span>
-                    <span><i style="color: rgb(28, 35, 134);" class="fas fa-users"></i> leenox</span>
-                    <span><i style="color: rgb(121, 33, 33);" class="fas fa-users"></i> everyone</span>
-                    <span><i style="color: rgb(79, 155, 35);" class="fas fa-users"></i> admin</span>
-                    <span><i style="color: rgb(28, 35, 134);" class="fas fa-users"></i> leenox</span>
-                    <span><i style="color: rgb(158, 24, 158);" class="fas fa-users"></i> everyone</span>
-                    <span><i style="color: rgb(121, 43, 43);" class="fas fa-users"></i> admin</span>
-                    <span><i style="color: rgb(1, 2, 22);" class="fas fa-users"></i> leenox</span>
-                </div>
-
-                <div class="widget-buttons">
-                    <input class="red" type="button" value="Cancel">
-                    <input type="button" value="Apply">
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+-->

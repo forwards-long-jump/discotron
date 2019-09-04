@@ -3,8 +3,8 @@ window.Discotron.Plugin = class extends window.Discotron.PluginModel {
      * Ctor
      * @param {string} pluginId Id of the plugin 
      */
-    constructor(pluginId, name, description, version, prefix, commands, defaultPermission, enabled) {
-        super(pluginId, name, description, version, prefix, commands, defaultPermission, enabled);
+    constructor(pluginId, name, description, version, prefix, commands, defaultPermission, enabled, logs) {
+        super(pluginId, name, description, version, prefix, commands, defaultPermission, enabled, logs);
         Discotron.Plugin._plugins[pluginId] = this;
     }
 
@@ -18,7 +18,8 @@ window.Discotron.Plugin = class extends window.Discotron.PluginModel {
                 Discotron.WebAPI.queryBot("discotron-dashboard", "get-plugins").then((data) => {
                     for (let i = 0; i < data.length; i++) {
                         const plugin = data[i];
-                        new Discotron.Plugin(plugin.id, plugin.name, plugin.description, plugin.version, plugin.prefix, plugin.commands, plugin.defaultPermission, plugin.enabled);
+                        new Discotron.Plugin(plugin.id, plugin.name, plugin.description, plugin.version, plugin.prefix,
+                            plugin.commands, plugin.defaultPermission, plugin.enabled, plugin.logs);
                     }
                     resolve(Discotron.Plugin._plugins);
                 });
@@ -40,7 +41,11 @@ window.Discotron.Plugin = class extends window.Discotron.PluginModel {
      * @param {string} prefix 
      */
     set prefix(prefix) {
-        // update in web api, owner only
+        this._prefix = prefix;
+        Discotron.WebAPI.queryBot("discotron-dashboard", "set-plugin-prefix", {
+            prefix: prefix,
+            pluginId: this._id
+        });
     }
 
     get prefix() {
@@ -52,11 +57,23 @@ window.Discotron.Plugin = class extends window.Discotron.PluginModel {
      * @param {boolean} enabled True if the plugin is to be enabled
      */
     set enabled(enabled) {
-
+        this._enabled = enabled;
+        Discotron.WebAPI.queryBot("discotron-dashboard", "set-enabled", {
+            enabled: enabled,
+            pluginId: this._id
+        });
     }
 
     get enabled() {
         return super.enabled;
+    }
+
+    set logs(logs) {
+        this._logs = logs;
+    }
+
+    get logs() {
+        return super.logs;
     }
 };
 

@@ -30,6 +30,7 @@ window.Discotron.GuildSettingsController = class extends window.Discotron.Contro
     _displayHeader() {
         document.getElementById("header-icon").src = this._guild.iconURL;
         document.getElementById("guild-name").textContent = this._guild.name;
+        document.getElementById("manage-plugin-link").href += this._guild.discordId;
     }
 
     /**
@@ -74,9 +75,30 @@ window.Discotron.GuildSettingsController = class extends window.Discotron.Contro
                 document.getElementById("save").click();
             }
         };
+
         document.getElementById("save").onclick = () => {
             document.getElementById("save").disabled = true;
             this._guild.prefix = document.getElementById("prefix").value;
+        };
+
+        document.getElementById("channel-locking").onclick = () => {
+            this._guild.getChannels().then((channels) => {
+                let channelsId = [];
+                for (const id in channels) {
+                    if (channels[id].type === "text") {
+                        channelsId.push(channels[id]);
+                    }
+                }
+
+                let channelListArray = Array.from(this._guild.allowedChannelIds);
+
+                new Discotron.ChannelListWidgetController(channelsId, channelListArray, (selectedChannels) => {
+                    if (selectedChannels.length === channelsId.length) {
+                        selectedChannels = []; // Everything selected => nothing selected
+                    }
+                    this._guild.allowedChannelIds = selectedChannels;
+                });
+            });
         };
     }
 };

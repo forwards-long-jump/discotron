@@ -18,7 +18,7 @@ window.Discotron.Channel = class {
     get id() {
         return this._id;
     }
-    
+
     get type() {
         return this._type;
     }
@@ -29,6 +29,15 @@ window.Discotron.Channel = class {
      */
     static getGuildChannels(discordGuildId) {
         return new Promise((resolve, reject) => {
+            Discotron.WebAPI.queryBot("discotron-dashboard", "get-channels", {}, discordGuildId).then((channels) => {
+                let channelObjects = [];
+                for (let i = 0; i < channels.length; i++) {
+                    const channel = channels[i];
+                    channelObjects.push(new Discotron.Channel(channel.name, channel.id, channel.type));
+                }
+                
+                resolve(channelObjects);
+            });
             // Query API
             // new Channel();
             // resolve([Channel]);
