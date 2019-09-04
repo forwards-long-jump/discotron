@@ -39,8 +39,12 @@ class UserRole extends UserRoleModel {
         if (this.type === "user") {
             return this.discordId === userDiscordId;
         } else {
-            let role = global.discordClient.guilds.get(this.guildId).roles.get(this.discordId);
-            return role.members.has(userDiscordId);
+            if (typeof global.discordClient !== "undefined" && typeof global.discordClient.guilds.get(this.guildId) !== "undefined") {
+                let role = global.discordClient.guilds.get(this.guildId).roles.get(this.discordId);
+                return role.members.has(userDiscordId);
+            } else {
+                return false;
+            }
         }
     }
 
@@ -52,14 +56,14 @@ class UserRole extends UserRoleModel {
         return new Promise((resolve, reject) => {
             db.select("UsersRoles", ["id"], {
                 discordId: this.discordId,
-                type: (this.type === "user" ?  1 : 2)
+                type: (this.type === "user" ? 1 : 2)
             }).then((rows) => {
                 if (rows.length !== 0) {
                     resolve(rows[0].id);
                 } else {
                     db.insert("UsersRoles", {
                         discordId: this.discordId,
-                        type: (this.type === "user" ?  1 : 2)
+                        type: (this.type === "user" ? 1 : 2)
                     }).then(() => {
                         this.getId().then((id) => {
                             resolve(id);

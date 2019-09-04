@@ -10,7 +10,7 @@ window.Discotron.LoginController = class /* does not extends Controller because 
         Discotron.WebAPI.queryBot("discotron-dashboard", "claim-ownership", {
             "code": code,
             "ownerSecret": ownerSecret
-        }).then((data) => {
+        }).then((data) => {     
             switch (data.status) {
                 case "error":
                     Discotron.LoginController._displayContainer("claim-ownership");

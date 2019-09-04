@@ -39,21 +39,7 @@ window.Discotron.GuildSettingsController = class extends window.Discotron.Contro
     _displayPrefix() {
         document.getElementById("prefix").value = this._guild.prefix;
     }
-
-    /**
-     * Display channel selector widget
-     */
-    _onAllowedChannelsClick() {
-        //new Widgetmachin(channels, currentlyselectedChan, (lel) => {currentlyselectedChan = lel;} 
-    }
-
-    /**
-     * Display userRole widget 
-     */
-    _onAdminsClick() {
-
-    }
-
+    
     _addEvents() {
         document.getElementById("prefix").onkeydown = (e) => {
             document.getElementById("save").disabled = false;
@@ -90,7 +76,7 @@ window.Discotron.GuildSettingsController = class extends window.Discotron.Contro
             let admins = Array.from(this._guild.admins);
             new Discotron.UserRoleWidgetController(this._guild, admins, (newAdmins) => {
                 this._guild.admins = newAdmins;
-            }, true, "Admins", false);
+            }, true, "Admins", true);
         };
     }
 };

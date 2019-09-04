@@ -3,6 +3,7 @@ const Command = require("./command.js");
 const webAPI = require("./../apis/web-api.js").getWebAPI("discotron-dashboard");
 const db = require("./../apis/database-crud.js");
 const Logger = require("../utils/logger.js");
+const Owner = require("./owner.js");
 
 class Plugin extends PluginModel {
     /**
@@ -116,7 +117,7 @@ class Plugin extends PluginModel {
      * Convert this plugin to an object containing value displayed on the dashboard
      * @returns {object} {name, id, description, version, commands: [commands.toObject()], defaultPermission, enabled}
      */
-    toObject() {
+    toObject(publicInfoOnly = false) {
         let commandObjs = [];
         for (const type in this.commands) {
             if (this.commands.hasOwnProperty(type)) {
@@ -128,18 +129,30 @@ class Plugin extends PluginModel {
             }
         }
 
-
-        return {
-            name: this.name,
-            id: this.id,
-            description: this.description,
-            version: this.version,
-            commands: commandObjs,
-            defaultPermission: this.defaultPermission,
-            enabled: this.enabled,
-            prefix: this.prefix,
-            logs: this.logs
-        };
+        if (publicInfoOnly) {
+            return {
+                name: this.name,
+                id: this.id,
+                description: this.description,
+                version: this.version,
+                commands: commandObjs,
+                defaultPermission: this.defaultPermission,
+                enabled: this.enabled,
+                prefix: this.prefix
+            };
+        } else {
+            return {
+                name: this.name,
+                id: this.id,
+                description: this.description,
+                version: this.version,
+                commands: commandObjs,
+                defaultPermission: this.defaultPermission,
+                enabled: this.enabled,
+                prefix: this.prefix,
+                logs: this.logs
+            };
+        }
     }
 
     /**
@@ -225,16 +238,17 @@ class Plugin extends PluginModel {
             reply();
         }, "owner");
 
-        webAPI.registerAction("get-plugins", (data, reply) => {
+        webAPI.registerAction("get-plugins", (data, reply, userDiscordId) => {
             let pluginsObjects = [];
+
             for (const key in Plugin.getAll()) {
                 if (Plugin.getAll().hasOwnProperty(key)) {
-                    pluginsObjects.push(Plugin.getAll()[key].toObject());
+                    pluginsObjects.push(Plugin.getAll()[key].toObject(!Owner.isOwner(userDiscordId)));
                 }
             }
 
             reply(pluginsObjects);
-        }, "owner");
+        });
     }
 }
 
