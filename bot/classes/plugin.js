@@ -118,18 +118,16 @@ class Plugin extends PluginModel {
      */
     toObject() {
         let commandObjs = [];
-        for (let i = 0; i < this.commands.command; ++i) {
-            commandObjs.push(this.commands.command.toObject());
+        for (const type in this.commands) {
+            if (this.commands.hasOwnProperty(type)) {
+                const commands = this.commands[type];
+                for (let i = 0; i < commands.length; i++) {
+                    const command = commands[i];
+                    commandObjs.push(command.toObject());
+                }
+            }
         }
-        for (let i = 0; i < this.commands.words; ++i) {
-            commandObjs.push(this.commands.words.toObject());
-        }
-        for (let i = 0; i < this.commands.all; ++i) {
-            commandObjs.push(this.commands.all.toObject());
-        }
-        for (let i = 0; i < this.commands.reaction; ++i) {
-            commandObjs.push(this.commands.reaction.toObject());
-        }
+
 
         return {
             name: this.name,

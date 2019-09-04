@@ -1,1 +1,30 @@
-<h1>Welcome to the dashboard !</h1>
+<h1>Discotron help</h1>
+<p class="description">
+    Welcome to the help page of this instance of Discotron.<br>
+    Please note that each command below may have a different prefix depending on the server you want to use it.
+</p>
+<p class="description">
+    If you want to invite this bot to your guild, you can use <a target="_blank" id="bot-invite-link" href="https://discordapp.com/oauth2/authorize?client_id=**ID**&scope=bot&permissions=0">this
+        link</a>.
+</p>
+
+<div id="plugin-list-container">
+
+</div>
+
+<template id="template-plugin-help">
+    <div class="plugin-help">
+        <span class="plugin-help-header"></span>
+        <span class="plugin-description description"></span>
+        <hr>
+        <div class="plugin-commands"></div>
+    </div>
+</template>
+
+<template id="template-command">
+    <span class="command-entry">
+        <span class="command"></span>
+        <span class="command-args"></span>
+        <span class="command-description"></span>
+    </span>
+</template>
