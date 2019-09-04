@@ -53,6 +53,7 @@ class Repository extends RepositoryModel {
             fs.readdirSync(__dirname + "/../repositories/" + this._folderName + "/pages").forEach(file => {
                 Logger.log("Serving web folder **" + file + "**");
                 webServer.serveRepositoryFolder(file, this._folderName);
+                this._pages.push(file);
             });
         }
     }
