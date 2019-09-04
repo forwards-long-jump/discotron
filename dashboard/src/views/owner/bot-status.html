@@ -1,0 +1,21 @@
+<div class="page-header" class="shadow-small bot-info-status">
+    <img id="bot-avatar" class="shadow-small round" src="" />
+    <span id="bot-name"></span>
+</div>
+
+<h1>Settings</h1>
+<label>Bot status text: </label><input id="bot-status" type="text" placeholder="!help"><br>
+<label>Owners</label><input id="owners-selector" type="button" class="link" value="Manage owners"><br><br>
+
+<h1>Maintenance</h1><br>
+<label>Ignore non-owners: </label>
+<label class="switch">
+    <input id="maintenance-enabled" type="checkbox" checked>
+    <span class="slider round"></span>
+</label>
+
+<br>
+
+<label>Restart bot</label><input id="restart-bot" type="button" class="red" value="Restart"><br>
+<hr>
+<input type="button" id="save-settings" value="Save settings" disabled>

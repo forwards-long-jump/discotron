@@ -1,0 +1,25 @@
+<h1>Add repository</h1>
+<p class="red-text" id="repository-error"></p>
+<input id="repository-url" type="text" class="plugin-bar" placeholder="Clonable repository URL" />
+<input id="add-repository" type="button" value="Add">
+<h1>Loaded repositories</h1>
+
+<template id="template-repository-container">
+    <div class="repository-container">
+        <input type="text" class="plugin-bar" value="https://github.com/blatoy/discotron-base-kit.git" disabled />
+        <input type="button" class="delete-repository red" value="Delete">
+        <input type="button" class="pull-repository green" value="Pull from Master">
+    </div>
+    <div class="repository-card-container"></div>
+</template>
+
+<template id="template-card">
+    <div class="repository-card shadow-big">
+        <span class="repository-card-title"></span>
+        <p class="repository-card-description"></p>
+    </div>
+</template>
+
+<div id="repositories-container">
+    
+</div>
