@@ -168,15 +168,15 @@ class Plugin extends PluginModel {
             reply(Plugin._plugins[data.pluginId].prefix);
         });
 
-        webAPI.registerAction("set-plugin-prefix", (data, reply) => {
+        webAPI.registerAction("set-plugin-prefix", (data, reply) => {    
             Plugin._plugins[data.pluginId].prefix = data.prefix;
             reply();
-        }, "everyone");
-
+        }, "owner");
+        
         webAPI.registerAction("get-enabled", (data, reply) => {
             reply(Plugin._plugins[data.pluginId].enabled);
         });
-
+        
         webAPI.registerAction("set-enabled", (data, reply) => {
             Plugin._plugins[data.pluginId].enabled = data.enabled;
             reply();

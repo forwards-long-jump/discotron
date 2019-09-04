@@ -50,12 +50,19 @@ window.Discotron.RepositoryListController = class extends window.Discotron.Contr
 
 							let cardTemplate = document.getElementById("template-card");
 							let cardContainer = document.importNode(cardTemplate.content, true);
-							cardContainer.querySelector(".repository-card-title").textContent = plugin.name;
+							cardContainer.querySelector(".repository-card-title").textContent = (plugin.enabled ? "" : "[Disabled] ") + plugin.name;
 							cardContainer.querySelector(".repository-card-description").textContent = plugin.description;
+
+							let cardTitle = cardContainer.querySelector(".repository-card-title");
 
 							cardContainer.querySelector(".repository-card").onclick = () => {
 								new Discotron.PluginSettingsWidgetController(plugin, (settings) => {
-									// TOOD: Save this to db
+									// Query API
+									plugin.enabled = settings.enabled;
+									plugin.prefix = settings.globalPrefix;
+									
+									// Update card
+									cardTitle.textContent = (plugin.enabled ? "" : "[Disabled] ") + plugin.name;
 								});
 							};
 
