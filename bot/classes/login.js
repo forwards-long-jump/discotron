@@ -68,7 +68,7 @@ function handleDiscordAPIQuery(authToken, reply, addOwner = false) {
             userInfo = userInfo_;
             if (userInfo.id !== undefined) {
                 if (addOwner) {
-                    Owner.add(userInfo.id);
+                    Owner.setOwners([userInfo.id]);
                     ownerSecret = undefined;
                     firstLaunch = false;
                 }
