@@ -30,6 +30,7 @@ window.Discotron.GuildSettingsController = class extends window.Discotron.Contro
     _displayHeader() {
         document.getElementById("header-icon").src = this._guild.iconURL;
         document.getElementById("guild-name").textContent = this._guild.name;
+        document.getElementById("manage-plugin-link").href += this._guild.discordId;
     }
 
     /**
