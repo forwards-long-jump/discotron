@@ -3,6 +3,7 @@ const fs = require("fs");
 const RepositoryModel = require("./../../models/repository.js");
 const Plugin = require("./plugin.js");
 const webAPI = require("./../apis/web-api.js").getWebAPI("discotron-dashboard");
+const webServer = require("../webserver.js");
 const Logger = require("../utils/logger.js");
 const fileHelper = require("../utils/file-helper.js");
 const Git = require("nodegit");
@@ -45,15 +46,15 @@ class Repository extends RepositoryModel {
     }
 
     loadPagesFromDisk() {
-        let pagesPath = __dirname + "/../repositories/" + this.folderName + "/pages";
+        let pagesPath = __dirname + "/../repositories/" + this._folderName + "/pages";
 
         // TODO: Convert to async
         if (fs.existsSync(pagesPath)) {
-            fs.readdirSync(__dirname + "/../repositories/" + this.folderName + "/pages").forEach(file => {
-                // serve page (lel)
+            fs.readdirSync(__dirname + "/../repositories/" + this._folderName + "/pages").forEach(file => {
+                Logger.log("Serving web folder **" + file + "**");
+                webServer.serveRepositoryFolder(file, this._folderName);
             });
         }
-
     }
 
     /**
