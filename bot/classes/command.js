@@ -38,7 +38,8 @@ class Command extends CommandModel {
 
         switch (this._triggerType) {
             case "command":
-                return (loweredCaseMessage.startsWith(prefixes + this.trigger));
+                let command = prefixes + this.trigger;
+                return (loweredCaseMessage.startsWith(command + " ") || loweredCaseMessage === command);
 
             case "words":
                 return this.trigger.every((t) => {
