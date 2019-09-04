@@ -9,15 +9,15 @@
 -->
 
 <template id="user-entry">
-    <span class="shadow-small"><i class="fas fa-user"></i> </span>
+    <span class="shadow-small deletable"><!--span class="deletion-hover">Delete</span>--><i class="fas fa-user"></i> </span>
 </template>
 
 <template id="role-entry">
-    <span class="role-color" style="color: white;"><i class="fas fa-users"></i> </span>
+    <span class="role-color deletable" style="color: white;"><!--<span class="deletion-hover">Delete</span>--><i class="fas fa-users"></i> </span>
 </template>
 
 <label>Grant permission to user / role</label><br>
-<input type="text" placeholder="Type user / role"><input type="button" value="Add">
+<input id="name-input"type="text" placeholder="Type user / role"><input id="add-button" type="button" value="Add">
 
 <hr>
 

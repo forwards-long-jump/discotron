@@ -19,6 +19,12 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
             this._displayRoles = displayRoles;
             this._allowNone = allowNone;
 
+            if (this._guild !== undefined) {
+                document.querySelector("#add-button").disabled = true;
+                this._loadMembers();
+                this._loadRoles();
+            }
+
             this._displayUserRoleSelector();
         }, onClose);
     }
@@ -27,12 +33,7 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
      * Get the user/role defined by the user in the html
      */
     _getUsersRoles() {
-        // TODO: for each element in user-list-container
-        //   this._widgetContainer.querySelectorAll(".user-name") // for each, element.dataset.xxxx
-        return {
-            userIds: [],
-            roleIds: []
-        };
+        return this._usersRoles;
     }
 
     /**
@@ -41,7 +42,57 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
     _addEvents() {
         super._addEvents();
 
+        let input = document.querySelector("#name-input");
+        let button = document.querySelector("#add-button");
 
+        if (this._guild !== undefined) {
+            input.onkeyup = () => {
+                if (input.value !== "") {
+                    this._checkNameValidity(input.value);
+                }
+            };
+        }
+
+
+
+        button.onclick = () => {
+            let value = input.value;
+            input.value = "";
+            if (this._guild === undefined) {
+                // The text is a user ID, we try to send it directly
+                Discotron.User.get(value).then((user) => {
+                    this._addUserEntry(user);
+                });
+            } else {
+                // The text is the name of a role or a user
+                this._addEntry(value);
+            }
+        }
+    }
+
+    /**
+     * Activates the add button if the name corresponds to 
+     */
+    _checkNameValidity(name) {
+        document.querySelector("#add-button").disabled = true;
+
+        for (let i = 0; i < this._guild.members.length; ++i) {
+            Discotron.User.get(this._guild.members[i]).then((user) => {
+                if (user._name === name) {
+                    document.querySelector("#add-button").disabled = false;
+                }
+            });
+        }
+
+        if (this._displayRoles) {
+            for (let i = 0; i < this._guild.roles.length; ++i) {
+                Discotron.Role.get(this._guild.roles[i]).then((role) => {
+                    if (role._name === name) {
+                        document.querySelector("#add-button").disabled = false;
+                    }
+                });
+            }
+        }
     }
 
     /**
@@ -55,7 +106,7 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
             let userRole = this._usersRoles[i];
             if (userRole.type === "user") {
                 Discotron.User.get(this._usersRoles[i].discordId).then((user) => {
-                    this._addUserEntry(user);
+                    this._displayUserEntry(user);
                 });
             }
         }
@@ -66,7 +117,7 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
                 let userRole = this._usersRoles[i];
                 if (userRole.type === "role") {
                     Discotron.Role.get(this._usersRoles[i].discordId).then((role) => {
-                        this._addRoleEntry(role);
+                        this._displayRoleEntry(role);
                     });
                 }
             }
@@ -76,6 +127,56 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
     }
 
     _addUserEntry(user) {
+        if (this._hasUserRoleAlready(user._id)) {
+            return;
+        }
+        this._usersRoles.push(new Discotron.UserRole(user._id, "user"));
+        this._displayUserEntry(user);
+    }
+
+    _addRoleEntry(role) {
+        if (this._hasUserRoleAlready(role._id)) {
+            return;
+        }
+        this._usersRoles.push(new Discotron.UserRole(role._id, "role"));
+        this._displayRoleEntry(role);
+    }
+
+    _addEntry(name) {
+        for (let i = 0; i < this._guild.members.length; ++i) {
+            Discotron.User.get(this._guild.members[i]).then((user) => {
+                if (user._name === name) {
+                    this._addUserEntry(user);
+                }
+            });
+        }
+
+        if (this._displayRoles) {
+            for (let i = 0; i < this._guild.roles.length; ++i) {
+                Discotron.Role.get(this._guild.roles[i]).then((role) => {
+                    if (role._name === name) {
+                        this._addRoleEntry(role);
+                    }
+                });
+            }
+        }
+    }
+
+    _removeEntry(id, type) {
+        for (let i = 0; i < this._usersRoles.length; ++i) {
+            let ur = this._usersRoles[i];
+            if (ur._discordId === id && ur._type === type) {
+                this._usersRoles.splice(i, 1);
+                break;
+            }
+        }
+
+        if (!this._allowNone) {
+            this._widgetContainer.querySelector(".save-button").disabled = (this._usersRoles.length === 0);
+        }
+    }
+
+    _displayUserEntry(user) {
         let usersContainer = document.querySelector(".user-list-container");
         let userTemplate = document.querySelector("#user-entry");
 
@@ -91,7 +192,7 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
         usersContainer.appendChild(userEntry);
     }
 
-    _addRoleEntry(role) {
+    _displayRoleEntry(role) {
         let rolesContainer = document.querySelector(".role-list-container");
         let roleTemplate = document.querySelector("#role-entry");
 
@@ -108,25 +209,23 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
         rolesContainer.appendChild(roleEntry);
     }
 
-    _removeEntry(id, type) {
-        for (let i = 0; i < this._usersRoles.length; ++i) {
-            let ur = this._usersRoles[i];
-            if (ur._discordId === id && ur._type === type) {
-                this._usersRoles.splice(i, 1);
-                console.log(this._usersRoles)
-                break;
-            }
-        }
-        
-        if (!this._allowNone) {
-            this._widgetContainer.querySelector(".save-button").disabled = (this._usersRoles.lenght === 0);
-        }
-    }
-
     /**
      * Refresh users and role for current guild from web api
      */
     _onRefreshClick() {
 
+    }
+
+    /**
+     * Returns true if the user or role is already present in this._usersRoles
+     * @param {string} id id of the user or role
+     */
+    _hasUserRoleAlready(id) {
+        for (let i = 0; i < this._usersRoles.length; ++i) {
+            if (this._usersRoles[i]._discordId === id) {
+                return true;
+            }
+        }
+        return false;
     }
 };
