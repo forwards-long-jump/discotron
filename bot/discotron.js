@@ -3,6 +3,7 @@ const Repository = require("./classes/repository.js");
 const Guild = require("./classes/guild.js");
 const Plugin = require("./classes/plugin.js");
 const Owner = require("./classes/owner.js");
+const SpamUser = require("./classes/spam-user.js");
 const Logger = require("./utils/logger.js");
 const Login = require("./classes/login.js");
 const db = require("./apis/database-crud.js");
@@ -101,15 +102,15 @@ module.exports.onMessage = (message) => {
         }
 
         // Spam detection
-        if (commands.length !== 0) {
+        if (commands.length !== 0 && !Owner.isOwner(message.author.id)) {
             for (let i = 0; i < commands.length; i++) {
                 const command = commands[i];
                 if (!command.bypassSpamDetection) {
-                    // TODO: Spam meter, return if spamming
-                    /*if user spam meter > 100
-                        user cooldown = 3000 years
-                        dm user
-                    break;*/
+                    SpamUser.onAction(message.author);
+                    if (SpamUser.isRestricted(message.author)) {
+                        commands = [];
+                    }
+                    break;
                 }
             }
         }
