@@ -22,4 +22,14 @@ window.Discotron.Role = class {
             // resolve([Role]);
         });
     }
+
+    /**
+     * PLACEHOLDER: change into an actual method please
+     * @param {string} discordId 
+     */
+    static get(discordId) {
+        return new Role("placeholder", "12", "#f0f0f0");
+    }
 };
+
+Discotron.Role._roles = {};

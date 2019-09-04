@@ -1,4 +1,5 @@
-<span class="widget-header">Module settings: Lelmaker</span>
+<span class="widget-header"></span>
+
 <!-- Allow setting custom fields on top
 <label>Plugin enabled</label>
 <label class="switch">
@@ -6,22 +7,28 @@
     <span class="slider round"></span>
 </label><br><br>
 -->
+
+<template id="user-entry">
+    <span class="shadow-small deletable"><!--span class="deletion-hover">Delete</span>--><i class="fas fa-user"></i> </span>
+</template>
+
+<template id="role-entry">
+    <span class="role-color deletable" style="color: white;"><!--<span class="deletion-hover">Delete</span>--><i class="fas fa-users"></i> </span>
+</template>
+
 <label>Grant permission to user / role</label><br>
-<input type="text" placeholder="Type user / role"><input type="button" value="Add"><br><br>
-<label>Allowed users</label>
+<input id="name-input"type="text" placeholder="Type user / role"><input id="add-button" type="button" value="Add">
+
+<hr>
+
+<label>Allowed users</label><br>
 <div class="user-list-container">
-    <span class="shadow-small"><i class="fas fa-user"></i> Blatoy#0001</span>
-    <span class="shadow-small"><i class="fas fa-user"></i> G Visière#5451</span>
-</div><br>
-<label>Allowed roles</label><br>
-<div class="role-list-container">
-    <span style="color: white;"><i class="fas fa-users"></i> everyone</span>
-    <span><i style="color: rgb(121, 43, 43);" class="fas fa-users"></i> admin</span>
-    <span><i style="color: rgb(28, 35, 134);" class="fas fa-users"></i> leenox</span>
-    <span><i style="color: rgb(121, 33, 33);" class="fas fa-users"></i> everyone</span>
-    <span><i style="color: rgb(79, 155, 35);" class="fas fa-users"></i> admin</span>
-    <span><i style="color: rgb(28, 35, 134);" class="fas fa-users"></i> leenox</span>
-    <span><i style="color: rgb(158, 24, 158);" class="fas fa-users"></i> everyone</span>
-    <span><i style="color: rgb(121, 43, 43);" class="fas fa-users"></i> admin</span>
-    <span><i style="color: rgb(1, 2, 22);" class="fas fa-users"></i> leenox</span>
+</div>
+
+<br>
+
+<div id="role-container">
+    <label>Allowed roles</label><br>
+    <div class="role-list-container">
+    </div>
 </div>

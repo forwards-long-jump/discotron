@@ -564,6 +564,20 @@ input:checked+.slider:before {
     width: 450px;
 }
 
+.deletable {
+    cursor: pointer;
+    position: relative;
+}
+
+.deletion-hover {
+    position: relative;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    display: block;
+}
+
 .plugin-help-header {
     font-size: 1.2em;
     display: block;

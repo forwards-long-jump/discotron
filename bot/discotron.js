@@ -206,7 +206,17 @@ module.exports.onReaction = (reaction) => {};
 module.exports.onJoinGuild = (guild) => {};
 module.exports.onLeaveGuild = (guild) => {};
 
-module.exports.getUserInfo = (userDiscordId) => {};
+function getUserInfo(discordId) {
+    return new Promise((resolve, reject) => {
+        global.discordClient.fetchUser(discordId).then((user) => {
+            resolve({
+                id: user.id,
+                name: user.username,
+                avatarURL: user.displayAvatarURL
+            });
+        });
+    });
+};
 module.exports.getBotInfo = () => {};
 
 module.exports.getBotSettings = () => {
@@ -277,6 +287,12 @@ module.exports.registerActions = () => {
             });
         }
     }, "everyone");
+
+    webAPI.registerAction("get-user-info", (data, reply) => {
+        getUserInfo(data.discordId).then((info) => {
+            reply(info);
+        });
+    });
 
 
     Login.registerActions();

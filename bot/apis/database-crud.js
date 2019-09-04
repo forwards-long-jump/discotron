@@ -105,7 +105,7 @@ module.exports.insert = (table, values) => {
     });
 };
 
-module.exports.delete = (table, where) => {
+module.exports.delete = (table, where, eraseAll = false) => {
     const database = databaseHelper.getDatabase();
 
     return new Promise((resolve, reject) => {
@@ -114,6 +114,16 @@ module.exports.delete = (table, where) => {
             let parameters = generateParameters(where);
             sql += " WHERE " + parameters.text;
             database.run(sql, parameters.objParam, (err) => {
+                if (err) {
+                    Logger.log("Delete in database failed : " + sql, "err");
+                    reject();
+                }
+                else {
+                    resolve();
+                }
+            });
+        } else if (eraseAll === true) {
+            database.run(sql, (err) => {
                 if (err) {
                     Logger.log("Delete in database failed : " + sql, "err");
                     reject();
