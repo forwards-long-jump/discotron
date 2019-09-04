@@ -76,14 +76,29 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
      * Load members using WebAPI
      * @returns {Promise}
      */
-    static _loadMembers() {}
+    _loadMembers() {
+        return new Promise((resolve, reject) => {
+            Discotron.User.loadGuildMembers(this.discordId).then((users) => {
+                this._members = users;
+                resolve();
+            });
+        });
+    }
 
     /**
      * Load roles using WebAPI
      * @returns {Promise}
      */
-    static _loadRoles() {
-        // Trigger Roles.getGuildRoles
+    _loadRoles() {
+        return new Promise((resolve, reject) => {
+            Discotron.Role.getGuildRoles(this.discordId).then((roles) => {
+                for (let i = 0; i < roles.length; ++i) {
+                    const role = roles[i];
+                    this._roles[role.id] = role;
+                }
+                resolve();
+            });
+        });
     }
 
 
@@ -96,7 +111,21 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
                 Discotron.WebAPI.queryBot("discotron-dashboard", "get-guilds-where-is-admin").then((guilds) => {
                     for (const guildId in guilds) {
                         let obj = guilds[guildId];
-                        new Discotron.Guild(obj.id, obj.name, obj.image, obj.prefix, new Set(obj.allowedChannelIds), new Set(obj.enabledPluginIds), new Set([]), {});
+
+                        let admins = new Set(obj.admins.map((admin) => {
+                            return new Discotron.UserRole(admin.id, admin.type);
+                        }));
+
+                        let permissions = {};
+                        for (const pluginId in obj.permissions) {
+                            const permission = obj.permissions[pluginId];
+                            let usersRoles = permission.map((ur) => {
+                                return new Discotron.UserRole(ur.id, ur.type);
+                            });
+                            permissions[pluginId] = new Discotron.Permission(this.discordId, pluginId, usersRoles);
+                        }
+
+                        let guild = new Discotron.Guild(obj.id, obj.name, obj.image, obj.prefix, new Set(obj.allowedChannelIds), new Set(obj.enabledPluginIds), new Set(admins), permissions);
                     }
                     resolve(Discotron.Guild._guilds);
                 });
@@ -145,18 +174,23 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
 
     /**
      * Gives dashboard privileges to a user or role
-     * @param {UserRole} userRole User or role id which will be given admin privileges
+     * @param {array} admins Array of users or roles which will be given admin privileges
      */
-    addAdmin(userRole) {
-
+    set admins(admins) {
+        if (admins.length === 0) {
+            return;
+        }
+        this._admins = new Set(admins);
+        Discotron.WebAPI.queryBot("discotron-dashboard", "set-admins", {
+            admins: admins
+        }, this.discordId);
     }
 
     /**
-     * Removes dashboard privileges to a user or role
-     * @param {UserRole} userRole 
+     * Returns the users and roles that have admin privileges
      */
-    deleteAdmin(userRole) {
-        // webapi.querybot("delete-admin-couz");
+    get admins() {
+        return super.admins;
     }
 
     /**
@@ -194,7 +228,36 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
      * @param {boolean} enabled True if the plugin is to be enabled
      */
     setPluginEnabled(pluginId, enabled) {
-        // TODO: update db
+        // si le set vide => tous activé
+        // => on call disabled
+        if(this._enabledPlugins.size === 0) {
+            if(!enabled) {
+                Discotron.Plugin.getAll().then((plugins) => {
+                    for (let pluginId_ in plugins) {
+                        const plugin = plugins[pluginId];
+                        if(pluginId_ !== pluginId) {
+                            this._enabledPlugins.add(pluginId_);
+                        }
+                    }                    
+                });
+            }
+            else {
+                // should not happen
+            }
+        }
+        else {
+            if(enabled) {
+                this._enabledPlugins.add(pluginId);
+            }
+            else {
+                this._enabledPlugins.delete(pluginId);
+            }
+        }
+        
+        Discotron.WebAPI.queryBot("discotron-dashboard", "set-plugin-enabled", {
+            pluginId: pluginId,
+            enabled: enabled
+        }, this.discordId);
     }
 
     /**
@@ -203,9 +266,22 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
      * @param {array} usersRoles Array of UserRoles 
      */
     setPluginPermission(pluginId, usersRoles) {
-        // Create new Permission()
-        // this._permissions[pluginId] = permission;
-        // TODO: query web api
+        let permission = new Discotron.Permission(this.discordId, pluginId, usersRoles);
+        this._permissions[pluginId] = permission;
+    
+        Discotron.WebAPI.queryBot("discotron-dashboard", "set-plugin-permission", {
+            pluginId: pluginId,
+            userRoles: usersRoles
+        }, this.discordId);
+    }
+
+    /**
+     * Get the users/roles allowed to use the plugin
+     * @param {string} pluginId ID of the plugin
+     */
+    getPluginPermission(pluginId) {
+        let perm = this.permissions[pluginId];
+        return perm === undefined ? [] : perm;
     }
 };
 

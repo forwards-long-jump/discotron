@@ -12,24 +12,42 @@ window.Discotron.Role = class {
     }
 
     /**
+     * Get name
+     */
+    get name() {
+        return this._name;
+    }
+
+    /**
+     * Get ID
+     */
+    get id() {
+        return this._id;
+    }
+
+    /**
+     * Get color
+     */
+    get color() {
+        return this._color;
+    }
+
+    /**
      * Returns the roles of a guild, loads it if needed
      * @param {string} discordGuildId 
      */
     static getGuildRoles(discordGuildId) {
         return new Promise((resolve, reject) => {
-            // Query API
-            // new Role();
-            // resolve([Role]);
+            Discotron.WebAPI.queryBot("discotron-dashboard", "get-roles", {}, discordGuildId).then((roles) => {
+                
+                let roleList = [];
+                for (let i = 0; i < roles.length; i++) {
+                    const role = roles[i];
+                    roleList.push(new Discotron.Role(role.name, role. id, role.color));
+                }
+
+                resolve(roleList);
+            });
         });
     }
-
-    /**
-     * PLACEHOLDER: change into an actual method please
-     * @param {string} discordId 
-     */
-    static get(discordId) {
-        return new Role("placeholder", "12", "#f0f0f0");
-    }
 };
-
-Discotron.Role._roles = {};

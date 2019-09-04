@@ -42,10 +42,6 @@ module.exports.onMessage = (message) => {
         return;
     }
 
-    if (false) {
-        return;
-    } // TODO: User spamming check
-
     let guild;
     if (message.guild !== null) {
         guild = Guild.get(message.guild.id);
@@ -72,6 +68,10 @@ module.exports.onMessage = (message) => {
             continue;
         }
 
+        if (guild !== undefined && (!guild.enabledPlugins.has(pluginId) && guild.enabledPlugins.size > 0)) {
+            continue;
+        }
+
         let prefix = "";
 
         if (guild !== undefined) {
@@ -79,8 +79,6 @@ module.exports.onMessage = (message) => {
         }
 
         prefix += plugin.prefix;
-
-        // TODO: Check if plugin enabled in guild
 
         if (isCommand && (loweredCaseMessage.startsWith(prefix))) {
             for (let i = 0; i < plugin.commands.command.length; i++) {
@@ -212,8 +210,12 @@ function getUserInfo(discordId) {
             resolve({
                 id: user.id,
                 name: user.username,
+                tag: user.tag,
                 avatarURL: user.displayAvatarURL
             });
+        }).catch((e) => {
+            Logger.log("Could not get user info", "err");
+            Logger.log(e, "err");
         });
     });
 };

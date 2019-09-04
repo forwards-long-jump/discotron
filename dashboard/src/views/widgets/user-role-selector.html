@@ -1,34 +1,42 @@
-<span class="widget-header"></span>
-
-<!-- Allow setting custom fields on top
-<label>Plugin enabled</label>
-<label class="switch">
-    <input type="checkbox" checked>
-    <span class="slider round"></span>
-</label><br><br>
--->
+<template id="template-custom-switch">
+    <div>
+    <label class="custom-switch-title"></label>
+    <label class="switch">
+            <input class="custom-switch-checkbox" type="checkbox">
+        <span class="slider round"></span>
+    </label><br>   
+</div>
+</template>
+    
 
 <template id="user-entry">
     <span class="shadow-small deletable"><!--span class="deletion-hover">Delete</span>--><i class="fas fa-user"></i> </span>
 </template>
 
 <template id="role-entry">
-    <span class="role-color deletable" style="color: white;"><!--<span class="deletion-hover">Delete</span>--><i class="fas fa-users"></i> </span>
+    <span class="deletable" style="color: white;"><!--<span class="deletion-hover">Delete</span>--><i class="role-color fas fa-users"></i> </span>
 </template>
+
+<span class="widget-header"></span>
+
+<div class="additional-settings">
+    
+</div>
+<span class="additional-settings-spacer widget-header" style="display: none;">Permissions</span>
 
 <label>Grant permission to user / role</label><br>
 <input id="name-input"type="text" placeholder="Type user / role"><input id="add-button" type="button" value="Add">
 
 <hr>
 
-<label>Allowed users</label><br>
+<label>Allowed users:</label><br>
 <div class="user-list-container">
 </div>
 
 <br>
 
 <div id="role-container">
-    <label>Allowed roles</label><br>
+    <label>Allowed roles:</label><br>
     <div class="role-list-container">
     </div>
 </div>

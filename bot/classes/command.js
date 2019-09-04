@@ -28,8 +28,6 @@ class Command extends CommandModel {
      * @param {Discord.DiscordMessage} discordMessage 
      */
     triggeredBy(discordMessage, loweredCaseMessage, prefixes) {
-
-        // TODO: ownersOnly, scope, etc
         if (this.ownersOnly && !Owner.isOwner(discordMessage.author.id)) {
             return false;
         }
@@ -40,7 +38,8 @@ class Command extends CommandModel {
 
         switch (this._triggerType) {
             case "command":
-                return (loweredCaseMessage.startsWith(prefixes + this.trigger));
+                let command = prefixes + this.trigger;
+                return (loweredCaseMessage.startsWith(command + " ") || loweredCaseMessage === command);
 
             case "words":
                 return this.trigger.every((t) => {
@@ -57,7 +56,7 @@ class Command extends CommandModel {
      * @param {Discord.MessageReaction} messageReaction 
      */
     triggeredByReaction(messageReaction) {
-        // TODO
+        // TODO: This is an advanced feature and was not planned but we plan to implement it later
     }
 
     /**

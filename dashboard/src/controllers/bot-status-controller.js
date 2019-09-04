@@ -13,7 +13,7 @@ window.Discotron.BotStatusController = class extends window.Discotron.Controller
 	 * Display current status of the bot
 	 */
 	_displayStatus() {
-		// TODO: Use WebAPI auto caching
+		// TODO: Use WebAPI auto caching (advanced feature, not implemented yet)
 		if (Discotron.BotStatusController._username === undefined) {
 			Discotron.WebAPI.queryBot("discotron-dashboard", "get-bot-info").then((data) => {
 				document.querySelector("#bot-avatar").src = data.avatar;
