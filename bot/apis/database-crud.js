@@ -96,6 +96,7 @@ module.exports.insert = (table, values) => {
         database.run(sql, parameters.data, (err) => {
             if (err) {
                 Logger.log("Insert in database failed : " + sql, "err");
+                Logger.log(err)
                 reject();
             }
             else {

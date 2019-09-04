@@ -5,12 +5,29 @@ window.Discotron.User = class {
      * @param {string} id Id of the user
      * @param {string} avatarURL Avatar of the user
      */
-    constructor(name, id, avatarURL) {
+    constructor(name, id, avatarURL, tag) {
         this._name = name;
+        this._tag = tag;
         this._id = id;
         this._avatarURL = avatarURL;
 
         Discotron.User._users[id] = this;
+    }
+
+    get name() {
+        return this._name;
+    }
+
+    get tag() {
+        return this._tag;
+    }
+
+    get id() {
+        return this._id;
+    }
+
+    get avatarURL() {
+        return this._avatarURL;
     }
 
     /**
@@ -19,9 +36,11 @@ window.Discotron.User = class {
      */
     static loadGuildMembers(discordGuildId) {
         return new Promise((resolve, reject) => {
-            // Query API
-            // resolve([ids]); 
-            // new User();
+            Discotron.WebAPI.queryBot("discotron-dashboard", "get-members", {}, discordGuildId).then((users) => {
+                resolve(users.map((user) => {      
+                    return new Discotron.User(user.name, user.id, user.avatar, user.name + "#" + user.discriminator).id;
+                }));
+            });
         });
     }
 
@@ -36,7 +55,7 @@ window.Discotron.User = class {
                 Discotron.WebAPI.queryBot("discotron-dashboard", "get-user-info", {
                     discordId: id
                 }).then((userObj) => {
-                    resolve(new Discotron.User(userObj.name, userObj.id, userObj.avatarURL));
+                    resolve(new Discotron.User(userObj.name, userObj.id, userObj.avatarURL, userObj.tag));
                 });
             } else {
                 resolve(Discotron.User._users[id]);

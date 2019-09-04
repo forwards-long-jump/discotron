@@ -28,8 +28,6 @@ class Command extends CommandModel {
      * @param {Discord.DiscordMessage} discordMessage 
      */
     triggeredBy(discordMessage, loweredCaseMessage, prefixes) {
-
-        // TODO: ownersOnly, scope, etc
         if (this.ownersOnly && !Owner.isOwner(discordMessage.author.id)) {
             return false;
         }
@@ -57,7 +55,7 @@ class Command extends CommandModel {
      * @param {Discord.MessageReaction} messageReaction 
      */
     triggeredByReaction(messageReaction) {
-        // TODO
+        // TODO: This is an advanced feature and was not planned but we plan to implement it later
     }
 
     /**

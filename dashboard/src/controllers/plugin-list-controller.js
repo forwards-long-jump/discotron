@@ -38,6 +38,8 @@ window.Discotron.PluginListController = class extends window.Discotron.Controlle
 	 * @param {Plugin} plugin Plugin
 	 */
 	_displayPlugins() {
+		// Custom switches
+
 		// Query cards
 		Discotron.Plugin.getAll().then((plugins) => {
 
@@ -51,10 +53,14 @@ window.Discotron.PluginListController = class extends window.Discotron.Controlle
 				card.querySelector(".repository-card-description").textContent = plugin.description;
 
 				card.querySelector(".repository-card").onclick = () => {
-					// TODO: Display UserRoleSelector with custom header
-					/*new Discotron.PluginSettingsWidgetController(plugin, (settings) => {
-						// TOOD: Save this to db
-					});*/
+					let userRoles = this._guild.getPluginPermission(pluginId)._usersRoles;
+					
+					new Discotron.UserRoleWidgetController(this._guild, userRoles, (userRoles, settings) => {
+						this._guild.setPluginEnabled(pluginId, settings.enabled);
+						this._guild.setPluginPermission(pluginId, userRoles);
+					}, true, "Plugin settings: " + plugin.name, true, [
+						{type: "switch", name: "Enabled", value: this._guild.enabledPlugins.has(pluginId) || this._guild.enabledPlugins.size === 0, devname: "enabled"}
+					]);
 				};
 
 				document.getElementById("plugin-container").appendChild(card);

@@ -9,24 +9,35 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
      * @param {boolean} allowNone Allows to enter no users nor roles
      * @param {function} onClose Called when user cancels saving
      */
-    constructor(guild, usersRoles, onUserRoleSave, displayRoles = true, headerText = "", allowNone = false, onClose = () => {}) {
+    constructor(guild, usersRoles, onUserRoleSave, displayRoles = true, headerText = "", allowNone = false, customInputs = [], onClose = () => {}) {
         super("user-role-selector.html", () => {
-            onUserRoleSave(this._getUsersRoles());
+            onUserRoleSave(this._getUsersRoles(), this._getCustomSettings());
         }, () => {
             this._guild = guild;
             this._headerText = headerText;
             this._usersRoles = usersRoles;
             this._displayRoles = displayRoles;
             this._allowNone = allowNone;
+            this._customInputs = customInputs;
+
+            this._displayCustomElements();
 
             if (this._guild !== undefined) {
                 document.querySelector("#add-button").disabled = true;
-                this._loadMembers();
-                this._loadRoles();
-            }
 
-            this._displayUserRoleSelector();
+                let promises = [];
+                promises.push(this._guild._loadRoles());
+                promises.push(this._guild._loadMembers());
+
+                Promise.all(promises).then(() => {
+                    this._displayUserRoleSelector();
+                });
+
+            } else {
+                this._displayUserRoleSelector();
+            }
         }, onClose);
+
     }
 
     /**
@@ -35,6 +46,23 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
     _getUsersRoles() {
         return this._usersRoles;
     }
+
+    /**
+     * Get the user/role defined by the user in the html
+     */
+    _getCustomSettings() {
+        // Switches
+        let customSettings = {};
+
+        let switches = this._widgetContainer.querySelectorAll(".custom-switch-checkbox");
+        for (let i = 0; i < switches.length; i++) {
+            const checkbox = switches[i];
+            customSettings[checkbox.dataset.devname] = checkbox.checked;
+        }
+
+        return customSettings;
+    }
+
 
     /**
      * Handle search selector helper and more
@@ -53,9 +81,14 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
             };
         }
 
-
+        input.onkeydown = (e) => {
+            if (e.keyCode === 13) {
+                button.click();
+            }
+        };
 
         button.onclick = () => {
+            button.disabled = true;
             let value = input.value;
             input.value = "";
             if (this._guild === undefined) {
@@ -67,31 +100,58 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
                 // The text is the name of a role or a user
                 this._addEntry(value);
             }
-        }
+        };
     }
 
     /**
      * Activates the add button if the name corresponds to 
      */
     _checkNameValidity(name) {
-        document.querySelector("#add-button").disabled = true;
+        let button = document.querySelector("#add-button")
+        button.disabled = true;
 
         for (let i = 0; i < this._guild.members.length; ++i) {
             Discotron.User.get(this._guild.members[i]).then((user) => {
-                if (user._name === name) {
-                    document.querySelector("#add-button").disabled = false;
+                if (user.tag === name) {
+                    button.disabled = false;
                 }
             });
         }
 
         if (this._displayRoles) {
-            for (let i = 0; i < this._guild.roles.length; ++i) {
-                Discotron.Role.get(this._guild.roles[i]).then((role) => {
-                    if (role._name === name) {
-                        document.querySelector("#add-button").disabled = false;
-                    }
-                });
+            for (const id in this._guild.roles) {
+                const role = this._guild.roles[id];
+                if (role.name === name) {
+                    button.disabled = false;
+                }
             }
+        }
+    }
+
+    _displayCustomElements() {
+        this._widgetContainer.querySelector(".widget-header").textContent = this._headerText;
+
+        for (let i = 0; i < this._customInputs.length; i++) {
+            const customInput = this._customInputs[i];
+
+            switch (customInput.type) {
+                case "switch":
+                    let switchTemplate = document.getElementById("template-custom-switch");
+                    let switchContainer = document.importNode(switchTemplate.content, true);
+
+                    switchContainer.querySelector(".custom-switch-checkbox").checked = customInput.value;
+
+                    switchContainer.querySelector(".custom-switch-checkbox").placeholder = customInput.name + "lonle";
+                    switchContainer.querySelector(".custom-switch-checkbox").dataset.devname = customInput.devname;
+                    switchContainer.querySelector(".custom-switch-title").textContent = customInput.name;
+
+                    this._widgetContainer.querySelector(".additional-settings").appendChild(switchContainer);
+                    break;
+            }
+        }
+
+        if (this._customInputs.length > 0) {
+            this._widgetContainer.querySelector(".additional-settings-spacer").style.display = "block";
         }
     }
 
@@ -99,7 +159,6 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
      * Display user and roles on the widget
      */
     _displayUserRoleSelector() {
-        this._widgetContainer.querySelector(".widget-header").textContent = this._headerText;
 
         // Users
         for (let i = 0; i < this._usersRoles.length; ++i) {
@@ -116,9 +175,8 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
             for (let i = 0; i < this._usersRoles.length; ++i) {
                 let userRole = this._usersRoles[i];
                 if (userRole.type === "role") {
-                    Discotron.Role.get(this._usersRoles[i].discordId).then((role) => {
-                        this._displayRoleEntry(role);
-                    });
+                    let role = this._guild.roles[userRole.discordId];
+                    this._displayRoleEntry(role);
                 }
             }
         } else {
@@ -145,19 +203,19 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
     _addEntry(name) {
         for (let i = 0; i < this._guild.members.length; ++i) {
             Discotron.User.get(this._guild.members[i]).then((user) => {
-                if (user._name === name) {
+                if (user.tag === name) {
                     this._addUserEntry(user);
                 }
+                
             });
         }
 
         if (this._displayRoles) {
-            for (let i = 0; i < this._guild.roles.length; ++i) {
-                Discotron.Role.get(this._guild.roles[i]).then((role) => {
-                    if (role._name === name) {
-                        this._addRoleEntry(role);
-                    }
-                });
+            for (const id in this._guild.roles) {
+                const role = this._guild.roles[id];
+                if (role._name === name) {
+                    this._addRoleEntry(role);
+                }
             }
         }
     }
@@ -197,11 +255,11 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
         let roleTemplate = document.querySelector("#role-entry");
 
         let roleEntry = document.importNode(roleTemplate.content, true);
+        roleEntry.querySelector(".role-color").style.color = role.color;
+        roleEntry.querySelector("span").innerHTML += role.name;
 
-        roleEntry.querySelector("role-color").style.color = role.color;
-        roleEntry.querySelector(".role-name").textContent = role.name;
         let container = roleEntry.querySelector("span");
-        roleEntry.querySelector(".role-name").onclick = () => {
+        roleEntry.querySelector("span").onclick = () => {
             this._removeEntry(role._id, "role");
             container.remove();
         };

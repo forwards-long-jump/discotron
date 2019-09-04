@@ -34,7 +34,6 @@ class Repository extends RepositoryModel {
     loadPluginsFromDisk() {
         let pluginsPath = __dirname + "/../repositories/" + this._folderName + "/plugins";
 
-        // TODO: Convert to async
         if (fs.existsSync(pluginsPath)) {
             fs.readdirSync(__dirname + "/../repositories/" + this._folderName + "/plugins").forEach(file => {
                 Logger.log("Building Plugin from folder **" + file + "**", "debug");
@@ -48,7 +47,6 @@ class Repository extends RepositoryModel {
     loadPagesFromDisk() {
         let pagesPath = __dirname + "/../repositories/" + this._folderName + "/pages";
 
-        // TODO: Convert to async
         if (fs.existsSync(pagesPath)) {
             fs.readdirSync(__dirname + "/../repositories/" + this._folderName + "/pages").forEach(file => {
                 Logger.log("Serving web folder **" + file + "**");
@@ -192,7 +190,7 @@ class Repository extends RepositoryModel {
      * @returns {number} Number of commits behind
      */
     getStatus() {
-        // TODO:
+        // TODO: Query git status and determine if we are behind
         return undefined;
     }
 

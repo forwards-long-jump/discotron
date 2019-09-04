@@ -54,20 +54,6 @@ window.Discotron.GuildSettingsController = class extends window.Discotron.Contro
 
     }
 
-    /**
-     * Callback to give to the channel selector widget
-     */
-    _onAllowedChannelsWidgetSave() {
-
-    }
-
-    /**
-     * Callback to give to the user / role selector widget
-     */
-    _onAdminsWidgetSave() {
-
-    }
-
     _addEvents() {
         document.getElementById("prefix").onkeydown = (e) => {
             document.getElementById("save").disabled = false;
@@ -99,6 +85,12 @@ window.Discotron.GuildSettingsController = class extends window.Discotron.Contro
                     this._guild.allowedChannelIds = selectedChannels;
                 });
             });
+        };
+        document.getElementById("admins").onclick = () => {
+            let admins = Array.from(this._guild.admins);
+            new Discotron.UserRoleWidgetController(this._guild, admins, (newAdmins) => {
+                this._guild.admins = newAdmins;
+            }, true, "Admins", false);
         };
     }
 };
