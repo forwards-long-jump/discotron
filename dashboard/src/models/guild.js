@@ -177,9 +177,6 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
      * @param {array} admins Array of users or roles which will be given admin privileges
      */
     set admins(admins) {
-        if (admins.length === 0) {
-            return;
-        }
         this._admins = new Set(admins);
         Discotron.WebAPI.queryBot("discotron-dashboard", "set-admins", {
             admins: admins

@@ -36,6 +36,7 @@ function handleLogin(authToken, reply, userOwnerSecret = undefined) {
                 status: "first-launch"
             });
         } else if (ownerSecret === undefined || ownerSecret !== userOwnerSecret) {
+            Logger.log("Wrong secret provided");
             // Wrong secret
             reply({
                 status: "error"
@@ -68,7 +69,7 @@ function handleDiscordAPIQuery(authToken, reply, addOwner = false) {
             userInfo = userInfo_;
             if (userInfo.id !== undefined) {
                 if (addOwner) {
-                    Owner.add(userInfo.id);
+                    Owner.setOwners([userInfo.id]);
                     ownerSecret = undefined;
                     firstLaunch = false;
                 }
@@ -78,7 +79,7 @@ function handleDiscordAPIQuery(authToken, reply, addOwner = false) {
                 Promise.reject();
             }
         }).then((appToken) => {
-
+ 
             reply({
                 status: "success",
                 token: appToken,
@@ -157,6 +158,8 @@ function getAccessToken(authToken) {
             (error, response, body) => {
 
                 if (error !== null) {
+                    Logger.log("Query rejected by Discord");
+                    Logger.log(error);
                     reject();
                 } else {
                     try {
@@ -238,6 +241,8 @@ function queryDiscordUserId(accessToken) {
                     reject();
                 }
             } else {
+                Logger.log("Got an error while querying discord");
+                Logger.log(error);
                 reject();
             }
         });

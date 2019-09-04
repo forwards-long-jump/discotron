@@ -2,6 +2,7 @@ const GuildModel = require("./../../models/guild.js");
 const UserRole = require("./user-role.js");
 const Permission = require("./permission.js");
 const webAPI = require("./../apis/web-api.js").getWebAPI("discotron-dashboard");
+const Plugin = require("./plugin.js");
 const db = require("./../apis/database-crud.js");
 
 class Guild extends GuildModel {
@@ -452,7 +453,7 @@ class Guild extends GuildModel {
         }, "guildAdmin");
         webAPI.registerAction("set-plugin-permission", (data, reply, userId, guildId) => {
             let usersRoles = data.userRoles.map((ur) => {
-                return new UserRole(ur._discordId, ur._type);
+                return new UserRole(ur._discordId, ur._type, guildId);
             });
             Guild.get(guildId).setPluginPermission(data.pluginId, usersRoles);
             reply();
