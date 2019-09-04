@@ -24,18 +24,8 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
 
             if (this._guild !== undefined) {
                 document.querySelector("#add-button").disabled = true;
-
-                let promises = [];
-                promises.push(this._guild._loadRoles());
-                promises.push(this._guild._loadMembers());
-
-                Promise.all(promises).then(() => {
-                    this._displayUserRoleSelector();
-                });
-
-            } else {
-                this._displayUserRoleSelector();
             }
+                    this._displayUserRoleSelector();
         }, onClose);
 
     }
