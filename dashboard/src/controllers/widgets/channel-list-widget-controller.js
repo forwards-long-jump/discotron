@@ -54,7 +54,8 @@ window.Discotron.ChannelListWidgetController = class extends window.Discotron.Wi
 
             channelContainer.querySelector(".channel-state").dataset.channelId = channel.id;
             channelContainer.querySelector(".channel-selector-channel").textContent = "#" + channel.name;
-            channelContainer.querySelector(".channel-selector-checkbox").checked = this._selectedChannels.includes(channel.id);
+            // No channel selected => "everything" is enabled
+            channelContainer.querySelector(".channel-selector-checkbox").checked = this._selectedChannels.includes(channel.id) || this._selectedChannels.length === 0;
 
             this._widgetContainer.querySelector(".channel-selector").appendChild(channelContainer);
         }

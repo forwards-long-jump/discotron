@@ -26,8 +26,9 @@ module.exports.onPost = (req, res) => {
 
     Login.getDiscordUserId(appToken).then((clientId) => {
         let response = actions[plugin][action];
-        
+
         if (authLevelCheck[response.authLevel](clientId, guildId)) {
+            Logger.log("[WebAPI] Action triggered: " + action);
             response.action(data, (requestedData) => {
                 reply(res, requestedData);
             }, clientId, guildId);
