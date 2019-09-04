@@ -35,6 +35,14 @@ window.Discotron.PluginSettingsWidgetController = class extends window.Discotron
 		this._widgetContainer.querySelector(".logs").value = this._plugin.logs.join("\r\n");
 		this._widgetContainer.querySelector(".global-prefix").value = this._plugin.prefix;
 
+		this._widgetContainer.querySelector(".refresh-logs").onclick = () => {
+			Discotron.WebAPI.queryBot("discotron-dashboard", "get-plugin-logs", {
+				pluginId: this._plugin.id
+			}).then((logs) => {
+				this._plugin.logs = logs;
+				this._widgetContainer.querySelector(".logs").value = this._plugin.logs.join("\r\n");
+			});
+		};
 	}
 
 	/**
