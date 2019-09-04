@@ -1,5 +1,5 @@
 const Logger = require("./utils/logger.js");
-Logger.setSeverity("debug");
+Logger.setSeverity("info");
 
 const DiscordJS = require("discord.js");
 
