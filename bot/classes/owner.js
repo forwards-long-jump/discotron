@@ -7,21 +7,20 @@ class Owner extends OwnerModel {
      * Set the owners. The given array must not be empty, else nothing will happen
      * @param {array} discordUserId Array of user ids 
      */
-    static setOwner(discordUserIds) 
-    {
+    static setOwners(discordUserIds) {
         if (discordUserIds.length === 0) {
             return;
         }
 
         Owner._owners = new Set(discordUserIds);
 
-        db.delete("Owners", {}, true);
-
-        for (let i = 0; i < discordUserIds.length; ++i) {
-            db.insert("Owners", {
-                discordUserId: discordUserIds[i]
-            });
-        }
+        db.delete("Owners", {}, true).then(() => {
+            for (let i = 0; i < discordUserIds.length; ++i) {
+                db.insert("Owners", {
+                    discordUserId: discordUserIds[i]
+                });
+            }
+        });
     }
 
     /**
