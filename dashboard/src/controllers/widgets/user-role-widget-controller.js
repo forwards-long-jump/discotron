@@ -25,7 +25,7 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
             if (this._guild !== undefined) {
                 document.querySelector("#add-button").disabled = true;
             }
-                    this._displayUserRoleSelector();
+            this._displayUserRoleSelector();
         }, onClose);
 
     }
@@ -196,7 +196,7 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
                 if (user.tag === name) {
                     this._addUserEntry(user);
                 }
-                
+
             });
         }
 

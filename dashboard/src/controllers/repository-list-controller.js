@@ -105,6 +105,7 @@ window.Discotron.RepositoryListController = class extends window.Discotron.Contr
 
 						Discotron.Repository.clearCache();
 						Discotron.Plugin.clearCache();
+						Discotron.Guild.clearCache();
 						this._displayRepos();
 					});
 				};
@@ -117,6 +118,7 @@ window.Discotron.RepositoryListController = class extends window.Discotron.Contr
 						}).then((data) => {
 							Discotron.Repository.clearCache();
 							Discotron.Plugin.clearCache();
+							Discotron.Guild.clearCache();
 							this._displayRepos();
 						});
 					}
@@ -163,6 +165,7 @@ window.Discotron.RepositoryListController = class extends window.Discotron.Contr
 
 					Discotron.Repository.clearCache();
 					Discotron.Plugin.clearCache();
+					Discotron.Guild.clearCache();
 					this._displayRepos();
 				}
 			});
