@@ -15,7 +15,9 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
         }, () => {
             this._guild = guild;
             this._headerText = headerText;
-            this._usersRoles = usersRoles;
+            this._usersRoles = usersRoles.map((ur) => {
+                return new Discotron.UserRole(ur.discordId, ur.type);
+            });
             this._displayRoles = displayRoles;
             this._allowNone = allowNone;
             this._customInputs = customInputs;
@@ -24,8 +26,18 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
 
             if (this._guild !== undefined) {
                 document.querySelector("#add-button").disabled = true;
+
+                let promises = [
+                    this._guild.loadMembers(),
+                    this._guild.loadRoles()
+                ];
+                Promise.all(promises).then(() => {
+                    this._displayUserRoleSelector();
+                });
+            } else {
+                this._displayUserRoleSelector();
             }
-            this._displayUserRoleSelector();
+
         }, onClose);
 
     }
