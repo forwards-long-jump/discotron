@@ -1,5 +1,5 @@
 /**
- * Represent either a discord user or a role
+ * Represents either a discord user or a role
  */
 class UserRoleModel {
     /**

@@ -15,9 +15,6 @@ window.Discotron.PluginSettingsWidgetController = class extends window.Discotron
 		}, onClose);
 	}
 
-	/**
-	 * 
-	 */
 	_getPluginSettings() {
 		return {
 			enabled: this._widgetContainer.querySelector(".enabled-checkbox").checked,
