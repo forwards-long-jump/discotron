@@ -28,7 +28,7 @@ class BotSettingsModel {
     }
 
     /**
-     * get maintenance mode
+     * Get maintenance mode
      */
     get maintenance() {
         return this._maintenance;

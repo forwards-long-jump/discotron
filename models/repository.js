@@ -1,5 +1,5 @@
 /**
- * Repository containing plugins
+ * Represents a repository containing plugins
  */
 class RepositoryModel {
     /**
