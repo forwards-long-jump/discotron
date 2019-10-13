@@ -44,13 +44,13 @@ if (credentials.key === undefined || credentials.certificate === undefined) {
     Logger.log("A hacker could **easily** access your computer as well as compromising all Discord guilds the bot is in.", "warn");
     Logger.log("To prevent that, secure your server using a service like **letsencrypt**.", "warn");
     Logger.log("You can then add **privateKeyPath** and **certificatePath** in __bot/config/app-config.json__ to fix the issue.", "warn");
-    Logger.log("This warnig will go away once the server is secured.", "warn");
+    Logger.log("This warning will go away once the server is secured.", "warn");
 
 
     const httpServer = http.createServer(app);
 
     httpServer.listen(config.webServer.port, () => {
-        Logger.log("Started Webserver on port **" + config.webServer.port + "**", "info");
+        Logger.log("Started webserver on port **" + config.webServer.port + "**", "info");
     }).on("error", (error) => {
         Logger.log("Could not start webserver on port **" + config.webServer.port + "**", "err");
         Logger.log(error, "err");
@@ -58,7 +58,7 @@ if (credentials.key === undefined || credentials.certificate === undefined) {
 } else {
     const httpsServer = https.createServer(credentials, app);
     httpsServer.listen(config.webServer.port, () => {
-        Logger.log("Started Webserver on port **" + config.webServer.port + "**", "info");
+        Logger.log("Started webserver on port **" + config.webServer.port + "**", "info");
     }).on("error", (error) => {
         Logger.log("Could not start webserver on port **" + config.webServer.port + "**", "err");
         Logger.log(error, "err");
