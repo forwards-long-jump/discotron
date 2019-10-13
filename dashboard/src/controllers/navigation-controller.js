@@ -27,7 +27,7 @@ window.Discotron.NavigationController = class {
 	 */
 	static displayServers() {
 		Discotron.Guild.getAll().then((guilds) => {
-			if (Object.keys(guilds).length > 0) {				
+			if (Object.keys(guilds).length > 0) {
 				document.querySelector(".description").style.display = "none";
 
 				let serverLinksContainer = document.querySelector("#nav-links ul");
@@ -35,8 +35,8 @@ window.Discotron.NavigationController = class {
 
 				for (let i in guilds) {
 					const guild = guilds[i];
-					
-					let serverLink = document.importNode(template.content, true);					
+
+					let serverLink = document.importNode(template.content, true);
 
 					serverLink.querySelector(".server-link").href += guild.discordId;
 					serverLink.querySelector(".server-icon").src = guild.iconURL;

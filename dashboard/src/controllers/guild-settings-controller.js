@@ -39,7 +39,7 @@ window.Discotron.GuildSettingsController = class extends window.Discotron.Contro
     _displayPrefix() {
         document.getElementById("prefix").value = this._guild.prefix;
     }
-    
+
     _addEvents() {
         document.getElementById("prefix").onkeydown = (e) => {
             document.getElementById("save").disabled = false;

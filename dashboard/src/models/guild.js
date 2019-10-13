@@ -227,30 +227,27 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
     setPluginEnabled(pluginId, enabled) {
         // si le set vide => tous activé
         // => on call disabled
-        if(this._enabledPlugins.size === 0) {
-            if(!enabled) {
+        if (this._enabledPlugins.size === 0) {
+            if (!enabled) {
                 Discotron.Plugin.getAll().then((plugins) => {
                     for (let pluginId_ in plugins) {
                         const plugin = plugins[pluginId];
-                        if(pluginId_ !== pluginId) {
+                        if (pluginId_ !== pluginId) {
                             this._enabledPlugins.add(pluginId_);
                         }
-                    }                    
+                    }
                 });
-            }
-            else {
+            } else {
                 // should not happen
             }
-        }
-        else {
-            if(enabled) {
+        } else {
+            if (enabled) {
                 this._enabledPlugins.add(pluginId);
-            }
-            else {
+            } else {
                 this._enabledPlugins.delete(pluginId);
             }
         }
-        
+
         Discotron.WebAPI.queryBot("discotron-dashboard", "set-plugin-enabled", {
             pluginId: pluginId,
             enabled: enabled
@@ -265,7 +262,7 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
     setPluginPermission(pluginId, usersRoles) {
         let permission = new Discotron.Permission(this.discordId, pluginId, usersRoles);
         this._permissions[pluginId] = permission;
-    
+
         Discotron.WebAPI.queryBot("discotron-dashboard", "set-plugin-permission", {
             pluginId: pluginId,
             userRoles: usersRoles

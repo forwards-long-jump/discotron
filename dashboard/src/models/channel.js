@@ -35,7 +35,7 @@ window.Discotron.Channel = class {
                     const channel = channels[i];
                     channelObjects.push(new Discotron.Channel(channel.name, channel.id, channel.type));
                 }
-                
+
                 resolve(channelObjects);
             });
             // Query API

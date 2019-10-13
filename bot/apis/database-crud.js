@@ -4,6 +4,7 @@ const Logger = require(__dirname + "/../utils/logger.js");
 /**
  * Returns whether the given associative array is empty
  * Source: https://stackoverflow.com/questions/4482686/check-synchronously-if-file-directory-exists-in-node-js
+ * 
  * @param {object} associativeArray Associative array
  * @returns {boolean} True if the associative array is empty
  */
@@ -13,6 +14,7 @@ function isEmpty(associativeArray) {
 
 /**
  * Returns a string in the format "KEY1 = $KEY1 separator KEY2 = $KEY2", as well as the given associative array with its keys prefixed by $
+ * 
  * @param {object} where Associative array field => value
  * @param {string} separator Separator between entries
  * @returns {object} Associative array containing the string and the transformed associative array given in the parameters
@@ -77,8 +79,7 @@ module.exports.update = (table, values, where) => {
             if (err) {
                 Logger.log("Update in database failed : " + sql, "err");
                 reject();
-            }
-            else {
+            } else {
                 resolve();
             }
         });
@@ -98,8 +99,7 @@ module.exports.insert = (table, values) => {
                 Logger.log("Insert in database failed : " + sql, "err");
                 Logger.log(err)
                 reject();
-            }
-            else {
+            } else {
                 resolve();
             }
         });
@@ -118,8 +118,7 @@ module.exports.delete = (table, where, eraseAll = false) => {
                 if (err) {
                     Logger.log("Delete in database failed : " + sql, "err");
                     reject();
-                }
-                else {
+                } else {
                     resolve();
                 }
             });
@@ -128,8 +127,7 @@ module.exports.delete = (table, where, eraseAll = false) => {
                 if (err) {
                     Logger.log("Delete in database failed : " + sql, "err");
                     reject();
-                }
-                else {
+                } else {
                     resolve();
                 }
             });

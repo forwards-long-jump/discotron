@@ -137,6 +137,7 @@ main hr {
 #bot-info a {
     color: var(--color-text);
 }
+
 #bot-info a:hover {
     text-decoration: none;
 }
@@ -583,7 +584,7 @@ input:checked+.slider:before {
     display: block;
 }
 
-.plugin-help > span {
+.plugin-help>span {
     display: block;
 }
 

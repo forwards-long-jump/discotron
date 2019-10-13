@@ -51,9 +51,9 @@ class Repository extends RepositoryModel {
             fs.readdirSync(__dirname + "/../repositories/" + this._folderName + "/pages").forEach(file => {
                 Logger.log("Serving web folder **" + file + "**");
                 webServer.serveRepositoryFolder(file, this._folderName);
-                
+
                 let oldPageIndex = this._pages.indexOf(file);
-                if(oldPageIndex >= 0) {
+                if (oldPageIndex >= 0) {
                     this._pages.splice(oldPageIndex, 1);
                 }
                 this._pages.push(file);

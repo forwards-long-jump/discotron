@@ -79,7 +79,7 @@ function handleDiscordAPIQuery(authToken, reply, addOwner = false) {
                 Promise.reject();
             }
         }).then((appToken) => {
- 
+
             reply({
                 status: "success",
                 token: appToken,

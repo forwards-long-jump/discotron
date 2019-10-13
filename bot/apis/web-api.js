@@ -1,12 +1,13 @@
 const Logger = require("../utils/logger.js");
 
 /**
- * Handles receiving message from dashboard
+ * Handles communication between the dashboard and the bot
  */
+
 let actions = {};
 
 /**
- * Starts listening on the /api endpoint
+ * Listen for requests on the /api endpoint
  */
 module.exports.onPost = (req, res) => {
     if (req === undefined || req.body === undefined) {

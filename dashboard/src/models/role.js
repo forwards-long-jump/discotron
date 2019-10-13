@@ -39,11 +39,11 @@ window.Discotron.Role = class {
     static getGuildRoles(discordGuildId) {
         return new Promise((resolve, reject) => {
             Discotron.WebAPI.queryBot("discotron-dashboard", "get-roles", {}, discordGuildId).then((roles) => {
-                
+
                 let roleList = [];
                 for (let i = 0; i < roles.length; i++) {
                     const role = roles[i];
-                    roleList.push(new Discotron.Role(role.name, role. id, role.color));
+                    roleList.push(new Discotron.Role(role.name, role.id, role.color));
                 }
 
                 resolve(roleList);

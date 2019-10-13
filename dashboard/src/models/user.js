@@ -37,7 +37,7 @@ window.Discotron.User = class {
     static loadGuildMembers(discordGuildId) {
         return new Promise((resolve, reject) => {
             Discotron.WebAPI.queryBot("discotron-dashboard", "get-members", {}, discordGuildId).then((users) => {
-                resolve(users.map((user) => {      
+                resolve(users.map((user) => {
                     return new Discotron.User(user.name, user.id, user.avatar, user.name + "#" + user.discriminator).id;
                 }));
             });
