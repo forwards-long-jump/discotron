@@ -32,10 +32,10 @@ class Repository extends RepositoryModel {
     }
 
     loadPluginsFromDisk() {
-        let pluginsPath = __dirname + "/../repositories/" + this._folderName + "/plugins";
+        let pluginsPath = "../repositories/" + this._folderName + "/plugins";
 
         if (fs.existsSync(pluginsPath)) {
-            fs.readdirSync(__dirname + "/../repositories/" + this._folderName + "/plugins").forEach(file => {
+            fs.readdirSync("../repositories/" + this._folderName + "/plugins").forEach(file => {
                 Logger.log("Building Plugin from folder **" + file + "**", "debug");
                 let plugin = new Plugin(pluginsPath + "/" + file);
                 this._pluginIds.push(plugin.id);
@@ -45,10 +45,10 @@ class Repository extends RepositoryModel {
     }
 
     loadPagesFromDisk() {
-        let pagesPath = __dirname + "/../repositories/" + this._folderName + "/pages";
+        let pagesPath = "../repositories/" + this._folderName + "/pages";
 
         if (fs.existsSync(pagesPath)) {
-            fs.readdirSync(__dirname + "/../repositories/" + this._folderName + "/pages").forEach(file => {
+            fs.readdirSync("../repositories/" + this._folderName + "/pages").forEach(file => {
                 Logger.log("Serving web folder **" + file + "**");
                 webServer.serveRepositoryFolder(file, this._folderName);
                 
@@ -78,7 +78,7 @@ class Repository extends RepositoryModel {
         Logger.log("Cloning **" + url + "**...");
         return new Promise((resolve, reject) => {
             let folderName = Repository._generateFolderName(url);
-            Git.Clone(url, __dirname + "/../repositories/" + folderName, {
+            Git.Clone(url, "../repositories/" + folderName, {
                 checkoutBranch: "master"
             }).then((repo) => {
                 db.insert("Repositories", {
@@ -118,7 +118,7 @@ class Repository extends RepositoryModel {
         return new Promise((resolve, reject) => {
             let repo;
             // Source: https://stackoverflow.com/questions/20955393/nodegit-libgit2-for-node-js-how-to-push-and-pull
-            Git.Repository.open(__dirname + "/../repositories/" + this._folderName)
+            Git.Repository.open("../repositories/" + this._folderName)
                 .then((repository) => {
                     repo = repository;
                     return repository.fetch("origin");
@@ -203,7 +203,7 @@ class Repository extends RepositoryModel {
      * Delete the folder
      */
     _deleteFolder() {
-        fileHelper.deleteFolder(__dirname + "/../repositories/" + this._folderName);
+        fileHelper.deleteFolder("../repositories/" + this._folderName);
     }
 
     static registerActions() {
