@@ -15,8 +15,8 @@ const credentials = {
 };
 
 module.exports.serveDashboard = () => {
-    app.use("/dashboard", express.static("../dashboard"));
-    app.use("/models", express.static("../models"));
+    app.use("/dashboard", express.static(__dirname + "/../dashboard"));
+    app.use("/models", express.static(__dirname + "/../models"));
     app.get("/", (req, res) => {
         res.redirect("/dashboard");
     });
@@ -30,7 +30,7 @@ module.exports.serveRepositoryFolder = (folderName, repositoryFolderName) => {
         Logger.log("Could not serve folder **" + folderName + "** because it is a reserved page name.", "warn");
         return;
     } else {
-        app.use("/" + folderName, express.static("./repositories/" + repositoryFolderName + "/pages/" + folderName));
+        app.use("/" + folderName, express.static(__dirname + "/repositories/" + repositoryFolderName + "/pages/" + folderName));
     }
 };
 
