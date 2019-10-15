@@ -114,7 +114,7 @@ function loadConfig() {
             process.exit();
         }
     } catch (err) {
-        Logger.log("Please create **app-config.json** in bot/config.", "err");
+        Logger.log("Please run **npm install** and set up the application config.", "err");
         process.exit();
         return;
     }

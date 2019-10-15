@@ -1,8 +1,8 @@
 /**
  * Helper functions for the database
  */
-const databaseHelper = require(__dirname + "/../utils/database-helper.js");
-const Logger = require(__dirname + "/../utils/logger.js");
+const databaseHelper = require("../utils/database-helper.js");
+const Logger = require("../utils/logger.js");
 
 /**
  * Source: https://stackoverflow.com/questions/4482686/check-synchronously-if-file-directory-exists-in-node-js
