@@ -14,6 +14,12 @@ const botSettings = new BotSettings();
 
 let actions = {};
 
+/**
+ * Add a listener for Discotron events
+ * Valid actions are: "plugin-loaded", "plugin-delete"
+ * @param {string} actionName Name of the action
+ * @param {function} action Function to call when the action occures
+ */
 module.exports.on = (actionName, action) => {
     if (actions[actionName] === undefined) {
         actions[actionName] = [];
@@ -22,6 +28,11 @@ module.exports.on = (actionName, action) => {
     actions[actionName].push(action);
 };
 
+/**
+ * Triggers a Discotron event
+ * @param {string} actionName Name of the action to trigger
+ * @param {object} data Object that will be passed to the functions
+ */
 module.exports.triggerEvent = (actionName, data) => {
     if (actions[actionName] === undefined) {
         Logger.log("Cannot trigger inexistent action: **" + actionName + "**", "warn");
@@ -32,6 +43,11 @@ module.exports.triggerEvent = (actionName, data) => {
     }
 };
 
+/**
+ * Should be called when the bot receives a message
+ * Handles message reception
+ * @param {Discord.Message} message Received message
+ */
 module.exports.onMessage = (message) => {
     Logger.log(`__#${message.channel.name}__ <${message.author.tag}>: ${message.content}`);
     if (message.author.bot) {
@@ -139,6 +155,10 @@ module.exports.onMessage = (message) => {
 
 };
 
+/**
+ * Load guild settings from database
+ * TODO: This should probably be moved into the guild class
+ */
 module.exports.loadGuilds = () => {
     return new Promise((resolve, reject) => {
         db.select("GuildSettings", ["discordGuildId"]).then((rows) => {
@@ -150,6 +170,12 @@ module.exports.loadGuilds = () => {
     });
 };
 
+/**
+ * Reload guilds, admins from the guild object
+ * TODO: Move this in the Guild class
+ * TODO: Call this when guilds change
+ * TODO: Check if it's complete
+ */
 module.exports.updateGuilds = () => {
     let oldGuildIds = Object.keys(Guild.getAll());
     let newGuildIds = global.discordClient.guilds.map((guild) => {
@@ -188,6 +214,10 @@ module.exports.updateGuilds = () => {
     }
 };
 
+/**
+ * Load owners
+ * TODO: Move this in the owner class
+ */
 module.exports.loadOwners = () => {
     Owner.getOwners().then((owners) => {
         if (owners.length === 0) {
@@ -196,14 +226,26 @@ module.exports.loadOwners = () => {
     });
 };
 
+/**
+ * Update bot presence
+ */
 module.exports.updateStatus = () => {
     botSettings.setBotPresence();
 };
 
+// TODO
 module.exports.onReaction = (reaction) => {};
 module.exports.onJoinGuild = (guild) => {};
 module.exports.onLeaveGuild = (guild) => {};
+module.exports.getBotInfo = () => {};
 
+/**
+ * Retrives user informations from discord
+ * TODO: Fix possible call to undefined
+ * TODO: Cache the results
+ * TODO: Move this in a new user class
+ * @param {strin} discordId Discord user id
+ */
 function getUserInfo(discordId) {
     return new Promise((resolve, reject) => {
         global.discordClient.fetchUser(discordId).then((user) => {
@@ -218,13 +260,18 @@ function getUserInfo(discordId) {
             Logger.log(e, "err");
         });
     });
-};
-module.exports.getBotInfo = () => {};
+}
 
+/**
+ * @returns {object} Bot settings
+ */
 module.exports.getBotSettings = () => {
     return botSettings;
 };
 
+/**
+ * Load repositories from the database, which will build most things
+ */
 module.exports.loadRepositories = () => {
     db.select("Repositories").then((rows) => {
         if (rows.length === 0) {
@@ -240,21 +287,28 @@ module.exports.loadRepositories = () => {
     });
 };
 
+/**
+ * Register webAPI actions related to Discotron
+ */
 module.exports.registerActions = () => {
     webAPI.registerAction("set-bot-config", (data, reply) => {
         if (data === undefined) {
             reply(false);
             return;
         }
+
         if (data.helpText !== undefined) {
             botSettings.helpText = data.helpText;
         }
+
         if (data.maintenance !== undefined) {
             botSettings.maintenance = data.maintenance;
         }
+
         if (data.statusText !== undefined) {
             botSettings.statusText = data.statusText;
         }
+
         reply();
     }, "owner");
 

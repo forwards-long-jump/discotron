@@ -6,14 +6,25 @@ const Logger = require(__dirname + "/../utils/logger.js");
 
 let database;
 
+/**
+ * @returns {boolean} True if a database file already exists
+ */
 module.exports.databaseExists = () => {
     return fs.existsSync(config.database.savePath);
 };
 
+/**
+ * Copy template as a normal database
+ * TODO: Use migrations! This is going to hit us in the face at some point
+ */
 module.exports.createDatabase = () => {
     fs.copyFileSync(config.database.templatePath, config.database.savePath);
 };
 
+/**
+ * Delete database
+ * I'm not sure why this exists
+ */
 module.exports.deleteDatabase = () => {
     fs.unlink(config.database.savePath, (err) => {
         if (err) {
@@ -22,6 +33,9 @@ module.exports.deleteDatabase = () => {
     });
 };
 
+/**
+ * Open sqlite database from its file
+ */
 module.exports.openDatabase = () => {
     database = new sqlite.Database(config.database.savePath, sqlite.OPEN_READWRITE, (err) => {
         if (err) {
@@ -31,6 +45,9 @@ module.exports.openDatabase = () => {
     });
 };
 
+/** 
+ * @returns {sqlite3.Database} Sqlite database
+ */
 module.exports.getDatabase = () => {
     return database;
 };

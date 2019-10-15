@@ -1,8 +1,12 @@
+/**
+ * Parent class for all Widgets, handle basic display and buttons
+ */
 window.Discotron.WidgetController = class {
 	/**
 	 * Ctor
 	 * @param {string} widgetPageName Name of the html file of the widget 
 	 * @param {function} onSave  Called when the user saves
+	 * @param {function} callback Called when widget is displayed
 	 * @param {function} onClose Called when widget is closed
 	 */
 	constructor(widgetPageName, onSave, callback = () => {}, onClose = () => {}) {
@@ -15,6 +19,7 @@ window.Discotron.WidgetController = class {
 
 	/**
 	 * Display modal, OK and Cancel button, background
+	 * @param {function} callback Called when widget is displayed
 	 */
 	_displayWidget(callback) {
 		// Get html file and put it into <main>

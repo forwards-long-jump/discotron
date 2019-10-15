@@ -1,9 +1,12 @@
+/**
+ * Widget to change plugin settings
+ */
 window.Discotron.PluginSettingsWidgetController = class extends window.Discotron.WidgetController {
 	/**
 	 * Ctor
 	 * @param {Plugin} plugin Plugin this page is dedicated to 
 	 * @param {function} onPluginSettingsSave Callback to be called when the user is done changing the settings
-	 * @param {function} onClose Callback to be called when the widget is closed
+	 * @param {function} [onClose=()=>{}] Callback to be called when the widget is closed
 	 */
 	constructor(plugin, onPluginSettingsSave, onClose = () => {}) {
 		super("plugin-settings.html", () => {
@@ -15,6 +18,9 @@ window.Discotron.PluginSettingsWidgetController = class extends window.Discotron
 		}, onClose);
 	}
 
+	/**
+	 * @returns {object} {enabled, globalPrefix} get plugin settings set by the user
+	 */
 	_getPluginSettings() {
 		return {
 			enabled: this._widgetContainer.querySelector(".enabled-checkbox").checked,

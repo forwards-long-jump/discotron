@@ -45,46 +45,19 @@ window.Discotron.BotStatusController = class extends window.Discotron.Controller
 	}
 
 	/**
-	 * Called when the user clicks on the owners pseudo link
-	 */
-	_onOwnersClick() {
-		// Open a widget
-	}
-
-	/**
 	 * Reloads the data on the page
 	 */
 	_onReloadClick() {
-
+		// TODO?
 	}
 
 	/**
-	 * Called when the user toggles the maintenance settings
-	 */
-	_onMaintenanceToggle() {
-
-	}
-
-	/**
-	 * Called when the help text input is changed
-	 */
-	_onHelpTextChange() {
-
-	}
-
-	/**
-	 * Called when the user saves the widget
-	 */
-	_onOwnersWidgetSave() {
-
-	}
-
-	/**
-	 * Add events
+	 * Add events to open widgets and change variables, change the save button status
 	 */
 	_addEvents() {
 		let saveSettingsButton = document.getElementById("save-settings");
 		let restartButton = document.getElementById("restart-bot");
+		
 		document.getElementById("bot-status").onkeyup = () => {
 			saveSettingsButton.disabled = false;
 		};

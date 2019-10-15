@@ -1,3 +1,6 @@
+/**
+ * Represents a guild, dashboard side
+ */
 window.Discotron.Guild = class extends window.Discotron.GuildModel {
     /**
      * Ctor
@@ -8,7 +11,7 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
      * @param {array} allowedChannelIds Array of channel ids on which the bot is allowed
      * @param {array} enabledPluginIds Array of plugin ids that are enabled
      * @param {array} admins Array of UserRole who have admin priviledge on the bot
-     * @param {object} permissions Associative object binding pluginsIds to userRole array
+     * @param {object} permissions Object binding pluginsIds to userRole array
      */
     constructor(discordId, name, iconURL, commandPrefix, allowedChannelIds, enabledPlugins, admins, permissions) {
         super(discordId, commandPrefix, allowedChannelIds, enabledPlugins, admins, permissions);
@@ -25,36 +28,35 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
     }
 
     /**
-     * Get name
+     * @returns {string} name
      */
     get name() {
         return this._name;
     }
 
     /**
-     * Get icon URL
+     * @returns {string} iconURL
      */
     get iconURL() {
         return this._iconURL;
     }
 
     /**
-     * Get members
+     * @returns {array} array of members ids
      */
     get members() {
         return this._members;
     }
 
     /**
-     * Get roles
+     * @returns {string} array of role ids
      */
     get roles() {
         return this._roles;
     }
 
     /**
-     * Get channels
-     * @returns {Promise}
+     * @returns {Promise} resolve(): array of channels
      */
     getChannels() {
         return new Promise((resolve, reject) => {
@@ -73,8 +75,8 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
     }
 
     /**
-     * Load members using WebAPI
-     * @returns {Promise}
+     * Load members using the WebAPI
+     * @returns {Promise} resolve(): called when members are loaded
      */
     _loadMembers() {
         return new Promise((resolve, reject) => {
@@ -86,8 +88,8 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
     }
 
     /**
-     * Load roles using WebAPI
-     * @returns {Promise}
+     * Load roles using the WebAPI
+     * @returns {Promise} resolve(): called when members are loaded
      */
     _loadRoles() {
         return new Promise((resolve, reject) => {
@@ -103,7 +105,9 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
 
 
     /**
-     * Check if guilds are loaded and return them in a promise
+     * Get all guilds, load them if necessary
+     * @returns {Promise} resolve(guilds): an array of Discotron.Guild
+     * @static
      */
     static getAll() {
         return new Promise((resolve, reject) => {
@@ -166,7 +170,7 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
     }
 
     /**
-     * Reloads the guilds
+     * Clear cache, this will force a reload when guilds are queried again
      */
     static clearCache() {
         Discotron.Guild._guilds = {};
@@ -184,15 +188,14 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
     }
 
     /**
-     * Returns the users and roles that have admin privileges
+     * @returns {array} Array of userRole with admin privileges
      */
     get admins() {
         return super.admins;
     }
 
     /**
-     * Set prefix for guild command
-     * @param {string} prefix 
+     * @param {string} prefix New prefix for guild commands
      */
     set prefix(prefix) {
         this._commandPrefix = prefix;
@@ -201,12 +204,16 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
         }, this.discordId).then(() => {});
     }
 
+    /**
+     * @returns {string} command prefix
+     */
     get prefix() {
         return super.commandPrefix;
     }
 
     /**
      * Set allowed channels
+     * @param {array} allowedChannelIds Array of allowed channel ids
      */
     set allowedChannelIds(allowedChannelIds) {
         this._allowedChannelIds = allowedChannelIds;
@@ -215,6 +222,9 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
         }, this.discordId);
     }
 
+    /**
+     * @returns {array} array of allowed channel ids
+     */
     get allowedChannelIds() {
         return super.allowedChannelIds;
     }
@@ -272,6 +282,7 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
     /**
      * Get the users/roles allowed to use the plugin
      * @param {string} pluginId ID of the plugin
+     * @returns {array} array of UserRoles
      */
     getPluginPermission(pluginId) {
         let perm = this.permissions[pluginId];

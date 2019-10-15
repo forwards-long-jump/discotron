@@ -1,3 +1,6 @@
+/**
+ * Controller for the guild settings page
+ */
 window.Discotron.GuildSettingsController = class extends window.Discotron.Controller {
     /**
      * Ctor
@@ -40,6 +43,9 @@ window.Discotron.GuildSettingsController = class extends window.Discotron.Contro
         document.getElementById("prefix").value = this._guild.prefix;
     }
 
+    /**
+     * Add events to the widget
+     */
     _addEvents() {
         document.getElementById("prefix").onkeydown = (e) => {
             document.getElementById("save").disabled = false;

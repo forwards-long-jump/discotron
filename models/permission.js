@@ -14,12 +14,22 @@ class PermissionModel {
         this._usersRoles = usersRoles;
     }
 
+
+    /**
+     * @returns {string} Guild Id
+     */
     get guildId() {
         return this._guildId;
     }
+    /**
+     * @returns {string} Plugin Id
+     */
     get pluginId() {
         return this._pluginId;
     }
+    /**
+     * @returns {array} Array of UserRoles
+     */
     get usersRoles() {
         return this._usersRoles;
     }

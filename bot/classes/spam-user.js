@@ -1,6 +1,13 @@
 const config = require("../config/config.json");
 
+/**
+ * Handle spam limitations per users
+ */
 class SpamUser {
+    /**
+     * ctor
+     * @param {Discord.User} discordUser User managed by this class
+     */
     constructor(discordUser) {
         this._damageTaken = 0;
         this._dead = false;
@@ -11,24 +18,37 @@ class SpamUser {
         SpamUser._users[discordUser.id] = this;
     }
 
-    static isRestricted(user) {
-        if (SpamUser._users[user.id] !== undefined) {
-            return SpamUser._users[user.id]._isDead();
+    /**
+     * @static
+     * @param {Discord.User} discordUser 
+     * @returns {boolean} True if the user has spammed too much and is being restricted
+     */
+    static isRestricted(discordUser) {
+        if (SpamUser._users[discordUser.id] !== undefined) {
+            return SpamUser._users[discordUser.id]._isDead();
         } else {
-            new SpamUser(user);
+            new SpamUser(discordUser);
             return false;
         }
     }
 
-    static onAction(user) {
-        if (SpamUser._users[user.id] !== undefined) {
-            SpamUser._users[user.id]._dealDamage();
+    /**
+     * Should be called when a user performs an action which is spam restricted
+     * @param {Discord.User} discordUser 
+     */
+    static onAction(discordUser) {
+        if (SpamUser._users[discordUser.id] !== undefined) {
+            SpamUser._users[discordUser.id]._dealDamage();
         } else {
-            new SpamUser(user);
-            SpamUser._users[user.id]._dealDamage();
+            new SpamUser(discordUser);
+            SpamUser._users[discordUser.id]._dealDamage();
         }
     }
 
+    /**
+     * "Damages" the user every time a spam restricted action is performed
+     * when the user has no "health" left, he "dies"
+     */
     _dealDamage() {
         if (this._dead) {
             return;
@@ -52,6 +72,10 @@ class SpamUser {
         }
     }
 
+    /**
+     * Applies "health renegeration" and return if the user is still "dead"
+     * @returns {boolean} True if the user spammed too much
+     */
     _isDead() {
         if (this._dead) {
             let currentTime = (new Date().getTime() / 1000);

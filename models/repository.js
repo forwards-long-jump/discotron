@@ -14,12 +14,23 @@ class RepositoryModel {
         this._pages = pages;
     }
 
+    /**
+     * @returns {string} Repository url
+     */
     get url() {
         return this._url;
     }
+
+    /**
+     * @returns {array} Array of string
+     */
     get pluginIds() {
         return this._pluginIds;
     }
+
+    /**
+     * @returns {array} Array of string
+     */
     get pages() {
         return this._pages;
     }

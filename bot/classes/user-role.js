@@ -1,12 +1,17 @@
 const UserRoleModel = require("./../../models/user-role.js");
 const db = require("./../apis/database-crud.js");
 
+/**
+ * UserRole represents either a User or a Role.
+ * It was a bad idea and should not exists, it was created to avoid storing userIds and roleIds separetely
+ * since most permissions allows either a user or a role
+ */
 class UserRole extends UserRoleModel {
     /**
      * Ctor
-     * @param {string} discordId ID of the user or role
+     * @param {string} discordId Id of the user or role
      * @param {string} type Type of the id, "user" or "role"
-     * @param {string} discordId ID of the guild in which this user / role is located
+     * @param {string} discordId Id of the guild in which this role is located. Does not apply for users
      */
     constructor(discordId, type, guildId) {
         super(discordId, type);
@@ -14,15 +19,14 @@ class UserRole extends UserRoleModel {
     }
 
     /**
-     * Get guildId
+     * @returns {string} Id of the guild in which this role is located
      */
     get guildId() {
         return this._guildId;
     }
 
     /**
-     * Returns an object describing the user / role
-     * @returns {object} {id, type}
+     * @returns {object} {id, type} object describing the user / role
      */
     toObject() {
         return {
@@ -30,10 +34,10 @@ class UserRole extends UserRoleModel {
             type: this.type
         };
     }
+
     /**
-     * Returns whether the object describes the user, or a role which the user has
-     * @param {string} userDiscordId 
-     * @returns {boolean} True if this userRole includes given userId 
+     * @param {string} userDiscordId Discord user
+     * @returns {boolean} True if this userRole includes given userId (same userId or owns the role)
      */
     describes(userDiscordId) {
         if (this.type === "user") {
@@ -49,8 +53,8 @@ class UserRole extends UserRoleModel {
     }
 
     /**
-     * Returns the ID from the database. Creates an entry if there isn't one
-     * @returns {number} ID of the database entry for this UserRole
+     * Creates an entry if there isn't one
+     * @returns {number} Id of the database entry for this UserRole
      */
     getId() {
         return new Promise((resolve, reject) => {
@@ -75,9 +79,10 @@ class UserRole extends UserRoleModel {
     }
 
     /**
-     * Returns an instance of a database entry
-     * @param {number} id ID of the database entry
-     * @param {string} guildId ID of the guild in which the user/role exists
+     * Query the database to get a role using its id
+     * TODO: This function only creates n + 1 problems and should be removed!
+     * @param {number} id Id of the database entry
+     * @param {string} guildId Id of the guild in which the user/role exists
      */
     static getById(id, guildId) {
         return new Promise((resolve, reject) => {

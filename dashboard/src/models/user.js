@@ -1,9 +1,13 @@
+/**
+ * Represents a User, dashboard side
+ */
 window.Discotron.User = class {
     /**
-     * Ctor
+     * @constructor
      * @param {string} name Name of the user
      * @param {string} id Id of the user
      * @param {string} avatarURL Avatar of the user
+     * @param {string} tag Called tag, should be discriminator. FIXEME!
      */
     constructor(name, id, avatarURL, tag) {
         this._name = name;
@@ -14,25 +18,38 @@ window.Discotron.User = class {
         Discotron.User._users[id] = this;
     }
 
+    /**
+     * @returns {string} name
+     */
     get name() {
         return this._name;
     }
-
+    
+    /**
+     * @returns {string} returns the DISCRIMINATOR
+     */
     get tag() {
         return this._tag;
     }
-
+    
+    /**
+     * @returns {string} returns discord user id
+     */
     get id() {
         return this._id;
     }
 
+    /**
+     * @returns {string} Avatar URL of the user
+     */
     get avatarURL() {
         return this._avatarURL;
     }
 
     /**
      * Load the members of a given guild
-     * @param {string} discordGuildId 
+     * @static
+     * @param {string} discordGuildId  Discord guild id
      */
     static loadGuildMembers(discordGuildId) {
         return new Promise((resolve, reject) => {
@@ -45,8 +62,9 @@ window.Discotron.User = class {
     }
 
     /**
-     * Get a user from its id (or load it?)
-     * @param {string} id 
+     * Get a user from its id (load it if necessary)
+     * @param {string} id  User id
+     * @returns {Promise} resolve(User)
      */
     static get(id) {
         return new Promise((resolve, reject) => {
@@ -64,7 +82,8 @@ window.Discotron.User = class {
     }
 
     /**
-     * Get all loaded users
+     * @static
+     * @returns {object} {id: user} all loaded users
      */
     static getAll() {
         return window.Discotron.User._users;

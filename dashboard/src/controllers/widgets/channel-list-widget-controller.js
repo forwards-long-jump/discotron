@@ -1,3 +1,6 @@
+/**
+ * Widget to select channels
+ */
 window.Discotron.ChannelListWidgetController = class extends window.Discotron.WidgetController {
     /**
      * Ctor
@@ -22,7 +25,7 @@ window.Discotron.ChannelListWidgetController = class extends window.Discotron.Wi
     }
 
     /**
-     * Returns an array of all channel ids that are currently selected
+     * @returns An array of all channel ids that are currently selected
      */
     _getSelectedChannels() {
         let allContainers = this._widgetContainer.querySelectorAll(".channel-state");

@@ -1,3 +1,6 @@
+/**
+ * Controller for the list of repository page
+ */
 window.Discotron.RepositoryListController = class extends window.Discotron.Controller {
 	/**
 	 * Ctor 
@@ -9,6 +12,9 @@ window.Discotron.RepositoryListController = class extends window.Discotron.Contr
 		});
 	}
 
+	/**
+	 * Handle adding repository
+	 */
 	_addEventListeners() {
 		document.getElementById("add-repository").onclick = () => {
 			this._onAddRepository();
@@ -22,7 +28,7 @@ window.Discotron.RepositoryListController = class extends window.Discotron.Contr
 	}
 
 	/**
-	 * Display the list of repositories and the plugins 
+	 * Display the list of repositories and their plugins 
 	 */
 	_displayRepos() {
 		Discotron.Repository.getAll().then((repositories) => {
@@ -130,21 +136,6 @@ window.Discotron.RepositoryListController = class extends window.Discotron.Contr
 	}
 
 	/**
-	 * Add a plugin card
-	 * @param {Plugin} plugin Plugin
-	 */
-	_displayPluginCard(plugin) {
-
-	}
-
-	/**
-	 * Show the plugin settings widget for the selected plugin
-	 */
-	_onPluginClick() {
-
-	}
-
-	/**
 	 * Called when add repository button is presse
 	 */
 	_onAddRepository() {
@@ -170,26 +161,5 @@ window.Discotron.RepositoryListController = class extends window.Discotron.Contr
 				}
 			});
 		}
-	}
-
-	/**
-	 * Called when a repository is deleted
-	 */
-	_onRemoveRepository(arg) {
-
-	}
-
-	/**
-	 * Called when the update button is pressed
-	 */
-	_onUpdateRepository() {
-
-	}
-
-	/**
-	 * Called when repo refresh button is pressed
-	 */
-	_onRepositoryStatusRefresh() {
-
 	}
 };

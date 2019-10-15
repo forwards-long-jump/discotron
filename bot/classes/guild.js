@@ -5,10 +5,13 @@ const webAPI = require("./../apis/web-api.js").getWebAPI("discotron-dashboard");
 const Plugin = require("./plugin.js");
 const db = require("./../apis/database-crud.js");
 
+/**
+ * Discotron guild containing info related to a Discord guild
+ */
 class Guild extends GuildModel {
     /**
      * Ctor
-     * @param {string} discordId ID of the discord guild 
+     * @param {string} discordId Discord guild id
      */
     constructor(discordId) {
         super(discordId);
@@ -16,6 +19,7 @@ class Guild extends GuildModel {
         global.discotron.on("plugin-loaded", (pluginId) => {
             this.onPluginLoaded(pluginId);
         });
+
         global.discotron.on("plugin-deleted", (pluginId) => {
             this.onPluginDeleted(pluginId);
         });
@@ -29,23 +33,23 @@ class Guild extends GuildModel {
     }
 
     /**
-     * Returns the Guild with the given ID
-     * @param {string} discordId 
+     * @static
+     * @param {string} discordId Discord guild id
+     * @returns Discotron guild with the given discord guild id
      */
     static get(discordId) {
         return Guild._guilds[discordId];
     }
 
     /**
-     * Returns all guilds
+     * @returns {array} Array of Guild
      */
     static getAll() {
         return Guild._guilds;
     }
 
     /**
-     * Returns informations about the guild
-     * @returns {object} {id, name, image}
+     * @returns {object} Object containing {id, prefix, name, nameAcronym, image, allowedChannelIds, enabledPluginIds, admins, permissions}
      */
     toObject() {
         let guild = global.discordClient.guilds.get(this.discordId);
@@ -70,8 +74,8 @@ class Guild extends GuildModel {
     }
 
     /**
-     * Returns whether the given client ID is a bot admin on the guild
-     * @param {string} clientId 
+     * @param {string} clientId Discord client id
+     * @returns Whether the given client ID is a bot admin on the guild
      */
     isAdmin(clientId) {
         let isadmin = false;
@@ -91,9 +95,8 @@ class Guild extends GuildModel {
     }
 
     /**
-     * Returns whether the given user is a bot admin on the given guild
-     * @param {string} clientId ID of the client
-     * @param {string} guildId ID of the guild
+     * @param {string} clientId Discord client id
+     * @param {string} guildId Discord gulid id
      * @returns {boolean} True if the client is bot admin on the guild
      */
     static isGuildAdmin(clientId, guildId) {
@@ -109,6 +112,7 @@ class Guild extends GuildModel {
         usersRoles = usersRoles.map((ur) => {
             return new UserRole(ur._discordId, ur._type, this.discordId);
         });
+
         this._admins = new Set(usersRoles);
 
         db.delete("Admins", {
@@ -126,14 +130,18 @@ class Guild extends GuildModel {
         });
     }
 
+    /**
+     * @returns {array} List of admins for this guild
+     */
     get admins() {
         return super.admins;
     }
 
     /**
-     * Loads members of the guild with admin privilege
+     * Load guild admins from Discord
      */
     loadDiscordAdmins() {
+        // TODO: Refresh that when it changes on Discord
         this._discordAdmins = new Set([]);
 
         let guild = global.discordClient.guilds.get(this.discordId);
@@ -152,7 +160,7 @@ class Guild extends GuildModel {
 
 
     /**
-     * Set bot prefix on the guild
+     * Set bot prefix for a guild, save it in the database
      * @param {string} prefix 
      */
     set commandPrefix(prefix) {
@@ -164,13 +172,16 @@ class Guild extends GuildModel {
         });
     }
 
+    /**
+     * @returns {string} Command prefix
+     */
     get commandPrefix() {
         return super.commandPrefix;
     }
 
     /**
      * Set allowed channels
-     * @param {array} discordChannelIds 
+     * @param {array} discordChannelIds List of Discord channel ids
      */
     set allowedChannelIds(discordChannelIds) {
         this._allowedChannelIds = new Set(discordChannelIds);
@@ -186,12 +197,14 @@ class Guild extends GuildModel {
         }
     }
 
+    /**
+     * @returns {array} List of Discord channel ids
+     */
     get allowedChannelIds() {
         return super.allowedChannelIds;
     }
 
     /**
-     * Returns whether the plugin is enabled in this guild
      * @param {string} pluginId ID of the plugin
      * @returns {boolean} True if the plugin is enabled in the guild
      */
@@ -261,15 +274,15 @@ class Guild extends GuildModel {
     }
 
     /**
-     * Called after a plugin is loaded
-     * @param {string} pluginId 
+     * Must be called after a plugin is loaded
+     * @param {string} pluginId that was loaded
      */
     onPluginLoaded(pluginId) {
         this._loadPluginPermission(pluginId);
     }
 
     /**
-     * Called before a plugin is deleted
+     * Must be before a plugin is deleted
      * @param {string} pluginId 
      */
     onPluginDeleted(pluginId) {
@@ -283,6 +296,7 @@ class Guild extends GuildModel {
      */
     _loadPluginPermission(pluginId) {
         this._permissions[pluginId] = new Permission(this.discordId, pluginId, []);
+        // TODO: Fix n + 1 query here
         db.select("Permissions", ["userRoleId"], {
             discordGuildId: this.discordId,
             pluginId: pluginId
@@ -344,6 +358,7 @@ class Guild extends GuildModel {
      * Loads admins from db, inserts default values if none found
      */
     _loadAdminsFromDatabase() {
+        // TODO: Fix n + 1 query here
         db.select("Admins", ["userRoleId"], {
             discordGuildId: this.discordId
         }).then((rows) => {
@@ -362,15 +377,19 @@ class Guild extends GuildModel {
         db.delete("Admins", {
             discordGuildId: this.discordId
         });
+
         db.delete("AllowedChannels", {
             discordGuildId: this.discordId
         });
+
         db.delete("GuildSettings", {
             discordGuildId: this.discordId
         });
+
         db.delete("GuildEnabledPlugins", {
             discordGuildId: this.discordId
         });
+
         db.delete("Permissions", {
             discordGuildId: this.discordId
         });
@@ -378,6 +397,9 @@ class Guild extends GuildModel {
         delete Guild._guilds[this.discordId];
     }
 
+    /**
+     * Register WebAPI actions related to a guild
+     */
     static registerActions() {
         webAPI.registerAction("get-guilds", (data, reply, userId, guildId) => {
             let guilds = {};
@@ -386,6 +408,7 @@ class Guild extends GuildModel {
             }
             reply(guilds);
         }, "guildAdmin");
+
         webAPI.registerAction("get-members", (data, reply, clientId, guildId) => {
             let guild = global.discordClient.guilds.get(guildId);
             let members = guild.members;
@@ -398,6 +421,7 @@ class Guild extends GuildModel {
                 };
             }));
         }, "guildAdmin");
+
         webAPI.registerAction("get-roles", (data, reply, userId, guildId) => {
             let guild = global.discordClient.guilds.get(guildId);
             reply(guild.roles.map((role) => {
@@ -443,6 +467,7 @@ class Guild extends GuildModel {
         webAPI.registerAction("get-plugin-enabled", (data, reply, userId, guildId) => {
             reply(Guild.get(guildId).isPluginEnabled(data.pluginId));
         }, "guildAdmin");
+
         webAPI.registerAction("set-plugin-enabled", (data, reply, userId, guildId) => {
             Guild.get(guildId).setPluginEnabled(data.pluginId, data.enabled);
             reply();
@@ -451,6 +476,7 @@ class Guild extends GuildModel {
         webAPI.registerAction("get-plugin-permission", (data, reply, userId, guildId) => {
             reply(Guild.get(guildId).permissions[data.pluginId].toObject());
         }, "guildAdmin");
+
         webAPI.registerAction("set-plugin-permission", (data, reply, userId, guildId) => {
             let usersRoles = data.userRoles.map((ur) => {
                 return new UserRole(ur._discordId, ur._type, guildId);
@@ -462,6 +488,7 @@ class Guild extends GuildModel {
         webAPI.registerAction("get-guild-prefix", (data, reply, userId, guildId) => {
             reply(Guild.get(guildId).commandPrefix);
         }, "guildAdmin");
+
         webAPI.registerAction("set-guild-prefix", (data, reply, userId, guildId) => {
             Guild.get(guildId).commandPrefix = data.prefix;
             reply();
@@ -470,6 +497,7 @@ class Guild extends GuildModel {
         webAPI.registerAction("get-admins", (data, reply, userId, guildId) => {
             reply(Array.from(Guild.get(guildId).admins));
         }, "guildAdmin");
+
         webAPI.registerAction("set-admins", (data, reply, userId, guildId) => {
             Guild.get(guildId).admins = data.admins;
             reply();

@@ -1,7 +1,10 @@
+/**
+ * Handle routes
+ */
 window.Discotron.Router = class {
-
     /**
      * Parse URL and call the right new specificController(...)
+     * @static
      * @param {string} url URL to route to
      */
     static route(url) {
@@ -25,11 +28,12 @@ window.Discotron.Router = class {
 
     /**
      * Find which controller is to be called
-     * @returns {object}
+     * @static
+     * @returns {object|false} False if invalid url or {page: pageName, args: args}
      */
     static _parseURL(url) {
         // Check if on correct page and split # 
-        // <url>/dashboard#truc?machin=true
+        // <url>/dashboard#page?arg1=true
         let urlRegex = /dashboard\/?#?([a-z\-]*)\??(.*)/;
         let match = urlRegex.exec(url);
 
@@ -55,13 +59,18 @@ window.Discotron.Router = class {
         };
     }
 
+    /**
+     * Should be called when the hash is changed, reroute
+     * @static
+     * @param {hashchangeevent} event 
+     */
     static _onUrlChange(event) {
         Discotron.Router.route(event.newURL);
-        // Detect if it's still our domain and /dashboard
-        // if previous url is not the same, push to history
-        // route()
     }
 
+    /**
+     * Add events needed by the router to work
+     */
     static addEvents() {
         window.addEventListener("hashchange", Discotron.Router._onUrlChange);
     }

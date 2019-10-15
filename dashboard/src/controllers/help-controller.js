@@ -1,15 +1,18 @@
+/**
+ * Controller for the help page
+ */
 window.Discotron.HelpController = class extends window.Discotron.Controller {
     /**
      * Ctor
      */
-    constructor(args) {
+    constructor() {
         super("index.html", () => {
             this._displayHelp();
         });
     }
 
     /**
-     * Displays help
+     * Display command helps, invite link and more
      */
     _displayHelp() {
         document.getElementById("bot-invite-link").href = Discotron.config.inviteLink;
@@ -69,33 +72,5 @@ window.Discotron.HelpController = class extends window.Discotron.Controller {
                 document.getElementById("plugin-list-container").appendChild(pluginCard);
             }
         });
-    }
-
-    /**
-     * Display channel selector widget
-     */
-    _onAllowedChannelsClick() {
-        //new Widgetmachin(channels, currentlyselectedChan, (lel) => {currentlyselectedChan = lel;} 
-    }
-
-    /**
-     * Display userRole widget 
-     */
-    _onAdminsClick() {
-
-    }
-
-    /**
-     * Callback to give to the channel selector widget
-     */
-    _onAllowedChannelsWidgetSave() {
-
-    }
-
-    /**
-     * Callback to give to the user / role selector widget
-     */
-    _onAdminsWidgetSave() {
-
     }
 };

@@ -10,6 +10,9 @@ class OwnerModel {
         this._discordId = discordId;
     }
 
+    /**
+     * @returns {string} Discord Id
+     */
     get discordId() {
         return this._discordId;
     }

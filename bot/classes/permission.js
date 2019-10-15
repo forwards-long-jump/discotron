@@ -15,16 +15,15 @@ class Permission extends PermissionModel {
     }
 
     /**
-     * Returns an object describing the permission
-     * @returns {object} {usersRoles}
+     * @returns {array} [usersRoles] Array containing userRoles converted to object
      */
     toObject() {
         return this.usersRoles.map((userRole) => userRole.toObject());
     }
 
     /**
-     * Returns whether the user has the right to use the given plugin
      * @param {string} discordUserId
+     * @returns whether the user has the right to use the given plugin
      */
     allows(discordUserId) {
         if (this.usersRoles.length === 0) {

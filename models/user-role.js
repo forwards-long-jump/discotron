@@ -12,9 +12,16 @@ class UserRoleModel {
         this._type = type;
     }
 
+    /**
+     * @returns {string} Discord id
+     */
     get discordId() {
         return this._discordId;
     }
+
+    /**
+     * @returns {string} Type (*user* or *role*)
+     */
     get type() {
         return this._type;
     }

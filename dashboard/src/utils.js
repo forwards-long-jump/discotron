@@ -1,4 +1,10 @@
 window.Discotron.utils = {
+    /**
+     * Make a post request on the specified URL, with data encoded as json
+     * @param {string} url Url to make the post request on
+     * @param {object} data Data that will be JSON.stringify'd and sent to the website
+     * @returns {Promise} resolve(data)
+     */
     post: (url, data) => {
         return new Promise((resolve, reject) => {
             // source: http://youmightnotneedjquery.com/
@@ -14,6 +20,9 @@ window.Discotron.utils = {
                     } catch (e) {
                         resolve(request.responseText);
                     }
+                }
+                else {
+                    reject();
                 }
             };
         });

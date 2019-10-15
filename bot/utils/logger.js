@@ -51,7 +51,7 @@ class Logger {
      * \__text__ can be used for underline
      * 
      * @param {string|object} value Message to display. If it is not a string, it will be displayed on another line.
-     * @param {string} severity Severity of the message (can be: err, info, warn, debug)
+     * @param {string} [severity="debug"] Severity of the message (can be: err, info, warn, debug)
      */
     static log(value, severity = "debug") {
         let level = severityToLevel[severity];

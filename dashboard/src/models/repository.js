@@ -1,6 +1,9 @@
+/**
+ * Represents a repository, dashboard side
+ */
 window.Discotron.Repository = class extends window.Discotron.RepositoryModel {
     /**
-     * Ctor
+     * @constructor
      * @param {string} url URL of the repository
      */
     constructor(url, pluginIds, pages) {
@@ -10,8 +13,8 @@ window.Discotron.Repository = class extends window.Discotron.RepositoryModel {
     }
 
     /**
-     * Return the repositories added to the bot
-     * @returns {array} Array of Repositories
+     * @static
+     * @returns {array} Array of Repository
      */
     static getAll() {
         return new Promise((resolve, reject) => {
@@ -30,25 +33,10 @@ window.Discotron.Repository = class extends window.Discotron.RepositoryModel {
     }
 
     /**
-     * Reload the repositories
+     * Clear the cache, forcing to reload repository next time they are accessed
      */
     static clearCache() {
         Discotron.Repository._repositories = [];
-    }
-
-    /**
-     * Try to add a repo, may fail
-     * @returns {Promise}
-     */
-    static add(url) {
-        // Query API to tryAdd a repository
-    }
-
-    /**
-     * Remove the repository from the bot, and queries the API to delete it from the database
-     */
-    delete() {
-        // Query API to delete repo, this will trigger sadness in the dashboard too
     }
 };
 

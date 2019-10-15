@@ -1,6 +1,9 @@
+/**
+ * Represents a role, dashboard side
+ */
 window.Discotron.Role = class {
     /**
-     * Ctor
+     * @constructor
      * @param {string} name Name of the role
      * @param {string} id Id of the role
      * @param {string} color Color of the role 
@@ -12,21 +15,21 @@ window.Discotron.Role = class {
     }
 
     /**
-     * Get name
+     * @returns {string} role name
      */
     get name() {
         return this._name;
     }
 
     /**
-     * Get ID
+     * @returns {string} role discord id
      */
     get id() {
         return this._id;
     }
 
     /**
-     * Get color
+     * @returns {string} hexadecimal role color
      */
     get color() {
         return this._color;
@@ -34,7 +37,9 @@ window.Discotron.Role = class {
 
     /**
      * Returns the roles of a guild, loads it if needed
+     * @static
      * @param {string} discordGuildId 
+     * @returns {Promise} resolve(array): Array of Role
      */
     static getGuildRoles(discordGuildId) {
         return new Promise((resolve, reject) => {

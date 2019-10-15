@@ -3,7 +3,9 @@ window.Discotron.WebAPI = class {
      * Send a query to the bot via the API
      * @param {string} plugin Plugin ID, can also be "discotron" to indicate the action is directed toward the bot
      * @param {string} action Name of the action
-     * @param {object} data Data
+     * @param {object} data Data that will JSON.stringified and sent to the bot
+     * @param {object} [guildId=undefined] Specify to which guild this action is targeted to
+     * @returns {Promise} resolve(data)
      */
     static queryBot(plugin, action, data, guildId = undefined) {
         let params = {

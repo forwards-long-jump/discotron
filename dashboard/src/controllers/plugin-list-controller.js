@@ -1,3 +1,6 @@
+/**
+ * Controller for the plugin list page
+ */
 window.Discotron.PluginListController = class extends window.Discotron.Controller {
 	/**
 	 * Ctor

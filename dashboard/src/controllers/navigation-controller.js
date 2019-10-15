@@ -1,6 +1,10 @@
+/**
+ * Controller for the navigation bar, does not extends default controller
+ */
 window.Discotron.NavigationController = class {
 	/**
 	 * Load bot status and display it on top
+	 * @static
 	 */
 	static displayBot() {
 		Discotron.WebAPI.queryBot("discotron-dashboard", "get-bot-info").then((data) => {
@@ -11,6 +15,7 @@ window.Discotron.NavigationController = class {
 
 	/**
 	 * Display links in the "owner" section
+	 * @static
 	 */
 	static displayOwnerSettings() {
 		Discotron.WebAPI.queryBot("discotron-dashboard", "is-owner").then((data) => {
@@ -24,6 +29,7 @@ window.Discotron.NavigationController = class {
 
 	/**
 	 * Display links in the "admin" section
+	 * @static
 	 */
 	static displayServers() {
 		Discotron.Guild.getAll().then((guilds) => {
@@ -49,6 +55,7 @@ window.Discotron.NavigationController = class {
 
 	/**
 	 * Load user status and display it on top
+	 * @static
 	 */
 	static displayUser() {
 		document.querySelector("#user-info img").src = `https://cdn.discordapp.com/avatars/${localStorage.getItem("clientId")}/${localStorage.getItem("avatar")}.png`;

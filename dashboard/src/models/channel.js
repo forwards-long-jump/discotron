@@ -1,3 +1,6 @@
+/**
+ * Represents a channel, dashboard side
+ */
 window.Discotron.Channel = class {
     /**
      * Ctor
@@ -11,14 +14,23 @@ window.Discotron.Channel = class {
         this._type = type;
     }
 
+    /**
+     * @returns {string} Channel name
+     */
     get name() {
         return this._name;
     }
 
+    /**
+     * @returns {string} Channel id
+     */
     get id() {
         return this._id;
     }
 
+    /**
+     * @returns {string} Channel type (voice, text, category)
+     */
     get type() {
         return this._type;
     }
@@ -26,6 +38,7 @@ window.Discotron.Channel = class {
     /**
      * Returns all the channels of a given guild
      * @param {string} discordGuildId Discord id of the guild
+     * @returns {Promise} resolve(array)
      */
     static getGuildChannels(discordGuildId) {
         return new Promise((resolve, reject) => {

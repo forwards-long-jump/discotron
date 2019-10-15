@@ -1,3 +1,7 @@
+/**
+ * Widget to select userRole (mostly for permissions)
+ * Allows for customInputs (only checkbox are supported atm)
+ */
 window.Discotron.UserRoleWidgetController = class extends window.Discotron.WidgetController {
     /**
      * Ctor
@@ -7,6 +11,7 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
      * @param {boolean} displayRoles True is the widget allows choosing roles as well as users
      * @param {string} headerText Help text displayed on top
      * @param {boolean} allowNone Allows to enter no users nor roles
+     * @param {array} customInputs Array of objects for custom inputs, e.g: [{type: "input", name: ""}]
      * @param {function} onClose Called when user cancels saving
      */
     constructor(guild, usersRoles, onUserRoleSave, displayRoles = true, headerText = "", allowNone = false, customInputs = [], onClose = () => {}) {
@@ -43,14 +48,14 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
     }
 
     /**
-     * Get the user/role defined by the user in the html
+     * @returns {array} List of userRoles selected by the user
      */
     _getUsersRoles() {
         return this._usersRoles;
     }
 
     /**
-     * Get the user/role defined by the user in the html
+     * @returns {object} Custom settings as key -> value
      */
     _getCustomSettings() {
         // Switches
@@ -107,9 +112,10 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
 
     /**
      * Activates the add button if the name corresponds to 
+     * @param {string} name Username of a discord user
      */
     _checkNameValidity(name) {
-        let button = document.querySelector("#add-button")
+        let button = document.querySelector("#add-button");
         button.disabled = true;
 
         for (let i = 0; i < this._guild.members.length; ++i) {
@@ -130,6 +136,9 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
         }
     }
 
+    /**
+     * Add custom elements to the widget
+     */
     _displayCustomElements() {
         this._widgetContainer.querySelector(".widget-header").textContent = this._headerText;
 
@@ -186,6 +195,10 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
         }
     }
 
+    /**
+     * Add user to the UserRole list
+     * @param {User} user user to add
+     */
     _addUserEntry(user) {
         if (this._hasUserRoleAlready(user._id)) {
             return;
@@ -194,6 +207,10 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
         this._displayUserEntry(user);
     }
 
+    /**
+     * Add role to the UserRole list
+     * @param {Role} role role to add
+     */
     _addRoleEntry(role) {
         if (this._hasUserRoleAlready(role._id)) {
             return;
@@ -202,6 +219,10 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
         this._displayRoleEntry(role);
     }
 
+    /**
+     * Add either a role or a username 
+     * @param {string} name Username or role name
+     */
     _addEntry(name) {
         for (let i = 0; i < this._guild.members.length; ++i) {
             Discotron.User.get(this._guild.members[i]).then((user) => {
@@ -222,6 +243,11 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
         }
     }
 
+    /**
+     * Remove a user or a role from the list
+     * @param {string} id Discord id
+     * @param {string} type "role" or "user"
+     */
     _removeEntry(id, type) {
         for (let i = 0; i < this._usersRoles.length; ++i) {
             let ur = this._usersRoles[i];
@@ -236,6 +262,10 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
         }
     }
 
+    /**
+     * Add a user to the user list
+     * @param {User} user 
+     */
     _displayUserEntry(user) {
         let usersContainer = document.querySelector(".user-list-container");
         let userTemplate = document.querySelector("#user-entry");
@@ -252,6 +282,10 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
         usersContainer.appendChild(userEntry);
     }
 
+    /**
+     * Add a role to the role list
+     * @param {Role} role 
+     */
     _displayRoleEntry(role) {
         let rolesContainer = document.querySelector(".role-list-container");
         let roleTemplate = document.querySelector("#role-entry");

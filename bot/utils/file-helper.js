@@ -1,5 +1,9 @@
 const fs = require("fs");
 
+/**
+ * Delete recursively a folder, including the folder itself
+ * @param {string} path Absolute path to delete (be careful with relative paths, nobody knows how it works)
+ */
 let deleteRecursive = function (path) {
     if (path === "/" || typeof path !== "string") {
         return;

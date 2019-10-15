@@ -5,10 +5,13 @@ const db = require("./../apis/database-crud.js");
 const Logger = require("../utils/logger.js");
 const Owner = require("./owner.js");
 
+/**
+ * Server side plugin, contains commands and plugin status info
+ */
 class Plugin extends PluginModel {
     /**
      * Ctor
-     * @param {string} folder Folder containing a plugin 
+     * @param {string} folder Folder name of the plugin in a repository 
      */
     constructor(folder) {
         super();
@@ -36,6 +39,9 @@ class Plugin extends PluginModel {
         Plugin._plugins[this.id] = this;
     }
 
+    /**
+     * @returns {object} APIs that can be used by plugins
+     */
     getApiObject() {
         return {
             discotron: global.discotron,
@@ -46,7 +52,7 @@ class Plugin extends PluginModel {
     }
 
     /**
-     * Returns an array of all the plugins
+     * @returns {array} Array of all the plugins
      */
     static getAll() {
         return Plugin._plugins;
@@ -74,7 +80,7 @@ class Plugin extends PluginModel {
     }
 
     /**
-     * Loads prefix and enabled from DB, inserts default values if none found
+     * Loads "prefix" and "enabled" from the database, inserts default values if none found
      */
     _loadInfoFromDatabase() {
         // default values
@@ -97,6 +103,9 @@ class Plugin extends PluginModel {
         });
     }
 
+    /**
+     * Delete this plugin from the database and unload it
+     */
     delete() {
         delete Plugin._plugins[this.id];
 
@@ -157,7 +166,7 @@ class Plugin extends PluginModel {
 
     /**
      * Log something into the dashboard
-     * @param {object} value 
+     * @param {object} value String to log, attemps to JSON.stringify if it's an object
      */
     log(value) {
         let date = new Date();
@@ -174,7 +183,7 @@ class Plugin extends PluginModel {
     }
 
     /**
-     * Set enabled
+     * Set if the plugin can be used or not
      * @param {boolean} enabled 
      */
     set enabled(enabled) {
@@ -186,6 +195,9 @@ class Plugin extends PluginModel {
         });
     }
 
+    /**
+     * @returns {boolean} Plugin enabled
+     */
     get enabled() {
         return super.enabled;
     }
@@ -203,10 +215,16 @@ class Plugin extends PluginModel {
         });
     }
 
+    /**
+     * @returns {string} Global prefix for this plugin
+     */
     get prefix() {
         return super.prefix;
     }
 
+    /**
+     * Register webAPI actions related to plugins
+     */
     static registerActions() {
         webAPI.registerAction("get-plugin-prefix", (data, reply) => {
             if (Plugin._plugins[data.pluginId] !== undefined) {

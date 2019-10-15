@@ -11,11 +11,14 @@ const crypto = require("crypto");
 
 const db = require("../apis/database-crud.js");
 
+/**
+ * Repository server side, contains plugins and pages
+ */
 class Repository extends RepositoryModel {
     /**
      * Ctor
-     * @param {string} folderName 
-     * @param {string} url 
+     * @param {string} folderName Name of the folder for this repository
+     * @param {string} url URL to use to clone a repository
      */
     constructor(folderName, url) {
         super(url);
@@ -31,6 +34,9 @@ class Repository extends RepositoryModel {
         Repository._repositories.push(this);
     }
 
+    /**
+     * Load all plugins existing in this repository
+     */
     loadPluginsFromDisk() {
         let pluginsPath = __dirname + "/../repositories/" + this._folderName + "/plugins";
 
@@ -44,6 +50,9 @@ class Repository extends RepositoryModel {
 
     }
 
+    /**
+     * Load all pages existing in this repository
+     */
     loadPagesFromDisk() {
         let pagesPath = __dirname + "/../repositories/" + this._folderName + "/pages";
 
@@ -62,8 +71,7 @@ class Repository extends RepositoryModel {
     }
 
     /**
-     * Returns all the repositories
-     * @returns {array} Repositories
+     * @returns {array} Array of all repositories
      */
     static getAll() {
         return Repository._repositories;
@@ -71,8 +79,8 @@ class Repository extends RepositoryModel {
 
     /**
      * Clone a repository from a url, should be used the first time
-     * @param {string} url 
-     * @returns {Promise} Folder name of the downloaded repo
+     * @param {string} url Repository URL to clone
+     * @returns {Promise} resolve(): Folder name of the downloaded repo
      */
     static clone(url) {
         Logger.log("Cloning **" + url + "**...");
@@ -99,8 +107,8 @@ class Repository extends RepositoryModel {
     }
 
     /**
-     * Returns a folder name from a git url
      * @param {string} url 
+     * @returns a folder name from a git url
      */
     static _generateFolderName(baseUrl) {
         let url = baseUrl.replace(/\.git/g, "");
@@ -111,7 +119,7 @@ class Repository extends RepositoryModel {
     }
 
     /**
-     * Pull from the distant repository, to update the plugins
+     * Pull from the distant repository, update the plugins
      */
     pull() {
         Logger.log("Updating **" + this._folderName + "**...");
@@ -206,6 +214,9 @@ class Repository extends RepositoryModel {
         fileHelper.deleteFolder(__dirname + "/../repositories/" + this._folderName);
     }
 
+    /**
+     * Register webAPI actions related to a repository
+     */
     static registerActions() {
         webAPI.registerAction("get-repositories", (data, reply) => {
             reply(Repository.getAll().map((repo) => {

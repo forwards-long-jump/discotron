@@ -1,3 +1,6 @@
+/**
+ * Controller for the login page
+ */
 window.Discotron.LoginController = class /* does not extends Controller because it is not a logged in page*/ {
     /**
      * Login and claim ownership
@@ -21,13 +24,6 @@ window.Discotron.LoginController = class /* does not extends Controller because 
                     break;
             }
         });
-
-    }
-
-    /**
-     * Display secret input if no owners
-     */
-    static handleOwnershipClaim() {
 
     }
 
@@ -73,6 +69,10 @@ window.Discotron.LoginController = class /* does not extends Controller because 
         }
     }
 
+    /**
+     * Save local properties and redirect
+     * @param {object} data Answer from the server, contains {token, username, discriminator, avatar, clientId}
+     */
     static _handleSuccess(data) {
         localStorage.setItem("appToken", data.token);
         localStorage.setItem("username", data.username);
@@ -82,6 +82,10 @@ window.Discotron.LoginController = class /* does not extends Controller because 
         window.location.replace("/dashboard");
     }
 
+    /**
+     * Change visibility of specified container, hide the others
+     * @param {string} containerName Container id to display without #
+     */
     static _displayContainer(containerName) {
         document.querySelector("#logging-in").style.display = containerName === "logging-in" ? "block" : "none";
         document.querySelector("#login").style.display = containerName === "login" ? "block" : "none";
