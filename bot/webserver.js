@@ -3,8 +3,8 @@ const app = express();
 
 const http = require("http");
 const https = require("https");
-const config = require(__dirname + "/config/config.json");
-const Logger = require(__dirname + "/utils/logger.js");
+const config = require("./config/config.json");
+const Logger = require("./utils/logger.js");
 const webAPI = require("./apis/web-api.js");
 
 const appConfig = require("./config/app-config.json");

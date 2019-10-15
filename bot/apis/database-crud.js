@@ -1,5 +1,5 @@
-const databaseHelper = require(__dirname + "/../utils/database-helper.js");
-const Logger = require(__dirname + "/../utils/logger.js");
+const databaseHelper = require("../utils/database-helper.js");
+const Logger = require("../utils/logger.js");
 
 /**
  * Returns whether the given associative array is empty
