@@ -46,7 +46,7 @@ window.Discotron.NavigationController = class {
 
 					serverLink.querySelector(".server-link").href += guild.discordId;
 					serverLink.querySelector(".server-icon").src = guild.iconURL;
-					serverLink.querySelector(".server-link").innerHTML += guild.name;
+					serverLink.querySelector(".server-name").textContent = guild.name;
 					serverLinksContainer.appendChild(serverLink);
 				}
 			}

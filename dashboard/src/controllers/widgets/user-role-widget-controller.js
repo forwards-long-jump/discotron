@@ -271,7 +271,7 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
         let userTemplate = document.querySelector("#user-entry");
 
         let userEntry = document.importNode(userTemplate.content, true);
-        userEntry.querySelector("span").innerHTML += user._name;
+        userEntry.querySelector(".username").textContent = user._name;
 
         let container = userEntry.querySelector("span");
         userEntry.querySelector("span").onclick = () => {
@@ -292,7 +292,7 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
 
         let roleEntry = document.importNode(roleTemplate.content, true);
         roleEntry.querySelector(".role-color").style.color = role.color;
-        roleEntry.querySelector("span").innerHTML += role.name;
+        roleEntry.querySelector(".role").textContent = role.name;
 
         let container = roleEntry.querySelector("span");
         roleEntry.querySelector("span").onclick = () => {
