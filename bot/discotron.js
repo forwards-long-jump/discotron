@@ -275,7 +275,7 @@ module.exports.getBotSettings = () => {
 module.exports.loadRepositories = () => {
     db.select("Repositories").then((rows) => {
         if (rows.length === 0) {
-            Logger.log("No repositories  found.", "warn");
+            Logger.log("No repositories found.", "warn");
         } else {
             for (let i = 0; i < rows.length; i++) {
                 const row = rows[i];

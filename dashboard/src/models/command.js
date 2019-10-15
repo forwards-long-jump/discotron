@@ -3,7 +3,7 @@
  */
 window.Discotron.Command = class extends window.Discotron.CommandModel {
     /**
-     * Ctor
+     * @constructor
      * @param {object} settings Settings
      */
     constructor(settings) {

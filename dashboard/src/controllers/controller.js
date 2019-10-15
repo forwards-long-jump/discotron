@@ -3,7 +3,7 @@
  */
 window.Discotron.Controller = class {
 	/**
-	 * Ctor
+	 * @constructor
 	 * @param {string} pageName Html file name that will be loaded
 	 * @param {function} callback Function called when the page is loaded
 	 */
@@ -13,6 +13,7 @@ window.Discotron.Controller = class {
 
 	/**
 	 * Load specified html page
+	 * @static
 	 * @param {string} pageName Name of the page
 	 * @param {function} callback Function called when the page is loaded
 	 */

@@ -4,6 +4,7 @@
 window.Discotron.LoginController = class /* does not extends Controller because it is not a logged in page*/ {
     /**
      * Login and claim ownership
+     * @static
      */
     static claimOwnership() {
         let url = new URL(window.location.href);
@@ -29,6 +30,7 @@ window.Discotron.LoginController = class /* does not extends Controller because 
 
     /** 
      * Set URL from config and check what to display
+     * @static
      */
     static initPage() {
         if (Discotron.config === undefined || Discotron.config.oauthURL === undefined || Discotron.config.inviteLink === undefined) {
@@ -86,6 +88,7 @@ window.Discotron.LoginController = class /* does not extends Controller because 
 
     /**
      * Change visibility of specified container, hide the others
+     * @static
      * @param {string} containerName Container id to display without #
      */
     static _displayContainer(containerName) {
@@ -96,6 +99,7 @@ window.Discotron.LoginController = class /* does not extends Controller because 
 
     /**
      * Add events to buttons
+     * @static
      */
     static addEvents() {
         document.getElementById("owner-ship-token").onkeyup = (e) => {

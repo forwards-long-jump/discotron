@@ -3,7 +3,7 @@
  */
 window.Discotron.PluginSettingsWidgetController = class extends window.Discotron.WidgetController {
 	/**
-	 * Ctor
+	 * @constructor
 	 * @param {Plugin} plugin Plugin this page is dedicated to 
 	 * @param {function} onPluginSettingsSave Callback to be called when the user is done changing the settings
 	 * @param {function} [onClose=()=>{}] Callback to be called when the widget is closed

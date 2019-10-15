@@ -5,7 +5,7 @@ const config = require("../config/config.json");
  */
 class SpamUser {
     /**
-     * ctor
+     * @constructor
      * @param {Discord.User} discordUser User managed by this class
      */
     constructor(discordUser) {
@@ -34,6 +34,7 @@ class SpamUser {
 
     /**
      * Should be called when a user performs an action which is spam restricted
+     * @static
      * @param {Discord.User} discordUser 
      */
     static onAction(discordUser) {

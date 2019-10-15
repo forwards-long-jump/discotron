@@ -3,7 +3,7 @@
  */
 window.Discotron.WidgetController = class {
 	/**
-	 * Ctor
+	 * @constructor
 	 * @param {string} widgetPageName Name of the html file of the widget 
 	 * @param {function} onSave  Called when the user saves
 	 * @param {function} callback Called when widget is displayed

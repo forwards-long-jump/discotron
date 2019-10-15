@@ -3,7 +3,7 @@
  */
 window.Discotron.GuildSettingsController = class extends window.Discotron.Controller {
     /**
-     * Ctor
+     * @constructor
      * @param {object} args Args given by the user in the URL
      */
     constructor(args) {

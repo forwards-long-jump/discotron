@@ -3,7 +3,7 @@
  */
 class UserRoleModel {
     /**
-     * Ctor
+     * @constructor
      * @param {string} discordId Discord id
      * @param {string} type Type of the id, *user* or *role*
      */

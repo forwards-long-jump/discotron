@@ -8,7 +8,7 @@ const db = require("./../apis/database-crud.js");
  */
 class UserRole extends UserRoleModel {
     /**
-     * Ctor
+     * @constructor
      * @param {string} discordId Id of the user or role
      * @param {string} type Type of the id, "user" or "role"
      * @param {string} discordId Id of the guild in which this role is located. Does not apply for users
@@ -81,6 +81,7 @@ class UserRole extends UserRoleModel {
     /**
      * Query the database to get a role using its id
      * TODO: This function only creates n + 1 problems and should be removed!
+     * @static
      * @param {number} id Id of the database entry
      * @param {string} guildId Id of the guild in which the user/role exists
      */

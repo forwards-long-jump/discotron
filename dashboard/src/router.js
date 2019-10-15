@@ -70,6 +70,7 @@ window.Discotron.Router = class {
 
     /**
      * Add events needed by the router to work
+     * @static
      */
     static addEvents() {
         window.addEventListener("hashchange", Discotron.Router._onUrlChange);

@@ -3,7 +3,7 @@
  */
 window.Discotron.Channel = class {
     /**
-     * Ctor
+     * @constructor
      * @param {string} name Name of the channel
      * @param {string} id Discord channel id
      * @param {string} type Type of the channel (dm, group, voice, etc.)
@@ -37,6 +37,7 @@ window.Discotron.Channel = class {
 
     /**
      * Returns all the channels of a given guild
+     * @static
      * @param {string} discordGuildId Discord id of the guild
      * @returns {Promise} resolve(array)
      */

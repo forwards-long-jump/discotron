@@ -6,7 +6,7 @@ const Owner = require("./owner.js");
  */
 class Command extends CommandModel {
     /**
-     * ctor
+     * @constructor
      * @param {object} settings See CommandModel for details
      */
     constructor(settings) {

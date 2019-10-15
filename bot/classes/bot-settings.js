@@ -6,7 +6,7 @@ const db = require("./../apis/database-crud.js");
  */
 class BotSettings extends BotSettingsModel {
     /**
-     * ctor
+     * @constructor
      */
     constructor() {
         super();

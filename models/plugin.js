@@ -3,7 +3,7 @@
  */
 class PluginModel {
     /**
-     * Ctor
+     * @constructor
      * @param {string} id Id of the plugin
      * @param {string} name Displayed name of the plugin
      * @param {string} description Short description of the plugin

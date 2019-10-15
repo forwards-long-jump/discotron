@@ -34,6 +34,7 @@ window.Discotron.Repository = class extends window.Discotron.RepositoryModel {
 
     /**
      * Clear the cache, forcing to reload repository next time they are accessed
+     * @static
      */
     static clearCache() {
         Discotron.Repository._repositories = [];

@@ -8,6 +8,7 @@ const db = require("./../apis/database-crud.js");
 class Owner extends OwnerModel {
     /**
      * Set the owners. The given array must not be empty, otherwise nothing will happen
+     * @static
      * @param {array} discordUserId Array of userId
      */
     static setOwners(discordUserIds) {
@@ -28,6 +29,7 @@ class Owner extends OwnerModel {
 
     /**
      * @param {string} discordUserId 
+     * @static
      * @returns True if user is owner
      */
     static isOwner(discordUserId) {
@@ -36,6 +38,7 @@ class Owner extends OwnerModel {
 
     /**
      * Register webAPI actions related to owners
+     * @static
      */
     static registerActions() {
         webAPI.registerAction("set-owners", (data, reply) => {
@@ -54,6 +57,7 @@ class Owner extends OwnerModel {
 
     /**
      * @returns {Promise} resolve(ownerArray)
+     * @static
      */
     static getOwners() {
         return new Promise((resolve, reject) => {

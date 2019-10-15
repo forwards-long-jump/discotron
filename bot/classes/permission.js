@@ -5,7 +5,7 @@ const Guild = require("./guild.js");
 
 class Permission extends PermissionModel {
     /**
-     * Ctor
+     * @constructor
      * @param {string} guildId Discord ID of the guild
      * @param {string} pluginId ID of the plugin
      * @param {array} userRoles Array of user roles allowed to use 

@@ -3,7 +3,7 @@
  */
 window.Discotron.PluginListController = class extends window.Discotron.Controller {
 	/**
-	 * Ctor
+	 * @constructortructor
 	 * @param {object} args Args given by the user in the URL
 	 */
 	constructor(args) {

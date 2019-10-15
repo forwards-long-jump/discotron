@@ -10,7 +10,7 @@ const db = require("./../apis/database-crud.js");
  */
 class Guild extends GuildModel {
     /**
-     * Ctor
+     * @constructor
      * @param {string} discordId Discord guild id
      */
     constructor(discordId) {
@@ -42,6 +42,7 @@ class Guild extends GuildModel {
     }
 
     /**
+     * @static
      * @returns {array} Array of Guild
      */
     static getAll() {
@@ -95,6 +96,7 @@ class Guild extends GuildModel {
     }
 
     /**
+     * @static
      * @param {string} clientId Discord client id
      * @param {string} guildId Discord gulid id
      * @returns {boolean} True if the client is bot admin on the guild
@@ -400,6 +402,7 @@ class Guild extends GuildModel {
 
     /**
      * Register WebAPI actions related to a guild
+     * @static
      */
     static registerActions() {
         webAPI.registerAction("get-guilds", (data, reply, userId, guildId) => {

@@ -3,7 +3,7 @@
  */
 class RepositoryModel {
     /**
-     * Ctor
+     * @constructor
      * @param {string} url Url of the repository
      * @param {array} pluginIds List of plugin ids
      * @param {array} pages List of pages route exposed by the plugin

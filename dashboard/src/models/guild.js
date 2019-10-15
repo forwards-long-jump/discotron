@@ -3,7 +3,7 @@
  */
 window.Discotron.Guild = class extends window.Discotron.GuildModel {
     /**
-     * Ctor
+     * @constructor
      * @param {string} discordId Id of the guild
      * @param {string} name Name of the guild
      * @param {string} iconURL Icon of the guild
@@ -106,8 +106,8 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
 
     /**
      * Get all guilds, load them if necessary
-     * @returns {Promise} resolve(guilds): an array of Discotron.Guild
      * @static
+     * @returns {Promise} resolve(guilds): an array of Discotron.Guild
      */
     static getAll() {
         return new Promise((resolve, reject) => {
@@ -171,6 +171,7 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
 
     /**
      * Clear cache, this will force a reload when guilds are queried again
+     * @static
      */
     static clearCache() {
         Discotron.Guild._guilds = {};

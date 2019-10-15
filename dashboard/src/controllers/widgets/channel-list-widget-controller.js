@@ -3,7 +3,7 @@
  */
 window.Discotron.ChannelListWidgetController = class extends window.Discotron.WidgetController {
     /**
-     * Ctor
+     * @constructorr
      * @param {array} channels An array of Channel
      * @param {array} selectedChannels Default selected channel discord ids
      * @param {function} onChannelSelectorSave Callback called when the user is done selecting channel

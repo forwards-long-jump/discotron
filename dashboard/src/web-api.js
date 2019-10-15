@@ -1,6 +1,7 @@
 window.Discotron.WebAPI = class {
     /**
      * Send a query to the bot via the API
+     * @static
      * @param {string} plugin Plugin ID, can also be "discotron" to indicate the action is directed toward the bot
      * @param {string} action Name of the action
      * @param {object} data Data that will JSON.stringified and sent to the bot

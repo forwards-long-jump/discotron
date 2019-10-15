@@ -3,7 +3,7 @@
  */
 window.Discotron.Plugin = class extends window.Discotron.PluginModel {
     /**
-     * Ctor
+     * @constructor
      * @param {string} pluginId Id of the plugin 
      */
     constructor(pluginId, name, description, version, prefix, commands, defaultPermission, enabled, logs) {
@@ -34,6 +34,7 @@ window.Discotron.Plugin = class extends window.Discotron.PluginModel {
 
     /**
      * Clear cache, forcing plugin reloading when get is called
+     * @static
      */
     static clearCache() {
         Discotron.Plugin._plugins = {};

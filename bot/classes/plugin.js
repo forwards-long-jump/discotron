@@ -10,7 +10,7 @@ const Owner = require("./owner.js");
  */
 class Plugin extends PluginModel {
     /**
-     * Ctor
+     * @constructor
      * @param {string} folder Folder name of the plugin in a repository 
      */
     constructor(folder) {
@@ -53,6 +53,7 @@ class Plugin extends PluginModel {
 
     /**
      * @returns {array} Array of all the plugins
+     * @static
      */
     static getAll() {
         return Plugin._plugins;
@@ -224,6 +225,7 @@ class Plugin extends PluginModel {
 
     /**
      * Register webAPI actions related to plugins
+     * @static
      */
     static registerActions() {
         webAPI.registerAction("get-plugin-prefix", (data, reply) => {

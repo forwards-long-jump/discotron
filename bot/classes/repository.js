@@ -16,7 +16,7 @@ const db = require("../apis/database-crud.js");
  */
 class Repository extends RepositoryModel {
     /**
-     * Ctor
+     * @constructor
      * @param {string} folderName Name of the folder for this repository
      * @param {string} url URL to use to clone a repository
      */
@@ -72,6 +72,7 @@ class Repository extends RepositoryModel {
 
     /**
      * @returns {array} Array of all repositories
+     * @static
      */
     static getAll() {
         return Repository._repositories;
@@ -80,6 +81,7 @@ class Repository extends RepositoryModel {
     /**
      * Clone a repository from a url, should be used the first time
      * @param {string} url Repository URL to clone
+     * @static
      * @returns {Promise} resolve(): Folder name of the downloaded repo
      */
     static clone(url) {
@@ -108,6 +110,7 @@ class Repository extends RepositoryModel {
 
     /**
      * @param {string} url 
+     * @static
      * @returns a folder name from a git url
      */
     static _generateFolderName(baseUrl) {
@@ -216,6 +219,7 @@ class Repository extends RepositoryModel {
 
     /**
      * Register webAPI actions related to a repository
+     * @static
      */
     static registerActions() {
         webAPI.registerAction("get-repositories", (data, reply) => {

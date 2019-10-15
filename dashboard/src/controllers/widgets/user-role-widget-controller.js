@@ -4,7 +4,7 @@
  */
 window.Discotron.UserRoleWidgetController = class extends window.Discotron.WidgetController {
     /**
-     * Ctor
+     * @constructor
      * @param {Guild} guild Guild for which we list the users and roles
      * @param {array} usersRoles Currently selected users/roles for whatever setting this widget is needed
      * @param {function} onUserRoleSave Callback to be called when the user is done selecting the users/roles

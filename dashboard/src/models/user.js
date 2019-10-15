@@ -63,6 +63,7 @@ window.Discotron.User = class {
 
     /**
      * Get a user from its id (load it if necessary)
+     * @static
      * @param {string} id  User id
      * @returns {Promise} resolve(User)
      */
