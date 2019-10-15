@@ -30,5 +30,34 @@ window.Discotron.utils = {
                     callback();
                 }
             });
+    },
+    generateAcronymIcon: (acronym, fgColor, bgColor) => {
+        const size = 88;
+        const padding = 4;
+        const font = "sans-serif";
+
+        const canvas = document.createElement("canvas");
+        canvas.width = size;
+        canvas.height = size;
+
+        // Fill canvas background
+        const ctx = canvas.getContext("2d");
+        ctx.fillStyle = bgColor;
+        ctx.fillRect(0, 0, size, size);
+
+        // Add text, fit to size
+        let fontsize = 30;
+        do {
+            ctx.font = `${fontsize}px ${font}`;
+            fontsize--;
+        } while (ctx.measureText(acronym).width > size - padding);
+        ctx.fillStyle = fgColor;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(acronym, size/2, size/2);
+
+        // Render to data url
+        const img = canvas.toDataURL('image/png');
+        return img;
     }
 };
