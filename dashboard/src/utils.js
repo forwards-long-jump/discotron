@@ -14,7 +14,7 @@ window.Discotron.utils = {
             request.send(JSON.stringify(data));
 
             request.onreadystatechange = () => {
-                if (request.readyState == XMLHttpRequest.DONE) {
+                if (request.readyState === XMLHttpRequest.DONE) {
                     try {
                         resolve(JSON.parse(request.responseText));
                     } catch (e) {

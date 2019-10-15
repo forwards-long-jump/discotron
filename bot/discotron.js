@@ -280,7 +280,7 @@ module.exports.loadRepositories = () => {
             for (let i = 0; i < rows.length; i++) {
                 const row = rows[i];
                 Logger.log("Loading repository **" + row.folderName + "**");
-                let r = new Repository(row.folderName, row.repositoryURL);
+                new Repository(row.folderName, row.repositoryURL);
                 // r.pull(); // DEBUG, update all repos
             }
         }

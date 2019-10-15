@@ -33,7 +33,9 @@ window.Discotron.LoginController = class /* does not extends Controller because 
     static initPage() {
         if (Discotron.config === undefined || Discotron.config.oauthURL === undefined || Discotron.config.inviteLink === undefined) {
             document.querySelector("h1").style.display = "none";
-            document.querySelector("#login > div > div > div > p:nth-child(2)").textContent = "Bot installation is not complete, please check the installation guide and create the missing configuration file.";
+            document.querySelector("#login > div > div > div > p:nth-child(2)").textContent = "Bot installation is not complete, please check the installation " +
+                "guide and create the missing configuration file.";
+            
             document.querySelector(".widget-buttons").style.display = "none";
             document.querySelector("#login-error").style.display = "block";
             document.querySelector("#login-error").innerHTML = "Could not load <b>dashboard/config/config.js</b>";
@@ -98,7 +100,7 @@ window.Discotron.LoginController = class /* does not extends Controller because 
     static addEvents() {
         document.getElementById("owner-ship-token").onkeyup = (e) => {
             if (e.keyCode === 13) {
-                Discotron.LoginController.claimOwnership()
+                Discotron.LoginController.claimOwnership();
             }
         };
     }

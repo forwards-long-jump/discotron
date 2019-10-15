@@ -40,11 +40,11 @@ window.Discotron.RepositoryListController = class extends window.Discotron.Contr
 
 			for (let i = 0; i < repositories.length; i++) {
 				const repo = repositories[i];
-				let template = document.getElementById("template-repository-container");
-				let container = document.importNode(template.content, true);
+				const template = document.getElementById("template-repository-container");
+				const container = document.importNode(template.content, true);
 
 				container.querySelector(".plugin-bar").value = repo.url;
-				let cardListContainer = container.querySelector(".repository-card-container");
+				const cardListContainer = container.querySelector(".repository-card-container");
 
 				// Query cards
 				Discotron.Plugin.getAll().then((plugins) => {
@@ -54,12 +54,12 @@ window.Discotron.RepositoryListController = class extends window.Discotron.Contr
 						if (repo.pluginIds.includes(pluginId)) {
 							pluginFound = true;
 
-							let cardTemplate = document.getElementById("template-card");
-							let cardContainer = document.importNode(cardTemplate.content, true);
+							const cardTemplate = document.getElementById("template-card");
+							const cardContainer = document.importNode(cardTemplate.content, true);
 							cardContainer.querySelector(".repository-card-title").textContent = (plugin.enabled ? "" : "[Disabled] ") + plugin.name;
 							cardContainer.querySelector(".repository-card-description").textContent = plugin.description;
 
-							let cardTitle = cardContainer.querySelector(".repository-card-title");
+							const cardTitle = cardContainer.querySelector(".repository-card-title");
 
 							cardContainer.querySelector(".repository-card").onclick = () => {
 								new Discotron.PluginSettingsWidgetController(plugin, (settings) => {

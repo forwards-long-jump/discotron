@@ -221,7 +221,6 @@ class Guild extends GuildModel {
         if (this._enabledPlugins.size === 0) {
             if (!enabled) {
                 for (let pluginId_ in Plugin.getAll()) {
-                    const plugin = Plugin.getAll()[pluginId_];
                     if (pluginId !== pluginId_) {
                         this._enabledPlugins.add(pluginId_);
                     }
@@ -261,7 +260,7 @@ class Guild extends GuildModel {
             discordGuildId: this.discordId,
             pluginId: pluginId
         });
-
+        
         for (let i = 0; i < userRoles.length; ++i) {
             userRoles[i].getId().then((id) => {
                 db.insert("Permissions", {
@@ -301,9 +300,11 @@ class Guild extends GuildModel {
             discordGuildId: this.discordId,
             pluginId: pluginId
         }).then((rows) => {
+            const pluginPermission = this._permissions[pluginId];
+            
             for (let i = 0; i < rows.length; ++i) {
                 UserRole.getById(rows[i].userRoleId, this.discordId).then((userRole) => {
-                    this._permissions[pluginId]._usersRoles.push(userRole);
+                    pluginPermission._usersRoles.push(userRole);
                 });
             }
         });

@@ -129,7 +129,7 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
                             permissions[pluginId] = new Discotron.Permission(this.discordId, pluginId, usersRoles);
                         }
 
-                        let guild = new Discotron.Guild(obj.id, obj.name, obj.image, obj.prefix, new Set(obj.allowedChannelIds), new Set(obj.enabledPluginIds), new Set(admins), permissions);
+                        new Discotron.Guild(obj.id, obj.name, obj.image, obj.prefix, new Set(obj.allowedChannelIds), new Set(obj.enabledPluginIds), new Set(admins), permissions);
                     }
                     resolve(Discotron.Guild._guilds);
                 });
@@ -241,7 +241,6 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
             if (!enabled) {
                 Discotron.Plugin.getAll().then((plugins) => {
                     for (let pluginId_ in plugins) {
-                        const plugin = plugins[pluginId];
                         if (pluginId_ !== pluginId) {
                             this._enabledPlugins.add(pluginId_);
                         }

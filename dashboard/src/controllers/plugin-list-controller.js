@@ -46,17 +46,17 @@ window.Discotron.PluginListController = class extends window.Discotron.Controlle
 		// Query cards
 		Discotron.Plugin.getAll().then((plugins) => {
 
-			for (let pluginId in plugins) {
+			for (const pluginId in plugins) {
 				const plugin = plugins[pluginId];
 
-				let template = document.getElementById("template-card");
-				let card = document.importNode(template.content, true);
+				const template = document.getElementById("template-card");
+				const card = document.importNode(template.content, true);
 
 				card.querySelector(".repository-card-title").textContent = plugin.name;
 				card.querySelector(".repository-card-description").textContent = plugin.description;
 
 				card.querySelector(".repository-card").onclick = () => {
-					let userRoles = this._guild.getPluginPermission(pluginId)._usersRoles;
+					const userRoles = this._guild.getPluginPermission(pluginId)._usersRoles;
 
 					new Discotron.UserRoleWidgetController(this._guild, userRoles, (userRoles, settings) => {
 						this._guild.setPluginEnabled(pluginId, settings.enabled);
