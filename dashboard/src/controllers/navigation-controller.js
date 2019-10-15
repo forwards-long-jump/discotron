@@ -10,7 +10,7 @@ window.Discotron.NavigationController = class {
 		Discotron.WebAPI.queryBot("discotron-dashboard", "get-bot-info").then((data) => {
 			document.querySelector("#bot-info img").src = data.avatar;
 			document.querySelector("#bot-info span").textContent = data.username;
-		});
+		}).catch(console.error);
 	}
 
 	/**
@@ -24,7 +24,7 @@ window.Discotron.NavigationController = class {
 					element.style.display = "list-item";
 				});
 			}
-		});
+		}).catch(console.error);
 	}
 
 	/**
@@ -50,7 +50,7 @@ window.Discotron.NavigationController = class {
 					serverLinksContainer.appendChild(serverLink);
 				}
 			}
-		});
+		}).catch(console.error);
 	}
 
 	/**

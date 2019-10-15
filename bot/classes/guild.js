@@ -4,7 +4,7 @@ const Permission = require("./permission.js");
 const webAPI = require("./../apis/web-api.js").getWebAPI("discotron-dashboard");
 const Plugin = require("./plugin.js");
 const db = require("./../apis/database-crud.js");
-
+const Logger = require("../utils/logger.js")
 /**
  * Discotron guild containing info related to a Discord guild
  */
@@ -122,14 +122,15 @@ class Guild extends GuildModel {
         }).then(() => {
             for (let i = 0; i < usersRoles.length; ++i) {
                 const userRole = usersRoles[i];
+                // TODO: Do only one query, update without deleting everything
                 userRole.getId().then((id) => {
                     db.insert("Admins", {
                         discordGuildId: this.discordId,
                         userRoleId: id
                     });
-                });
+                }).catch(Logger.err);
             }
-        });
+        }).catch(Logger.err);
     }
 
     /**
@@ -247,7 +248,7 @@ class Guild extends GuildModel {
                     discordGuildId: this.discordId
                 });
             });
-        });
+        }).catch(Logger.err);
     }
 
     /**
@@ -258,11 +259,12 @@ class Guild extends GuildModel {
     setPluginPermission(pluginId, userRoles) {
         this._permissions[pluginId]._usersRoles = userRoles;
 
+        // TODO: Do only one query, do not delete to update everything one by one
         db.delete("Permissions", {
             discordGuildId: this.discordId,
             pluginId: pluginId
         });
-        
+
         for (let i = 0; i < userRoles.length; ++i) {
             userRoles[i].getId().then((id) => {
                 db.insert("Permissions", {
@@ -270,7 +272,7 @@ class Guild extends GuildModel {
                     pluginId: pluginId,
                     userRoleId: id
                 });
-            });
+            }).catch(Logger.err);
         }
     }
 
@@ -303,13 +305,13 @@ class Guild extends GuildModel {
             pluginId: pluginId
         }).then((rows) => {
             const pluginPermission = this._permissions[pluginId];
-            
+
             for (let i = 0; i < rows.length; ++i) {
                 UserRole.getById(rows[i].userRoleId, this.discordId).then((userRole) => {
                     pluginPermission._usersRoles.push(userRole);
                 });
             }
-        });
+        }).catch(Logger.err);
     }
 
     /**
@@ -322,7 +324,7 @@ class Guild extends GuildModel {
             for (let i = 0; i < rows.length; ++i) {
                 this._enabledPlugins.add(rows[i].pluginId);
             }
-        });
+        }).catch(Logger.err);
     }
 
     /**
@@ -335,7 +337,7 @@ class Guild extends GuildModel {
             for (let i = 0; i < rows.length; ++i) {
                 this._allowedChannelIds.add(rows[i].discordChannelId);
             }
-        });
+        }).catch(Logger.err);
     }
 
     /**
@@ -353,7 +355,7 @@ class Guild extends GuildModel {
                     prefix: "!"
                 });
             }
-        });
+        }).catch(Logger.err);
 
     }
 
@@ -370,7 +372,7 @@ class Guild extends GuildModel {
                     this._admins.add(userRole);
                 });
             }
-        });
+        }).catch(Logger.err);
     }
 
     /**

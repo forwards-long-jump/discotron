@@ -1,6 +1,7 @@
 const OwnerModel = require("./../../models/owner.js");
 const webAPI = require("./../apis/web-api.js").getWebAPI("discotron-dashboard");
 const db = require("./../apis/database-crud.js");
+const Logger = require("../utils/logger.js");
 
 /**
  * An owner is the person who hosts the Discotron bot or people who were given owner permission
@@ -24,7 +25,7 @@ class Owner extends OwnerModel {
                     discordUserId: discordUserIds[i]
                 });
             }
-        });
+        }).catch(Logger.err);
     }
 
     /**
@@ -68,7 +69,7 @@ class Owner extends OwnerModel {
                         Owner._owners.add(row.discordUserId);
                     }
                     resolve(Array.from(Owner._owners));
-                });
+                }).catch(Logger.err);
             } else {
                 resolve(Array.from(Owner._owners));
             }

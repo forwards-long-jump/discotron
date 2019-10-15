@@ -52,7 +52,7 @@ window.Discotron.Role = class {
                 }
 
                 resolve(roleList);
-            });
+            }).catch(console.error);
         });
     }
 };

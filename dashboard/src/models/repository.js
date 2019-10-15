@@ -29,7 +29,7 @@ window.Discotron.Repository = class extends window.Discotron.RepositoryModel {
             } else {
                 resolve(Discotron.Repository._repositories);
             }
-        });
+        }).catch(console.error);
     }
 
     /**

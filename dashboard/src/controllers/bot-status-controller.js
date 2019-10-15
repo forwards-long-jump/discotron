@@ -21,15 +21,15 @@ window.Discotron.BotStatusController = class extends window.Discotron.Controller
 
 				Discotron.BotStatusController._username = data.username;
 				Discotron.BotStatusController._avatar = data.avatar;
-			});
+			}).catch(console.error);
 		} else {
 			document.querySelector("#bot-avatar").src = Discotron.BotStatusController._avatar;
 			document.querySelector("#bot-name").textContent = Discotron.BotStatusController._username;
 		}
 
 		Discotron.WebAPI.queryBot("discotron-dashboard", "get-bot-config").then((data) => {
-
 			let status, classStatus;
+
 			if (data.status === 0) {
 				status = "Online";
 				classStatus = "green-text";
@@ -41,7 +41,7 @@ window.Discotron.BotStatusController = class extends window.Discotron.Controller
 			document.getElementById("bot-name").innerHTML += "<span class=\"bot-status " + classStatus + "\">" + status + "</span>";
 			document.getElementById("bot-status").value = data.botStatus;
 			document.getElementById("maintenance-enabled").checked = data.maintenance;
-		});
+		}).catch(console.error);
 	}
 
 	/**
@@ -57,7 +57,7 @@ window.Discotron.BotStatusController = class extends window.Discotron.Controller
 	_addEvents() {
 		let saveSettingsButton = document.getElementById("save-settings");
 		let restartButton = document.getElementById("restart-bot");
-		
+
 		document.getElementById("bot-status").onkeyup = () => {
 			saveSettingsButton.disabled = false;
 		};
@@ -72,9 +72,7 @@ window.Discotron.BotStatusController = class extends window.Discotron.Controller
 			Discotron.WebAPI.queryBot("discotron-dashboard", "set-bot-config", {
 				statusText: document.getElementById("bot-status").value,
 				maintenance: document.getElementById("maintenance-enabled").checked
-			}).then((data) => {
-
-			});
+			}).then((data) => {}).catch(console.error);
 		};
 
 		restartButton.onclick = () => {
@@ -85,7 +83,7 @@ window.Discotron.BotStatusController = class extends window.Discotron.Controller
 					restartButton.value = "Restart";
 					restartButton.disabled = false;
 				}
-			});
+			}).catch(console.error);
 		};
 
 		document.getElementById("owners-selector").onclick = () => {
@@ -98,7 +96,7 @@ window.Discotron.BotStatusController = class extends window.Discotron.Controller
 						discordUserIds: newOwners.map((userRole) => {
 							return userRole.discordId;
 						})
-					}).then(() => {});
+					}).catch(console.error);
 				}, false, "Owner list", false, () => {});
 			});
 		};

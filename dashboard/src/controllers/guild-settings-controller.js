@@ -22,7 +22,7 @@ window.Discotron.GuildSettingsController = class extends window.Discotron.Contro
 
                 this._displayHeader();
                 this._displayPrefix();
-            });
+            }).catch(console.error);
             this._addEvents();
         });
     }
@@ -76,7 +76,7 @@ window.Discotron.GuildSettingsController = class extends window.Discotron.Contro
                     }
                     this._guild.allowedChannelIds = selectedChannels;
                 });
-            });
+            }).catch(console.error);
         };
         document.getElementById("admins").onclick = () => {
             let admins = Array.from(this._guild.admins);

@@ -57,7 +57,7 @@ window.Discotron.User = class {
                 resolve(users.map((user) => {
                     return new Discotron.User(user.name, user.id, user.avatar, user.name + "#" + user.discriminator).id;
                 }));
-            });
+            }).catch(console.error);
         });
     }
 
@@ -75,7 +75,7 @@ window.Discotron.User = class {
                     discordId: id
                 }).then((userObj) => {
                     resolve(new Discotron.User(userObj.name, userObj.id, userObj.avatarURL, userObj.tag));
-                });
+                }).catch(console.error);
             } else {
                 resolve(Discotron.User._users[id]);
             }

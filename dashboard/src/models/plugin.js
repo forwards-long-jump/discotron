@@ -25,7 +25,7 @@ window.Discotron.Plugin = class extends window.Discotron.PluginModel {
                             plugin.commands, plugin.defaultPermission, plugin.enabled, plugin.logs);
                     }
                     resolve(Discotron.Plugin._plugins);
-                });
+                }).catch(console.error);
             } else {
                 resolve(Discotron.Plugin._plugins);
             }

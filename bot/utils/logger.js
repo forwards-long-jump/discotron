@@ -47,6 +47,14 @@ class Logger {
     }
 
     /**
+     * Shortcut for Logger.log(value, "err");
+     * @param {object} value to log, either string or object
+     */
+    static err(value) {
+        Logger.log(value, "err");
+    }
+
+    /**
      * Log something to the console.
      * \**text** can be used for bold
      * \__text__ can be used for underline

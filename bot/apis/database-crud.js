@@ -41,11 +41,13 @@ function generateValuesForInsert(values) {
     let columns = "(";
     let params = "(";
     let data = {};
+
     for (let key in values) {
         columns += key + ",";
         params += "$" + key + ",";
         data["$" + key] = values[key];
     }
+
     return {
         columns: columns.substr(0, columns.length - 1) + ")",
         params: params.substr(0, params.length - 1) + ")",
@@ -65,23 +67,27 @@ module.exports.update = (table, values, where) => {
 
     return new Promise((resolve, reject) => {
         let sql = "UPDATE " + table + " SET ";
-
         let valuesText = "";
         let params = [];
+
         for (let key in values) {
             valuesText += key + "=?,";
             params.push(values[key]);
         }
+
         valuesText = valuesText.substr(0, valuesText.length - 1);
 
         let whereText = "";
+
         for (let key in where) {
             whereText += key + "=? AND ";
             params.push(where[key]);
         }
+
         whereText = whereText.substr(0, whereText.length - 5);
 
         sql += valuesText + " WHERE " + whereText;
+
         database.run(sql, params, (err) => {
             if (err) {
                 Logger.log("Update in database failed : " + sql, "err");
@@ -112,7 +118,7 @@ module.exports.insert = (table, values) => {
             if (err) {
                 Logger.log("Insert in database failed : " + sql, "err");
                 Logger.log(err);
-                reject();
+                reject(err);
             } else {
                 resolve();
             }
@@ -136,11 +142,12 @@ module.exports.delete = (table, where, eraseAll = false) => {
         if (!isEmpty(where)) {
             let parameters = generateParameters(where);
             sql += " WHERE " + parameters.text;
+
             database.run(sql, parameters.objParam, (err) => {
                 if (err) {
                     Logger.log("Delete in database failed : " + sql, "err");
                     Logger.log(err);
-                    reject();
+                    reject(err);
                 } else {
                     resolve();
                 }
@@ -150,7 +157,7 @@ module.exports.delete = (table, where, eraseAll = false) => {
                 if (err) {
                     Logger.log("Delete in database failed : " + sql, "err");
                     Logger.log(err);
-                    reject();
+                    reject(err);
                 } else {
                     resolve();
                 }

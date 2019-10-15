@@ -35,7 +35,7 @@ window.Discotron.utils = {
                 if (typeof callback === "function") {
                     callback();
                 }
-            });
+            }).catch(console.error);
     },
     generateAcronymIcon: (acronym, fgColor, bgColor) => {
         const size = 88;

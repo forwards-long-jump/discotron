@@ -99,8 +99,9 @@ function handleDiscordAPIQuery(authToken, reply, addOwner = false) {
             });
 
         })
-        .catch(() => {
-
+        .catch((err) => {
+            Logger.err("handleDiscordAPIQuery failed");
+            Logger.err(err);
             // No clientId scope / invalid code
             reply({
                 status: "error"
@@ -139,9 +140,9 @@ function requestAppToken(discordId, accessToken, refreshToken, expireDate) {
                 let appToken = uuidv1();
                 addUser(discordId, appToken, accessToken, refreshToken, expireDate).then(() => {
                     resolve(appToken);
-                });
+                }).catch(Logger.err);
             }
-        });
+        }).catch(Logger.err);
     });
 }
 
@@ -212,7 +213,7 @@ function getDiscordUserId(appToken) {
                 } else {
                     resolve(false);
                 }
-            }).catch(() => reject);
+            }).catch(reject);
         } else {
             resolve(users[appToken]);
         }

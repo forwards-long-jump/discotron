@@ -101,7 +101,7 @@ class Plugin extends PluginModel {
                     disabled: 0
                 });
             }
-        });
+        }).catch(Logger.err);
     }
 
     /**

@@ -23,7 +23,7 @@ window.Discotron.PluginListController = class extends window.Discotron.Controlle
 
 				this._displayHeader();
 				this._displayPlugins();
-			});
+			}).catch(console.error);
 		});
 	}
 
@@ -71,6 +71,6 @@ window.Discotron.PluginListController = class extends window.Discotron.Controlle
 
 				document.getElementById("plugin-container").appendChild(card);
 			}
-		});
+		}).catch(console.error);
 	}
 };

@@ -51,7 +51,7 @@ window.Discotron.Channel = class {
                 }
 
                 resolve(channelObjects);
-            });
+            }).catch(console.error);
             // Query API
             // new Channel();
             // resolve([Channel]);

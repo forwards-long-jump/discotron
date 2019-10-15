@@ -1,5 +1,6 @@
 const BotSettingsModel = require("./../../models/bot-settings.js");
 const db = require("./../apis/database-crud.js");
+const Logger = require("../utils/logger.js");
 
 /**
  * Handle bot settings, server side
@@ -18,19 +19,19 @@ class BotSettings extends BotSettingsModel {
             name: "helpText"
         }).then((rows) => {
             this._helpText = rows[0].value;
-        });
+        }).catch(Logger.err);
 
         db.select("BotSettings", ["value"], {
             name: "maintenance"
         }).then((rows) => {
             this._maintenance = rows[0].value === "true";
-        });
+        }).catch(Logger.err);
 
         db.select("BotSettings", ["value"], {
             name: "botStatus"
         }).then((rows) => {
             this._statusText = rows[0].value;
-        });
+        }).catch(Logger.err);
     }
 
     /**
@@ -85,7 +86,7 @@ class BotSettings extends BotSettingsModel {
                 name: this.statusText
             },
             status: this.maintenance ? "dnd" : "online"
-        }).then().catch();
+        }).then().catch(Logger.err);
     }
 
 

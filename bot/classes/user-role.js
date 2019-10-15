@@ -1,5 +1,6 @@
 const UserRoleModel = require("./../../models/user-role.js");
 const db = require("./../apis/database-crud.js");
+const Logger = require("../utils/logger.js");
 
 /**
  * UserRole represents either a User or a Role.
@@ -71,10 +72,10 @@ class UserRole extends UserRoleModel {
                     }).then(() => {
                         this.getId().then((id) => {
                             resolve(id);
-                        });
-                    });
+                        }).catch(Logger.err);
+                    }).catch(Logger.err);
                 }
-            });
+            }).catch(Logger.err);
         });
     }
 
@@ -94,7 +95,7 @@ class UserRole extends UserRoleModel {
                     throw new Error("UserRole inexistant in db");
                 }
                 resolve(new UserRole(rows[0].discordId, rows[0].type === 1 ? "user" : "role", guildId));
-            });
+            }).catch(Logger.err);
         });
     }
 }

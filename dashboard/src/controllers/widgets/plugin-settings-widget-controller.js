@@ -44,7 +44,7 @@ window.Discotron.PluginSettingsWidgetController = class extends window.Discotron
 			}).then((logs) => {
 				this._plugin.logs = logs;
 				this._widgetContainer.querySelector(".logs").value = this._plugin.logs.join("\r\n");
-			});
+			}).catch(console.error);
 		};
 	}
 

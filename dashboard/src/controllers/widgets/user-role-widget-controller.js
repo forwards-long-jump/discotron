@@ -38,7 +38,7 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
                 ];
                 Promise.all(promises).then(() => {
                     this._displayUserRoleSelector();
-                });
+                }).catch(console.error);
             } else {
                 this._displayUserRoleSelector();
             }
@@ -102,7 +102,7 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
                 // The text is a user ID, we try to send it directly
                 Discotron.User.get(value).then((user) => {
                     this._addUserEntry(user);
-                });
+                }).catch(console.error);
             } else {
                 // The text is the name of a role or a user
                 this._addEntry(value);
@@ -123,7 +123,7 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
                 if (user.tag === name) {
                     button.disabled = false;
                 }
-            });
+            }).catch(console.error);
         }
 
         if (this._displayRoles) {
@@ -177,7 +177,7 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
             if (userRole.type === "user") {
                 Discotron.User.get(this._usersRoles[i].discordId).then((user) => {
                     this._displayUserEntry(user);
-                });
+                }).catch(console.error);
             }
         }
 
@@ -229,8 +229,7 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
                 if (user.tag === name) {
                     this._addUserEntry(user);
                 }
-
-            });
+            }).catch(console.error);
         }
 
         if (this._displayRoles) {

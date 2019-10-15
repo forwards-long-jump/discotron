@@ -68,7 +68,7 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
                         this._channels[channel.id] = channel;
                     }
                     resolve(this._channels);
-                });
+                }).catch(console.error);
             } else {
                 resolve(this._channels);
             }
@@ -84,7 +84,7 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
             Discotron.User.loadGuildMembers(this.discordId).then((users) => {
                 this._members = users;
                 resolve();
-            });
+            }).catch(console.error);
         });
     }
 
@@ -100,7 +100,7 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
                     this._roles[role.id] = role;
                 }
                 resolve();
-            });
+            }).catch(console.error);
         });
     }
 
@@ -133,7 +133,7 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
                         new Discotron.Guild(obj.id, obj.name, obj.image, obj.nameAcronym, obj.prefix, new Set(obj.allowedChannelIds), new Set(obj.enabledPluginIds), new Set(admins), permissions);
                     }
                     resolve(Discotron.Guild._guilds);
-                });
+                }).catch(console.error);
             } else {
                 resolve(Discotron.Guild._guilds);
             }
@@ -203,7 +203,7 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
         this._commandPrefix = prefix;
         Discotron.WebAPI.queryBot("discotron-dashboard", "set-guild-prefix", {
             prefix: prefix
-        }, this.discordId).then(() => {});
+        }, this.discordId).then().catch(console.error);
     }
 
     /**
@@ -247,7 +247,7 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
                             this._enabledPlugins.add(pluginId_);
                         }
                     }
-                });
+                }).catch(console.error);
             } else {
                 // should not happen
             }

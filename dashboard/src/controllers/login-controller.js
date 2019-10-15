@@ -24,7 +24,7 @@ window.Discotron.LoginController = class /* does not extends Controller because 
                     Discotron.LoginController._handleSuccess(data);
                     break;
             }
-        });
+        }).catch(console.error);
 
     }
 
@@ -68,7 +68,7 @@ window.Discotron.LoginController = class /* does not extends Controller because 
                         Discotron.LoginController._displayContainer("claim-ownership");
                         break;
                 }
-            });
+            }).catch(console.error);
 
         }
     }

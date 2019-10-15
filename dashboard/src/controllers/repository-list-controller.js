@@ -93,7 +93,7 @@ window.Discotron.RepositoryListController = class extends window.Discotron.Contr
 					if (!pluginFound) {
 						cardListContainer.innerHTML = "<p class=\"description\">No plugin / pages found in this repository.</p>";
 					}
-				});
+				}).catch(console.error);
 
 				// Update
 				container.querySelector(".pull-repository").onclick = (event) => {
@@ -113,7 +113,7 @@ window.Discotron.RepositoryListController = class extends window.Discotron.Contr
 						Discotron.Plugin.clearCache();
 						Discotron.Guild.clearCache();
 						this._displayRepos();
-					});
+					}).catch(console.error);
 				};
 
 				// Delete
@@ -126,13 +126,13 @@ window.Discotron.RepositoryListController = class extends window.Discotron.Contr
 							Discotron.Plugin.clearCache();
 							Discotron.Guild.clearCache();
 							this._displayRepos();
-						});
+						}).catch(console.error);
 					}
 				};
 
 				document.getElementById("repositories-container").appendChild(container);
 			}
-		});
+		}).catch(console.error);
 	}
 
 	/**
@@ -159,7 +159,7 @@ window.Discotron.RepositoryListController = class extends window.Discotron.Contr
 					Discotron.Guild.clearCache();
 					this._displayRepos();
 				}
-			});
+			}).catch(console.error);
 		}
 	}
 };

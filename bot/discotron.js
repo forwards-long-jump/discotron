@@ -166,7 +166,7 @@ module.exports.loadGuilds = () => {
                 new Guild(rows[i].discordGuildId);
             }
             resolve();
-        });
+        }).catch(Logger.err);
     });
 };
 
@@ -223,7 +223,7 @@ module.exports.loadOwners = () => {
         if (owners.length === 0) {
             Login.setFirstLaunch();
         }
-    });
+    }).catch(Logger.err);
 };
 
 /**
@@ -284,7 +284,7 @@ module.exports.loadRepositories = () => {
                 // r.pull(); // DEBUG, update all repos
             }
         }
-    });
+    }).catch(Logger.err);
 };
 
 /**
@@ -326,8 +326,8 @@ module.exports.registerActions = () => {
         global.discordClient.destroy().then(() => {
             global.discordClient._connectToDiscord().then(() => {
                 reply(true);
-            });
-        });
+            }).catch(Logger.err);
+        }).catch(Logger.err);
     }, "owner");
 
     webAPI.registerAction("get-bot-info", (data, reply) => {
@@ -347,7 +347,7 @@ module.exports.registerActions = () => {
     webAPI.registerAction("get-user-info", (data, reply) => {
         getUserInfo(data.discordId).then((info) => {
             reply(info);
-        });
+        }).catch(Logger.err);
     });
 
 

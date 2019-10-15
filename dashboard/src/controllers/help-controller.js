@@ -71,6 +71,6 @@ window.Discotron.HelpController = class extends window.Discotron.Controller {
 
                 document.getElementById("plugin-list-container").appendChild(pluginCard);
             }
-        });
+        }).catch(console.error);
     }
 };

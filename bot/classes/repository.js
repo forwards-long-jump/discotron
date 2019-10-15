@@ -158,7 +158,7 @@ class Repository extends RepositoryModel {
 
                     resolve();
                 }).catch((err) => {
-                    console.log(err);
+                    Logger.err(err);
                     reject();
                 });
         });
@@ -186,7 +186,7 @@ class Repository extends RepositoryModel {
 
                 this._deleteFolder(); // sync
                 resolve();
-            });
+            }).catch(Logger.err);
         });
     }
 
@@ -238,7 +238,7 @@ class Repository extends RepositoryModel {
                 if (repo.url === data.url) {
                     repo.delete().then(() => {
                         reply(true);
-                    });
+                    }).catch(Logger.err);
                     return;
                 }
             }
@@ -254,7 +254,7 @@ class Repository extends RepositoryModel {
                         reply(true);
                     }).catch(() => {
                         reply(false);
-                    });
+                    }).catch(Logger.err);
                     return;
                 }
             }

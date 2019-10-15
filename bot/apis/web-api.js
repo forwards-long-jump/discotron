@@ -39,7 +39,7 @@ module.exports.onPost = (req, res) => {
             Logger.log("Wrong app token / perm", "warn");
             reply(res, "invalid-app-token");
         }
-    });
+    }).catch();
 };
 
 /**

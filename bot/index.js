@@ -35,7 +35,7 @@ discotron.loadGuilds().then(() => {
 
     registerEvents();
     discotron.registerActions();
-});
+}).catch(Logger.err);
 
 /**
  * Attempts to connect the bot client to Discord
@@ -132,5 +132,5 @@ function exitHandler(options) {
         if (options.exit) {
             process.exit();
         }
-    });
+    }).catch(Logger.err);
 }
