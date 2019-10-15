@@ -21,9 +21,6 @@ window.Discotron.utils = {
                         resolve(request.responseText);
                     }
                 }
-                else {
-                    reject();
-                }
             };
         });
     },
