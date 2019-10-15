@@ -1,8 +1,8 @@
 const sqlite = require("sqlite3");
 const fs = require("fs");
-const config = require(__dirname + "/../config/config.json");
+const config = require("../config/config.json");
 
-const Logger = require(__dirname + "/../utils/logger.js");
+const Logger = require("../utils/logger.js");
 
 let database;
 
