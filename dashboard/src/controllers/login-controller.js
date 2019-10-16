@@ -114,7 +114,6 @@ window.Discotron.LoginController = class /* does not extends Controller because 
 if (localStorage.getItem("appToken") !== null) {
     document.location.replace("/dashboard");
 } else {
-    Discotron.LoginController.handleOwnershipClaim();
     Discotron.LoginController.initPage();
     Discotron.LoginController.addEvents();
 }
