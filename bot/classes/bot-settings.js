@@ -28,9 +28,9 @@ class BotSettings extends BotSettingsModel {
         }).catch(Logger.err);
 
         db.select("BotSettings", ["value"], {
-            name: "botStatus"
+            name: "presenceText"
         }).then((rows) => {
-            this._statusText = rows[0].value;
+            this._presenceText = rows[0].value;
         }).catch(Logger.err);
     }
 
@@ -56,25 +56,25 @@ class BotSettings extends BotSettingsModel {
 
     /**
      * Changes the bot presence and save it to the database
-     * @param {string} statusText New status text
+     * @param {string} presenceText New presence text
      */
-    set statusText(statusText) {
-        this._statusText = statusText;
+    set presenceText(presenceText) {
+        this._presenceText = presenceText;
 
         db.update("BotSettings", {
-            value: statusText
+            value: presenceText
         }, {
-            name: "botStatus"
+            name: "presenceText"
         });
 
         this.setBotPresence();
     }
 
     /**
-     * @returns {string} Status text
+     * @returns {string} Presence text
      */
-    get statusText() {
-        return super.statusText;
+    get presenceText() {
+        return super.presenceText;
     }
 
     /**
@@ -83,7 +83,7 @@ class BotSettings extends BotSettingsModel {
     setBotPresence() {
         global.discordClient.user.setPresence({
             game: {
-                name: this.statusText
+                name: this.presenceText
             },
             status: this.maintenance ? "dnd" : "online"
         }).then().catch(Logger.err);

@@ -63,7 +63,7 @@ function registerEvents() {
     discordClient.on("ready", () => {
         Logger.log("Logged into Discord as **" + discordClient.user.tag + "**", "info");
         discotron.updateGuilds();
-        discotron.updateStatus();
+        discotron.getBotSettings().setBotPresence();
     });
 
     discordClient.on("message", discotron.onMessage);

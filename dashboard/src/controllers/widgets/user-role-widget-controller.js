@@ -33,8 +33,8 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
                 document.querySelector("#add-button").disabled = true;
 
                 let promises = [
-                    this._guild.loadMembers(),
-                    this._guild.loadRoles()
+                    this._guild._loadMembers(),
+                    this._guild._loadRoles()
                 ];
                 Promise.all(promises).then(() => {
                     this._displayUserRoleSelector();

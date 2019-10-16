@@ -226,13 +226,6 @@ module.exports.loadOwners = () => {
     }).catch(Logger.err);
 };
 
-/**
- * Update bot presence
- */
-module.exports.updateStatus = () => {
-    botSettings.setBotPresence();
-};
-
 // TODO
 module.exports.onReaction = (reaction) => {};
 module.exports.onJoinGuild = (guild) => {};
@@ -306,8 +299,8 @@ module.exports.registerActions = () => {
             botSettings.maintenance = data.maintenance;
         }
 
-        if (data.statusText !== undefined) {
-            botSettings.statusText = data.statusText;
+        if (data.presenceText !== undefined) {
+            botSettings.presenceText = data.presenceText;
         }
 
         reply();
@@ -316,7 +309,7 @@ module.exports.registerActions = () => {
     webAPI.registerAction("get-bot-config", (data, reply) => {
         reply({
             helpText: botSettings.helpText,
-            botStatus: botSettings.statusText,
+            presenceText: botSettings.presenceText,
             maintenance: botSettings.maintenance,
             status: global.discordClient.status
         });

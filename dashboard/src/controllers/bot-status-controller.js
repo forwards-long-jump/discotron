@@ -39,7 +39,7 @@ window.Discotron.BotStatusController = class extends window.Discotron.Controller
 			}
 
 			document.getElementById("bot-name").innerHTML += "<span class=\"bot-status " + classStatus + "\">" + status + "</span>";
-			document.getElementById("bot-status").value = data.botStatus;
+			document.getElementById("bot-presence").value = data.presenceText;
 			document.getElementById("maintenance-enabled").checked = data.maintenance;
 		}).catch(console.error);
 	}
@@ -58,7 +58,7 @@ window.Discotron.BotStatusController = class extends window.Discotron.Controller
 		let saveSettingsButton = document.getElementById("save-settings");
 		let restartButton = document.getElementById("restart-bot");
 
-		document.getElementById("bot-status").onkeyup = () => {
+		document.getElementById("bot-presence").onkeyup = () => {
 			saveSettingsButton.disabled = false;
 		};
 
@@ -70,7 +70,7 @@ window.Discotron.BotStatusController = class extends window.Discotron.Controller
 			saveSettingsButton.disabled = true;
 
 			Discotron.WebAPI.queryBot("discotron-dashboard", "set-bot-config", {
-				statusText: document.getElementById("bot-status").value,
+				presenceText: document.getElementById("bot-presence").value,
 				maintenance: document.getElementById("maintenance-enabled").checked
 			}).then((data) => {}).catch(console.error);
 		};
