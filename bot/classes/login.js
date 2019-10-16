@@ -95,7 +95,7 @@ function handleDiscordAPIQuery(authToken, reply, addOwner = false) {
                 avatar: userInfo.avatar,
                 username: userInfo.username,
                 discriminator: userInfo.discriminator,
-                userId: userInfo.id
+                discordUserId: userInfo.id
             });
 
         })

@@ -5,18 +5,18 @@ window.Discotron.WebAPI = class {
      * @param {string} plugin Plugin ID, can also be "discotron" to indicate the action is directed toward the bot
      * @param {string} action Name of the action
      * @param {object} data Data that will JSON.stringified and sent to the bot
-     * @param {object} [guildId=undefined] Specify to which guild this action is targeted to
+     * @param {object} [discordGuildId=undefined] Specify to which guild this action is targeted to
      * @returns {Promise} resolve(data)
      */
-    static queryBot(plugin, action, data, guildId = undefined) {
+    static queryBot(plugin, action, data, discordGuildId = undefined) {
         let params = {
             plugin: plugin,
             action: action,
             data: data,
             appToken: localStorage.appToken
         };
-        if (guildId) {
-            params.guildId = guildId;
+        if (discordGuildId) {
+            params.discordGuildId = discordGuildId;
         }
 
         return new Promise((resolve, reject) => {

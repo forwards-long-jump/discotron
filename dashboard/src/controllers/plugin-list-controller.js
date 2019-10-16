@@ -8,15 +8,15 @@ window.Discotron.PluginListController = class extends window.Discotron.Controlle
 	 */
 	constructor(args) {
 		super("admin/plugin-list.html", () => {
-			this._guildId = args.guild;
+			this._discordGuildId = args.guild;
 
-			if (this._guildId === undefined) {
+			if (this._discordGuildId === undefined) {
 				window.location.replace("/dashboard");
 				return;
 			}
 
 			Discotron.Guild.getAll().then((guilds) => {
-				this._guild = guilds[this._guildId];
+				this._guild = guilds[this._discordGuildId];
 				if (this._guild === undefined) {
 					window.location.replace("/dashboard");
 				}

@@ -186,31 +186,31 @@ module.exports.updateGuilds = () => {
     let addedGuilds = [];
     let removedGuilds = [];
     for (let i = 0; i < newGuildIds.length; ++i) {
-        const guildId = newGuildIds[i];
-        if (!oldGuildIds.includes(guildId)) {
-            addedGuilds.push(guildId);
+        const discordGuildId = newGuildIds[i];
+        if (!oldGuildIds.includes(discordGuildId)) {
+            addedGuilds.push(discordGuildId);
         }
     }
     for (let i = 0; i < oldGuildIds.length; ++i) {
-        const guildId = oldGuildIds[i];
-        if (!newGuildIds.includes(guildId)) {
-            removedGuilds.push(guildId);
+        const discordGuildId = oldGuildIds[i];
+        if (!newGuildIds.includes(discordGuildId)) {
+            removedGuilds.push(discordGuildId);
         }
     }
 
     for (let i = 0; i < addedGuilds.length; ++i) {
-        const guildId = addedGuilds[i];
-        new Guild(guildId);
+        const discordGuildId = addedGuilds[i];
+        new Guild(discordGuildId);
     }
     for (let i = 0; i < removedGuilds.length; ++i) {
-        const guildId = removedGuilds[i];
-        Guild.get(guildId).delete();
+        const discordGuildId = removedGuilds[i];
+        Guild.get(discordGuildId).delete();
     }
 
     // Load *native* admins
     for (let i = 0; i < newGuildIds.length; ++i) {
-        const guildId = newGuildIds[i];
-        Guild.get(guildId).loadDiscordAdmins();
+        const discordGuildId = newGuildIds[i];
+        Guild.get(discordGuildId).loadDiscordAdmins();
     }
 };
 

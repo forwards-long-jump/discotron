@@ -114,8 +114,8 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
         return new Promise((resolve, reject) => {
             if (Object.keys(Discotron.Guild._guilds).length === 0) {
                 Discotron.WebAPI.queryBot("discotron-dashboard", "get-guilds-where-is-admin").then((guilds) => {
-                    for (const guildId in guilds) {
-                        let obj = guilds[guildId];
+                    for (const discordGuildId in guilds) {
+                        let obj = guilds[discordGuildId];
 
                         let admins = new Set(obj.admins.map((admin) => {
                             return new Discotron.UserRole(admin.id, admin.type);

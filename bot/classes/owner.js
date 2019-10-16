@@ -10,7 +10,7 @@ class Owner extends OwnerModel {
     /**
      * Set the owners. The given array must not be empty, otherwise nothing will happen
      * @static
-     * @param {array} discordUserId Array of userId
+     * @param {array} discordUserId Array of discord user id
      */
     static setOwners(discordUserIds) {
         if (discordUserIds.length === 0) {

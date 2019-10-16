@@ -75,19 +75,19 @@ class Guild extends GuildModel {
     }
 
     /**
-     * @param {string} userId Discord user id
+     * @param {string} discordUserId Discord user id
      * @returns Whether the given user id is a bot admin on the guild
      */
-    isAdmin(userId) {
+    isAdmin(discordUserId) {
         let isadmin = false;
         this._admins.forEach((admin) => {
-            if (admin.describes(userId)) {
+            if (admin.describes(discordUserId)) {
                 isadmin = true;
                 return false;
             }
         });
         this._discordAdmins.forEach((admin) => {
-            if (admin.describes(userId)) {
+            if (admin.describes(discordUserId)) {
                 isadmin = true;
                 return false;
             }
@@ -97,12 +97,12 @@ class Guild extends GuildModel {
 
     /**
      * @static
-     * @param {string} userId Discord user id
-     * @param {string} guildId Discord gulid id
+     * @param {string} discordUserId Discord user id
+     * @param {string} discordGuildId Discord gulid id
      * @returns {boolean} True if the user is bot admin on the guild
      */
-    static isGuildAdmin(userId, guildId) {
-        return Guild.get(guildId).isAdmin(userId);
+    static isGuildAdmin(discordUserId, discordGuildId) {
+        return Guild.get(discordGuildId).isAdmin(discordUserId);
     }
 
     /**
@@ -110,7 +110,7 @@ class Guild extends GuildModel {
      * @param {array} usersRoles Array of UserRole 
      */
     set admins(usersRoles) {
-        // Note : the users / roles we receive come from the dashboard, and as such do not have the guildId attribute set
+        // Note : the users / roles we receive come from the dashboard, and as such do not have the discordGuildId attribute set
         usersRoles = usersRoles.map((ur) => {
             return new UserRole(ur._discordId, ur._type, this.discordId);
         });
@@ -407,16 +407,16 @@ class Guild extends GuildModel {
      * @static
      */
     static registerActions() {
-        webAPI.registerAction("get-guilds", (data, reply, userId, guildId) => {
+        webAPI.registerAction("get-guilds", (data, reply, discordUserId, discordGuildId) => {
             let guilds = {};
-            for (const guildId in Guild.getAll()) {
-                guilds[guildId] = Guild.get(guildId).toObject();
+            for (const discordGuildId in Guild.getAll()) {
+                guilds[discordGuildId] = Guild.get(discordGuildId).toObject();
             }
             reply(guilds);
         }, "guildAdmin");
 
-        webAPI.registerAction("get-members", (data, reply, userId, guildId) => {
-            let guild = global.discordClient.guilds.get(guildId);
+        webAPI.registerAction("get-members", (data, reply, discordUserId, discordGuildId) => {
+            let guild = global.discordClient.guilds.get(discordGuildId);
             let members = guild.members;
             reply(members.map(member => {
                 return {
@@ -428,8 +428,8 @@ class Guild extends GuildModel {
             }));
         }, "guildAdmin");
 
-        webAPI.registerAction("get-roles", (data, reply, userId, guildId) => {
-            let guild = global.discordClient.guilds.get(guildId);
+        webAPI.registerAction("get-roles", (data, reply, discordUserId, discordGuildId) => {
+            let guild = global.discordClient.guilds.get(discordGuildId);
             reply(guild.roles.map((role) => {
                 return {
                     id: role.id,
@@ -439,8 +439,8 @@ class Guild extends GuildModel {
             }));
         }, "guildAdmin");
 
-        webAPI.registerAction("get-channels", (data, reply, userId, guildId) => {
-            let guild = global.discordClient.guilds.get(guildId);
+        webAPI.registerAction("get-channels", (data, reply, discordUserId, discordGuildId) => {
+            let guild = global.discordClient.guilds.get(discordGuildId);
             reply(guild.channels.map((channel) => {
                 return {
                     id: channel.id,
@@ -450,62 +450,62 @@ class Guild extends GuildModel {
             }));
         }, "guildAdmin");
 
-        webAPI.registerAction("get-guilds-where-is-admin", (data, reply, userId) => {
+        webAPI.registerAction("get-guilds-where-is-admin", (data, reply, discordUserId) => {
             let guilds = [];
-            for (const guildId in Guild._guilds) {
-                const guild = Guild.get(guildId);
-                if (guild.isAdmin(userId)) {
+            for (const discordGuildId in Guild._guilds) {
+                const guild = Guild.get(discordGuildId);
+                if (guild.isAdmin(discordUserId)) {
                     guilds.push(guild.toObject());
                 }
             }
             reply(guilds);
         });
 
-        webAPI.registerAction("get-allowed-channels", (data, reply, userId, guildId) => {
-            reply(Guild.get(guildId).allowedChannelIds);
+        webAPI.registerAction("get-allowed-channels", (data, reply, discordUserId, discordGuildId) => {
+            reply(Guild.get(discordGuildId).allowedChannelIds);
         }, "guildAdmin");
 
-        webAPI.registerAction("set-allowed-channels", (data, reply, userId, guildId) => {
-            Guild.get(guildId).allowedChannelIds = data.allowedChannelIds;
+        webAPI.registerAction("set-allowed-channels", (data, reply, discordUserId, discordGuildId) => {
+            Guild.get(discordGuildId).allowedChannelIds = data.allowedChannelIds;
             reply();
         }, "guildAdmin");
 
-        webAPI.registerAction("get-plugin-enabled", (data, reply, userId, guildId) => {
-            reply(Guild.get(guildId).isPluginEnabled(data.pluginId));
+        webAPI.registerAction("get-plugin-enabled", (data, reply, discordUserId, discordGuildId) => {
+            reply(Guild.get(discordGuildId).isPluginEnabled(data.pluginId));
         }, "guildAdmin");
 
-        webAPI.registerAction("set-plugin-enabled", (data, reply, userId, guildId) => {
-            Guild.get(guildId).setPluginEnabled(data.pluginId, data.enabled);
+        webAPI.registerAction("set-plugin-enabled", (data, reply, discordUserId, discordGuildId) => {
+            Guild.get(discordGuildId).setPluginEnabled(data.pluginId, data.enabled);
             reply();
         }, "guildAdmin");
 
-        webAPI.registerAction("get-plugin-permission", (data, reply, userId, guildId) => {
-            reply(Guild.get(guildId).permissions[data.pluginId].toObject());
+        webAPI.registerAction("get-plugin-permission", (data, reply, discordUserId, discordGuildId) => {
+            reply(Guild.get(discordGuildId).permissions[data.pluginId].toObject());
         }, "guildAdmin");
 
-        webAPI.registerAction("set-plugin-permission", (data, reply, userId, guildId) => {
+        webAPI.registerAction("set-plugin-permission", (data, reply, discordUserId, discordGuildId) => {
             let usersRoles = data.userRoles.map((ur) => {
-                return new UserRole(ur._discordId, ur._type, guildId);
+                return new UserRole(ur._discordId, ur._type, discordGuildId);
             });
-            Guild.get(guildId).setPluginPermission(data.pluginId, usersRoles);
+            Guild.get(discordGuildId).setPluginPermission(data.pluginId, usersRoles);
             reply();
         }, "guildAdmin");
 
-        webAPI.registerAction("get-guild-prefix", (data, reply, userId, guildId) => {
-            reply(Guild.get(guildId).commandPrefix);
+        webAPI.registerAction("get-guild-prefix", (data, reply, discordUserId, discordGuildId) => {
+            reply(Guild.get(discordGuildId).commandPrefix);
         }, "guildAdmin");
 
-        webAPI.registerAction("set-guild-prefix", (data, reply, userId, guildId) => {
-            Guild.get(guildId).commandPrefix = data.prefix;
+        webAPI.registerAction("set-guild-prefix", (data, reply, discordUserId, discordGuildId) => {
+            Guild.get(discordGuildId).commandPrefix = data.prefix;
             reply();
         }, "guildAdmin");
 
-        webAPI.registerAction("get-admins", (data, reply, userId, guildId) => {
-            reply(Array.from(Guild.get(guildId).admins));
+        webAPI.registerAction("get-admins", (data, reply, discordUserId, discordGuildId) => {
+            reply(Array.from(Guild.get(discordGuildId).admins));
         }, "guildAdmin");
 
-        webAPI.registerAction("set-admins", (data, reply, userId, guildId) => {
-            Guild.get(guildId).admins = data.admins;
+        webAPI.registerAction("set-admins", (data, reply, discordUserId, discordGuildId) => {
+            Guild.get(discordGuildId).admins = data.admins;
             reply();
         }, "guildAdmin");
     }

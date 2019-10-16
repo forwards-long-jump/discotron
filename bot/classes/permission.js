@@ -6,12 +6,12 @@ const Guild = require("./guild.js");
 class Permission extends PermissionModel {
     /**
      * @constructor
-     * @param {string} guildId Discord ID of the guild
+     * @param {string} discordGuildId Discord ID of the guild
      * @param {string} pluginId ID of the plugin
      * @param {array} userRoles Array of user roles allowed to use 
      */
-    constructor(guildId, pluginId, userRoles) {
-        super(guildId, pluginId, userRoles);
+    constructor(discordGuildId, pluginId, userRoles) {
+        super(discordGuildId, pluginId, userRoles);
     }
 
     /**
@@ -31,7 +31,7 @@ class Permission extends PermissionModel {
                 return true;
             }
             // Else it's admins only
-            return Guild.isGuildAdmin(discordUserId, this.guildId);
+            return Guild.isGuildAdmin(discordUserId, this.discordGuildId);
         }
 
         for (let i = 0; i < this.usersRoles.length; ++i) {

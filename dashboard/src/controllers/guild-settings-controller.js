@@ -8,14 +8,14 @@ window.Discotron.GuildSettingsController = class extends window.Discotron.Contro
      */
     constructor(args) {
         super("admin/guild-settings.html", () => {
-            this._guildId = args.guild;
+            this._discordGuildId = args.guild;
 
-            if (this._guildId === undefined) {
+            if (this._discordGuildId === undefined) {
                 window.location.replace("/dashboard");
                 return;
             }
             Discotron.Guild.getAll().then((guilds) => {
-                this._guild = guilds[this._guildId];
+                this._guild = guilds[this._discordGuildId];
                 if (this._guild === undefined) {
                     window.location.replace("/dashboard");
                 }

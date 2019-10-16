@@ -75,14 +75,14 @@ window.Discotron.LoginController = class /* does not extends Controller because 
 
     /**
      * Save local properties and redirect
-     * @param {object} data Answer from the server, contains {token, username, discriminator, avatar, userId}
+     * @param {object} data Answer from the server, contains {token, username, discriminator, avatar, discordUserId}
      */
     static _handleSuccess(data) {
         localStorage.setItem("appToken", data.token);
         localStorage.setItem("username", data.username);
         localStorage.setItem("discriminator", data.discriminator);
         localStorage.setItem("avatar", data.avatar);
-        localStorage.setItem("userId", data.userId);
+        localStorage.setItem("discordUserId", data.discordUserId);
         window.location.replace("/dashboard");
     }
 
