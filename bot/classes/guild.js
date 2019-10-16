@@ -75,19 +75,19 @@ class Guild extends GuildModel {
     }
 
     /**
-     * @param {string} clientId Discord client id
-     * @returns Whether the given client ID is a bot admin on the guild
+     * @param {string} userId Discord user id
+     * @returns Whether the given user id is a bot admin on the guild
      */
-    isAdmin(clientId) {
+    isAdmin(userId) {
         let isadmin = false;
         this._admins.forEach((admin) => {
-            if (admin.describes(clientId)) {
+            if (admin.describes(userId)) {
                 isadmin = true;
                 return false;
             }
         });
         this._discordAdmins.forEach((admin) => {
-            if (admin.describes(clientId)) {
+            if (admin.describes(userId)) {
                 isadmin = true;
                 return false;
             }
@@ -97,12 +97,12 @@ class Guild extends GuildModel {
 
     /**
      * @static
-     * @param {string} clientId Discord client id
+     * @param {string} userId Discord user id
      * @param {string} guildId Discord gulid id
-     * @returns {boolean} True if the client is bot admin on the guild
+     * @returns {boolean} True if the user is bot admin on the guild
      */
-    static isGuildAdmin(clientId, guildId) {
-        return Guild.get(guildId).isAdmin(clientId);
+    static isGuildAdmin(userId, guildId) {
+        return Guild.get(guildId).isAdmin(userId);
     }
 
     /**
@@ -415,7 +415,7 @@ class Guild extends GuildModel {
             reply(guilds);
         }, "guildAdmin");
 
-        webAPI.registerAction("get-members", (data, reply, clientId, guildId) => {
+        webAPI.registerAction("get-members", (data, reply, userId, guildId) => {
             let guild = global.discordClient.guilds.get(guildId);
             let members = guild.members;
             reply(members.map(member => {

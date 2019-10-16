@@ -37,7 +37,7 @@ window.Discotron.LoginController = class /* does not extends Controller because 
             document.querySelector("h1").style.display = "none";
             document.querySelector("#login > div > div > div > p:nth-child(2)").textContent = "Bot installation is not complete, please check the installation " +
                 "guide and create the missing configuration file.";
-            
+
             document.querySelector(".widget-buttons").style.display = "none";
             document.querySelector("#login-error").style.display = "block";
             document.querySelector("#login-error").innerHTML = "Could not load <b>dashboard/config/config.js</b>";
@@ -75,14 +75,14 @@ window.Discotron.LoginController = class /* does not extends Controller because 
 
     /**
      * Save local properties and redirect
-     * @param {object} data Answer from the server, contains {token, username, discriminator, avatar, clientId}
+     * @param {object} data Answer from the server, contains {token, username, discriminator, avatar, userId}
      */
     static _handleSuccess(data) {
         localStorage.setItem("appToken", data.token);
         localStorage.setItem("username", data.username);
         localStorage.setItem("discriminator", data.discriminator);
         localStorage.setItem("avatar", data.avatar);
-        localStorage.setItem("clientId", data.clientId);
+        localStorage.setItem("userId", data.userId);
         window.location.replace("/dashboard");
     }
 

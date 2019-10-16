@@ -27,14 +27,14 @@ module.exports.onPost = (req, res) => {
         return;
     }
 
-    Login.getDiscordUserId(appToken).then((clientId) => {
+    Login.getDiscordUserId(appToken).then((userId) => {
         let response = actions[plugin][action];
 
         Logger.log("[WebAPI] Action triggered: " + action);
-        if (authLevelCheck[response.authLevel](clientId, guildId)) {
+        if (authLevelCheck[response.authLevel](userId, guildId)) {
             response.action(data, (requestedData) => {
                 reply(res, requestedData);
-            }, clientId, guildId);
+            }, userId, guildId);
         } else {
             Logger.log("Wrong app token / perm", "warn");
             reply(res, "invalid-app-token");
