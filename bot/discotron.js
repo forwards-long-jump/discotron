@@ -253,6 +253,7 @@ function getUserInfo(discordId) {
                 id: user.id,
                 name: user.username,
                 tag: user.tag,
+                discriminator: user.discriminator,
                 avatarURL: user.displayAvatarURL
             });
         }).catch((e) => {
@@ -334,12 +335,12 @@ module.exports.registerActions = () => {
         if (global.discordClient.user !== null) {
             reply({
                 avatar: global.discordClient.user.displayAvatarURL,
-                username: global.discordClient.user.tag
+                tag: global.discordClient.user.tag
             });
         } else {
             reply({
                 avatar: "/dashboard/images/outage.png",
-                username: "Bot offline"
+                tag: "Bot offline"
             });
         }
     }, "everyone");

@@ -112,7 +112,7 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
 
     /**
      * Activates the add button if the name corresponds to 
-     * @param {string} name Username of a discord user
+     * @param {string} name Username of a discord user or role name
      */
     _checkNameValidity(name) {
         let button = document.querySelector("#add-button");

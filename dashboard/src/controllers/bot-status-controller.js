@@ -14,17 +14,17 @@ window.Discotron.BotStatusController = class extends window.Discotron.Controller
 	 */
 	_displayStatus() {
 		// TODO: Use WebAPI auto caching (advanced feature, not implemented yet)
-		if (Discotron.BotStatusController._username === undefined) {
+		if (Discotron.BotStatusController.tag === undefined) {
 			Discotron.WebAPI.queryBot("discotron-dashboard", "get-bot-info").then((data) => {
 				document.querySelector("#bot-avatar").src = data.avatar;
-				document.querySelector("#bot-name").textContent = data.username;
+				document.querySelector("#bot-name").textContent = data.tag;
 
-				Discotron.BotStatusController._username = data.username;
-				Discotron.BotStatusController._avatar = data.avatar;
+				Discotron.BotStatusController.tag = data.tag;
+				Discotron.BotStatusController.avatar = data.avatar;
 			}).catch(console.error);
 		} else {
-			document.querySelector("#bot-avatar").src = Discotron.BotStatusController._avatar;
-			document.querySelector("#bot-name").textContent = Discotron.BotStatusController._username;
+			document.querySelector("#bot-avatar").src = Discotron.BotStatusController.avatar;
+			document.querySelector("#bot-name").textContent = Discotron.BotStatusController.tag;
 		}
 
 		Discotron.WebAPI.queryBot("discotron-dashboard", "get-bot-config").then((data) => {
@@ -103,5 +103,5 @@ window.Discotron.BotStatusController = class extends window.Discotron.Controller
 	}
 };
 
-Discotron.BotStatusController._avatar = undefined;
-Discotron.BotStatusController._username = undefined;
+Discotron.BotStatusController.avatar = undefined;
+Discotron.BotStatusController.tag = undefined;

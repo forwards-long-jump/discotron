@@ -9,7 +9,7 @@ window.Discotron.NavigationController = class {
 	static displayBot() {
 		Discotron.WebAPI.queryBot("discotron-dashboard", "get-bot-info").then((data) => {
 			document.querySelector("#bot-info img").src = data.avatar;
-			document.querySelector("#bot-info span").textContent = data.username;
+			document.querySelector("#bot-info span").textContent = data.tag;
 		}).catch(console.error);
 	}
 
