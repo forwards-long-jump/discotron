@@ -1,7 +1,5 @@
-# disco-tron
-## Naming conventions
-- Discord server = guild
-- Modules present in git repositories = plugin
-- Discord ids = (user|group|guild)Id
-- Discord user = user
-- Discord bot = client
+# Discotron
+Discord bot supporting plugins hosted on git repositories
+
+# Installation guide
+Clone de repository, run `npm install` an follow the instructions
