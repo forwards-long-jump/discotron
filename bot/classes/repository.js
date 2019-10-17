@@ -91,15 +91,15 @@ class Repository extends RepositoryModel {
             Git.Clone(url, __dirname + "/../repositories/" + folderName, {
                 checkoutBranch: "master"
             }).then((repo) => {
-                db.insert("Repositories", {
+                return db.insert("Repositories", {
                     repositoryURL: url,
                     folderName: folderName
+                }).then(() => {
+                    // Load itself
+                    new Repository(folderName, url);
+                    Logger.log("Cloning successful.");
+                    resolve(folderName);
                 });
-
-                // Load itself
-                new Repository(folderName, url);
-                Logger.log("Cloning successful.");
-                resolve(folderName);
             }).catch((err) => {
                 Logger.log("Cloning failed!");
                 Logger.log(err);

@@ -110,17 +110,19 @@ class Plugin extends PluginModel {
     delete() {
         delete Plugin._plugins[this.id];
 
-        db.delete("Plugins", {
-            id: this.id
+        Promise.all([
+            db.delete("Plugins", {
+                id: this.id
+            }),
+            db.delete("GuildEnabledPlugins", {
+                pluginId: this.id
+            }),
+            db.delete("Permissions", {
+                pluginId: this.id
+            })
+        ]).then(() => {
+            global.discotron.triggerEvent("plugin-deleted", this.id);
         });
-        db.delete("GuildEnabledPlugins", {
-            pluginId: this.id
-        });
-        db.delete("Permissions", {
-            pluginId: this.id
-        });
-
-        global.discotron.triggerEvent("plugin-deleted", this.id);
     }
 
     /**
@@ -193,7 +195,7 @@ class Plugin extends PluginModel {
             disabled: enabled ? 0 : 1
         }, {
             id: this.id
-        });
+        }).catch(Logger.err);
     }
 
     /**
@@ -213,7 +215,7 @@ class Plugin extends PluginModel {
             prefix: prefix
         }, {
             id: this.id
-        });
+        }).catch(Logger.err);
     }
 
     /**

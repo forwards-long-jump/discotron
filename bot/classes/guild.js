@@ -176,7 +176,7 @@ class Guild extends GuildModel {
             prefix: prefix
         }, {
             discordGuildId: this.discordId
-        });
+        }).catch(Logger.err);
     }
 
     /**
@@ -195,13 +195,14 @@ class Guild extends GuildModel {
 
         db.delete("AllowedChannels", {
             discordGuildId: this.discordId
-        });
-        for (let i = 0; i < discordChannelIds.length; ++i) {
-            db.insert("AllowedChannels", {
-                discordGuildId: this.discordId,
-                discordChannelId: discordChannelIds[i]
-            });
-        }
+        }).then(() => {
+            for (let i = 0; i < discordChannelIds.length; ++i) {
+                return db.insert("AllowedChannels", {
+                    discordGuildId: this.discordId,
+                    discordChannelId: discordChannelIds[i]
+                });
+            }
+        }).catch(Logger.err);
     }
 
     /**
@@ -392,27 +393,25 @@ class Guild extends GuildModel {
      * Removes the guild from the database
      */
     delete() {
-        db.delete("Admins", {
-            discordGuildId: this.discordId
+        Promise.all([
+            db.delete("Admins", {
+                discordGuildId: this.discordId
+            }),
+            db.delete("AllowedChannels", {
+                discordGuildId: this.discordId
+            }),
+            db.delete("GuildSettings", {
+                discordGuildId: this.discordId
+            }),
+            db.delete("GuildEnabledPlugins", {
+                discordGuildId: this.discordId
+            }),
+            db.delete("Permissions", {
+                discordGuildId: this.discordId
+            })
+        ]).catch(Logger.err).then(() => {
+            delete Guild._guilds[this.discordId];
         });
-
-        db.delete("AllowedChannels", {
-            discordGuildId: this.discordId
-        });
-
-        db.delete("GuildSettings", {
-            discordGuildId: this.discordId
-        });
-
-        db.delete("GuildEnabledPlugins", {
-            discordGuildId: this.discordId
-        });
-
-        db.delete("Permissions", {
-            discordGuildId: this.discordId
-        });
-
-        delete Guild._guilds[this.discordId];
     }
 
     /**

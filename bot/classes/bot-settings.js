@@ -42,7 +42,7 @@ class BotSettings extends BotSettingsModel {
             value: helpText
         }, {
             name: "helpText"
-        });
+        }).catch(Logger.err);
     }
 
     /**
@@ -63,7 +63,7 @@ class BotSettings extends BotSettingsModel {
             value: presenceText
         }, {
             name: "presenceText"
-        });
+        }).catch(Logger.err);
 
         this.setBotPresence();
     }
@@ -99,7 +99,7 @@ class BotSettings extends BotSettingsModel {
             value: maintenance ? "true" : "false"
         }, {
             name: "maintenance"
-        });
+        }).catch(Logger.err);
     }
 
     get maintenance() {
