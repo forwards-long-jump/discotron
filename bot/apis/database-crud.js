@@ -35,7 +35,7 @@ function generateParameters(where, separator = " AND ") {
 /**
  * Returns the string describing the columns, the string describing the values, and the given object with its keys prefixed by $
  * @param {object} values Format: {field: value}
- * @returns {object} columns: list of colums separated by ",", params: list of params separated by",", data: given object with its keys prefixed by à
+ * @returns {object} columns: list of columns separated by ",", params: list of params separated by",", data: given object with its keys prefixed by à
  */
 function generateValuesForInsert(values) {
     let columns = "(";

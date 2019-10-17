@@ -4,7 +4,7 @@ const Logger = require("../utils/logger.js");
 
 /**
  * UserRole represents either a User or a Role.
- * It was a bad idea and should not exists, it was created to avoid storing discord user ids and discord role ids separetely
+ * It was a bad idea and should not exists, it was created to avoid storing discord user ids and discord role ids separately
  * since most permissions allows either a user or a role
  */
 class UserRole extends UserRoleModel {
@@ -92,7 +92,7 @@ class UserRole extends UserRoleModel {
                 id: id
             }).then((rows) => {
                 if (rows.length === 0) {
-                    throw new Error("UserRole inexistant in db");
+                    throw new Error("UserRole inexistent in db");
                 }
                 resolve(new UserRole(rows[0].discordId, rows[0].type === 1 ? "user" : "role", discordGuildId));
             }).catch(Logger.err);

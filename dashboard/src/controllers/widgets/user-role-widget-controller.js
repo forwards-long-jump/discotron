@@ -64,7 +64,7 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
         let switches = this._widgetContainer.querySelectorAll(".custom-switch-checkbox");
         for (let i = 0; i < switches.length; i++) {
             const checkbox = switches[i];
-            customSettings[checkbox.dataset.devname] = checkbox.checked;
+            customSettings[checkbox.dataset.devName] = checkbox.checked;
         }
 
         return customSettings;
@@ -152,8 +152,8 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
 
                     switchContainer.querySelector(".custom-switch-checkbox").checked = customInput.value;
 
-                    switchContainer.querySelector(".custom-switch-checkbox").placeholder = customInput.name + "lonle";
-                    switchContainer.querySelector(".custom-switch-checkbox").dataset.devname = customInput.devname;
+                    switchContainer.querySelector(".custom-switch-checkbox").placeholder = customInput.name;
+                    switchContainer.querySelector(".custom-switch-checkbox").dataset.devName = customInput.devName;
                     switchContainer.querySelector(".custom-switch-title").textContent = customInput.name;
 
                     this._widgetContainer.querySelector(".additional-settings").appendChild(switchContainer);

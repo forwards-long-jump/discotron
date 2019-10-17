@@ -2,7 +2,7 @@ window.Discotron.utils = {
     /**
      * Make a post request on the specified URL, with data encoded as json
      * @param {string} url Url to make the post request on
-     * @param {object} data Data that will be JSON.stringify'd and sent to the website
+     * @param {object} data Data that will be JSON.stringified and sent to the website
      * @returns {Promise} resolve(data)
      */
     post: (url, data) => {
@@ -57,13 +57,14 @@ window.Discotron.utils = {
             ctx.font = `${fontsize}px ${font}`;
             fontsize--;
         } while (ctx.measureText(acronym).width > size - padding);
+        
         ctx.fillStyle = fgColor;
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.fillText(acronym, size/2, size/2);
+        ctx.fillText(acronym, size / 2, size / 2);
 
         // Render to data url
-        const img = canvas.toDataURL('image/png');
+        const img = canvas.toDataURL("image/png");
         return img;
     }
 };

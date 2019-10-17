@@ -1,5 +1,5 @@
 /**
- * Stores plugin informations
+ * Stores plugin information
  */
 class PluginModel {
     /**

@@ -18,7 +18,7 @@ let actions = {};
  * Add a listener for Discotron events
  * Valid actions are: "plugin-loaded", "plugin-delete"
  * @param {string} actionName Name of the action
- * @param {function} action Function to call when the action occures
+ * @param {function} action Function to call when the action occurs
  */
 module.exports.on = (actionName, action) => {
     if (actions[actionName] === undefined) {
@@ -146,7 +146,7 @@ module.exports.onMessage = (message) => {
                 try {
                     command.doMessageAction(message, words, plugin.getApiObject());
                 } catch (error) {
-                    Logger.log("An error occured in plugin: **" + plugin.name + "** while executing command **" + command.trigger + "**", "err");
+                    Logger.log("An error occurred in plugin: **" + plugin.name + "** while executing command **" + command.trigger + "**", "err");
                     Logger.log(error, "err");
                 }
             }
@@ -182,7 +182,7 @@ module.exports.updateGuilds = () => {
         return guild.id;
     });
 
-    // Delete abandonned guilds and add new ones
+    // Delete abandoned guilds and add new ones
     let addedGuilds = [];
     let removedGuilds = [];
     for (let i = 0; i < newGuildIds.length; ++i) {
@@ -233,11 +233,11 @@ module.exports.onLeaveGuild = (guild) => {};
 module.exports.getBotInfo = () => {};
 
 /**
- * Retrives user informations from discord
+ * Retrieves user information from discord
  * TODO: Fix possible call to undefined
  * TODO: Cache the results
  * TODO: Move this in a new user class
- * @param {strin} discordId Discord user id
+ * @param {string} discordId Discord user id
  */
 function getUserInfo(discordId) {
     return new Promise((resolve, reject) => {
@@ -275,7 +275,6 @@ module.exports.loadRepositories = () => {
                 const row = rows[i];
                 Logger.log("Loading repository **" + row.folderName + "**");
                 new Repository(row.folderName, row.repositoryURL);
-                // r.pull(); // DEBUG, update all repos
             }
         }
     }).catch(Logger.err);

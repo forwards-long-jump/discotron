@@ -50,6 +50,7 @@ window.Discotron.User = class {
      * Load the members of a given guild
      * @static
      * @param {string} discordGuildId  Discord guild id
+     * @returns {Promise} resolve(array): Array of Discotron.User
      */
     static loadGuildMembers(discordGuildId) {
         return new Promise((resolve, reject) => {

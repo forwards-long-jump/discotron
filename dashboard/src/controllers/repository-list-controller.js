@@ -8,7 +8,7 @@ window.Discotron.RepositoryListController = class extends window.Discotron.Contr
 	constructor() {
 		super("owner/repository-list.html", () => {
 			this._addEventListeners();
-			this._displayRepos();
+			this._displayRepositories();
 		});
 	}
 
@@ -30,7 +30,7 @@ window.Discotron.RepositoryListController = class extends window.Discotron.Contr
 	/**
 	 * Display the list of repositories and their plugins 
 	 */
-	_displayRepos() {
+	_displayRepositories() {
 		Discotron.Repository.getAll().then((repositories) => {
 			if (repositories.length > 0) {
 				document.getElementById("repositories-container").innerHTML = "";
@@ -104,7 +104,7 @@ window.Discotron.RepositoryListController = class extends window.Discotron.Contr
 						url: repo.url
 					}).then((data) => {
 						if (data) {
-							event.target.value = "Update succesful";
+							event.target.value = "Update successful";
 						} else {
 							event.target.value = "Could not update";
 						}
@@ -112,7 +112,7 @@ window.Discotron.RepositoryListController = class extends window.Discotron.Contr
 						Discotron.Repository.clearCache();
 						Discotron.Plugin.clearCache();
 						Discotron.Guild.clearCache();
-						this._displayRepos();
+						this._displayRepositories();
 					}).catch(console.error);
 				};
 
@@ -125,7 +125,7 @@ window.Discotron.RepositoryListController = class extends window.Discotron.Contr
 							Discotron.Repository.clearCache();
 							Discotron.Plugin.clearCache();
 							Discotron.Guild.clearCache();
-							this._displayRepos();
+							this._displayRepositories();
 						}).catch(console.error);
 					}
 				};
@@ -136,7 +136,7 @@ window.Discotron.RepositoryListController = class extends window.Discotron.Contr
 	}
 
 	/**
-	 * Called when add repository button is presse
+	 * Called when add repository button is pressed
 	 */
 	_onAddRepository() {
 		let repoUrl = document.getElementById("repository-url").value;
@@ -157,7 +157,7 @@ window.Discotron.RepositoryListController = class extends window.Discotron.Contr
 					Discotron.Repository.clearCache();
 					Discotron.Plugin.clearCache();
 					Discotron.Guild.clearCache();
-					this._displayRepos();
+					this._displayRepositories();
 				}
 			}).catch(console.error);
 		}

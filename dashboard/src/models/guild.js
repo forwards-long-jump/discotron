@@ -11,7 +11,7 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
      * @param {string} commandPrefix Command prefix
      * @param {array} allowedChannelIds Array of channel ids on which the bot is allowed
      * @param {array} enabledPluginIds Array of plugin ids that are enabled
-     * @param {array} admins Array of UserRole who have admin priviledge on the bot
+     * @param {array} admins Array of UserRole who have admin privilege on the bot
      * @param {object} permissions Object binding pluginsIds to userRole array
      */
     constructor(discordId, name, iconURL, acronym, commandPrefix, allowedChannelIds, enabledPlugins, admins, permissions) {
@@ -237,8 +237,6 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
      * @param {boolean} enabled True if the plugin is to be enabled
      */
     setPluginEnabled(pluginId, enabled) {
-        // si le set vide => tous activé
-        // => on call disabled
         if (this._enabledPlugins.size === 0) {
             if (!enabled) {
                 Discotron.Plugin.getAll().then((plugins) => {

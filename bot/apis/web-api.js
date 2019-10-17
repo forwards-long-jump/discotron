@@ -39,7 +39,7 @@ module.exports.onPost = (req, res) => {
             Logger.log("Wrong app token / perm", "warn");
             reply(res, "invalid-app-token");
         }
-    }).catch();
+    }).catch(console.error);
 };
 
 /**
@@ -92,7 +92,7 @@ function registerAction(pluginId, name, action, authLevel = "everyone") {
     Logger.log(`Registered action ${name} for plugin ${pluginId}`, "debug");
 }
 
-// Object containing a method for each level of authentification
+// Object containing a method for each level of authentication
 const authLevelCheck = {
     "owner": require("../classes/owner.js").isOwner,
     "guildAdmin": require("../classes/guild.js").isGuildAdmin,

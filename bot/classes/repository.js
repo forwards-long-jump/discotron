@@ -98,7 +98,7 @@ class Repository extends RepositoryModel {
 
                 // Load itself
                 new Repository(folderName, url);
-                Logger.log("Cloning succesful.");
+                Logger.log("Cloning successful.");
                 resolve(folderName);
             }).catch((e) => {
                 Logger.log("Cloning failed!");

@@ -74,7 +74,7 @@ function registerEvents() {
         // TODO: Handle reconnection and bot status update
     });
 
-    // Handle disconnecting the bot gracefuly
+    // Handle disconnecting the bot gracefully
     process.stdin.resume();
 
     process.on("exit", exitHandler.bind(null, {

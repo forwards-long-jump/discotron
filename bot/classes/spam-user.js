@@ -69,18 +69,18 @@ class SpamUser {
         if (this._damageTaken > config.spam.spamThreshold) {
             this._deathTime = currentTime;
             this._dead = true;
-            this._discordUser.send("Please do not spam commands, you now have to wait " + config.spam.timePenalityInSeconds + " seconds before posting again.");
+            this._discordUser.send("Please do not spam commands, you now have to wait " + config.spam.timePenaltyInSeconds + " seconds before posting again.");
         }
     }
 
     /**
-     * Applies "health renegeration" and return if the user is still "dead"
+     * Applies "health regeneration" and return if the user is still "dead"
      * @returns {boolean} True if the user spammed too much
      */
     _isDead() {
         if (this._dead) {
             let currentTime = (new Date().getTime() / 1000);
-            if (currentTime - this._deathTime > config.spam.timePenalityInSeconds) {
+            if (currentTime - this._deathTime > config.spam.timePenaltyInSeconds) {
                 this._dead = false;
                 this._damageTaken = 0;
                 return false;

@@ -128,13 +128,13 @@ class Plugin extends PluginModel {
      * @returns {object} {name, id, description, version, commands: [commands.toObject()], defaultPermission, enabled}
      */
     toObject(publicInfoOnly = false) {
-        let commandObjs = [];
+        let commandObjects = [];
         for (const type in this.commands) {
             if (this.commands.hasOwnProperty(type)) {
                 const commands = this.commands[type];
                 for (let i = 0; i < commands.length; i++) {
                     const command = commands[i];
-                    commandObjs.push(command.toObject());
+                    commandObjects.push(command.toObject());
                 }
             }
         }
@@ -145,7 +145,7 @@ class Plugin extends PluginModel {
                 id: this.id,
                 description: this.description,
                 version: this.version,
-                commands: commandObjs,
+                commands: commandObjects,
                 defaultPermission: this.defaultPermission,
                 enabled: this.enabled,
                 prefix: this.prefix
@@ -156,7 +156,7 @@ class Plugin extends PluginModel {
                 id: this.id,
                 description: this.description,
                 version: this.version,
-                commands: commandObjs,
+                commands: commandObjects,
                 defaultPermission: this.defaultPermission,
                 enabled: this.enabled,
                 prefix: this.prefix,
@@ -167,7 +167,7 @@ class Plugin extends PluginModel {
 
     /**
      * Log something into the dashboard
-     * @param {object} value String to log, attemps to JSON.stringify if it's an object
+     * @param {object} value String to log, attempts to JSON.stringify if it's an object
      */
     log(value) {
         let date = new Date();

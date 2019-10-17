@@ -3,7 +3,7 @@
  */
 window.Discotron.PluginListController = class extends window.Discotron.Controller {
 	/**
-	 * @constructortructor
+	 * @constructor
 	 * @param {object} args Args given by the user in the URL
 	 */
 	constructor(args) {
@@ -65,7 +65,7 @@ window.Discotron.PluginListController = class extends window.Discotron.Controlle
 						type: "switch",
 						name: "Enabled",
 						value: this._guild.enabledPlugins.has(pluginId) || this._guild.enabledPlugins.size === 0,
-						devname: "enabled"
+						devName: "enabled"
 					}]);
 				};
 

@@ -31,7 +31,7 @@ class Command extends CommandModel {
 
     /**
      * @param {Discord.DiscordMessage} discordMessage 
-     * @param {string} loweredCaseMessage Message lowercase'd, passed as an arg to avoid calling toLowercase too many times
+     * @param {string} loweredCaseMessage Message converted to lower case, passed as an arg to avoid calling toLowercase too many times
      * @param {string} prefixes Server and plugin prefix combined
      * @returns True if the command is triggered by the discordMessage
      */
