@@ -24,14 +24,14 @@ window.Discotron.User = class {
     get name() {
         return this._name;
     }
-    
+
     /**
      * @returns {string} returns the DISCRIMINATOR
      */
     get tag() {
         return this._tag;
     }
-    
+
     /**
      * @returns {string} returns discord user id
      */
@@ -50,7 +50,7 @@ window.Discotron.User = class {
      * Load the members of a given guild
      * @static
      * @param {string} discordGuildId  Discord guild id
-     * @returns {Promise} resolve(array): Array of Discotron.User
+     * @returns {Promise} resolve(users {array}) users: Array of User
      */
     static loadGuildMembers(discordGuildId) {
         return new Promise((resolve, reject) => {
@@ -58,7 +58,7 @@ window.Discotron.User = class {
                 resolve(users.map((user) => {
                     return new Discotron.User(user.name, user.id, user.avatar, user.name + "#" + user.discriminator).id;
                 }));
-            }).catch(console.error);
+            }).catch(reject);
         });
     }
 
@@ -66,7 +66,7 @@ window.Discotron.User = class {
      * Get a user from its id (load it if necessary)
      * @static
      * @param {string} id  User id
-     * @returns {Promise} resolve(User)
+     * @returns {Promise} resolve(user {User}), reject()
      */
     static get(id) {
         return new Promise((resolve, reject) => {
@@ -76,7 +76,7 @@ window.Discotron.User = class {
                     discordId: id
                 }).then((userObj) => {
                     resolve(new Discotron.User(userObj.name, userObj.id, userObj.avatarURL, userObj.tag));
-                }).catch(console.error);
+                }).catch(reject);
             } else {
                 resolve(Discotron.User._users[id]);
             }

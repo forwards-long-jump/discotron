@@ -39,7 +39,7 @@ window.Discotron.Role = class {
      * Returns the roles of a guild, loads it if needed
      * @static
      * @param {string} discordGuildId 
-     * @returns {Promise} resolve(array): Array of Role
+     * @returns {Promise} resolve(roleList {array}) roleList: Array of Role, reject()
      */
     static getGuildRoles(discordGuildId) {
         return new Promise((resolve, reject) => {
@@ -52,7 +52,7 @@ window.Discotron.Role = class {
                 }
 
                 resolve(roleList);
-            }).catch(console.error);
+            }).catch(reject);
         });
     }
 };

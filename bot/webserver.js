@@ -15,7 +15,7 @@ const credentials = {
 };
 
 /**
- * Server the dashboard, login and models folders
+ * Serve the dashboard, login and models folders
  */
 module.exports.serveDashboard = () => {
     app.use("/dashboard", express.static(__dirname + "/../dashboard"));
@@ -43,7 +43,7 @@ module.exports.serveRepositoryFolder = (folderName, repositoryFolderName) => {
 };
 
 /**
- * Serves API pages
+ * Serve API pages
  */
 module.exports.startAPIServer = () => {
     app.use(express.json());

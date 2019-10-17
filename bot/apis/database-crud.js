@@ -60,7 +60,7 @@ function generateValuesForInsert(values) {
  * @param {string} table Table name
  * @param {object} values New values, {fieldName: value, ...}
  * @param {object} where Where to update, {fieldName: value, ...} 
- * @returns {Promise} 
+ * @returns {Promise} resolve(), reject(error {string})
  */
 module.exports.update = (table, values, where) => {
     const database = databaseHelper.getDatabase();
@@ -92,7 +92,7 @@ module.exports.update = (table, values, where) => {
             if (err) {
                 Logger.log("Update in database failed : " + sql, "err");
                 Logger.log(err);
-                reject();
+                reject(err);
             } else {
                 resolve();
             }
@@ -104,7 +104,7 @@ module.exports.update = (table, values, where) => {
  * Insert one entry in the database
  * @param {string} table Table name
  * @param {object} values New values, {fieldName: value, ...} 
- * @returns {Promise} 
+ * @returns {Promise} resolve(), reject(error {string})
  */
 module.exports.insert = (table, values) => {
     const database = databaseHelper.getDatabase();
@@ -131,7 +131,7 @@ module.exports.insert = (table, values) => {
  * @param {string} table Table names
  * @param {object} where Where to delete, {fieldName: value, ...} 
  * @param {boolean} [eraseAll=false] Set it to true to allow using an empty object for where
- * @returns {Promise} 
+ * @returns {Promise} resolve(), reject(error {string})
  */
 module.exports.delete = (table, where, eraseAll = false) => {
     const database = databaseHelper.getDatabase();
@@ -171,7 +171,7 @@ module.exports.delete = (table, where, eraseAll = false) => {
  * @param {string} table Name of the table
  * @param {array} fields Fields to retrieve
  * @param {object} where Which values to retrieve, {fieldName: value, ...} 
- * @returns {Promise} Resolve: array of row. Each row contains a {fieldName: value} object
+ * @returns {Promise} resolve(rows {array}) rows: Contains {fieldName: value} objects, reject(error {string})
  */
 module.exports.select = (table, fields = [], where = {}) => {
     const database = databaseHelper.getDatabase();
@@ -194,7 +194,7 @@ module.exports.select = (table, fields = [], where = {}) => {
             database.all(sql, parameters.objParam, (err, rows) => {
                 if (err) {
                     Logger.log("Select in database failed : " + sql, "err");
-                    reject();
+                    reject(err);
                 }
                 resolve(rows);
             });
@@ -202,7 +202,7 @@ module.exports.select = (table, fields = [], where = {}) => {
             database.all(sql, (err, rows) => {
                 if (err) {
                     Logger.log("Select in database failed : " + sql, "err");
-                    reject();
+                    reject(err);
                 }
                 resolve(rows);
             });

@@ -57,8 +57,8 @@ class Owner extends OwnerModel {
     }
 
     /**
-     * @returns {Promise} resolve(ownerArray)
      * @static
+     * @returns {Promise} resolve(owners {array}) owners: Array of discord user id, reject(error {string})
      */
     static getOwners() {
         return new Promise((resolve, reject) => {
@@ -69,7 +69,7 @@ class Owner extends OwnerModel {
                         Owner._owners.add(row.discordUserId);
                     }
                     resolve(Array.from(Owner._owners));
-                }).catch(Logger.err);
+                }).catch(reject);
             } else {
                 resolve(Array.from(Owner._owners));
             }

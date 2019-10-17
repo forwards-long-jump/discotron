@@ -3,7 +3,7 @@ window.Discotron.utils = {
      * Make a post request on the specified URL, with data encoded as json
      * @param {string} url Url to make the post request on
      * @param {object} data Data that will be JSON.stringified and sent to the website
-     * @returns {Promise} resolve(data)
+     * @returns {Promise} resolve(data {object|string}) data: object if could parse JSON, reject()
      */
     post: (url, data) => {
         return new Promise((resolve, reject) => {
@@ -17,7 +17,7 @@ window.Discotron.utils = {
                 if (request.readyState === XMLHttpRequest.DONE) {
                     try {
                         resolve(JSON.parse(request.responseText));
-                    } catch (e) {
+                    } catch (err) {
                         resolve(request.responseText);
                     }
                 }
@@ -57,7 +57,7 @@ window.Discotron.utils = {
             ctx.font = `${fontsize}px ${font}`;
             fontsize--;
         } while (ctx.measureText(acronym).width > size - padding);
-        
+
         ctx.fillStyle = fgColor;
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";

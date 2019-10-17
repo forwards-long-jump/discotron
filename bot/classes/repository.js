@@ -82,7 +82,7 @@ class Repository extends RepositoryModel {
      * Clone a repository from a url, should be used the first time
      * @param {string} url Repository URL to clone
      * @static
-     * @returns {Promise} resolve(): Folder name of the downloaded repo
+     * @returns {Promise} resolve(folderName {string}) folderName: Folder name of the repository, reject(error {string})
      */
     static clone(url) {
         Logger.log("Cloning **" + url + "**...");
@@ -100,10 +100,10 @@ class Repository extends RepositoryModel {
                 new Repository(folderName, url);
                 Logger.log("Cloning successful.");
                 resolve(folderName);
-            }).catch((e) => {
+            }).catch((err) => {
                 Logger.log("Cloning failed!");
-                Logger.log(e);
-                reject(e);
+                Logger.log(err);
+                reject(err);
             });
         });
     }

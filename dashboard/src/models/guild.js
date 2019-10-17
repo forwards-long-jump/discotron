@@ -57,7 +57,7 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
     }
 
     /**
-     * @returns {Promise} resolve(): array of channels
+     * @returns {Promise} resolve(channels {array}) channels: Array of Channel, reject()
      */
     getChannels() {
         return new Promise((resolve, reject) => {
@@ -68,7 +68,7 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
                         this._channels[channel.id] = channel;
                     }
                     resolve(this._channels);
-                }).catch(console.error);
+                }).catch(reject);
             } else {
                 resolve(this._channels);
             }
@@ -77,20 +77,20 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
 
     /**
      * Load members using the WebAPI
-     * @returns {Promise} resolve(): called when members are loaded
+     * @returns {Promise} resolve(), reject()
      */
     _loadMembers() {
         return new Promise((resolve, reject) => {
             Discotron.User.loadGuildMembers(this.discordId).then((users) => {
                 this._members = users;
                 resolve();
-            }).catch(console.error);
+            }).catch(reject);
         });
     }
 
     /**
      * Load roles using the WebAPI
-     * @returns {Promise} resolve(): called when members are loaded
+     * @returns {Promise} resolve(), reject()
      */
     _loadRoles() {
         return new Promise((resolve, reject) => {
@@ -100,7 +100,7 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
                     this._roles[role.id] = role;
                 }
                 resolve();
-            }).catch(console.error);
+            }).catch(reject);
         });
     }
 
@@ -108,7 +108,7 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
     /**
      * Get all guilds, load them if necessary
      * @static
-     * @returns {Promise} resolve(guilds): an array of Discotron.Guild
+     * @returns {Promise} resolve(guilds {array}) guilds: Array of Guild, reject()
      */
     static getAll() {
         return new Promise((resolve, reject) => {
@@ -133,7 +133,7 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
                         new Discotron.Guild(obj.id, obj.name, obj.image, obj.nameAcronym, obj.prefix, new Set(obj.allowedChannelIds), new Set(obj.enabledPluginIds), new Set(admins), permissions);
                     }
                     resolve(Discotron.Guild._guilds);
-                }).catch(console.error);
+                }).catch(reject);
             } else {
                 resolve(Discotron.Guild._guilds);
             }

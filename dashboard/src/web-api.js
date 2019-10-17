@@ -6,7 +6,7 @@ window.Discotron.WebAPI = class {
      * @param {string} action Name of the action
      * @param {object} data Data that will JSON.stringified and sent to the bot
      * @param {object} [discordGuildId=undefined] Specify to which guild this action is targeted to
-     * @returns {Promise} resolve(data)
+     * @returns {Promise} resolve(data {object}) data: result given by the API, reject()
      */
     static queryBot(plugin, action, data, discordGuildId = undefined) {
         let params = {
@@ -15,6 +15,7 @@ window.Discotron.WebAPI = class {
             data: data,
             appToken: localStorage.appToken
         };
+
         if (discordGuildId) {
             params.discordGuildId = discordGuildId;
         }
@@ -27,9 +28,7 @@ window.Discotron.WebAPI = class {
                 } else {
                     resolve(data);
                 }
-            }).catch(() => {
-                console.error("Could not query bot");
-            });
+            }).catch(reject);
         });
     }
 };
