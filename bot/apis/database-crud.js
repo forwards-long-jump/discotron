@@ -1,25 +1,27 @@
+/**
+ * Helper functions for the database
+ */
 const databaseHelper = require("../utils/database-helper.js");
 const Logger = require("../utils/logger.js");
 
 /**
- * Returns whether the given associative array is empty
  * Source: https://stackoverflow.com/questions/4482686/check-synchronously-if-file-directory-exists-in-node-js
- * @param {object} associativeArray Associative array
- * @returns {boolean} True if the associative array is empty
+ * @param {object} object object
+ * @returns {boolean} True if the object is empty
  */
-function isEmpty(associativeArray) {
-    return Object.entries(associativeArray).length === 0 && associativeArray.constructor === Object;
+function isEmpty(object) {
+    return Object.entries(object).length === 0 && object.constructor === Object;
 }
 
 /**
- * Returns a string in the format "KEY1 = $KEY1 separator KEY2 = $KEY2", as well as the given associative array with its keys prefixed by $
- * @param {object} where Associative array field => value
- * @param {string} separator Separator between entries
- * @returns {object} Associative array containing the string and the transformed associative array given in the parameters
+ * @param {object} where {fieldName: value, ...}
+ * @param {string} [separator=" AND "] Separator between entries
+ * @returns {object} text: string in the format "KEY1 = $KEY1 separator KEY2 = $KEY2", objParam: given object with its keys prefixed by $
  */
 function generateParameters(where, separator = " AND ") {
     let params = "";
     let objParam = {};
+
     for (let key in where) {
         params += key + " = $" + key + separator;
         objParam["$" + key] = where[key];
@@ -31,19 +33,21 @@ function generateParameters(where, separator = " AND ") {
 }
 
 /**
- * Returns the string describing the columns, the string describing the values, and the given associative array with its keys prefixed by $
- * @param {object} values Associative array field => value
- * @returns {object} Associative array containing the columns text, the values text, and the transformed associative array given in the parameters
+ * Returns the string describing the columns, the string describing the values, and the given object with its keys prefixed by $
+ * @param {object} values Format: {field: value}
+ * @returns {object} columns: list of columns separated by ",", params: list of params separated by",", data: given object with its keys prefixed by à
  */
 function generateValuesForInsert(values) {
     let columns = "(";
     let params = "(";
     let data = {};
+
     for (let key in values) {
         columns += key + ",";
         params += "$" + key + ",";
         data["$" + key] = values[key];
     }
+
     return {
         columns: columns.substr(0, columns.length - 1) + ")",
         params: params.substr(0, params.length - 1) + ")",
@@ -51,40 +55,57 @@ function generateValuesForInsert(values) {
     };
 }
 
+/**
+ * Update entries in the database
+ * @param {string} table Table name
+ * @param {object} values New values, {fieldName: value, ...}
+ * @param {object} where Where to update, {fieldName: value, ...} 
+ * @returns {Promise} resolve(), reject(error {string})
+ */
 module.exports.update = (table, values, where) => {
     const database = databaseHelper.getDatabase();
 
     return new Promise((resolve, reject) => {
         let sql = "UPDATE " + table + " SET ";
-
         let valuesText = "";
         let params = [];
+
         for (let key in values) {
             valuesText += key + "=?,";
             params.push(values[key]);
         }
+
         valuesText = valuesText.substr(0, valuesText.length - 1);
 
         let whereText = "";
+
         for (let key in where) {
             whereText += key + "=? AND ";
             params.push(where[key]);
         }
+
         whereText = whereText.substr(0, whereText.length - 5);
 
         sql += valuesText + " WHERE " + whereText;
+
         database.run(sql, params, (err) => {
             if (err) {
                 Logger.log("Update in database failed : " + sql, "err");
-                reject();
-            }
-            else {
+                Logger.log(err);
+                reject(err);
+            } else {
                 resolve();
             }
         });
     });
 };
 
+/**
+ * Insert one entry in the database
+ * @param {string} table Table name
+ * @param {object} values New values, {fieldName: value, ...} 
+ * @returns {Promise} resolve(), reject(error {string})
+ */
 module.exports.insert = (table, values) => {
     const database = databaseHelper.getDatabase();
 
@@ -96,30 +117,38 @@ module.exports.insert = (table, values) => {
         database.run(sql, parameters.data, (err) => {
             if (err) {
                 Logger.log("Insert in database failed : " + sql, "err");
-                Logger.log(err)
-                reject();
-            }
-            else {
+                Logger.log(err);
+                reject(err);
+            } else {
                 resolve();
             }
         });
     });
 };
 
+/**
+ * Delete entries from the database
+ * @param {string} table Table names
+ * @param {object} where Where to delete, {fieldName: value, ...} 
+ * @param {boolean} [eraseAll=false] Set it to true to allow using an empty object for where
+ * @returns {Promise} resolve(), reject(error {string})
+ */
 module.exports.delete = (table, where, eraseAll = false) => {
     const database = databaseHelper.getDatabase();
 
     return new Promise((resolve, reject) => {
         let sql = "DELETE FROM " + table;
+
         if (!isEmpty(where)) {
             let parameters = generateParameters(where);
             sql += " WHERE " + parameters.text;
+
             database.run(sql, parameters.objParam, (err) => {
                 if (err) {
                     Logger.log("Delete in database failed : " + sql, "err");
-                    reject();
-                }
-                else {
+                    Logger.log(err);
+                    reject(err);
+                } else {
                     resolve();
                 }
             });
@@ -127,9 +156,9 @@ module.exports.delete = (table, where, eraseAll = false) => {
             database.run(sql, (err) => {
                 if (err) {
                     Logger.log("Delete in database failed : " + sql, "err");
-                    reject();
-                }
-                else {
+                    Logger.log(err);
+                    reject(err);
+                } else {
                     resolve();
                 }
             });
@@ -137,6 +166,13 @@ module.exports.delete = (table, where, eraseAll = false) => {
     });
 };
 
+/**
+ * Select entries from a table
+ * @param {string} table Name of the table
+ * @param {array} fields Fields to retrieve
+ * @param {object} where Which values to retrieve, {fieldName: value, ...} 
+ * @returns {Promise} resolve(rows {array}) rows: Contains {fieldName: value} objects, reject(error {string})
+ */
 module.exports.select = (table, fields = [], where = {}) => {
     const database = databaseHelper.getDatabase();
 
@@ -158,7 +194,7 @@ module.exports.select = (table, fields = [], where = {}) => {
             database.all(sql, parameters.objParam, (err, rows) => {
                 if (err) {
                     Logger.log("Select in database failed : " + sql, "err");
-                    reject();
+                    reject(err);
                 }
                 resolve(rows);
             });
@@ -166,7 +202,7 @@ module.exports.select = (table, fields = [], where = {}) => {
             database.all(sql, (err, rows) => {
                 if (err) {
                     Logger.log("Select in database failed : " + sql, "err");
-                    reject();
+                    reject(err);
                 }
                 resolve(rows);
             });

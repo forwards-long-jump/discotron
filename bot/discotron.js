@@ -14,6 +14,12 @@ const botSettings = new BotSettings();
 
 let actions = {};
 
+/**
+ * Add a listener for Discotron events
+ * Valid actions are: "plugin-loaded", "plugin-delete"
+ * @param {string} actionName Name of the action
+ * @param {function} action Function to call when the action occurs
+ */
 module.exports.on = (actionName, action) => {
     if (actions[actionName] === undefined) {
         actions[actionName] = [];
@@ -22,6 +28,11 @@ module.exports.on = (actionName, action) => {
     actions[actionName].push(action);
 };
 
+/**
+ * Triggers a Discotron event
+ * @param {string} actionName Name of the action to trigger
+ * @param {object} data Object that will be passed to the functions
+ */
 module.exports.triggerEvent = (actionName, data) => {
     if (actions[actionName] === undefined) {
         Logger.log("Cannot trigger inexistent action: **" + actionName + "**", "warn");
@@ -32,6 +43,11 @@ module.exports.triggerEvent = (actionName, data) => {
     }
 };
 
+/**
+ * Should be called when the bot receives a message
+ * Handles message reception
+ * @param {Discord.Message} message Received message
+ */
 module.exports.onMessage = (message) => {
     Logger.log(`__#${message.channel.name}__ <${message.author.tag}>: ${message.content}`);
     if (message.author.bot) {
@@ -130,7 +146,7 @@ module.exports.onMessage = (message) => {
                 try {
                     command.doMessageAction(message, words, plugin.getApiObject());
                 } catch (error) {
-                    Logger.log("An error occured in plugin: **" + plugin.name + "** while executing command **" + command.trigger + "**", "err");
+                    Logger.log("An error occurred in plugin: **" + plugin.name + "** while executing command **" + command.trigger + "**", "err");
                     Logger.log(error, "err");
                 }
             }
@@ -139,9 +155,13 @@ module.exports.onMessage = (message) => {
 
 };
 
+/**
+ * Load guild settings from database
+ * TODO: This should probably be moved into the guild class
+ */
 module.exports.loadGuilds = () => {
     return new Promise((resolve, reject) => {
-        db.select("GuildSettings", ["discordGuildId"]).then((rows) => {
+        return db.select("GuildSettings", ["discordGuildId"]).then((rows) => {
             for (let i = 0; i < rows.length; ++i) {
                 new Guild(rows[i].discordGuildId);
             }
@@ -150,60 +170,75 @@ module.exports.loadGuilds = () => {
     });
 };
 
+/**
+ * Reload guilds, admins from the guild object
+ * TODO: Move this in the Guild class
+ * TODO: Call this when guilds change
+ * TODO: Check if it's complete
+ */
 module.exports.updateGuilds = () => {
     let oldGuildIds = Object.keys(Guild.getAll());
     let newGuildIds = global.discordClient.guilds.map((guild) => {
         return guild.id;
     });
 
-    // Delete abandonned guilds and add new ones
+    // Delete abandoned guilds and add new ones
     let addedGuilds = [];
     let removedGuilds = [];
     for (let i = 0; i < newGuildIds.length; ++i) {
-        const guildId = newGuildIds[i];
-        if (!oldGuildIds.includes(guildId)) {
-            addedGuilds.push(guildId);
+        const discordGuildId = newGuildIds[i];
+        if (!oldGuildIds.includes(discordGuildId)) {
+            addedGuilds.push(discordGuildId);
         }
     }
     for (let i = 0; i < oldGuildIds.length; ++i) {
-        const guildId = oldGuildIds[i];
-        if (!newGuildIds.includes(guildId)) {
-            removedGuilds.push(guildId);
+        const discordGuildId = oldGuildIds[i];
+        if (!newGuildIds.includes(discordGuildId)) {
+            removedGuilds.push(discordGuildId);
         }
     }
 
     for (let i = 0; i < addedGuilds.length; ++i) {
-        const guildId = addedGuilds[i];
-        new Guild(guildId);
+        const discordGuildId = addedGuilds[i];
+        new Guild(discordGuildId);
     }
     for (let i = 0; i < removedGuilds.length; ++i) {
-        const guildId = removedGuilds[i];
-        Guild.get(guildId).delete();
+        const discordGuildId = removedGuilds[i];
+        Guild.get(discordGuildId).delete();
     }
 
     // Load *native* admins
     for (let i = 0; i < newGuildIds.length; ++i) {
-        const guildId = newGuildIds[i];
-        Guild.get(guildId).loadDiscordAdmins();
+        const discordGuildId = newGuildIds[i];
+        Guild.get(discordGuildId).loadDiscordAdmins();
     }
 };
 
+/**
+ * Load owners
+ * TODO: Move this in the owner class
+ */
 module.exports.loadOwners = () => {
     Owner.getOwners().then((owners) => {
         if (owners.length === 0) {
             Login.setFirstLaunch();
         }
-    });
+    }).catch(Logger.err);
 };
 
-module.exports.updateStatus = () => {
-    botSettings.setBotPresence();
-};
-
+// TODO
 module.exports.onReaction = (reaction) => {};
 module.exports.onJoinGuild = (guild) => {};
 module.exports.onLeaveGuild = (guild) => {};
+module.exports.getBotInfo = () => {};
 
+/**
+ * Retrieves user information from discord
+ * TODO: Fix possible call to undefined
+ * TODO: Cache the results
+ * TODO: Move this in a new user class
+ * @param {string} discordId Discord user id
+ */
 function getUserInfo(discordId) {
     return new Promise((resolve, reject) => {
         global.discordClient.fetchUser(discordId).then((user) => {
@@ -211,6 +246,7 @@ function getUserInfo(discordId) {
                 id: user.id,
                 name: user.username,
                 tag: user.tag,
+                discriminator: user.discriminator,
                 avatarURL: user.displayAvatarURL
             });
         }).catch((e) => {
@@ -218,50 +254,61 @@ function getUserInfo(discordId) {
             Logger.log(e, "err");
         });
     });
-};
-module.exports.getBotInfo = () => {};
+}
 
+/**
+ * @returns {object} Bot settings
+ */
 module.exports.getBotSettings = () => {
     return botSettings;
 };
 
+/**
+ * Load repositories from the database, which will build most things
+ */
 module.exports.loadRepositories = () => {
     db.select("Repositories").then((rows) => {
         if (rows.length === 0) {
-            Logger.log("No repositories  found.", "warn");
+            Logger.log("No repositories found.", "warn");
         } else {
             for (let i = 0; i < rows.length; i++) {
                 const row = rows[i];
                 Logger.log("Loading repository **" + row.folderName + "**");
-                let r = new Repository(row.folderName, row.repositoryURL);
-                // r.pull(); // DEBUG, update all repos
+                new Repository(row.folderName, row.repositoryURL);
             }
         }
-    });
+    }).catch(Logger.err);
 };
 
+/**
+ * Register webAPI actions related to Discotron
+ */
 module.exports.registerActions = () => {
     webAPI.registerAction("set-bot-config", (data, reply) => {
         if (data === undefined) {
             reply(false);
             return;
         }
+
         if (data.helpText !== undefined) {
             botSettings.helpText = data.helpText;
         }
+
         if (data.maintenance !== undefined) {
             botSettings.maintenance = data.maintenance;
         }
-        if (data.statusText !== undefined) {
-            botSettings.statusText = data.statusText;
+
+        if (data.presenceText !== undefined) {
+            botSettings.presenceText = data.presenceText;
         }
+
         reply();
     }, "owner");
 
     webAPI.registerAction("get-bot-config", (data, reply) => {
         reply({
             helpText: botSettings.helpText,
-            botStatus: botSettings.statusText,
+            presenceText: botSettings.presenceText,
             maintenance: botSettings.maintenance,
             status: global.discordClient.status
         });
@@ -270,22 +317,22 @@ module.exports.registerActions = () => {
     webAPI.registerAction("restart-bot", (data, reply) => {
         Logger.log("Restarting bot...");
         global.discordClient.destroy().then(() => {
-            global.discordClient._connectToDiscord().then(() => {
+            return global.discordClient._connectToDiscord().then(() => {
                 reply(true);
             });
-        });
+        }).catch(Logger.err);
     }, "owner");
 
     webAPI.registerAction("get-bot-info", (data, reply) => {
         if (global.discordClient.user !== null) {
             reply({
                 avatar: global.discordClient.user.displayAvatarURL,
-                username: global.discordClient.user.tag
+                tag: global.discordClient.user.tag
             });
         } else {
             reply({
                 avatar: "/dashboard/images/outage.png",
-                username: "Bot offline"
+                tag: "Bot offline"
             });
         }
     }, "everyone");
@@ -293,7 +340,7 @@ module.exports.registerActions = () => {
     webAPI.registerAction("get-user-info", (data, reply) => {
         getUserInfo(data.discordId).then((info) => {
             reply(info);
-        });
+        }).catch(Logger.err);
     });
 
 

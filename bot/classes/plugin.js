@@ -5,10 +5,13 @@ const db = require("./../apis/database-crud.js");
 const Logger = require("../utils/logger.js");
 const Owner = require("./owner.js");
 
+/**
+ * Server side plugin, contains commands and plugin status info
+ */
 class Plugin extends PluginModel {
     /**
-     * Ctor
-     * @param {string} folder Folder containing a plugin 
+     * @constructor
+     * @param {string} folder Folder name of the plugin in a repository 
      */
     constructor(folder) {
         super();
@@ -36,6 +39,9 @@ class Plugin extends PluginModel {
         Plugin._plugins[this.id] = this;
     }
 
+    /**
+     * @returns {object} APIs that can be used by plugins
+     */
     getApiObject() {
         return {
             discotron: global.discotron,
@@ -46,7 +52,8 @@ class Plugin extends PluginModel {
     }
 
     /**
-     * Returns an array of all the plugins
+     * @returns {array} Array of all the plugins
+     * @static
      */
     static getAll() {
         return Plugin._plugins;
@@ -74,7 +81,7 @@ class Plugin extends PluginModel {
     }
 
     /**
-     * Loads prefix and enabled from DB, inserts default values if none found
+     * Loads "prefix" and "enabled" from the database, inserts default values if none found
      */
     _loadInfoFromDatabase() {
         // default values
@@ -88,29 +95,34 @@ class Plugin extends PluginModel {
                 this._prefix = rows[0].prefix;
                 this._enabled = (rows[0].disabled === 0);
             } else {
-                db.insert("Plugins", {
+                return db.insert("Plugins", {
                     id: this.id,
                     prefix: "",
                     disabled: 0
                 });
             }
-        });
+        }).catch(Logger.err);
     }
 
+    /**
+     * Delete this plugin from the database and unload it
+     */
     delete() {
         delete Plugin._plugins[this.id];
 
-        db.delete("Plugins", {
-            id: this.id
+        Promise.all([
+            db.delete("Plugins", {
+                id: this.id
+            }),
+            db.delete("GuildEnabledPlugins", {
+                pluginId: this.id
+            }),
+            db.delete("Permissions", {
+                pluginId: this.id
+            })
+        ]).then(() => {
+            global.discotron.triggerEvent("plugin-deleted", this.id);
         });
-        db.delete("GuildEnabledPlugins", {
-            pluginId: this.id
-        });
-        db.delete("Permissions", {
-            pluginId: this.id
-        });
-
-        global.discotron.triggerEvent("plugin-deleted", this.id);
     }
 
     /**
@@ -118,13 +130,13 @@ class Plugin extends PluginModel {
      * @returns {object} {name, id, description, version, commands: [commands.toObject()], defaultPermission, enabled}
      */
     toObject(publicInfoOnly = false) {
-        let commandObjs = [];
+        let commandObjects = [];
         for (const type in this.commands) {
             if (this.commands.hasOwnProperty(type)) {
                 const commands = this.commands[type];
                 for (let i = 0; i < commands.length; i++) {
                     const command = commands[i];
-                    commandObjs.push(command.toObject());
+                    commandObjects.push(command.toObject());
                 }
             }
         }
@@ -135,7 +147,7 @@ class Plugin extends PluginModel {
                 id: this.id,
                 description: this.description,
                 version: this.version,
-                commands: commandObjs,
+                commands: commandObjects,
                 defaultPermission: this.defaultPermission,
                 enabled: this.enabled,
                 prefix: this.prefix
@@ -146,7 +158,7 @@ class Plugin extends PluginModel {
                 id: this.id,
                 description: this.description,
                 version: this.version,
-                commands: commandObjs,
+                commands: commandObjects,
                 defaultPermission: this.defaultPermission,
                 enabled: this.enabled,
                 prefix: this.prefix,
@@ -157,7 +169,7 @@ class Plugin extends PluginModel {
 
     /**
      * Log something into the dashboard
-     * @param {object} value 
+     * @param {object} value String to log, attempts to JSON.stringify if it's an object
      */
     log(value) {
         let date = new Date();
@@ -174,7 +186,7 @@ class Plugin extends PluginModel {
     }
 
     /**
-     * Set enabled
+     * Set if the plugin can be used or not
      * @param {boolean} enabled 
      */
     set enabled(enabled) {
@@ -183,9 +195,12 @@ class Plugin extends PluginModel {
             disabled: enabled ? 0 : 1
         }, {
             id: this.id
-        });
+        }).catch(Logger.err);
     }
 
+    /**
+     * @returns {boolean} Plugin enabled
+     */
     get enabled() {
         return super.enabled;
     }
@@ -200,13 +215,20 @@ class Plugin extends PluginModel {
             prefix: prefix
         }, {
             id: this.id
-        });
+        }).catch(Logger.err);
     }
 
+    /**
+     * @returns {string} Global prefix for this plugin
+     */
     get prefix() {
         return super.prefix;
     }
 
+    /**
+     * Register webAPI actions related to plugins
+     * @static
+     */
     static registerActions() {
         webAPI.registerAction("get-plugin-prefix", (data, reply) => {
             if (Plugin._plugins[data.pluginId] !== undefined) {

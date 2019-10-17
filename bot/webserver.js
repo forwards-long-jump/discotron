@@ -14,6 +14,9 @@ const credentials = {
     cert: appConfig.certificate
 };
 
+/**
+ * Serve the dashboard, login and models folders
+ */
 module.exports.serveDashboard = () => {
     app.use("/dashboard", express.static(__dirname + "/../dashboard"));
     app.use("/models", express.static(__dirname + "/../models"));
@@ -25,6 +28,11 @@ module.exports.serveDashboard = () => {
     });
 };
 
+/**
+ * Serve pages from a repository
+ * @param {string} folderName Name of the folder in the repository
+ * @param {string} repositoryFolderName Name of the folder of the repository
+ */
 module.exports.serveRepositoryFolder = (folderName, repositoryFolderName) => {
     if (["dashboard", "login", "models"].includes(folderName)) {
         Logger.log("Could not serve folder **" + folderName + "** because it is a reserved page name.", "warn");
@@ -34,6 +42,9 @@ module.exports.serveRepositoryFolder = (folderName, repositoryFolderName) => {
     }
 };
 
+/**
+ * Serve API pages
+ */
 module.exports.startAPIServer = () => {
     app.use(express.json());
     app.post("/api", webAPI.onPost);

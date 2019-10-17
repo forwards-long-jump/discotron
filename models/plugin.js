@@ -1,9 +1,9 @@
 /**
- * Stores plugin informations
+ * Stores plugin information
  */
 class PluginModel {
     /**
-     * Ctor
+     * @constructor
      * @param {string} id Id of the plugin
      * @param {string} name Displayed name of the plugin
      * @param {string} description Short description of the plugin
@@ -26,30 +26,64 @@ class PluginModel {
         this._logs = logs;
     }
 
+    /**
+     * @returns {string} Name
+     */
     get name() {
         return this._name;
     }
+    /**
+     * @returns {string} Id
+     */
     get id() {
         return this._id;
     }
+
+    /**
+     * @returns {string} Description
+     */
     get description() {
         return this._description;
     }
+
+    /**
+     * @returns {string} Version
+     */
     get version() {
         return this._version;
     }
+
+    /**
+     * @returns {string} Prefix
+     */
     get prefix() {
         return this._prefix;
     }
+
+    /**
+     * @returns {array} Array of Command 
+     */
     get commands() {
         return this._commands;
     }
+
+    /**
+     * @returns {string} Default permission (*everyone* or *admin*)
+     */
     get defaultPermission() {
         return this._defaultPermission;
     }
+
+    /**
+     * @returns {boolean} Enabled
+     */
     get enabled() {
         return this._enabled;
     }
+
+    /**
+     * @returns {array} Array of string
+     */
     get logs() {
         return this._logs;
     }

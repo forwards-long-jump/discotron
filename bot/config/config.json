@@ -7,9 +7,9 @@
         "port": 47131
     },
     "spam": {
-        "incrementPerUsage" : 40,
-        "spamThreshold" : 100,
+        "incrementPerUsage": 40,
+        "spamThreshold": 100,
         "decrementPerSecond": 20,
-        "timePenalityInSeconds" : 60
+        "timePenaltyInSeconds": 60
     }
 }

@@ -3,32 +3,33 @@
  */
 class BotSettingsModel {
     /**
-     * Ctor
-     * @param {string} helpText Text displayed in the help of the bot
-     * @param {boolean} maintenance True to only allow the owner(s) to use the bot
+     * @constructor
+     * @param {string} [helpText=""] Text displayed in the help of the bot
+     * @param {boolean} [maintenance=false] True to only allow the owner(s) to use the bot
+     * @param {string} [presenceText=""] Bot presence text
      */
-    constructor(helpText = "", maintenance = false, statusText = "") {
+    constructor(helpText = "", maintenance = false, presenceText = "") {
         this._helpText = helpText;
-        this._statusText = statusText;
+        this._presenceText = presenceText;
         this._maintenance = maintenance;
     }
 
     /**
-     * Get help text
+     * @returns {string} help text (unused)
      */
     get helpText() {
         return this._helpText;
     }
-
+    
     /**
-     * Get status text
+     * @returns {string} presence text
      */
-    get statusText() {
-        return this._statusText;
+    get presenceText() {
+        return this._presenceText;
     }
-
+    
     /**
-     * Get maintenance mode
+     * @returns {boolean} maintenance mode
      */
     get maintenance() {
         return this._maintenance;

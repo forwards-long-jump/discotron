@@ -3,13 +3,16 @@
  */
 class OwnerModel {
     /**
-     * Ctor
+     * @constructor
      * @param  {string} discordId DiscordId of the owner
      */
     constructor(discordId = undefined) {
         this._discordId = discordId;
     }
 
+    /**
+     * @returns {string} Discord Id
+     */
     get discordId() {
         return this._discordId;
     }

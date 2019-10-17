@@ -11,11 +11,14 @@ const crypto = require("crypto");
 
 const db = require("../apis/database-crud.js");
 
+/**
+ * Repository server side, contains plugins and pages
+ */
 class Repository extends RepositoryModel {
     /**
-     * Ctor
-     * @param {string} folderName 
-     * @param {string} url 
+     * @constructor
+     * @param {string} folderName Name of the folder for this repository
+     * @param {string} url URL to use to clone a repository
      */
     constructor(folderName, url) {
         super(url);
@@ -31,6 +34,9 @@ class Repository extends RepositoryModel {
         Repository._repositories.push(this);
     }
 
+    /**
+     * Load all plugins existing in this repository
+     */
     loadPluginsFromDisk() {
         let pluginsPath = __dirname + "/../repositories/" + this._folderName + "/plugins";
 
@@ -44,6 +50,9 @@ class Repository extends RepositoryModel {
 
     }
 
+    /**
+     * Load all pages existing in this repository
+     */
     loadPagesFromDisk() {
         let pagesPath = __dirname + "/../repositories/" + this._folderName + "/pages";
 
@@ -51,9 +60,9 @@ class Repository extends RepositoryModel {
             fs.readdirSync(__dirname + "/../repositories/" + this._folderName + "/pages").forEach(file => {
                 Logger.log("Serving web folder **" + file + "**");
                 webServer.serveRepositoryFolder(file, this._folderName);
-                
+
                 let oldPageIndex = this._pages.indexOf(file);
-                if(oldPageIndex >= 0) {
+                if (oldPageIndex >= 0) {
                     this._pages.splice(oldPageIndex, 1);
                 }
                 this._pages.push(file);
@@ -62,8 +71,8 @@ class Repository extends RepositoryModel {
     }
 
     /**
-     * Returns all the repositories
-     * @returns {array} Repositories
+     * @returns {array} Array of all repositories
+     * @static
      */
     static getAll() {
         return Repository._repositories;
@@ -71,8 +80,9 @@ class Repository extends RepositoryModel {
 
     /**
      * Clone a repository from a url, should be used the first time
-     * @param {string} url 
-     * @returns {Promise} Folder name of the downloaded repo
+     * @param {string} url Repository URL to clone
+     * @static
+     * @returns {Promise} resolve(folderName {string}) folderName: Folder name of the repository, reject(error {string})
      */
     static clone(url) {
         Logger.log("Cloning **" + url + "**...");
@@ -81,26 +91,27 @@ class Repository extends RepositoryModel {
             Git.Clone(url, __dirname + "/../repositories/" + folderName, {
                 checkoutBranch: "master"
             }).then((repo) => {
-                db.insert("Repositories", {
+                return db.insert("Repositories", {
                     repositoryURL: url,
                     folderName: folderName
+                }).then(() => {
+                    // Load itself
+                    new Repository(folderName, url);
+                    Logger.log("Cloning successful.");
+                    resolve(folderName);
                 });
-
-                // Load itself
-                new Repository(folderName, url);
-                Logger.log("Cloning succesful.");
-                resolve(folderName);
-            }).catch((e) => {
+            }).catch((err) => {
                 Logger.log("Cloning failed!");
-                Logger.log(e);
-                reject(e);
+                Logger.log(err);
+                reject(err);
             });
         });
     }
 
     /**
-     * Returns a folder name from a git url
      * @param {string} url 
+     * @static
+     * @returns a folder name from a git url
      */
     static _generateFolderName(baseUrl) {
         let url = baseUrl.replace(/\.git/g, "");
@@ -111,7 +122,7 @@ class Repository extends RepositoryModel {
     }
 
     /**
-     * Pull from the distant repository, to update the plugins
+     * Pull from the distant repository, update the plugins
      */
     pull() {
         Logger.log("Updating **" + this._folderName + "**...");
@@ -147,7 +158,7 @@ class Repository extends RepositoryModel {
 
                     resolve();
                 }).catch((err) => {
-                    console.log(err);
+                    Logger.err(err);
                     reject();
                 });
         });
@@ -165,7 +176,7 @@ class Repository extends RepositoryModel {
 
             Repository._repositories.splice(index, 1);
 
-            db.delete("Repositories", {
+            return db.delete("Repositories", {
                 folderName: this._folderName
             }).then(() => {
                 let plugins = Plugin.getAll();
@@ -206,6 +217,10 @@ class Repository extends RepositoryModel {
         fileHelper.deleteFolder(__dirname + "/../repositories/" + this._folderName);
     }
 
+    /**
+     * Register webAPI actions related to a repository
+     * @static
+     */
     static registerActions() {
         webAPI.registerAction("get-repositories", (data, reply) => {
             reply(Repository.getAll().map((repo) => {
@@ -223,7 +238,7 @@ class Repository extends RepositoryModel {
                 if (repo.url === data.url) {
                     repo.delete().then(() => {
                         reply(true);
-                    });
+                    }).catch(Logger.err);
                     return;
                 }
             }

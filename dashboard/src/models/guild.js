@@ -1,6 +1,9 @@
+/**
+ * Represents a guild, dashboard side
+ */
 window.Discotron.Guild = class extends window.Discotron.GuildModel {
     /**
-     * Ctor
+     * @constructor
      * @param {string} discordId Id of the guild
      * @param {string} name Name of the guild
      * @param {string} iconURL Icon of the guild
@@ -8,8 +11,8 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
      * @param {string} commandPrefix Command prefix
      * @param {array} allowedChannelIds Array of channel ids on which the bot is allowed
      * @param {array} enabledPluginIds Array of plugin ids that are enabled
-     * @param {array} admins Array of UserRole who have admin priviledge on the bot
-     * @param {object} permissions Associative object binding pluginsIds to userRole array
+     * @param {array} admins Array of UserRole who have admin privilege on the bot
+     * @param {object} permissions Object binding pluginsIds to userRole array
      */
     constructor(discordId, name, iconURL, acronym, commandPrefix, allowedChannelIds, enabledPlugins, admins, permissions) {
         super(discordId, commandPrefix, allowedChannelIds, enabledPlugins, admins, permissions);
@@ -26,41 +29,40 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
     }
 
     /**
-     * Get name
+     * @returns {string} name
      */
     get name() {
         return this._name;
     }
 
     /**
-     * Get icon URL
+     * @returns {string} iconURL
      */
     get iconURL() {
         return this._iconURL;
     }
 
     /**
-     * Get members
+     * @returns {array} array of members ids
      */
     get members() {
         return this._members;
     }
 
     /**
-     * Get roles
+     * @returns {string} array of role ids
      */
     get roles() {
         return this._roles;
     }
 
     /**
-     * Get channels
-     * @returns {Promise}
+     * @returns {Promise} resolve(channels {array}) channels: Array of Channel, reject()
      */
     getChannels() {
         return new Promise((resolve, reject) => {
             if (Object.keys(this._channels).length === 0) {
-                Discotron.Channel.getGuildChannels(this.discordId).then((channels) => {
+                return Discotron.Channel.getGuildChannels(this.discordId).then((channels) => {
                     for (let i = 0; i < channels.length; i++) {
                         const channel = channels[i];
                         this._channels[channel.id] = channel;
@@ -74,12 +76,12 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
     }
 
     /**
-     * Load members using WebAPI
-     * @returns {Promise}
+     * Load members using the WebAPI
+     * @returns {Promise} resolve(), reject()
      */
     _loadMembers() {
         return new Promise((resolve, reject) => {
-            Discotron.User.loadGuildMembers(this.discordId).then((users) => {
+            return Discotron.User.loadGuildMembers(this.discordId).then((users) => {
                 this._members = users;
                 resolve();
             });
@@ -87,12 +89,12 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
     }
 
     /**
-     * Load roles using WebAPI
-     * @returns {Promise}
+     * Load roles using the WebAPI
+     * @returns {Promise} resolve(), reject()
      */
     _loadRoles() {
         return new Promise((resolve, reject) => {
-            Discotron.Role.getGuildRoles(this.discordId).then((roles) => {
+            return Discotron.Role.getGuildRoles(this.discordId).then((roles) => {
                 for (let i = 0; i < roles.length; ++i) {
                     const role = roles[i];
                     this._roles[role.id] = role;
@@ -104,14 +106,16 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
 
 
     /**
-     * Check if guilds are loaded and return them in a promise
+     * Get all guilds, load them if necessary
+     * @static
+     * @returns {Promise} resolve(guilds {array}) guilds: Array of Guild, reject()
      */
     static getAll() {
         return new Promise((resolve, reject) => {
             if (Object.keys(Discotron.Guild._guilds).length === 0) {
-                Discotron.WebAPI.queryBot("discotron-dashboard", "get-guilds-where-is-admin").then((guilds) => {
-                    for (const guildId in guilds) {
-                        let obj = guilds[guildId];
+                return Discotron.WebAPI.queryBot("discotron-dashboard", "get-guilds-where-is-admin").then((guilds) => {
+                    for (const discordGuildId in guilds) {
+                        let obj = guilds[discordGuildId];
 
                         let admins = new Set(obj.admins.map((admin) => {
                             return new Discotron.UserRole(admin.id, admin.type);
@@ -126,7 +130,7 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
                             permissions[pluginId] = new Discotron.Permission(this.discordId, pluginId, usersRoles);
                         }
 
-                        let guild = new Discotron.Guild(obj.id, obj.name, obj.image, obj.nameAcronym, obj.prefix, new Set(obj.allowedChannelIds), new Set(obj.enabledPluginIds), new Set(admins), permissions);
+                        new Discotron.Guild(obj.id, obj.name, obj.image, obj.nameAcronym, obj.prefix, new Set(obj.allowedChannelIds), new Set(obj.enabledPluginIds), new Set(admins), permissions);
                     }
                     resolve(Discotron.Guild._guilds);
                 });
@@ -167,7 +171,8 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
     }
 
     /**
-     * Reloads the guilds
+     * Clear cache, this will force a reload when guilds are queried again
+     * @static
      */
     static clearCache() {
         Discotron.Guild._guilds = {};
@@ -185,29 +190,32 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
     }
 
     /**
-     * Returns the users and roles that have admin privileges
+     * @returns {array} Array of userRole with admin privileges
      */
     get admins() {
         return super.admins;
     }
 
     /**
-     * Set prefix for guild command
-     * @param {string} prefix 
+     * @param {string} prefix New prefix for guild commands
      */
     set prefix(prefix) {
         this._commandPrefix = prefix;
         Discotron.WebAPI.queryBot("discotron-dashboard", "set-guild-prefix", {
             prefix: prefix
-        }, this.discordId).then(() => {});
+        }, this.discordId).catch(console.error);
     }
 
+    /**
+     * @returns {string} command prefix
+     */
     get prefix() {
         return super.commandPrefix;
     }
 
     /**
      * Set allowed channels
+     * @param {array} allowedChannelIds Array of allowed channel ids
      */
     set allowedChannelIds(allowedChannelIds) {
         this._allowedChannelIds = allowedChannelIds;
@@ -216,6 +224,9 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
         }, this.discordId);
     }
 
+    /**
+     * @returns {array} array of allowed channel ids
+     */
     get allowedChannelIds() {
         return super.allowedChannelIds;
     }
@@ -226,32 +237,26 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
      * @param {boolean} enabled True if the plugin is to be enabled
      */
     setPluginEnabled(pluginId, enabled) {
-        // si le set vide => tous activé
-        // => on call disabled
-        if(this._enabledPlugins.size === 0) {
-            if(!enabled) {
+        if (this._enabledPlugins.size === 0) {
+            if (!enabled) {
                 Discotron.Plugin.getAll().then((plugins) => {
                     for (let pluginId_ in plugins) {
-                        const plugin = plugins[pluginId];
-                        if(pluginId_ !== pluginId) {
+                        if (pluginId_ !== pluginId) {
                             this._enabledPlugins.add(pluginId_);
                         }
-                    }                    
-                });
-            }
-            else {
+                    }
+                }).catch(console.error);
+            } else {
                 // should not happen
             }
-        }
-        else {
-            if(enabled) {
+        } else {
+            if (enabled) {
                 this._enabledPlugins.add(pluginId);
-            }
-            else {
+            } else {
                 this._enabledPlugins.delete(pluginId);
             }
         }
-        
+
         Discotron.WebAPI.queryBot("discotron-dashboard", "set-plugin-enabled", {
             pluginId: pluginId,
             enabled: enabled
@@ -266,7 +271,7 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
     setPluginPermission(pluginId, usersRoles) {
         let permission = new Discotron.Permission(this.discordId, pluginId, usersRoles);
         this._permissions[pluginId] = permission;
-    
+
         Discotron.WebAPI.queryBot("discotron-dashboard", "set-plugin-permission", {
             pluginId: pluginId,
             userRoles: usersRoles
@@ -276,6 +281,7 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
     /**
      * Get the users/roles allowed to use the plugin
      * @param {string} pluginId ID of the plugin
+     * @returns {array} array of UserRoles
      */
     getPluginPermission(pluginId) {
         let perm = this.permissions[pluginId];

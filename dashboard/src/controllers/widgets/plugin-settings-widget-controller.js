@@ -1,9 +1,12 @@
+/**
+ * Widget to change plugin settings
+ */
 window.Discotron.PluginSettingsWidgetController = class extends window.Discotron.WidgetController {
 	/**
-	 * Ctor
+	 * @constructor
 	 * @param {Plugin} plugin Plugin this page is dedicated to 
 	 * @param {function} onPluginSettingsSave Callback to be called when the user is done changing the settings
-	 * @param {function} onClose Callback to be called when the widget is closed
+	 * @param {function} [onClose=()=>{}] Callback to be called when the widget is closed
 	 */
 	constructor(plugin, onPluginSettingsSave, onClose = () => {}) {
 		super("plugin-settings.html", () => {
@@ -15,6 +18,9 @@ window.Discotron.PluginSettingsWidgetController = class extends window.Discotron
 		}, onClose);
 	}
 
+	/**
+	 * @returns {object} {enabled, globalPrefix} get plugin settings set by the user
+	 */
 	_getPluginSettings() {
 		return {
 			enabled: this._widgetContainer.querySelector(".enabled-checkbox").checked,
@@ -26,8 +32,8 @@ window.Discotron.PluginSettingsWidgetController = class extends window.Discotron
 	 * Display a form allowing to change plugin settings
 	 */
 	_displaySettings() {
-		this._widgetContainer.querySelector(".module-name").textContent = this._plugin.name;
-		this._widgetContainer.querySelector(".module-version").textContent = this._plugin.version;
+		this._widgetContainer.querySelector(".plugin-name").textContent = this._plugin.name;
+		this._widgetContainer.querySelector(".plugin-version").textContent = this._plugin.version;
 		this._widgetContainer.querySelector(".enabled-checkbox").checked = this._plugin.enabled;
 		this._widgetContainer.querySelector(".logs").value = this._plugin.logs.join("\r\n");
 		this._widgetContainer.querySelector(".global-prefix").value = this._plugin.prefix;
@@ -38,7 +44,7 @@ window.Discotron.PluginSettingsWidgetController = class extends window.Discotron
 			}).then((logs) => {
 				this._plugin.logs = logs;
 				this._widgetContainer.querySelector(".logs").value = this._plugin.logs.join("\r\n");
-			});
+			}).catch(console.error);
 		};
 	}
 

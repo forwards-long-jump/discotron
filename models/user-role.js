@@ -3,7 +3,7 @@
  */
 class UserRoleModel {
     /**
-     * Ctor
+     * @constructor
      * @param {string} discordId Discord id
      * @param {string} type Type of the id, *user* or *role*
      */
@@ -12,9 +12,16 @@ class UserRoleModel {
         this._type = type;
     }
 
+    /**
+     * @returns {string} Discord id
+     */
     get discordId() {
         return this._discordId;
     }
+
+    /**
+     * @returns {string} Type (*user* or *role*)
+     */
     get type() {
         return this._type;
     }

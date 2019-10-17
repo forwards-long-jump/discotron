@@ -1,7 +1,7 @@
 {
     "curly": true,
+    "esversion": 6,
     "eqnull": true,
-    "esnext": true,
     "futurehostile": true,
     "immed": false,
     "maxlen": 200,
@@ -9,7 +9,7 @@
     "quotmark": "double",
     "trailing": true,
     "undef": true,
-    "unused": "strict",
+    "unused": "vars",
     "eqeqeq": true,
     "funcscope": false,
     "white": true,
@@ -17,6 +17,8 @@
     "globals": {
         "window": true,
         "Discotron": true,
+        "confirm": true,
+        "XMLHttpRequest": true,
         "document": true,
         "localStorage": true,
         "fetch": true,

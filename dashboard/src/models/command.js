@@ -1,12 +1,14 @@
+/**
+ * Represents a command, dashboard side
+ */
 window.Discotron.Command = class extends window.Discotron.CommandModel {
     /**
-     * Ctor
+     * @constructor
      * @param {object} settings Settings
      */
     constructor(settings) {
         super(settings);
     }
-
 
     /**
      * @returns {string} <plugin-prefix><command>

@@ -1,6 +1,9 @@
+/**
+ * Represents a repository, dashboard side
+ */
 window.Discotron.Repository = class extends window.Discotron.RepositoryModel {
     /**
-     * Ctor
+     * @constructor
      * @param {string} url URL of the repository
      */
     constructor(url, pluginIds, pages) {
@@ -10,13 +13,13 @@ window.Discotron.Repository = class extends window.Discotron.RepositoryModel {
     }
 
     /**
-     * Return the repositories added to the bot
-     * @returns {array} Array of Repositories
+     * @static
+     * @returns {array} Array of Repository
      */
     static getAll() {
         return new Promise((resolve, reject) => {
             if (Discotron.Repository._repositories.length === 0) {
-                Discotron.WebAPI.queryBot("discotron-dashboard", "get-repositories").then((data) => {
+                return Discotron.WebAPI.queryBot("discotron-dashboard", "get-repositories").then((data) => {
                     for (let i = 0; i < data.length; i++) {
                         const repository = data[i];
                         new Discotron.Repository(repository.url, repository.pluginIds, repository.pages);
@@ -30,25 +33,11 @@ window.Discotron.Repository = class extends window.Discotron.RepositoryModel {
     }
 
     /**
-     * Reload the repositories
+     * Clear the cache, forcing to reload repository next time they are accessed
+     * @static
      */
     static clearCache() {
         Discotron.Repository._repositories = [];
-    }
-
-    /**
-     * Try to add a repo, may fail
-     * @returns {Promise}
-     */
-    static add(url) {
-        // Query API to tryAdd a repository
-    }
-
-    /**
-     * Remove the repository from the bot, and queries the API to delete it from the database
-     */
-    delete() {
-        // Query API to delete repo, this will trigger sadness in the dashboard too
     }
 };
 

@@ -1,6 +1,9 @@
+/**
+ * Represents a plugin, dashboard side
+ */
 window.Discotron.Plugin = class extends window.Discotron.PluginModel {
     /**
-     * Ctor
+     * @constructor
      * @param {string} pluginId Id of the plugin 
      */
     constructor(pluginId, name, description, version, prefix, commands, defaultPermission, enabled, logs) {
@@ -10,7 +13,7 @@ window.Discotron.Plugin = class extends window.Discotron.PluginModel {
 
     /**
      * Returns all the plugins of the bot
-     * @returns {object} Associative array {pluginId => Plugin} 
+     * @returns {object} {pluginId: Plugin} 
      */
     static getAll() {
         return new Promise((resolve, reject) => {
@@ -22,7 +25,7 @@ window.Discotron.Plugin = class extends window.Discotron.PluginModel {
                             plugin.commands, plugin.defaultPermission, plugin.enabled, plugin.logs);
                     }
                     resolve(Discotron.Plugin._plugins);
-                });
+                }).catch(console.error);
             } else {
                 resolve(Discotron.Plugin._plugins);
             }
@@ -30,7 +33,8 @@ window.Discotron.Plugin = class extends window.Discotron.PluginModel {
     }
 
     /**
-     * Reload all the plugins
+     * Clear cache, forcing plugin reloading when get is called
+     * @static
      */
     static clearCache() {
         Discotron.Plugin._plugins = {};
@@ -38,7 +42,7 @@ window.Discotron.Plugin = class extends window.Discotron.PluginModel {
 
     /**
      * Update prefix for this plugin in the database (owner only)
-     * @param {string} prefix 
+     * @param {string} prefix New prefix for the plugin
      */
     set prefix(prefix) {
         this._prefix = prefix;
@@ -48,6 +52,9 @@ window.Discotron.Plugin = class extends window.Discotron.PluginModel {
         });
     }
 
+    /**
+     * @returns {string} prefix for this plugin
+     */
     get prefix() {
         return super.prefix;
     }
@@ -64,14 +71,23 @@ window.Discotron.Plugin = class extends window.Discotron.PluginModel {
         });
     }
 
+    /**
+     * @returns {boolean} is plugin enabled
+     */
     get enabled() {
         return super.enabled;
     }
 
+    /**
+     * @param {array} logs array of string
+     */
     set logs(logs) {
         this._logs = logs;
     }
 
+    /**
+     * @returns {array} array of string
+     */
     get logs() {
         return super.logs;
     }

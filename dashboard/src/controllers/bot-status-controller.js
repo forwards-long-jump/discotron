@@ -1,6 +1,6 @@
 window.Discotron.BotStatusController = class extends window.Discotron.Controller {
 	/**
-	 * Ctor
+	 * @constructor
 	 */
 	constructor() {
 		super("owner/bot-status.html", () => {
@@ -14,22 +14,22 @@ window.Discotron.BotStatusController = class extends window.Discotron.Controller
 	 */
 	_displayStatus() {
 		// TODO: Use WebAPI auto caching (advanced feature, not implemented yet)
-		if (Discotron.BotStatusController._username === undefined) {
+		if (Discotron.BotStatusController.tag === undefined) {
 			Discotron.WebAPI.queryBot("discotron-dashboard", "get-bot-info").then((data) => {
 				document.querySelector("#bot-avatar").src = data.avatar;
-				document.querySelector("#bot-name").textContent = data.username;
+				document.querySelector("#bot-name").textContent = data.tag;
 
-				Discotron.BotStatusController._username = data.username;
-				Discotron.BotStatusController._avatar = data.avatar;
-			});
+				Discotron.BotStatusController.tag = data.tag;
+				Discotron.BotStatusController.avatar = data.avatar;
+			}).catch(console.error);
 		} else {
-			document.querySelector("#bot-avatar").src = Discotron.BotStatusController._avatar;
-			document.querySelector("#bot-name").textContent = Discotron.BotStatusController._username;
+			document.querySelector("#bot-avatar").src = Discotron.BotStatusController.avatar;
+			document.querySelector("#bot-name").textContent = Discotron.BotStatusController.tag;
 		}
 
 		Discotron.WebAPI.queryBot("discotron-dashboard", "get-bot-config").then((data) => {
-
 			let status, classStatus;
+
 			if (data.status === 0) {
 				status = "Online";
 				classStatus = "green-text";
@@ -39,53 +39,26 @@ window.Discotron.BotStatusController = class extends window.Discotron.Controller
 			}
 
 			document.getElementById("bot-name").innerHTML += "<span class=\"bot-status " + classStatus + "\">" + status + "</span>";
-			document.getElementById("bot-status").value = data.botStatus;
+			document.getElementById("bot-presence").value = data.presenceText;
 			document.getElementById("maintenance-enabled").checked = data.maintenance;
-		});
-	}
-
-	/**
-	 * Called when the user clicks on the owners pseudo link
-	 */
-	_onOwnersClick() {
-		// Open a widget
+		}).catch(console.error);
 	}
 
 	/**
 	 * Reloads the data on the page
 	 */
 	_onReloadClick() {
-
+		// TODO?
 	}
 
 	/**
-	 * Called when the user toggles the maintenance settings
-	 */
-	_onMaintenanceToggle() {
-
-	}
-
-	/**
-	 * Called when the help text input is changed
-	 */
-	_onHelpTextChange() {
-
-	}
-
-	/**
-	 * Called when the user saves the widget
-	 */
-	_onOwnersWidgetSave() {
-
-	}
-
-	/**
-	 * Add events
+	 * Add events to open widgets and change variables, change the save button status
 	 */
 	_addEvents() {
 		let saveSettingsButton = document.getElementById("save-settings");
 		let restartButton = document.getElementById("restart-bot");
-		document.getElementById("bot-status").onkeyup = () => {
+
+		document.getElementById("bot-presence").onkeyup = () => {
 			saveSettingsButton.disabled = false;
 		};
 
@@ -97,11 +70,9 @@ window.Discotron.BotStatusController = class extends window.Discotron.Controller
 			saveSettingsButton.disabled = true;
 
 			Discotron.WebAPI.queryBot("discotron-dashboard", "set-bot-config", {
-				statusText: document.getElementById("bot-status").value,
+				presenceText: document.getElementById("bot-presence").value,
 				maintenance: document.getElementById("maintenance-enabled").checked
-			}).then((data) => {
-
-			});
+			}).catch(console.error);
 		};
 
 		restartButton.onclick = () => {
@@ -112,7 +83,7 @@ window.Discotron.BotStatusController = class extends window.Discotron.Controller
 					restartButton.value = "Restart";
 					restartButton.disabled = false;
 				}
-			});
+			}).catch(console.error);
 		};
 
 		document.getElementById("owners-selector").onclick = () => {
@@ -121,16 +92,16 @@ window.Discotron.BotStatusController = class extends window.Discotron.Controller
 					return new Discotron.UserRole(owner, "user");
 				});
 				new Discotron.UserRoleWidgetController(undefined, userRoles, (newOwners) => {
-					Discotron.WebAPI.queryBot("discotron-dashboard", "set-owners", {
+					return Discotron.WebAPI.queryBot("discotron-dashboard", "set-owners", {
 						discordUserIds: newOwners.map((userRole) => {
 							return userRole.discordId;
 						})
-					}).then(() => {});
+					});
 				}, false, "Owner list", false, () => {});
-			});
+			}).catch(console.error);
 		};
 	}
 };
 
-Discotron.BotStatusController._avatar = undefined;
-Discotron.BotStatusController._username = undefined;
+Discotron.BotStatusController.avatar = undefined;
+Discotron.BotStatusController.tag = undefined;

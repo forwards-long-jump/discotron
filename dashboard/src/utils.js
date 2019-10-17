@@ -1,4 +1,10 @@
 window.Discotron.utils = {
+    /**
+     * Make a post request on the specified URL, with data encoded as json
+     * @param {string} url Url to make the post request on
+     * @param {object} data Data that will be JSON.stringified and sent to the website
+     * @returns {Promise} resolve(data {object|string}) data: object if could parse JSON, reject()
+     */
     post: (url, data) => {
         return new Promise((resolve, reject) => {
             // source: http://youmightnotneedjquery.com/
@@ -8,10 +14,10 @@ window.Discotron.utils = {
             request.send(JSON.stringify(data));
 
             request.onreadystatechange = () => {
-                if (request.readyState == XMLHttpRequest.DONE) {
+                if (request.readyState === XMLHttpRequest.DONE) {
                     try {
                         resolve(JSON.parse(request.responseText));
-                    } catch (e) {
+                    } catch (err) {
                         resolve(request.responseText);
                     }
                 }
@@ -29,7 +35,7 @@ window.Discotron.utils = {
                 if (typeof callback === "function") {
                     callback();
                 }
-            });
+            }).catch(console.error);
     },
     generateAcronymIcon: (acronym, fgColor, bgColor) => {
         const size = 88;
@@ -51,13 +57,14 @@ window.Discotron.utils = {
             ctx.font = `${fontsize}px ${font}`;
             fontsize--;
         } while (ctx.measureText(acronym).width > size - padding);
+
         ctx.fillStyle = fgColor;
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.fillText(acronym, size/2, size/2);
+        ctx.fillText(acronym, size / 2, size / 2);
 
         // Render to data url
-        const img = canvas.toDataURL('image/png');
+        const img = canvas.toDataURL("image/png");
         return img;
     }
 };

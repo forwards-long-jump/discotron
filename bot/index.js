@@ -11,6 +11,7 @@ const databaseHelper = require("./utils/database-helper.js");
 if (!databaseHelper.databaseExists()) {
     databaseHelper.createDatabase();
 }
+
 databaseHelper.openDatabase();
 
 const webserver = require("./webserver.js");
@@ -34,9 +35,11 @@ discotron.loadGuilds().then(() => {
 
     registerEvents();
     discotron.registerActions();
-});
+}).catch(Logger.err);
 
-
+/**
+ * Attempts to connect the bot client to Discord
+ */
 function connectToDiscord() {
     return new Promise((resolve, reject) => {
         Logger.log("Connecting to discord...");
@@ -51,13 +54,16 @@ function connectToDiscord() {
 
 global.discordClient._connectToDiscord = connectToDiscord;
 
+/**
+ * Register Discord events and associate them to Discotron handlers
+ */
 function registerEvents() {
     // TODO: Handle error and reaction
 
     discordClient.on("ready", () => {
         Logger.log("Logged into Discord as **" + discordClient.user.tag + "**", "info");
         discotron.updateGuilds();
-        discotron.updateStatus();
+        discotron.getBotSettings().setBotPresence();
     });
 
     discordClient.on("message", discotron.onMessage);
@@ -68,6 +74,7 @@ function registerEvents() {
         // TODO: Handle reconnection and bot status update
     });
 
+    // Handle disconnecting the bot gracefully
     process.stdin.resume();
 
     process.on("exit", exitHandler.bind(null, {
@@ -84,6 +91,9 @@ function registerEvents() {
     }));
 }
 
+/**
+ * Attempts to load the config from disk, checks for missing files
+ */
 function loadConfig() {
     try {
         appConfig = require("./config/app-config.json");
@@ -113,11 +123,14 @@ function loadConfig() {
 
 
 // Source: https://stackoverflow.com/questions/14031763/doing-a-cleanup-action-just-before-node-js-exits
-function exitHandler(options, exitCode) {
-
+/**
+ * Called when the application is about to be closed
+ * @param {object} options 
+ */
+function exitHandler(options) {
     global.discordClient.destroy().then(() => {
         if (options.exit) {
             process.exit();
         }
-    });
+    }).catch(Logger.err);
 }

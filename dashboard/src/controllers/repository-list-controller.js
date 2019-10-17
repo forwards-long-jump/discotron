@@ -1,14 +1,20 @@
+/**
+ * Controller for the list of repository page
+ */
 window.Discotron.RepositoryListController = class extends window.Discotron.Controller {
 	/**
-	 * Ctor 
+	 * @constructor 
 	 */
 	constructor() {
 		super("owner/repository-list.html", () => {
 			this._addEventListeners();
-			this._displayRepos();
+			this._displayRepositories();
 		});
 	}
 
+	/**
+	 * Handle adding repository
+	 */
 	_addEventListeners() {
 		document.getElementById("add-repository").onclick = () => {
 			this._onAddRepository();
@@ -22,9 +28,9 @@ window.Discotron.RepositoryListController = class extends window.Discotron.Contr
 	}
 
 	/**
-	 * Display the list of repositories and the plugins 
+	 * Display the list of repositories and their plugins 
 	 */
-	_displayRepos() {
+	_displayRepositories() {
 		Discotron.Repository.getAll().then((repositories) => {
 			if (repositories.length > 0) {
 				document.getElementById("repositories-container").innerHTML = "";
@@ -34,11 +40,11 @@ window.Discotron.RepositoryListController = class extends window.Discotron.Contr
 
 			for (let i = 0; i < repositories.length; i++) {
 				const repo = repositories[i];
-				let template = document.getElementById("template-repository-container");
-				let container = document.importNode(template.content, true);
+				const template = document.getElementById("template-repository-container");
+				const container = document.importNode(template.content, true);
 
 				container.querySelector(".plugin-bar").value = repo.url;
-				let cardListContainer = container.querySelector(".repository-card-container");
+				const cardListContainer = container.querySelector(".repository-card-container");
 
 				// Query cards
 				Discotron.Plugin.getAll().then((plugins) => {
@@ -48,12 +54,12 @@ window.Discotron.RepositoryListController = class extends window.Discotron.Contr
 						if (repo.pluginIds.includes(pluginId)) {
 							pluginFound = true;
 
-							let cardTemplate = document.getElementById("template-card");
-							let cardContainer = document.importNode(cardTemplate.content, true);
+							const cardTemplate = document.getElementById("template-card");
+							const cardContainer = document.importNode(cardTemplate.content, true);
 							cardContainer.querySelector(".repository-card-title").textContent = (plugin.enabled ? "" : "[Disabled] ") + plugin.name;
 							cardContainer.querySelector(".repository-card-description").textContent = plugin.description;
 
-							let cardTitle = cardContainer.querySelector(".repository-card-title");
+							const cardTitle = cardContainer.querySelector(".repository-card-title");
 
 							cardContainer.querySelector(".repository-card").onclick = () => {
 								new Discotron.PluginSettingsWidgetController(plugin, (settings) => {
@@ -87,7 +93,7 @@ window.Discotron.RepositoryListController = class extends window.Discotron.Contr
 					if (!pluginFound) {
 						cardListContainer.innerHTML = "<p class=\"description\">No plugin / pages found in this repository.</p>";
 					}
-				});
+				}).catch(console.error);
 
 				// Update
 				container.querySelector(".pull-repository").onclick = (event) => {
@@ -98,7 +104,7 @@ window.Discotron.RepositoryListController = class extends window.Discotron.Contr
 						url: repo.url
 					}).then((data) => {
 						if (data) {
-							event.target.value = "Update succesful";
+							event.target.value = "Update successful";
 						} else {
 							event.target.value = "Could not update";
 						}
@@ -106,8 +112,8 @@ window.Discotron.RepositoryListController = class extends window.Discotron.Contr
 						Discotron.Repository.clearCache();
 						Discotron.Plugin.clearCache();
 						Discotron.Guild.clearCache();
-						this._displayRepos();
-					});
+						this._displayRepositories();
+					}).catch(console.error);
 				};
 
 				// Delete
@@ -119,33 +125,18 @@ window.Discotron.RepositoryListController = class extends window.Discotron.Contr
 							Discotron.Repository.clearCache();
 							Discotron.Plugin.clearCache();
 							Discotron.Guild.clearCache();
-							this._displayRepos();
-						});
+							this._displayRepositories();
+						}).catch(console.error);
 					}
 				};
 
 				document.getElementById("repositories-container").appendChild(container);
 			}
-		});
+		}).catch(console.error);
 	}
 
 	/**
-	 * Add a plugin card
-	 * @param {Plugin} plugin Plugin
-	 */
-	_displayPluginCard(plugin) {
-
-	}
-
-	/**
-	 * Show the plugin settings widget for the selected plugin
-	 */
-	_onPluginClick() {
-
-	}
-
-	/**
-	 * Called when add repository button is presse
+	 * Called when add repository button is pressed
 	 */
 	_onAddRepository() {
 		let repoUrl = document.getElementById("repository-url").value;
@@ -166,30 +157,9 @@ window.Discotron.RepositoryListController = class extends window.Discotron.Contr
 					Discotron.Repository.clearCache();
 					Discotron.Plugin.clearCache();
 					Discotron.Guild.clearCache();
-					this._displayRepos();
+					this._displayRepositories();
 				}
-			});
+			}).catch(console.error);
 		}
-	}
-
-	/**
-	 * Called when a repository is deleted
-	 */
-	_onRemoveRepository(arg) {
-
-	}
-
-	/**
-	 * Called when the update button is pressed
-	 */
-	_onUpdateRepository() {
-
-	}
-
-	/**
-	 * Called when repo refresh button is pressed
-	 */
-	_onRepositoryStatusRefresh() {
-
 	}
 };

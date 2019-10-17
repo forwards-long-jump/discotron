@@ -1,26 +1,29 @@
+/**
+ * Controller for the plugin list page
+ */
 window.Discotron.PluginListController = class extends window.Discotron.Controller {
 	/**
-	 * Ctor
+	 * @constructor
 	 * @param {object} args Args given by the user in the URL
 	 */
 	constructor(args) {
 		super("admin/plugin-list.html", () => {
-			this._guildId = args.guild;
+			this._discordGuildId = args.guild;
 
-			if (this._guildId === undefined) {
+			if (this._discordGuildId === undefined) {
 				window.location.replace("/dashboard");
 				return;
 			}
 
 			Discotron.Guild.getAll().then((guilds) => {
-				this._guild = guilds[this._guildId];
+				this._guild = guilds[this._discordGuildId];
 				if (this._guild === undefined) {
 					window.location.replace("/dashboard");
 				}
 
 				this._displayHeader();
 				this._displayPlugins();
-			});
+			}).catch(console.error);
 		});
 	}
 
@@ -43,28 +46,31 @@ window.Discotron.PluginListController = class extends window.Discotron.Controlle
 		// Query cards
 		Discotron.Plugin.getAll().then((plugins) => {
 
-			for (let pluginId in plugins) {
+			for (const pluginId in plugins) {
 				const plugin = plugins[pluginId];
 
-				let template = document.getElementById("template-card");
-				let card = document.importNode(template.content, true);
+				const template = document.getElementById("template-card");
+				const card = document.importNode(template.content, true);
 
 				card.querySelector(".repository-card-title").textContent = plugin.name;
 				card.querySelector(".repository-card-description").textContent = plugin.description;
 
 				card.querySelector(".repository-card").onclick = () => {
-					let userRoles = this._guild.getPluginPermission(pluginId)._usersRoles;
-					
+					const userRoles = this._guild.getPluginPermission(pluginId)._usersRoles;
+
 					new Discotron.UserRoleWidgetController(this._guild, userRoles, (userRoles, settings) => {
 						this._guild.setPluginEnabled(pluginId, settings.enabled);
 						this._guild.setPluginPermission(pluginId, userRoles);
-					}, true, "Plugin settings: " + plugin.name, true, [
-						{type: "switch", name: "Enabled", value: this._guild.enabledPlugins.has(pluginId) || this._guild.enabledPlugins.size === 0, devname: "enabled"}
-					]);
+					}, true, "Plugin settings: " + plugin.name, true, [{
+						type: "switch",
+						name: "Enabled",
+						value: this._guild.enabledPlugins.has(pluginId) || this._guild.enabledPlugins.size === 0,
+						devName: "enabled"
+					}]);
 				};
 
 				document.getElementById("plugin-container").appendChild(card);
 			}
-		});
+		}).catch(console.error);
 	}
 };

@@ -3,7 +3,7 @@
  */
 class CommandModel {
     /**
-     * Ctor
+     * @constructor
      * @param {object} settings Settings
      * @param {string} [settings.triggerType = "command"] Type of trigger, can be "command|words|all|reaction" (note: "all" is not affected by spam detection)
      * @param {string[]} [settings.trigger = []] Word(s) triggering the command
@@ -34,30 +34,65 @@ class CommandModel {
         this._action = options.action;
     }
 
+    /**
+     * @returns {string} 
+     */
     get triggerType() {
         return this._triggerType;
     }
+
+    /**
+     * @returns {string} trigger
+     */
     get trigger() {
         return this._trigger;
     }
+
+    /**
+     * @returns {string} help
+     */
     get help() {
         return this._help;
     }
+
+    /**
+     * @returns {object} args
+     */
     get args() {
         return this._args;
     }
+
+    /**
+     * @returns {bool} ownersOnly
+     */
     get ownersOnly() {
         return this._ownersOnly;
     }
+
+    /**
+     * @returns {string} scope
+     */
     get scope() {
         return this._scope;
     }
+
+    /**
+     * @returns {bool} requiresMention
+     */
     get requiresMention() {
         return this._requiresMention;
     }
+
+    /**
+     * @returns {bool} bypassSpamDetection
+     */
     get bypassSpamDetection() {
         return this._bypassSpamDetection;
     }
+
+    /**
+     * @returns {function} action
+     */
     get action() {
         return this._action;
     }

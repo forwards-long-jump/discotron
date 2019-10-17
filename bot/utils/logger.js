@@ -39,6 +39,7 @@ const levelToText = {
 class Logger {
     /**
      * Set the minimum severity required for a message to be displayed. Order is: debug < info < warning < error < none
+     * @static
      * @param {string} severity New required severity for a message to be displayed (can be: err, info, warn, debug, none)
      */
     static setSeverity(severity) {
@@ -46,12 +47,20 @@ class Logger {
     }
 
     /**
+     * Shortcut for Logger.log(value, "err");
+     * @param {object} value to log, either string or object
+     */
+    static err(value) {
+        Logger.log(value, "err");
+    }
+
+    /**
      * Log something to the console.
      * \**text** can be used for bold
      * \__text__ can be used for underline
-     * 
+     * @static
      * @param {string|object} value Message to display. If it is not a string, it will be displayed on another line.
-     * @param {string} severity Severity of the message (can be: err, info, warn, debug)
+     * @param {string} [severity="debug"] Severity of the message (can be: err, info, warn, debug)
      */
     static log(value, severity = "debug") {
         let level = severityToLevel[severity];

@@ -1,6 +1,9 @@
+/**
+ * Widget to select channels
+ */
 window.Discotron.ChannelListWidgetController = class extends window.Discotron.WidgetController {
     /**
-     * Ctor
+     * @constructor
      * @param {array} channels An array of Channel
      * @param {array} selectedChannels Default selected channel discord ids
      * @param {function} onChannelSelectorSave Callback called when the user is done selecting channel
@@ -22,7 +25,7 @@ window.Discotron.ChannelListWidgetController = class extends window.Discotron.Wi
     }
 
     /**
-     * Returns an array of all channel ids that are currently selected
+     * @returns An array of all channel ids that are currently selected
      */
     _getSelectedChannels() {
         let allContainers = this._widgetContainer.querySelectorAll(".channel-state");

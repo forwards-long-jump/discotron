@@ -1,30 +1,40 @@
 const BotSettingsModel = require("./../../models/bot-settings.js");
 const db = require("./../apis/database-crud.js");
+const Logger = require("../utils/logger.js");
 
+/**
+ * Handle bot settings, server side
+ */
 class BotSettings extends BotSettingsModel {
+    /**
+     * @constructor
+     */
     constructor() {
         super();
 
-        db.select("BotSettings", ["value"], {
-            name: "helpText"
-        }).then((rows) => {
-            this._helpText = rows[0].value;
-        });
-        db.select("BotSettings", ["value"], {
-            name: "maintenance"
-        }).then((rows) => {
-            this._maintenance = rows[0].value === "true";
-        });
-        db.select("BotSettings", ["value"], {
-            name: "botStatus"
-        }).then((rows) => {
-            this._statusText = rows[0].value;
-        });
+        // Each row in the database contains a key->setting so we have to make 3 queries
+        // Everything could also be queried only once but then we have to iterate on everything to check the key
+        // Both are bad, key settings should not be saved in the database like that
+        Promise.all([
+            db.select("BotSettings", ["value"], {
+                name: "helpText"
+            }),
+            db.select("BotSettings", ["value"], {
+                name: "maintenance"
+            }),
+            db.select("BotSettings", ["value"], {
+                name: "presenceText"
+            }),
+        ]).then((results) => {
+            this._helpText = results[0][0].value;
+            this._maintenance = results[1][0].value === "true";
+            this._presenceText = results[2][0].value;
+        }).catch(Logger.err);
     }
 
     /**
-     * Changes the help text displayed by the bot
-     * @param {string} helpText New help text
+     * Change help text displayed in the public dashboard and save it to the db
+     * @param {string} helpText
      */
     set helpText(helpText) {
         this._helpText = helpText;
@@ -32,39 +42,51 @@ class BotSettings extends BotSettingsModel {
             value: helpText
         }, {
             name: "helpText"
-        });
+        }).catch(Logger.err);
     }
 
-    setBotPresence() {
-        global.discordClient.user.setPresence({
-            game: {
-                name: this.statusText
-            },
-            status: this.maintenance ? "dnd" : "online"
-        }).then().catch();
-    }
-
+    /**
+     * @returns {string} Help text
+     */
     get helpText() {
         return super.helpText;
     }
 
     /**
-     * Changes the status text displayed by the bot
-     * @param {string} statusText New status text
+     * Changes the bot presence and save it to the database
+     * @param {string} presenceText New presence text
      */
-    set statusText(statusText) {
-        this._statusText = statusText;
+    set presenceText(presenceText) {
+        this._presenceText = presenceText;
+
         db.update("BotSettings", {
-            value: statusText
+            value: presenceText
         }, {
-            name: "botStatus"
-        });
+            name: "presenceText"
+        }).catch(Logger.err);
+
         this.setBotPresence();
     }
 
-    get statusText() {
-        return super.statusText;
+    /**
+     * @returns {string} Presence text
+     */
+    get presenceText() {
+        return super.presenceText;
     }
+
+    /**
+     * Update the presence of the bot on Discord
+     */
+    setBotPresence() {
+        global.discordClient.user.setPresence({
+            game: {
+                name: this.presenceText
+            },
+            status: this.maintenance ? "dnd" : "online"
+        }).catch(Logger.err);
+    }
+
 
     /**
      * Set if the bot should be put in maintenance (=owner only) mode or not
@@ -72,11 +94,12 @@ class BotSettings extends BotSettingsModel {
      */
     set maintenance(maintenance) {
         this._maintenance = maintenance;
+
         db.update("BotSettings", {
             value: maintenance ? "true" : "false"
         }, {
             name: "maintenance"
-        });
+        }).catch(Logger.err);
     }
 
     get maintenance() {

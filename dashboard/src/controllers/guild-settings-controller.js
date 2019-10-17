@@ -1,25 +1,28 @@
+/**
+ * Controller for the guild settings page
+ */
 window.Discotron.GuildSettingsController = class extends window.Discotron.Controller {
     /**
-     * Ctor
+     * @constructor
      * @param {object} args Args given by the user in the URL
      */
     constructor(args) {
         super("admin/guild-settings.html", () => {
-            this._guildId = args.guild;
+            this._discordGuildId = args.guild;
 
-            if (this._guildId === undefined) {
+            if (this._discordGuildId === undefined) {
                 window.location.replace("/dashboard");
                 return;
             }
             Discotron.Guild.getAll().then((guilds) => {
-                this._guild = guilds[this._guildId];
+                this._guild = guilds[this._discordGuildId];
                 if (this._guild === undefined) {
                     window.location.replace("/dashboard");
                 }
 
                 this._displayHeader();
                 this._displayPrefix();
-            });
+            }).catch(console.error);
             this._addEvents();
         });
     }
@@ -39,7 +42,10 @@ window.Discotron.GuildSettingsController = class extends window.Discotron.Contro
     _displayPrefix() {
         document.getElementById("prefix").value = this._guild.prefix;
     }
-    
+
+    /**
+     * Add events to the widget
+     */
     _addEvents() {
         document.getElementById("prefix").onkeydown = (e) => {
             document.getElementById("save").disabled = false;
@@ -70,7 +76,7 @@ window.Discotron.GuildSettingsController = class extends window.Discotron.Contro
                     }
                     this._guild.allowedChannelIds = selectedChannels;
                 });
-            });
+            }).catch(console.error);
         };
         document.getElementById("admins").onclick = () => {
             let admins = Array.from(this._guild.admins);

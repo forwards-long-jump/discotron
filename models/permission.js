@@ -3,23 +3,33 @@
  */
 class PermissionModel {
     /**
-     * Ctor
-     * @param {string} guildId Discord ID of the guild
+     * @constructor
+     * @param {string} discordGuildId Discord ID of the guild
      * @param {string} pluginId Id associated to the plugin
      * @param {array} usersRoles Array of user roles allowed to use the plugin
      */
-    constructor(guildId = "", pluginId = undefined, usersRoles = []) {
-        this._guildId = guildId;
+    constructor(discordGuildId = "", pluginId = undefined, usersRoles = []) {
+        this._guildDiscordId = discordGuildId;
         this._pluginId = pluginId;
         this._usersRoles = usersRoles;
     }
 
-    get guildId() {
-        return this._guildId;
+
+    /**
+     * @returns {string} Guild Id
+     */
+    get guildDiscordId() {
+        return this._guildDiscordId;
     }
+    /**
+     * @returns {string} Plugin Id
+     */
     get pluginId() {
         return this._pluginId;
     }
+    /**
+     * @returns {array} Array of UserRoles
+     */
     get usersRoles() {
         return this._usersRoles;
     }

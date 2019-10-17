@@ -137,6 +137,7 @@ main hr {
 #bot-info a {
     color: var(--color-text);
 }
+
 #bot-info a:hover {
     text-decoration: none;
 }
@@ -527,8 +528,7 @@ input:checked+.slider:before {
     border-radius: 50%;
 }
 
-.user-list-container span,
-.role-list-container span {
+.user-role-name-container {
     display: inline-block;
     background-color: var(--color-background-dark);
 
@@ -583,7 +583,7 @@ input:checked+.slider:before {
     display: block;
 }
 
-.plugin-help > span {
+.plugin-help>span {
     display: block;
 }
 

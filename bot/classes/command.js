@@ -1,13 +1,20 @@
 const CommandModel = require("./../../models/command.js");
 const Owner = require("./owner.js");
 
+/**
+ * Command that can be executed, server side
+ */
 class Command extends CommandModel {
+    /**
+     * @constructor
+     * @param {object} settings See CommandModel for details
+     */
     constructor(settings) {
         super(settings);
     }
 
     /**
-     * @returns {object} Object containing {triggerType, trigger, help, args, ownersOnly, requires ..........}
+     * @returns {object} Object containing {triggerType, trigger, help, args, ownersOnly, requiresMention, bypassSpamDetection, scope}
      */
     toObject() {
         return {
@@ -23,9 +30,10 @@ class Command extends CommandModel {
     }
 
     /**
-     * Returns true if the command is triggered by the discordMessage
-     * @param {array} words Message content without server-prefix and plugin-prefix (if there was any)
      * @param {Discord.DiscordMessage} discordMessage 
+     * @param {string} loweredCaseMessage Message converted to lower case, passed as an arg to avoid calling toLowercase too many times
+     * @param {string} prefixes Server and plugin prefix combined
+     * @returns True if the command is triggered by the discordMessage
      */
     triggeredBy(discordMessage, loweredCaseMessage, prefixes) {
         if (this.ownersOnly && !Owner.isOwner(discordMessage.author.id)) {
@@ -52,17 +60,18 @@ class Command extends CommandModel {
     }
 
     /**
-     * Return true if the reaction triggers the command
      * @param {Discord.MessageReaction} messageReaction 
+     * @returns True if the reaction triggers the command
      */
     triggeredByReaction(messageReaction) {
-        // TODO: This is an advanced feature and was not planned but we plan to implement it later
+        // TODO
     }
 
     /**
-     * Function to call to trigger the action of the command
+     * Triggers the action of this command, build expected args
      * @param {Discord.Message} message 
-     * @param {array} words 
+     * @param {array} words List of words in the message, passed as an argument to avoid splitting multiple times
+     * @param {object} apiCollection Object containing multiple APIs that can be used by the plugin
      */
     doMessageAction(message, words, apiCollection) {
 
@@ -72,6 +81,7 @@ class Command extends CommandModel {
                     "all": words.slice(1)
                 };
 
+                // Build default args
                 for (let i = 0; i < this.args.length; ++i) {
                     // When an arg has "allowsSpace" set, we eat all other args.
                     if (this.args[i].allowsSpace) {
@@ -100,9 +110,11 @@ class Command extends CommandModel {
 
     /**
      * Function to call to trigger the action of the command
-     * @param {Discord.MessageReaction} reaction
+     * @param {Discord.MessageReaction} messageReaction
+     * @param {object} apiCollection Object containing multiple APIs that can be used by the plugin
      */
     doReactionAction(messageReaction) {
+        // TODO
         this.action({
             messageReaction: messageReaction
         });

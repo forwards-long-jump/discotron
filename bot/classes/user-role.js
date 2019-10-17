@@ -1,28 +1,33 @@
 const UserRoleModel = require("./../../models/user-role.js");
 const db = require("./../apis/database-crud.js");
+const Logger = require("../utils/logger.js");
 
+/**
+ * UserRole represents either a User or a Role.
+ * It was a bad idea and should not exists, it was created to avoid storing discord user ids and discord role ids separately
+ * since most permissions allows either a user or a role
+ */
 class UserRole extends UserRoleModel {
     /**
-     * Ctor
-     * @param {string} discordId ID of the user or role
+     * @constructor
+     * @param {string} discordId Id of the user or role
      * @param {string} type Type of the id, "user" or "role"
-     * @param {string} discordId ID of the guild in which this user / role is located
+     * @param {string} discordGuildId Id of the guild in which this role is located. Does not apply for users
      */
-    constructor(discordId, type, guildId) {
+    constructor(discordId, type, discordGuildId) {
         super(discordId, type);
-        this._guildId = guildId;
+        this._discordGuildId = discordGuildId;
     }
 
     /**
-     * Get guildId
+     * @returns {string} Id of the guild in which this role is located
      */
-    get guildId() {
-        return this._guildId;
+    get discordGuildId() {
+        return this._discordGuildId;
     }
 
     /**
-     * Returns an object describing the user / role
-     * @returns {object} {id, type}
+     * @returns {object} {id, type} object describing the user / role
      */
     toObject() {
         return {
@@ -30,17 +35,17 @@ class UserRole extends UserRoleModel {
             type: this.type
         };
     }
+
     /**
-     * Returns whether the object describes the user, or a role which the user has
-     * @param {string} userDiscordId 
-     * @returns {boolean} True if this userRole includes given userId 
+     * @param {string} userDiscordId Discord user
+     * @returns {boolean} True if this userRole includes given discord user id (same discord user id or owns the role)
      */
     describes(userDiscordId) {
         if (this.type === "user") {
             return this.discordId === userDiscordId;
         } else {
-            if (typeof global.discordClient !== "undefined" && typeof global.discordClient.guilds.get(this.guildId) !== "undefined") {
-                let role = global.discordClient.guilds.get(this.guildId).roles.get(this.discordId);
+            if (typeof global.discordClient !== "undefined" && typeof global.discordClient.guilds.get(this.discordGuildId) !== "undefined") {
+                let role = global.discordClient.guilds.get(this.discordGuildId).roles.get(this.discordId);
                 return role.members.has(userDiscordId);
             } else {
                 return false;
@@ -49,8 +54,8 @@ class UserRole extends UserRoleModel {
     }
 
     /**
-     * Returns the ID from the database. Creates an entry if there isn't one
-     * @returns {number} ID of the database entry for this UserRole
+     * Creates an entry if there isn't one
+     * @returns {number} Id of the database entry for this UserRole
      */
     getId() {
         return new Promise((resolve, reject) => {
@@ -61,34 +66,36 @@ class UserRole extends UserRoleModel {
                 if (rows.length !== 0) {
                     resolve(rows[0].id);
                 } else {
-                    db.insert("UsersRoles", {
+                    return db.insert("UsersRoles", {
                         discordId: this.discordId,
                         type: (this.type === "user" ? 1 : 2)
                     }).then(() => {
-                        this.getId().then((id) => {
+                        return this.getId().then((id) => {
                             resolve(id);
                         });
                     });
                 }
-            });
+            }).catch(Logger.err);
         });
     }
 
     /**
-     * Returns an instance of a database entry
-     * @param {number} id ID of the database entry
-     * @param {string} guildId ID of the guild in which the user/role exists
+     * Query the database to get a role using its id
+     * TODO: This function only creates n + 1 problems and should be removed!
+     * @static
+     * @param {number} id Id of the database entry
+     * @param {string} discordGuildId Id of the guild in which the user/role exists
      */
-    static getById(id, guildId) {
+    static getById(id, discordGuildId) {
         return new Promise((resolve, reject) => {
             db.select("UsersRoles", ["discordId", "type"], {
                 id: id
             }).then((rows) => {
                 if (rows.length === 0) {
-                    throw new Error("UserRole inexistant in db");
+                    throw new Error("UserRole inexistent in db");
                 }
-                resolve(new UserRole(rows[0].discordId, rows[0].type === 1 ? "user" : "role", guildId));
-            });
+                resolve(new UserRole(rows[0].discordId, rows[0].type === 1 ? "user" : "role", discordGuildId));
+            }).catch(Logger.err);
         });
     }
 }
