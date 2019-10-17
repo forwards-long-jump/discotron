@@ -35,7 +35,7 @@ window.Discotron.LoginController = class /* does not extends Controller because 
     static initPage() {
         if (Discotron.config === undefined || Discotron.config.oauthURL === undefined || Discotron.config.inviteLink === undefined) {
             document.querySelector("h1").style.display = "none";
-            document.querySelector("#login-error").textContent = "Bot installation is not complete, please check the installation " +
+            document.querySelector("#login-text").textContent = "Bot installation is not complete, please check the installation " +
                 "guide and create the missing configuration file.";
 
             document.querySelector(".widget-buttons").style.display = "none";
