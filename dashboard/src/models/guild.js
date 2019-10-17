@@ -62,13 +62,13 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
     getChannels() {
         return new Promise((resolve, reject) => {
             if (Object.keys(this._channels).length === 0) {
-                Discotron.Channel.getGuildChannels(this.discordId).then((channels) => {
+                return Discotron.Channel.getGuildChannels(this.discordId).then((channels) => {
                     for (let i = 0; i < channels.length; i++) {
                         const channel = channels[i];
                         this._channels[channel.id] = channel;
                     }
                     resolve(this._channels);
-                }).catch(reject);
+                });
             } else {
                 resolve(this._channels);
             }
@@ -81,10 +81,10 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
      */
     _loadMembers() {
         return new Promise((resolve, reject) => {
-            Discotron.User.loadGuildMembers(this.discordId).then((users) => {
+            return Discotron.User.loadGuildMembers(this.discordId).then((users) => {
                 this._members = users;
                 resolve();
-            }).catch(reject);
+            });
         });
     }
 
@@ -94,13 +94,13 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
      */
     _loadRoles() {
         return new Promise((resolve, reject) => {
-            Discotron.Role.getGuildRoles(this.discordId).then((roles) => {
+            return Discotron.Role.getGuildRoles(this.discordId).then((roles) => {
                 for (let i = 0; i < roles.length; ++i) {
                     const role = roles[i];
                     this._roles[role.id] = role;
                 }
                 resolve();
-            }).catch(reject);
+            });
         });
     }
 

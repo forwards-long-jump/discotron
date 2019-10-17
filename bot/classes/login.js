@@ -120,7 +120,7 @@ function handleDiscordAPIQuery(authToken, reply, addOwner = false) {
  */
 function requestAppToken(discordUserId, accessToken, refreshToken, expireDate) {
     return new Promise((resolve, reject) => {
-        db.select("Tokens", ["appToken"], {
+        return db.select("Tokens", ["appToken"], {
             discordUserId: discordUserId
         }).then((rows) => {
             // User exists, update it
@@ -144,7 +144,7 @@ function requestAppToken(discordUserId, accessToken, refreshToken, expireDate) {
                     resolve(appToken);
                 });
             }
-        }).catch(reject);
+        });
     });
 }
 
