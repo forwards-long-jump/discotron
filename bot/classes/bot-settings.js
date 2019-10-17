@@ -15,22 +15,20 @@ class BotSettings extends BotSettingsModel {
         // Each row in the database contains a key->setting so we have to make 3 queries
         // Everything could also be queried only once but then we have to iterate on everything to check the key
         // Both are bad, key settings should not be saved in the database like that
-        db.select("BotSettings", ["value"], {
-            name: "helpText"
-        }).then((rows) => {
-            this._helpText = rows[0].value;
-        }).catch(Logger.err);
-
-        db.select("BotSettings", ["value"], {
-            name: "maintenance"
-        }).then((rows) => {
-            this._maintenance = rows[0].value === "true";
-        }).catch(Logger.err);
-
-        db.select("BotSettings", ["value"], {
-            name: "presenceText"
-        }).then((rows) => {
-            this._presenceText = rows[0].value;
+        Promise.all([
+            db.select("BotSettings", ["value"], {
+                name: "helpText"
+            }),
+            db.select("BotSettings", ["value"], {
+                name: "maintenance"
+            }),
+            db.select("BotSettings", ["value"], {
+                name: "presenceText"
+            }),
+        ]).then((results) => {
+            this._helpText = results[0][0].value;
+            this._maintenance = results[1][0].value === "true";
+            this._presenceText = results[2][0].value;
         }).catch(Logger.err);
     }
 
@@ -86,7 +84,7 @@ class BotSettings extends BotSettingsModel {
                 name: this.presenceText
             },
             status: this.maintenance ? "dnd" : "online"
-        }).then().catch(Logger.err);
+        }).catch(Logger.err);
     }
 
 

@@ -113,7 +113,7 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
     static getAll() {
         return new Promise((resolve, reject) => {
             if (Object.keys(Discotron.Guild._guilds).length === 0) {
-                Discotron.WebAPI.queryBot("discotron-dashboard", "get-guilds-where-is-admin").then((guilds) => {
+                return Discotron.WebAPI.queryBot("discotron-dashboard", "get-guilds-where-is-admin").then((guilds) => {
                     for (const discordGuildId in guilds) {
                         let obj = guilds[discordGuildId];
 
@@ -133,7 +133,7 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
                         new Discotron.Guild(obj.id, obj.name, obj.image, obj.nameAcronym, obj.prefix, new Set(obj.allowedChannelIds), new Set(obj.enabledPluginIds), new Set(admins), permissions);
                     }
                     resolve(Discotron.Guild._guilds);
-                }).catch(reject);
+                });
             } else {
                 resolve(Discotron.Guild._guilds);
             }
@@ -203,7 +203,7 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
         this._commandPrefix = prefix;
         Discotron.WebAPI.queryBot("discotron-dashboard", "set-guild-prefix", {
             prefix: prefix
-        }, this.discordId).then().catch(console.error);
+        }, this.discordId).catch(console.error);
     }
 
     /**

@@ -176,7 +176,7 @@ class Repository extends RepositoryModel {
 
             Repository._repositories.splice(index, 1);
 
-            db.delete("Repositories", {
+            return db.delete("Repositories", {
                 folderName: this._folderName
             }).then(() => {
                 let plugins = Plugin.getAll();
@@ -186,7 +186,7 @@ class Repository extends RepositoryModel {
 
                 this._deleteFolder(); // sync
                 resolve();
-            }).catch(Logger.err);
+            });
         });
     }
 
@@ -254,7 +254,7 @@ class Repository extends RepositoryModel {
                         reply(true);
                     }).catch(() => {
                         reply(false);
-                    }).catch(Logger.err);
+                    });
                     return;
                 }
             }

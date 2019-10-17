@@ -62,11 +62,11 @@ window.Discotron.User = class {
      */
     static loadGuildMembers(discordGuildId) {
         return new Promise((resolve, reject) => {
-            Discotron.WebAPI.queryBot("discotron-dashboard", "get-members", {}, discordGuildId).then((users) => {
+            return Discotron.WebAPI.queryBot("discotron-dashboard", "get-members", {}, discordGuildId).then((users) => {
                 resolve(users.map((user) => {
                     return new Discotron.User(user.name, user.id, user.avatar, user.discriminator).id;
                 }));
-            }).catch(reject);
+            });
         });
     }
 
@@ -80,11 +80,11 @@ window.Discotron.User = class {
         return new Promise((resolve, reject) => {
             if (Discotron.User._users[id] === undefined) {
                 // Since the user should be loaded if he was in a guild, we are here trying to fetch an out-of-guild user (typically for the owner)
-                Discotron.WebAPI.queryBot("discotron-dashboard", "get-user-info", {
+                return Discotron.WebAPI.queryBot("discotron-dashboard", "get-user-info", {
                     discordId: id
                 }).then((userObject) => {
                     resolve(new Discotron.User(userObject.name, userObject.id, userObject.avatarURL, userObject.discriminator));
-                }).catch(reject);
+                });
             } else {
                 resolve(Discotron.User._users[id]);
             }

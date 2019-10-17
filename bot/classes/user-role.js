@@ -66,14 +66,14 @@ class UserRole extends UserRoleModel {
                 if (rows.length !== 0) {
                     resolve(rows[0].id);
                 } else {
-                    db.insert("UsersRoles", {
+                    return db.insert("UsersRoles", {
                         discordId: this.discordId,
                         type: (this.type === "user" ? 1 : 2)
                     }).then(() => {
-                        this.getId().then((id) => {
+                        return this.getId().then((id) => {
                             resolve(id);
-                        }).catch(Logger.err);
-                    }).catch(Logger.err);
+                        });
+                    });
                 }
             }).catch(Logger.err);
         });

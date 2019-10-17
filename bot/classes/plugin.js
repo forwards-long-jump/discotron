@@ -95,7 +95,7 @@ class Plugin extends PluginModel {
                 this._prefix = rows[0].prefix;
                 this._enabled = (rows[0].disabled === 0);
             } else {
-                db.insert("Plugins", {
+                return db.insert("Plugins", {
                     id: this.id,
                     prefix: "",
                     disabled: 0

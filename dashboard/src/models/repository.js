@@ -19,7 +19,7 @@ window.Discotron.Repository = class extends window.Discotron.RepositoryModel {
     static getAll() {
         return new Promise((resolve, reject) => {
             if (Discotron.Repository._repositories.length === 0) {
-                Discotron.WebAPI.queryBot("discotron-dashboard", "get-repositories").then((data) => {
+                return Discotron.WebAPI.queryBot("discotron-dashboard", "get-repositories").then((data) => {
                     for (let i = 0; i < data.length; i++) {
                         const repository = data[i];
                         new Discotron.Repository(repository.url, repository.pluginIds, repository.pages);
@@ -29,7 +29,7 @@ window.Discotron.Repository = class extends window.Discotron.RepositoryModel {
             } else {
                 resolve(Discotron.Repository._repositories);
             }
-        }).catch(console.error);
+        });
     }
 
     /**

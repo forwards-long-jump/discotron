@@ -126,23 +126,25 @@ function requestAppToken(discordUserId, accessToken, refreshToken, expireDate) {
             // User exists, update it
             if (rows.length === 1) {
                 Logger.log("Discord user with id **" + discordUserId + "** logged in using existing information.");
-                db.update("Tokens", {
+
+                return db.update("Tokens", {
                     accessToken: accessToken,
                     refreshToken: refreshToken,
                     expireDate: expireDate
                 }, {
                     discordUserId: discordUserId
+                }).then(() => {
+                    resolve(rows[0].appToken);
                 });
 
-                resolve(rows[0].appToken);
             } else {
                 // User does not exists, create it
                 let appToken = uuidv1();
-                addUser(discordUserId, appToken, accessToken, refreshToken, expireDate).then(() => {
+                return addUser(discordUserId, appToken, accessToken, refreshToken, expireDate).then(() => {
                     resolve(appToken);
-                }).catch(Logger.err);
+                });
             }
-        }).catch(Logger.err);
+        }).catch(reject);
     });
 }
 
@@ -204,7 +206,7 @@ function getAccessToken(authToken) {
 function getDiscordUserId(appToken) {
     return new Promise((resolve, reject) => {
         if (typeof users[appToken] === "undefined") {
-            db.select("Tokens", ["discordUserId", "appToken"], {
+            return db.select("Tokens", ["discordUserId", "appToken"], {
                 appToken: appToken
             }).then((rows) => {
                 if (rows.length === 1) {
@@ -213,7 +215,7 @@ function getDiscordUserId(appToken) {
                 } else {
                     resolve(false);
                 }
-            }).catch(reject);
+            });
         } else {
             resolve(users[appToken]);
         }

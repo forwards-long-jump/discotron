@@ -161,12 +161,12 @@ module.exports.onMessage = (message) => {
  */
 module.exports.loadGuilds = () => {
     return new Promise((resolve, reject) => {
-        db.select("GuildSettings", ["discordGuildId"]).then((rows) => {
+        return db.select("GuildSettings", ["discordGuildId"]).then((rows) => {
             for (let i = 0; i < rows.length; ++i) {
                 new Guild(rows[i].discordGuildId);
             }
             resolve();
-        }).catch(Logger.err);
+        });
     });
 };
 
@@ -317,9 +317,9 @@ module.exports.registerActions = () => {
     webAPI.registerAction("restart-bot", (data, reply) => {
         Logger.log("Restarting bot...");
         global.discordClient.destroy().then(() => {
-            global.discordClient._connectToDiscord().then(() => {
+            return global.discordClient._connectToDiscord().then(() => {
                 reply(true);
-            }).catch(Logger.err);
+            });
         }).catch(Logger.err);
     }, "owner");
 

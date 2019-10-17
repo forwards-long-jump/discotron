@@ -20,11 +20,15 @@ class Owner extends OwnerModel {
         Owner._owners = new Set(discordUserIds);
 
         db.delete("Owners", {}, true).then(() => {
+            let promises = [];
+
             for (let i = 0; i < discordUserIds.length; ++i) {
-                db.insert("Owners", {
+                promises.push(db.insert("Owners", {
                     discordUserId: discordUserIds[i]
-                });
+                }));
             }
+
+            return Promise.all(promises);
         }).catch(Logger.err);
     }
 
@@ -63,13 +67,13 @@ class Owner extends OwnerModel {
     static getOwners() {
         return new Promise((resolve, reject) => {
             if (Owner._owners.size === 0) {
-                db.select("Owners").then((rows) => {
+                return db.select("Owners").then((rows) => {
                     for (let i = 0; i < rows.length; i++) {
                         const row = rows[i];
                         Owner._owners.add(row.discordUserId);
                     }
                     resolve(Array.from(Owner._owners));
-                }).catch(reject);
+                });
             } else {
                 resolve(Array.from(Owner._owners));
             }

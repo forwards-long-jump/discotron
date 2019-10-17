@@ -72,7 +72,7 @@ window.Discotron.BotStatusController = class extends window.Discotron.Controller
 			Discotron.WebAPI.queryBot("discotron-dashboard", "set-bot-config", {
 				presenceText: document.getElementById("bot-presence").value,
 				maintenance: document.getElementById("maintenance-enabled").checked
-			}).then((data) => {}).catch(console.error);
+			}).catch(console.error);
 		};
 
 		restartButton.onclick = () => {
@@ -92,13 +92,13 @@ window.Discotron.BotStatusController = class extends window.Discotron.Controller
 					return new Discotron.UserRole(owner, "user");
 				});
 				new Discotron.UserRoleWidgetController(undefined, userRoles, (newOwners) => {
-					Discotron.WebAPI.queryBot("discotron-dashboard", "set-owners", {
+					return Discotron.WebAPI.queryBot("discotron-dashboard", "set-owners", {
 						discordUserIds: newOwners.map((userRole) => {
 							return userRole.discordId;
 						})
-					}).catch(console.error);
+					});
 				}, false, "Owner list", false, () => {});
-			});
+			}).catch(console.error);
 		};
 	}
 };

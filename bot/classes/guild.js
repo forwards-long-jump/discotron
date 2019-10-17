@@ -120,16 +120,20 @@ class Guild extends GuildModel {
         db.delete("Admins", {
             discordGuildId: this.discordId
         }).then(() => {
+            let promises = [];
+
             for (let i = 0; i < usersRoles.length; ++i) {
                 const userRole = usersRoles[i];
                 // TODO: Do only one query, update without deleting everything
-                userRole.getId().then((id) => {
-                    db.insert("Admins", {
+                promises.push(userRole.getId().then((id) => {
+                    return db.insert("Admins", {
                         discordGuildId: this.discordId,
                         userRoleId: id
                     });
-                }).catch(Logger.err);
+                }));
             }
+
+            return Promise.all(promises);
         }).catch(Logger.err);
     }
 
@@ -242,12 +246,14 @@ class Guild extends GuildModel {
         db.delete("GuildEnabledPlugins", {
             discordGuildId: this.discordId
         }).then(() => {
+            let promises = [];
             this._enabledPlugins.forEach((element) => {
-                db.insert("GuildEnabledPlugins", {
+                promises.push(db.insert("GuildEnabledPlugins", {
                     pluginId: element,
                     discordGuildId: this.discordId
-                });
+                }));
             });
+            return Promise.all(promises);
         }).catch(Logger.err);
     }
 
@@ -263,17 +269,19 @@ class Guild extends GuildModel {
         db.delete("Permissions", {
             discordGuildId: this.discordId,
             pluginId: pluginId
-        });
-
-        for (let i = 0; i < userRoles.length; ++i) {
-            userRoles[i].getId().then((id) => {
-                db.insert("Permissions", {
-                    discordGuildId: this.discordId,
-                    pluginId: pluginId,
-                    userRoleId: id
-                });
-            }).catch(Logger.err);
-        }
+        }).then(() => {
+            let promises = [];
+            for (let i = 0; i < userRoles.length; ++i) {
+                promises.push(userRoles[i].getId().then((id) => {
+                    return db.insert("Permissions", {
+                        discordGuildId: this.discordId,
+                        pluginId: pluginId,
+                        userRoleId: id
+                    });
+                }));
+            }
+            return Promise.all(promises);
+        }).catch(Logger.err);
     }
 
     /**
@@ -304,13 +312,16 @@ class Guild extends GuildModel {
             discordGuildId: this.discordId,
             pluginId: pluginId
         }).then((rows) => {
+            let promises = [];
             const pluginPermission = this._permissions[pluginId];
 
             for (let i = 0; i < rows.length; ++i) {
-                UserRole.getById(rows[i].userRoleId, this.discordId).then((userRole) => {
+                promises.push(UserRole.getById(rows[i].userRoleId, this.discordId).then((userRole) => {
                     pluginPermission._usersRoles.push(userRole);
-                });
+                }));
             }
+
+            return Promise.all(promises);
         }).catch(Logger.err);
     }
 
@@ -350,7 +361,7 @@ class Guild extends GuildModel {
             if (rows.length > 0) {
                 this._commandPrefix = rows[0].prefix;
             } else {
-                db.insert("GuildSettings", {
+                return db.insert("GuildSettings", {
                     discordGuildId: this.discordId,
                     prefix: "!"
                 });
@@ -367,11 +378,13 @@ class Guild extends GuildModel {
         db.select("Admins", ["userRoleId"], {
             discordGuildId: this.discordId
         }).then((rows) => {
+            let promises = [];
             for (let i = 0; i < rows.length; ++i) {
-                UserRole.getById(rows[i].userRoleId, this.discordId).then((userRole) => {
+                promises.push(UserRole.getById(rows[i].userRoleId, this.discordId).then((userRole) => {
                     this._admins.add(userRole);
-                });
+                }));
             }
+            return Promise.all(promises);
         }).catch(Logger.err);
     }
 
