@@ -112,7 +112,7 @@ class Guild extends GuildModel {
     set admins(usersRoles) {
         // Note : the users / roles we receive come from the dashboard, and as such do not have the discordGuildId attribute set
         usersRoles = usersRoles.map((ur) => {
-            return new UserRole(ur._discordId, ur._type, this.discordId);
+            return new UserRole(ur._discordUserId, ur._discordRoleId, this.discordId);
         });
 
         this._admins = new Set(usersRoles);
@@ -152,14 +152,14 @@ class Guild extends GuildModel {
         this._discordAdmins = new Set([]);
 
         let guild = global.discordClient.guilds.get(this.discordId);
-        let admin = new UserRole(guild.ownerID, "user", this.discordId);
+        let admin = new UserRole(guild.ownerID, null, this.discordId);
         this._discordAdmins.add(admin);
 
         let roles = guild.roles.array();
         for (let i = 0; i < roles.length; ++i) {
             const role = roles[i];
             if (role.hasPermission("ADMINISTRATOR")) {
-                let userRole = new UserRole(role.id, "role", this.discordId);
+                let userRole = new UserRole(null, role.id, this.discordId);
                 this._discordAdmins.add(userRole);
             }
         }
@@ -497,7 +497,7 @@ class Guild extends GuildModel {
 
         webAPI.registerAction("set-plugin-permission", (data, reply, discordUserId, discordGuildId) => {
             let usersRoles = data.userRoles.map((ur) => {
-                return new UserRole(ur._discordId, ur._type, discordGuildId);
+                return new UserRole(ur._discordUserId, ur._discordRoleId, discordGuildId);
             });
             Guild.get(discordGuildId).setPluginPermission(data.pluginId, usersRoles);
             reply();

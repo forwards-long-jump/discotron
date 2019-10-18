@@ -3,19 +3,17 @@ const db = require("./../apis/database-crud.js");
 const Logger = require("../utils/logger.js");
 
 /**
- * UserRole represents either a User or a Role.
- * It was a bad idea and should not exists, it was created to avoid storing discord user ids and discord role ids separately
- * since most permissions allows either a user or a role
+ * UserRole represents either a User or a Role, depending on which column is specified in the database.
  */
 class UserRole extends UserRoleModel {
     /**
      * @constructor
-     * @param {string} discordId Id of the user or role
-     * @param {string} type Type of the id, "user" or "role"
+     * @param {string} discordUserId Id of the user
+     * @param {string} discordRoleId Id of the role
      * @param {string} discordGuildId Id of the guild in which this role is located. Does not apply for users
      */
-    constructor(discordId, type, discordGuildId) {
-        super(discordId, type);
+    constructor(discordUserId, discordRoleId, discordGuildId) {
+        super(discordUserId, discordRoleId);
         this._discordGuildId = discordGuildId;
     }
 
@@ -27,12 +25,12 @@ class UserRole extends UserRoleModel {
     }
 
     /**
-     * @returns {object} {id, type} object describing the user / role
+     * @returns {object} {userId, roleId} object describing the user / role
      */
     toObject() {
         return {
-            id: this.discordId,
-            type: this.type
+            userId: this.discordUserId,
+            roleId: this.discordRoleId
         };
     }
 
@@ -41,11 +39,11 @@ class UserRole extends UserRoleModel {
      * @returns {boolean} True if this userRole includes given discord user id (same discord user id or owns the role)
      */
     describes(userDiscordId) {
-        if (this.type === "user") {
-            return this.discordId === userDiscordId;
+        if (this.discordUserId) {
+            return this.discordUserId === userDiscordId;
         } else {
             if (typeof global.discordClient !== "undefined" && typeof global.discordClient.guilds.get(this.discordGuildId) !== "undefined") {
-                let role = global.discordClient.guilds.get(this.discordGuildId).roles.get(this.discordId);
+                let role = global.discordClient.guilds.get(this.discordGuildId).roles.get(this.discordRoleId);
                 return role.members.has(userDiscordId);
             } else {
                 return false;
@@ -60,15 +58,15 @@ class UserRole extends UserRoleModel {
     getId() {
         return new Promise((resolve, reject) => {
             db.select("UsersRoles", ["id"], {
-                discordId: this.discordId,
-                type: (this.type === "user" ? 1 : 2)
+                discordUserId: this.discordUserId,
+                discordRoleId: this.discordRoleId
             }).then((rows) => {
                 if (rows.length !== 0) {
                     resolve(rows[0].id);
                 } else {
                     return db.insert("UsersRoles", {
-                        discordId: this.discordId,
-                        type: (this.type === "user" ? 1 : 2)
+                        discordUserId: this.discordUserId,
+                        discordRoleId: this.discordRoleId
                     }).then(() => {
                         return this.getId().then((id) => {
                             resolve(id);
@@ -88,13 +86,13 @@ class UserRole extends UserRoleModel {
      */
     static getById(id, discordGuildId) {
         return new Promise((resolve, reject) => {
-            db.select("UsersRoles", ["discordId", "type"], {
+            db.select("UsersRoles", ["discordUserId", "discordRoleId"], {
                 id: id
             }).then((rows) => {
                 if (rows.length === 0) {
                     throw new Error("UserRole inexistent in db");
                 }
-                resolve(new UserRole(rows[0].discordId, rows[0].type === 1 ? "user" : "role", discordGuildId));
+                resolve(new UserRole(rows[0].discordUserId, rows[0].discordRoleId, discordGuildId));
             }).catch(Logger.err);
         });
     }

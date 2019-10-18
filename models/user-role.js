@@ -4,26 +4,26 @@
 class UserRoleModel {
     /**
      * @constructor
-     * @param {string} discordId Discord id
-     * @param {string} type Type of the id, *user* or *role*
+     * @param {string} discordUserId Discord user id
+     * @param {string} discordRoleId Discord role id
      */
-    constructor(discordId = undefined, type = "user") {
-        this._discordId = discordId;
-        this._type = type;
+    constructor(discordUserId = undefined, discordRoleId = undefined) {
+        this._discordUserId = discordUserId;
+        this._discordRoleId = discordRoleId;
     }
 
     /**
-     * @returns {string} Discord id
+     * @returns {string} Discord user id
      */
-    get discordId() {
-        return this._discordId;
+    get discordUserId() {
+        return this._discordUserId;
     }
 
     /**
-     * @returns {string} Type (*user* or *role*)
+     * @returns {string} Discord role id
      */
-    get type() {
-        return this._type;
+    get discordRoleId() {
+        return this._discordRoleId;
     }
 }
 

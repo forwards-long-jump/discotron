@@ -118,14 +118,14 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
                         let obj = guilds[discordGuildId];
 
                         let admins = new Set(obj.admins.map((admin) => {
-                            return new Discotron.UserRole(admin.id, admin.type);
+                            return new Discotron.UserRole(admin.id, null);
                         }));
 
                         let permissions = {};
                         for (const pluginId in obj.permissions) {
                             const permission = obj.permissions[pluginId];
                             let usersRoles = permission.map((ur) => {
-                                return new Discotron.UserRole(ur.id, ur.type);
+                                return new Discotron.UserRole(null, ur.id);
                             });
                             permissions[pluginId] = new Discotron.Permission(this.discordId, pluginId, usersRoles);
                         }
