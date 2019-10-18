@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const fs = require("fs");
 
 const http = require("http");
 const https = require("https");
@@ -8,11 +9,6 @@ const Logger = require("./utils/logger.js");
 const webAPI = require("./apis/web-api.js");
 
 const appConfig = require("./config/app-config.json");
-
-const credentials = {
-    key: appConfig.privateKey,
-    cert: appConfig.certificate
-};
 
 /**
  * Serve the dashboard, login and models folders
@@ -50,7 +46,7 @@ module.exports.startAPIServer = () => {
     app.post("/api", webAPI.onPost);
 };
 
-if (credentials.key === undefined || credentials.certificate === undefined) {
+if (appConfig.privateKey === "" || appConfig.certificate === "") {
     Logger.log("**Dashboard and web pages are served without https!**", "warn");
     Logger.log("A hacker could **easily** access your computer as well as compromising all Discord guilds the bot is in.", "warn");
     Logger.log("To prevent that, secure your server using a service like **letsencrypt**.", "warn");
@@ -67,6 +63,19 @@ if (credentials.key === undefined || credentials.certificate === undefined) {
         Logger.log(error, "err");
     });
 } else {
+    let credentials = {};
+
+    try {
+        credentials = {
+            key: fs.readFileSync(appConfig.privateKey),
+            cert: fs.readFileSync(appConfig.certificate)
+        };
+    } catch (e) {
+        Logger.err(e);
+        Logger.err("Could not load https cert/key");
+        process.exit();
+    }
+
     const httpsServer = https.createServer(credentials, app);
     httpsServer.listen(config.webServer.port, () => {
         Logger.log("Started webserver on port **" + config.webServer.port + "**", "info");
