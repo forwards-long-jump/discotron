@@ -46,7 +46,9 @@ module.exports.startAPIServer = () => {
     app.post("/api", webAPI.onPost);
 };
 
-if (appConfig.privateKey === "" || appConfig.certificate === "") {
+if (typeof appConfig.privateKey === "undefined" || typeof appConfig.certificate === "undefined" ||
+    appConfig.privateKey === "" || appConfig.certificate === "") {
+
     Logger.log("**Dashboard and web pages are served without https!**", "warn");
     Logger.log("A hacker could **easily** access your computer as well as compromising all Discord guilds the bot is in.", "warn");
     Logger.log("To prevent that, secure your server using a service like **letsencrypt**.", "warn");
