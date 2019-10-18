@@ -34,24 +34,4 @@ window.Discotron.Channel = class {
     get type() {
         return this._type;
     }
-
-    /**
-     * Returns all the channels of a given guild
-     * @static
-     * @param {string} discordGuildId Discord id of the guild
-     * @returns {Promise} resolve(channels {array}) channels: Array of Channel
-     */
-    static getGuildChannels(discordGuildId) {
-        return new Promise((resolve, reject) => {
-            return Discotron.WebAPI.queryBot("discotron-dashboard", "get-channels", {}, discordGuildId).then((serializedChannels) => {
-                let channels = [];
-                for (let i = 0; i < serializedChannels.length; i++) {
-                    const channel = serializedChannels[i];
-                    channels.push(new Discotron.Channel(channel.name, channel.id, channel.type));
-                }
-
-                resolve(channels);
-            });
-        });
-    }
 };
