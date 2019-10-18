@@ -25,12 +25,12 @@ class UserRole extends UserRoleModel {
     }
 
     /**
-     * @returns {object} {userId, roleId} object describing the user / role
+     * @returns {object} {discordUserId, discordRoleId} object describing the user / role
      */
     toObject() {
         return {
-            userId: this.discordUserId,
-            roleId: this.discordRoleId
+            discordUserId: this.discordUserId,
+            discordRoleId: this.discordRoleId
         };
     }
 
