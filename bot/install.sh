@@ -52,7 +52,7 @@ while : ; do
     # Either empty, or matching a domain-like regex
     if [[ -z "$domain" ]]; then
         # fallback value: localhost
-        domain=http://localhost
+        domain=http://localhost:47131
         break
     else
         # correctly specified
@@ -64,6 +64,7 @@ done
 if [[ ! "$domain" =~ ^.+/$ ]]; then
     domain="$domain/"
 fi
+# todo: this must always include the port of our web server, else redirection will cause oauth errors!
 domain="${domain}dashboard/login.html"
 
 while : ; do
