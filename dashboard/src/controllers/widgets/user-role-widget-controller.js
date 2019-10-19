@@ -111,7 +111,7 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
         button.disabled = true;
 
         // This was not an existing user, check if it's an id
-        if (id.match(/^[0-9]*$/)) {
+        if (id.match(/^[0-9]+$/)) {
             Discotron.User.get(id).then((user) => {
                 document.getElementById("name-input").value = user.tag;
                 button.disabled = false;
