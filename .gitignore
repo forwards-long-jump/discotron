@@ -93,9 +93,5 @@ typings/
 !.vscode/launch.json
 !.vscode/extensions.json
 
-token.txt
-app-config.json
-discotron.db
-dashboard/config/config.js
-repositories/
-bot/.installed
+instance/*
+!instance/README.md

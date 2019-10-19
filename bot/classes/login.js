@@ -8,7 +8,7 @@ const request = require("request");
 const Logger = require("../utils/logger.js");
 const db = require("../apis/database-crud.js");
 
-const appConfig = require("../config/app-config.json");
+const appConfig = require(global.discotron.configPath + "/bot.json");
 
 let users = {};
 let firstLaunch = false;

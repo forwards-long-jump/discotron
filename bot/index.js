@@ -2,9 +2,15 @@ const Logger = require("./utils/logger.js");
 Logger.setSeverity("info");
 
 const DiscordJS = require("discord.js");
+const parseArgs = require("minimist");
+
+let configPath = __dirname + "/../instance";
+handleArgs(parseArgs(process.argv));
 
 let appConfig;
 loadConfig();
+
+global.discotron = {configPath: configPath};
 
 const databaseHelper = require("./utils/database-helper.js");
 // Database
@@ -21,6 +27,8 @@ const discordClient = new DiscordJS.Client();
 
 global.discotron = discotron;
 global.discordClient = discordClient;
+
+discotron.configPath = configPath;
 
 discotron.loadOwners();
 
@@ -92,25 +100,40 @@ function registerEvents() {
 }
 
 /**
+ * Handle command-line arguments passed to the executable.
+ * @param {object} args Parsed arguments as an object. 
+ */
+function handleArgs(args) {
+    // Path where all configs are stored
+    const cfgPath = args["config-path"] || args.c;
+    if (cfgPath) {
+        configPath = cfgPath;
+        if (configPath[configPath.length-1] === "/") {
+            configPath = configPath.substr(0, configPath.length - 1);
+        }
+    }
+}
+
+/**
  * Attempts to load the config from disk, checks for missing files
  */
 function loadConfig() {
     try {
-        appConfig = require("./config/app-config.json");
+        appConfig = require(configPath + "/bot.json");
         if (typeof appConfig.token === "undefined" || appConfig.token === "") {
-            Logger.log("Missing **token** in **app-config.json**.", "err");
+            Logger.log("Missing **token** in **bot.json**.", "err");
             process.exit();
         }
         if (typeof appConfig.applicationId === "undefined" || appConfig.applicationId === "") {
-            Logger.log("Missing **applicationId** in **app-config.json**.", "err");
+            Logger.log("Missing **applicationId** in **bot.json**.", "err");
             process.exit();
         }
         if (typeof appConfig.oauth2Secret === "undefined" || appConfig.oauth2Secret === "") {
-            Logger.log("Missing **oauth2Secret** in **app-config.json**.", "err");
+            Logger.log("Missing **oauth2Secret** in **bot.json**.", "err");
             process.exit();
         }
         if (typeof appConfig.redirectURI === "undefined" || appConfig.redirectURI === "") {
-            Logger.log("Missing **redirectURI** in **app-config.json**.", "err");
+            Logger.log("Missing **redirectURI** in **bot.json**.", "err");
             process.exit();
         }
     } catch (err) {

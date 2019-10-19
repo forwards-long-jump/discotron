@@ -1,7 +1,7 @@
 {
     "database": {
         "templatePath": "./database/discotron-template.db",
-        "savePath": "./database/discotron.db"
+        "saveName": "discotron.db"
     },
     "webServer": {
         "port": 47131
