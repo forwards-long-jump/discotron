@@ -2,6 +2,10 @@ const Logger = require("./utils/logger.js");
 Logger.setSeverity("info");
 
 const DiscordJS = require("discord.js");
+const parseArgs = require("minimist");
+
+global.discotronConfigPath = __dirname + "/../instance";
+handleArgs(parseArgs(process.argv));
 
 let appConfig;
 loadConfig();
@@ -92,25 +96,40 @@ function registerEvents() {
 }
 
 /**
+ * Handle command-line arguments passed to the executable.
+ * @param {object} args Parsed arguments as an object. 
+ */
+function handleArgs(args) {
+    // Path where all configs are stored
+    const cfgPath = args["config-path"] || args.c;
+    if (cfgPath) {
+        global.discotronConfigPath = cfgPath;
+        if (cfgPath[cfgPath.length - 1] === "/") {
+            global.discotronConfigPath = cfgPath.substr(0, cfgPath.length - 1);
+        }
+    }
+}
+
+/**
  * Attempts to load the config from disk, checks for missing files
  */
 function loadConfig() {
     try {
-        appConfig = require("./config/app-config.json");
+        appConfig = require(global.discotronConfigPath + "/bot.json");
         if (typeof appConfig.token === "undefined" || appConfig.token === "") {
-            Logger.log("Missing **token** in **app-config.json**.", "err");
+            Logger.log("Missing **token** in **bot.json**.", "err");
             process.exit();
         }
         if (typeof appConfig.applicationId === "undefined" || appConfig.applicationId === "") {
-            Logger.log("Missing **applicationId** in **app-config.json**.", "err");
+            Logger.log("Missing **applicationId** in **bot.json**.", "err");
             process.exit();
         }
         if (typeof appConfig.oauth2Secret === "undefined" || appConfig.oauth2Secret === "") {
-            Logger.log("Missing **oauth2Secret** in **app-config.json**.", "err");
+            Logger.log("Missing **oauth2Secret** in **bot.json**.", "err");
             process.exit();
         }
         if (typeof appConfig.redirectURI === "undefined" || appConfig.redirectURI === "") {
-            Logger.log("Missing **redirectURI** in **app-config.json**.", "err");
+            Logger.log("Missing **redirectURI** in **bot.json**.", "err");
             process.exit();
         }
     } catch (err) {

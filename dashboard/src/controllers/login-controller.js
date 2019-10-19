@@ -40,7 +40,7 @@ window.Discotron.LoginController = class /* does not extends Controller because 
 
             document.querySelector(".widget-buttons").style.display = "none";
             document.querySelector("#login-error").style.display = "block";
-            document.querySelector("#login-error").innerHTML = "Could not load <b>dashboard/config/config.js</b>";
+            document.querySelector("#login-error").innerHTML = "Could not load <b>dashboard.js</b>";
             return;
         }
 

@@ -8,7 +8,7 @@ const config = require("./config/config.json");
 const Logger = require("./utils/logger.js");
 const webAPI = require("./apis/web-api.js");
 
-const appConfig = require("./config/app-config.json");
+const appConfig = require(global.discotronConfigPath + "/bot.json");
 
 /**
  * Serve the dashboard, login and models folders
@@ -16,6 +16,7 @@ const appConfig = require("./config/app-config.json");
 module.exports.serveDashboard = () => {
     app.use("/dashboard", express.static(__dirname + "/../dashboard"));
     app.use("/models", express.static(__dirname + "/../models"));
+    app.use("/dashboard/config/dashboard.js", express.static(global.discotronConfigPath + "/dashboard.js"));
     app.get("/", (req, res) => {
         res.redirect("/dashboard");
     });
@@ -52,7 +53,7 @@ if (typeof appConfig.privateKey === "undefined" || typeof appConfig.certificate 
     Logger.log("**Dashboard and web pages are served without https!**", "warn");
     Logger.log("A hacker could **easily** access your computer as well as compromising all Discord guilds the bot is in.", "warn");
     Logger.log("To prevent that, secure your server using a service like **letsencrypt**.", "warn");
-    Logger.log("You can then add **privateKeyPath** and **certificatePath** in __bot/config/app-config.json__ to fix the issue.", "warn");
+    Logger.log("You can then add **privateKeyPath** and **certificatePath** in __bot.json__ to fix the issue.", "warn");
     Logger.log("This warning will go away once the server is secured.", "warn");
 
 

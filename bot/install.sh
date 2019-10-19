@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # We leave behind a file which remembers if we ran the install script
-FOOTPRINT=./.installed
+FOOTPRINT=../instance/.installed
 if [[ -f "$FOOTPRINT" ]]; then
     echo "Discotron install script already finished, skipping."
     echo ""
@@ -9,14 +9,14 @@ if [[ -f "$FOOTPRINT" ]]; then
 fi
 
 #Check if some files are already existing
-APPCFG=./config/app-config.json
+APPCFG=../instance/bot.json
 if [[ -f "$APPCFG" ]]; then
     echo "File $APPCFG already exists, but installation was not run yet!"
     echo "Please delete the file to re-run the installation."
     echo ""
     exit
 fi
-DASHCFG=../dashboard/config/config.js
+DASHCFG=../instance/dashboard.js
 if [[ -f "$DASHCFG" ]]; then
     echo "File $DASHCFG already exists, but installation was not run yet!"
     echo "Please delete the file to re-run the installation."
@@ -25,6 +25,8 @@ if [[ -f "$DASHCFG" ]]; then
 fi
 
 echo "=== Discotron Install Script ==="
+echo ""
+echo "This script will create a default configuration in the 'instance' folder to get the bot up and running."
 echo ""
 echo "If you haven't already, visit https://discordapp.com/developers/applications/"
 echo "and create a new application for Discotron. The following information is retrieved"
@@ -50,7 +52,7 @@ while : ; do
     # Either empty, or matching a domain-like regex
     if [[ -z "$domain" ]]; then
         # fallback value: localhost
-        domain=http://localhost
+        domain=http://localhost:47131
         break
     else
         # correctly specified
@@ -62,6 +64,7 @@ done
 if [[ ! "$domain" =~ ^.+/$ ]]; then
     domain="$domain/"
 fi
+# todo: this must always include the port of our web server, else redirection will cause oauth errors!
 domain="${domain}dashboard/login.html"
 
 while : ; do
