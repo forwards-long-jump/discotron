@@ -29,13 +29,12 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
             this._allowNone = allowNone;
             this._customInputs = customInputs;
 
-            this._displayCustomElements();
+            document.querySelector("#users-roles-container").style.display = "none";
+            document.querySelector("#input-description").textContent = inputHelp;
+            document.querySelector("#add-button").disabled = true;
 
-            if (this._guild !== undefined) {
-                document.querySelector("#add-button").disabled = true;
-
             this._displayCustomElements();
-                    this._displayUserRoleSelector();
+            this._displayUserRoleSelector();
         }, onClose);
 
     }
@@ -74,10 +73,10 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
         let button = document.getElementById("add-button");
 
         input.oninput = () => {
-                if (input.value !== "") {
-                    this._checkNameValidity(input.value);
-                }
-            };
+            if (input.value !== "") {
+                this._checkNameValidity(input.value);
+            }
+        };
 
         input.onpaste = (event) => {
             let paste = (event.clipboardData || window.clipboardData).getData("text");
@@ -96,8 +95,8 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
             let value = input.value;
             input.value = "";
 
-                // The text is the name of a role or a user
-                this._addEntry(value);
+            // The text is the name of a role or a user
+            this._addEntry(value);
         };
     }
 
@@ -115,7 +114,7 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
                 document.getElementById("name-input").value = user.tag;
                 button.disabled = false;
             }).catch(console.error);
-            }
+        }
     }
 
     /**
@@ -142,9 +141,9 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
             this._guild.getRoles().then((roles) => {
                 for (let discordId in roles) {
                     if (roles[discordId].name === name) {
-                    button.disabled = false;
+                        button.disabled = false;
                         break;
-                }
+                    }
                 }
             }).catch(console.error);
         }
@@ -163,8 +162,8 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
                 if (members[discordId].tag === name) {
                     button.disabled = false;
                     break;
+                }
             }
-        }
         }).catch(console.error);
     }
 
@@ -230,6 +229,21 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
         } else {
             document.querySelector("#role-container").style.display = "none";
         }
+
+        this._handleNoUsersRolesDisplay();
+    }
+
+    /**
+     * Hides or display "No users or roles" depending on this._usersRoles
+     */
+    _handleNoUsersRolesDisplay() {
+        if (this._usersRoles.length !== 0) {
+            this._widgetContainer.querySelector("#users-roles-container").style.display = "block";
+            this._widgetContainer.querySelector("#no-entries").style.display = "none";
+        } else {
+            this._widgetContainer.querySelector("#users-roles-container").style.display = "none";
+            this._widgetContainer.querySelector("#no-entries").style.display = "block";
+        }
     }
 
     /**
@@ -274,8 +288,8 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
                     if (roles[discordId].name === name) {
                         this._addRoleEntry(roles[discordId]);
                         break;
+                    }
                 }
-            }
             }).catch(console.error);
         }
     }
@@ -297,6 +311,8 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
         if (!this._allowNone) {
             this._widgetContainer.querySelector(".save-button").disabled = (this._usersRoles.length === 0);
         }
+
+        this._handleNoUsersRolesDisplay();
     }
 
     /**
@@ -317,6 +333,7 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
         };
 
         usersContainer.appendChild(userEntry);
+        this._handleNoUsersRolesDisplay();
     }
 
     /**
@@ -338,6 +355,7 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
         };
 
         rolesContainer.appendChild(roleEntry);
+        this._handleNoUsersRolesDisplay();
     }
 
     /**

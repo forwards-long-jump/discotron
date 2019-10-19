@@ -43,42 +43,6 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
     }
 
     /**
-     * @returns {array} array of members ids
-     */
-    get members() {
-        return this._members;
-    }
-
-    /**
-     * @returns {object} {roleId: Role, ...}
-     */
-    get roles() {
-        return this._roles;
-    }
-
-    /**
-     * @returns {object} {channelId: Channel, ...}
-     */
-    get channels() {
-        return this._channels;
-    }
-
-    /**
-     * @returns {Promise} resolve(channels {array}) channels: Array of Channel, reject()
-     */
-    getChannels() {
-        return new Promise((resolve, reject) => {
-            if (Object.keys(this._channels).length === 0) {
-                this._loadChannels().then(() => {
-                    resolve(this._channels);
-                }).catch(console.error);
-            } else {
-                resolve(this._channels);
-            }
-        });
-    }
-
-    /**
      * Load members using the WebAPI
      * @returns {Promise} resolve(), reject()
      */
@@ -88,7 +52,7 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
                 const user = users[i];
                 this._members[user.discordId] = new Discotron.User(user.name, user.discordId, user.avatar, user.discriminator);
             }
-            });
+        });
     }
 
     /**
@@ -98,12 +62,12 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
     _loadRoles() {
         return Discotron.WebAPI.queryBot("discotron-dashboard", "get-roles", {}, this.discordId).then((roles) => {
             for (let i = 0; i < roles.length; i++) {
-                    const role = roles[i];
+                const role = roles[i];
                 this._roles[role.discordId] = new Discotron.Role(role.name, role.discordId, role.color);
-                }
-            });
+            }
+        });
     }
-
+    
     /**
      * Load channels using the WebAPI
      * @returns {Promise} resolve(), reject()
@@ -113,8 +77,8 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
             for (let discordId in channels) {
                 const channel = channels[discordId];
                 this._channels[discordId] = new Discotron.Channel(channel.name, channel.discordId, channel.type);
-                }
-            });
+            }
+        });
     }
 
     /**
@@ -122,29 +86,29 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
      * @returns {Promise} resolve(), reject()
      */
     static _loadAll() {
-                return Discotron.WebAPI.queryBot("discotron-dashboard", "get-guilds-where-is-admin").then((guilds) => {
-                    for (const discordGuildId in guilds) {
-                        let obj = guilds[discordGuildId];
+        return Discotron.WebAPI.queryBot("discotron-dashboard", "get-guilds-where-is-admin").then((guilds) => {
+            for (const discordGuildId in guilds) {
+                let obj = guilds[discordGuildId];
 
-                        let admins = new Set(obj.admins.map((admin) => {
+                let admins = new Set(obj.admins.map((admin) => {
                     return new Discotron.UserRole(admin.discordId, admin.type);
-                        }));
+                }));
 
-                        let permissions = {};
-                        for (const pluginId in obj.permissions) {
-                            const permission = obj.permissions[pluginId];
+                let permissions = {};
+                for (const pluginId in obj.permissions) {
+                    const permission = obj.permissions[pluginId];
                     let usersRoles = permission.map((userRole) => {
                         return new Discotron.UserRole(userRole.discordId, userRole.type);
-                            });
-                            permissions[pluginId] = new Discotron.Permission(this.discordId, pluginId, usersRoles);
-                        }
+                    });
+                    permissions[pluginId] = new Discotron.Permission(this.discordId, pluginId, usersRoles);
+                }
 
                 // Guilds register themselves in window.Discotron.Guild._guilds
                 new Discotron.Guild(obj.discordId, obj.name, obj.image, obj.nameAcronym,
                     obj.prefix, new Set(obj.allowedChannelIds), new Set(obj.enabledPluginIds), new Set(admins), permissions);
             }
         });
-                    }
+    }
 
     /**
      * Get all guilds the user has access to, load them if necessary
@@ -154,8 +118,8 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
     static getAll() {
         return Discotron.utils.getOrLoad(Discotron.Guild._guilds, () => {
             return Discotron.Guild._loadAll();
-                });
-            }
+        });
+    }
 
     /**
      * @returns {Promise} resolve(channels {array}) channels: Array of Channel, reject()
