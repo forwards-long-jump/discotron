@@ -13,16 +13,18 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
      * @param {boolean} allowNone Allows to enter no users nor roles
      * @param {array} customInputs Array of objects for custom inputs, e.g: [{type: "input", name: ""}]
      * @param {function} onClose Called when user cancels saving
+     * @param {string} [inputHelp="Grant permission to user / role"] Text display above the name input
      */
-    constructor(guild, usersRoles, onUserRoleSave, displayRoles = true, headerText = "", allowNone = false, customInputs = [], onClose = () => {}) {
+    constructor(guild, usersRoles, onUserRoleSave, displayRoles = true, headerText = "", allowNone = false, customInputs = [], onClose = () => {}, inputHelp = "Grant permission to user / role") {
         super("user-role-selector.html", () => {
             onUserRoleSave(this._getUsersRoles(), this._getCustomSettings());
         }, () => {
             this._guild = guild;
             this._headerText = headerText;
-            this._usersRoles = usersRoles.map((ur) => {
-                return new Discotron.UserRole(ur.discordId, ur.type);
+            this._usersRoles = usersRoles.map((userRole) => {
+                return new Discotron.UserRole(userRole.discordId, userRole.type);
             });
+
             this._displayRoles = displayRoles;
             this._allowNone = allowNone;
             this._customInputs = customInputs;
@@ -32,17 +34,8 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
             if (this._guild !== undefined) {
                 document.querySelector("#add-button").disabled = true;
 
-                let promises = [
-                    this._guild._loadMembers(),
-                    this._guild._loadRoles()
-                ];
-                Promise.all(promises).then(() => {
+            this._displayCustomElements();
                     this._displayUserRoleSelector();
-                }).catch(console.error);
-            } else {
-                this._displayUserRoleSelector();
-            }
-
         }, onClose);
 
     }
@@ -77,16 +70,20 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
     _addEvents() {
         super._addEvents();
 
-        let input = document.querySelector("#name-input");
-        let button = document.querySelector("#add-button");
+        let input = document.getElementById("name-input");
+        let button = document.getElementById("add-button");
 
-        if (this._guild !== undefined) {
-            input.onkeyup = () => {
+        input.oninput = () => {
                 if (input.value !== "") {
                     this._checkNameValidity(input.value);
                 }
             };
-        }
+
+        input.onpaste = (event) => {
+            let paste = (event.clipboardData || window.clipboardData).getData("text");
+            this._checkIdValidity(paste);
+            event.preventDefault();
+        };
 
         input.onkeydown = (e) => {
             if (e.keyCode === 13) {
@@ -98,42 +95,77 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
             button.disabled = true;
             let value = input.value;
             input.value = "";
-            if (this._guild === undefined) {
-                // The text is a user ID, we try to send it directly
-                Discotron.User.get(value).then((user) => {
-                    this._addUserEntry(user);
-                }).catch(console.error);
-            } else {
+
                 // The text is the name of a role or a user
                 this._addEntry(value);
-            }
         };
     }
 
     /**
-     * Activates the add button if the name corresponds to 
+     * Activates the add button if the name corresponds to a valid discord name, or a valid user id
+     * @param {string} name Username of a discord user or role name
+     */
+    _checkIdValidity(id) {
+        let button = document.querySelector("#add-button");
+        button.disabled = true;
+
+        // This was not an existing user, check if it's an id
+        if (id.match(/^[0-9]*$/)) {
+            Discotron.User.get(id).then((user) => {
+                document.getElementById("name-input").value = user.tag;
+                button.disabled = false;
+            }).catch(console.error);
+            }
+    }
+
+    /**
+     * Activates the add button if the name corresponds to a valid discord name, or a valid user id
      * @param {string} name Username of a discord user or role name
      */
     _checkNameValidity(name) {
         let button = document.querySelector("#add-button");
         button.disabled = true;
 
-        for (let i = 0; i < this._guild.members.length; ++i) {
-            Discotron.User.get(this._guild.members[i]).then((user) => {
-                if (user.tag === name) {
+        if (this._guild !== undefined) {
+            this._enableButtonIfValidName(this._guild, name, button);
+        } else {
+            // No guild specified means we are trying to add a "global" user, check in all guild just in case
+            Discotron.Guild.getAll().then((guilds) => {
+                for (let guildId in guilds) {
+                    this._enableButtonIfValidName(guilds[guildId], name, button);
+                }
+            });
+        }
+
+        // Also check for roles validity if they are displayed
+        if (this._displayRoles) {
+            this._guild.getRoles().then((roles) => {
+                for (let discordId in roles) {
+                    if (roles[discordId].name === name) {
                     button.disabled = false;
+                        break;
+                }
                 }
             }).catch(console.error);
         }
+    }
 
-        if (this._displayRoles) {
-            for (const id in this._guild.roles) {
-                const role = this._guild.roles[id];
-                if (role.name === name) {
+
+    /**
+     * Enable the button if the specified name (tag) is present in the guild
+     * @param {Guild} guild Guild to search the username in
+     * @param {string} name tag of a discord user
+     * @param {object} button Element to enable/disabled
+     */
+    _enableButtonIfValidName(guild, name, button) {
+        guild.getMembers().then((members) => {
+            for (let discordId in members) {
+                if (members[discordId].tag === name) {
                     button.disabled = false;
-                }
+                    break;
             }
         }
+        }).catch(console.error);
     }
 
     /**
@@ -186,8 +218,13 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
             for (let i = 0; i < this._usersRoles.length; ++i) {
                 let userRole = this._usersRoles[i];
                 if (userRole.type === "role") {
-                    let role = this._guild.roles[userRole.discordId];
-                    this._displayRoleEntry(role);
+                    this._guild.getRoles().then((roles) => {
+                        for (let discordId in roles) {
+                            if (roles[discordId].discordId === userRole.discordId) {
+                                this._displayRoleEntry(roles[discordId]);
+                            }
+                        }
+                    });
                 }
             }
         } else {
@@ -221,25 +258,25 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
     }
 
     /**
-     * Add either a role or a username 
-     * @param {string} name Username or role name
+     * Add either a role or a user 
+     * @param {string} name Tag or role name
      */
     _addEntry(name) {
-        for (let i = 0; i < this._guild.members.length; ++i) {
-            Discotron.User.get(this._guild.members[i]).then((user) => {
-                if (user.tag === name) {
-                    this._addUserEntry(user);
-                }
-            }).catch(console.error);
+        let user = Discotron.User.getByTag(name);
+        if (user !== undefined) {
+            this._addUserEntry(Discotron.User.getByTag(name));
         }
 
+        // Check for roles as well
         if (this._displayRoles) {
-            for (const id in this._guild.roles) {
-                const role = this._guild.roles[id];
-                if (role._name === name) {
-                    this._addRoleEntry(role);
+            this._guild.getRoles().then((roles) => {
+                for (let discordId in roles) {
+                    if (roles[discordId].name === name) {
+                        this._addRoleEntry(roles[discordId]);
+                        break;
                 }
             }
+            }).catch(console.error);
         }
     }
 

@@ -66,5 +66,32 @@ window.Discotron.utils = {
         // Render to data url
         const img = canvas.toDataURL("image/png");
         return img;
+    },
+    /**
+     * Source: https://stackoverflow.com/questions/4482686/check-synchronously-if-file-directory-exists-in-node-js
+     * @param {object} object object
+     * @returns {boolean} True if the object is empty
+     */
+    isEmpty: (object) => {
+        return Object.entries(object).length === 0 && object.constructor === Object;
+    },
+    /**
+     * Check if object is empty, if it is calls loadFunction before resolving
+     * @param {object|array} object object or array
+     * @param {function} loadFunction function that will fill object if empty (), must return a promise after changing object
+     * @returns {Promise} resolve(object {object}) object:
+     */
+    getOrLoad: (object, loadFunction) => {
+        let loaded = Array.isArray(object) ? object.length !== 0 : !window.Discotron.utils.isEmpty(object);
+
+        return new Promise((resolve, reject) => {
+            if (loaded) {
+                resolve(object);
+            } else {
+                loadFunction(object).then(() => {
+                    resolve(object);
+                }).catch(reject);
+            }
+        });
     }
 };

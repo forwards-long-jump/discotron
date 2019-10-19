@@ -21,7 +21,7 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
         this._iconURL = (iconURL === null) ? Discotron.utils.generateAcronymIcon(acronym, "#fff", "#4e4e4e") : iconURL;
 
         // Will be loaded as needed
-        this._members = []; // Array of discord user id
+        this._members = {}; // Id: User
         this._roles = {}; // Id: Role
         this._channels = {}; // Id: Channel
 
@@ -117,72 +117,72 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
             });
     }
 
-
     /**
-     * Get all guilds, load them if necessary
-     * @static
-     * @returns {Promise} resolve(guilds {array}) guilds: Array of Guild, reject()
+     * Load guilds using the WebAPI
+     * @returns {Promise} resolve(), reject()
      */
-    static getAll() {
-        return new Promise((resolve, reject) => {
-            if (Object.keys(Discotron.Guild._guilds).length === 0) {
+    static _loadAll() {
                 return Discotron.WebAPI.queryBot("discotron-dashboard", "get-guilds-where-is-admin").then((guilds) => {
                     for (const discordGuildId in guilds) {
                         let obj = guilds[discordGuildId];
 
                         let admins = new Set(obj.admins.map((admin) => {
-                            return new Discotron.UserRole(admin.id, admin.type);
+                    return new Discotron.UserRole(admin.discordId, admin.type);
                         }));
 
                         let permissions = {};
                         for (const pluginId in obj.permissions) {
                             const permission = obj.permissions[pluginId];
-                            let usersRoles = permission.map((ur) => {
-                                return new Discotron.UserRole(ur.id, ur.type);
+                    let usersRoles = permission.map((userRole) => {
+                        return new Discotron.UserRole(userRole.discordId, userRole.type);
                             });
                             permissions[pluginId] = new Discotron.Permission(this.discordId, pluginId, usersRoles);
                         }
 
-                        new Discotron.Guild(obj.id, obj.name, obj.image, obj.nameAcronym, obj.prefix, new Set(obj.allowedChannelIds), new Set(obj.enabledPluginIds), new Set(admins), permissions);
-                    }
-                    resolve(Discotron.Guild._guilds);
-                });
-            } else {
-                resolve(Discotron.Guild._guilds);
+                // Guilds register themselves in window.Discotron.Guild._guilds
+                new Discotron.Guild(obj.discordId, obj.name, obj.image, obj.nameAcronym,
+                    obj.prefix, new Set(obj.allowedChannelIds), new Set(obj.enabledPluginIds), new Set(admins), permissions);
             }
         });
+                    }
+
+    /**
+     * Get all guilds the user has access to, load them if necessary
+     * @static
+     * @returns {Promise} resolve(guilds {array}) guilds: Array of Guild, reject()
+     */
+    static getAll() {
+        return Discotron.utils.getOrLoad(Discotron.Guild._guilds, () => {
+            return Discotron.Guild._loadAll();
+                });
+            }
+
+    /**
+     * @returns {Promise} resolve(channels {array}) channels: Array of Channel, reject()
+     */
+    getChannels() {
+        return Discotron.utils.getOrLoad(this._channels, () => {
+            return this._loadChannels();
+        });
     }
 
     /**
-     * Returns the roles of the guild
-     * @returns {array} Array of Roles
+     * @returns {Promise} resolve(roles {array}) roles: Array of Role, reject()
      */
     getRoles() {
-        return new Promise((resolve, reject) => {
-            // if this.channel is not empty
-            //    resolve();
-            // else
-            // channels.push(Channel.getGuildChannels(this._id))
-            // resolve()
-            // });
+        return Discotron.utils.getOrLoad(this._roles, () => {
+            return this._loadRoles();
         });
     }
 
     /**
-     * Returns the members of the guild
-     * @returns {array} Array of Users
+     * @returns {Promise} resolve(members {array}) User: Array of members Ids, reject()
      */
     getMembers() {
-        return new Promise((resolve, reject) => {
-            // if this.channel is not empty
-            //    resolve();
-            // else
-            // members.push(Channel.getGuildChannels(this._id)) // stores only IDs, Members are saved in Member.getAll()
-            // resolve()
-            // });
+        return Discotron.utils.getOrLoad(this._members, () => {
+            return this._loadMembers();
         });
     }
-
     /**
      * Clear cache, this will force a reload when guilds are queried again
      * @static

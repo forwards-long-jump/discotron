@@ -76,6 +76,22 @@ window.Discotron.User = class {
     }
 
     /**
+     * Find a previously *loaded* user from its tag
+     * @param {string} tag of the user
+     * @returns {User} User if found
+     */
+    static getByTag(tag) {
+        for (const discordUserId in window.Discotron.User._users) {
+            if (window.Discotron.User._users.hasOwnProperty(discordUserId)) {
+                const user = window.Discotron.User._users[discordUserId];
+                if (user.tag === tag) {
+                    return user;
+                }
+            }
+        }
+    }
+
+    /**
      * @static
      * @returns {object} {id: user} all loaded users
      */
