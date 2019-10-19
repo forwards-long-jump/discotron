@@ -85,7 +85,7 @@ function handleDiscordAPIQuery(authToken, reply, addOwner = false) {
 
                 return requestAppToken(userInfo.id, accessInfo.accessToken, accessInfo.refreshToken, accessInfo.expireDate);
             } else {
-                Promise.reject();
+                return Promise.reject();
             }
         }).then((appToken) => {
 

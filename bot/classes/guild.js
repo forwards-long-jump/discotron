@@ -235,6 +235,7 @@ class Guild extends GuildModel {
      * Set whether the given plugin is enabled on the guild
      * @param {string} pluginId 
      * @param {boolean} enabled 
+     * @returns {Promise} Promise resolves once plugin fully enabled (database operation completed).
      */
     setPluginEnabled(pluginId, enabled) {
         if (this._enabledPlugins.size === 0) {
@@ -255,7 +256,7 @@ class Guild extends GuildModel {
             }
         }
 
-        db.delete("GuildEnabledPlugins", {
+        return db.delete("GuildEnabledPlugins", {
             discordGuildId: this.discordId
         }).then(() => {
             let promises = [];
@@ -271,14 +272,15 @@ class Guild extends GuildModel {
 
     /**
      * Set the set of users and roles allowed to use the given plugin
-     * @param {string} pluginId 
-     * @param {array} userRoles 
+     * @param {string} pluginId
+     * @param {array} userRoles
+     * @returns {Promise} Promise resolves once plugin permissions fully set (database operation completed).
      */
     setPluginPermission(pluginId, userRoles) {
         this._permissions[pluginId]._usersRoles = userRoles;
 
         // TODO: Do only one query, do not delete to update everything one by one
-        db.delete("Permissions", {
+        return db.delete("Permissions", {
             discordGuildId: this.discordId,
             pluginId: pluginId
         }).then(() => {
@@ -373,7 +375,7 @@ class Guild extends GuildModel {
     _loadGuildSettings() {
         return db.select("GuildSettings", ["prefix"], {
             discordGuildId: this.discordId
-        }).then((rows, reject) => {
+        }).then((rows) => {
             if (rows.length > 0) {
                 this._commandPrefix = rows[0].prefix;
             } else {
