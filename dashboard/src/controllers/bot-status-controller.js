@@ -94,7 +94,7 @@ window.Discotron.BotStatusController = class extends window.Discotron.Controller
 				new Discotron.UserRoleWidgetController(undefined, userRoles, (newOwners) => {
 					return Discotron.WebAPI.queryBot("discotron-dashboard", "set-owners", {
 						discordUserIds: newOwners.map((userRole) => {
-							return userRole.discordUserId || userRole.discordRoleId;
+							return userRole.discordUserId;
 						})
 					});
 				}, false, "Owner list", false, () => {});

@@ -39,7 +39,7 @@ class UserRole extends UserRoleModel {
      * @returns {boolean} True if this userRole includes given discord user id (same discord user id or owns the role)
      */
     describes(userDiscordId) {
-        if (this.discordUserId) {
+        if (this.discordUserId !== null) {
             return this.discordUserId === userDiscordId;
         } else {
             if (typeof global.discordClient !== "undefined" && typeof global.discordClient.guilds.get(this.discordGuildId) !== "undefined") {

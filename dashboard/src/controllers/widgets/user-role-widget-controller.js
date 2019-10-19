@@ -174,7 +174,7 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
         // Users
         for (let i = 0; i < this._usersRoles.length; ++i) {
             let userRole = this._usersRoles[i];
-            if (userRole.discordUserId) {
+            if (userRole.discordUserId !== null) {
                 Discotron.User.get(this._usersRoles[i].discordUserId).then((user) => {
                     this._displayUserEntry(user);
                 }).catch(console.error);
@@ -185,7 +185,7 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
         if (this._displayRoles) {
             for (let i = 0; i < this._usersRoles.length; ++i) {
                 let userRole = this._usersRoles[i];
-                if (userRole.discordRoleId) {
+                if (userRole.discordRoleId !== null) {
                     let role = this._guild.roles[userRole.discordRoleId];
                     this._displayRoleEntry(role);
                 }
