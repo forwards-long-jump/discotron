@@ -16,7 +16,13 @@ function generateParameters(where, separator = " AND ") {
     let objParam = {};
 
     for (let key in where) {
-        params += key + " = $" + key + separator;
+        let comparison;
+        if (where[key] === null) {
+            comparison = "IS";
+        } else {
+            comparison = "=";
+        }
+        params += key + " " + comparison + " $" + key + separator;
         objParam["$" + key] = where[key];
     }
     return {

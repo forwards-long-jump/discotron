@@ -21,8 +21,10 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
         }, () => {
             this._guild = guild;
             this._headerText = headerText;
+
             this._usersRoles = usersRoles.map((userRole) => {
-                return new Discotron.UserRole(userRole.discordId, userRole.type);
+                return new Discotron.UserRole(userRole.discordUserId, userRole.discordRoleId);
+
             });
 
             this._displayRoles = displayRoles;
@@ -205,8 +207,8 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
         // Users
         for (let i = 0; i < this._usersRoles.length; ++i) {
             let userRole = this._usersRoles[i];
-            if (userRole.type === "user") {
-                Discotron.User.get(this._usersRoles[i].discordId).then((user) => {
+            if (userRole.discordUserId !== null) {
+                Discotron.User.get(this._usersRoles[i].discordUserId).then((user) => {
                     this._displayUserEntry(user);
                 }).catch(console.error);
             }
@@ -216,10 +218,11 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
         if (this._displayRoles) {
             for (let i = 0; i < this._usersRoles.length; ++i) {
                 let userRole = this._usersRoles[i];
-                if (userRole.type === "role") {
+
+                if (userRole.discordRoleId !== null) {
                     this._guild.getRoles().then((roles) => {
                         for (let discordId in roles) {
-                            if (roles[discordId].discordId === userRole.discordId) {
+                            if (roles[discordId].discordId === userRole.discordRoleId) {
                                 this._displayRoleEntry(roles[discordId]);
                             }
                         }
@@ -251,11 +254,11 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
      * @param {User} user user to add
      */
     _addUserEntry(user) {
-        if (this._hasUserRoleAlready(user.discordId)) {
+        if (this._hasUserRoleAlready(user.discordId, null)) {
             return;
         }
+        this._usersRoles.push(new Discotron.UserRole(user.discordId, null));
 
-        this._usersRoles.push(new Discotron.UserRole(user.discordId, "user"));
         this._displayUserEntry(user);
     }
 
@@ -264,10 +267,11 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
      * @param {Role} role role to add
      */
     _addRoleEntry(role) {
-        if (this._hasUserRoleAlready(role.discordId)) {
+        if (this._hasUserRoleAlready(null, role.discordId)) {
             return;
         }
-        this._usersRoles.push(new Discotron.UserRole(role.discordId, "role"));
+        this._usersRoles.push(new Discotron.UserRole(null, role.discordId));
+
         this._displayRoleEntry(role);
     }
 
@@ -295,14 +299,14 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
     }
 
     /**
-     * Remove a user or a role from the list
-     * @param {string} id Discord id
-     * @param {string} type "role" or "user"
+     * Remove a UserRole from the list
+     * @param {string} userId Discord user id
+     * @param {string} roleId Discord role id
      */
-    _removeEntry(id, type) {
+    _removeEntry(userId, roleId) {
         for (let i = 0; i < this._usersRoles.length; ++i) {
             let ur = this._usersRoles[i];
-            if (ur._discordId === id && ur._type === type) {
+            if (ur._discordUserId === userId && ur._discordRoleId === roleId) {
                 this._usersRoles.splice(i, 1);
                 break;
             }
@@ -328,7 +332,7 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
 
         let container = userEntry.querySelector("span");
         userEntry.querySelector("span").onclick = () => {
-            this._removeEntry(user.discordId, "user");
+            this._removeEntry(user.discordId, null);
             container.remove();
         };
 
@@ -350,7 +354,7 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
 
         let container = roleEntry.querySelector("span");
         roleEntry.querySelector("span").onclick = () => {
-            this._removeEntry(role.discordId, "role");
+            this._removeEntry(null, role.discordId);
             container.remove();
         };
 
@@ -367,11 +371,12 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
 
     /**
      * Returns true if the user or role is already present in this._usersRoles
-     * @param {string} id id of the user or role
+     * @param {string} userId id of the user
+     * @param {string} roleId id of the role
      */
-    _hasUserRoleAlready(id) {
+    _hasUserRoleAlready(userId, roleId) {
         for (let i = 0; i < this._usersRoles.length; ++i) {
-            if (this._usersRoles[i]._discordId === id) {
+            if (this._usersRoles[i]._discordUserId === userId && this._usersRoles[i]._discordRoleId === roleId) {
                 return true;
             }
         }

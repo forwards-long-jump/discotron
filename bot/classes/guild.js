@@ -24,10 +24,15 @@ class Guild extends GuildModel {
             this.onPluginDeleted(pluginId);
         });
 
-        this._loadPrefix();
-        this._loadAdminsFromDatabase();
-        this._loadAllowedChannels();
-        this._loadEnabledPlugins();
+        this._tryAdd().then(() => {
+            return this._loadGuildSettings();
+        }).then(() => {
+            return this._loadAdminsFromDatabase();
+        }).then(() => {
+            return this._loadAllowedChannels();
+        }).then(() => {
+            return this._loadEnabledPlugins();
+        }).catch(Logger.err);
 
         Guild._guilds[discordId] = this;
     }
@@ -79,23 +84,29 @@ class Guild extends GuildModel {
      * @returns Whether the given user id is a bot admin on the guild
      */
     isAdmin(discordUserId) {
-        let isadmin = false;
+        let isAdmin = false;
         this._admins.forEach((admin) => {
             if (admin.describes(discordUserId)) {
-                isadmin = true;
+                isAdmin = true;
                 return false;
             }
         });
+
+        if (isAdmin) {
+            // Can quit early
+            return true;
+        }
+
         this._discordAdmins.forEach((admin) => {
             if (admin.describes(discordUserId)) {
-                isadmin = true;
+                isAdmin = true;
                 return false;
             }
         });
-        return isadmin;
+        return isAdmin;
     }
 
-    /**
+        /**
      * @static
      * @param {string} discordUserId Discord user id
      * @param {string} discordGuildId Discord gulid id
@@ -104,7 +115,7 @@ class Guild extends GuildModel {
     static isGuildAdmin(discordUserId, discordGuildId) {
         return Guild.get(discordGuildId).isAdmin(discordUserId);
     }
-
+    
     /**
      * Adds a bot admin to the guild
      * @param {array} usersRoles Array of UserRole 
@@ -113,7 +124,7 @@ class Guild extends GuildModel {
         // TODO: Handle role validity
         // Note : the users / roles we receive come from the dashboard, and as such do not have the discordGuildId attribute set
         usersRoles = usersRoles.map((ur) => {
-            return new UserRole(ur._discordId, ur._type, this.discordId);
+            return new UserRole(ur._discordUserId, ur._discordRoleId, this.discordId);
         });
 
         this._admins = new Set(usersRoles);
@@ -153,14 +164,14 @@ class Guild extends GuildModel {
         this._discordAdmins = new Set([]);
 
         let guild = global.discordClient.guilds.get(this.discordId);
-        let admin = new UserRole(guild.ownerID, "user", this.discordId);
+        let admin = new UserRole(guild.ownerID, null, this.discordId);
         this._discordAdmins.add(admin);
 
         let roles = guild.roles.array();
         for (let i = 0; i < roles.length; ++i) {
             const role = roles[i];
             if (role.hasPermission("ADMINISTRATOR")) {
-                let userRole = new UserRole(role.id, "role", this.discordId);
+                let userRole = new UserRole(null, role.id, this.discordId);
                 this._discordAdmins.add(userRole);
             }
         }
@@ -225,6 +236,7 @@ class Guild extends GuildModel {
      * Set whether the given plugin is enabled on the guild
      * @param {string} pluginId 
      * @param {boolean} enabled 
+     * @returns {Promise} Promise resolves once plugin fully enabled (database operation completed).
      */
     setPluginEnabled(pluginId, enabled) {
         if (this._enabledPlugins.size === 0) {
@@ -245,7 +257,7 @@ class Guild extends GuildModel {
             }
         }
 
-        db.delete("GuildEnabledPlugins", {
+        return db.delete("GuildEnabledPlugins", {
             discordGuildId: this.discordId
         }).then(() => {
             let promises = [];
@@ -261,14 +273,15 @@ class Guild extends GuildModel {
 
     /**
      * Set the set of users and roles allowed to use the given plugin
-     * @param {string} pluginId 
-     * @param {array} userRoles 
+     * @param {string} pluginId
+     * @param {array} userRoles
+     * @returns {Promise} Promise resolves once plugin permissions fully set (database operation completed).
      */
     setPluginPermission(pluginId, userRoles) {
         this._permissions[pluginId]._usersRoles = userRoles;
 
         // TODO: Do only one query, do not delete to update everything one by one
-        db.delete("Permissions", {
+        return db.delete("Permissions", {
             discordGuildId: this.discordId,
             pluginId: pluginId
         }).then(() => {
@@ -295,7 +308,7 @@ class Guild extends GuildModel {
     }
 
     /**
-     * Must be before a plugin is deleted
+     * Must be called before a plugin is deleted
      * @param {string} pluginId 
      */
     onPluginDeleted(pluginId) {
@@ -306,11 +319,12 @@ class Guild extends GuildModel {
     /**
      * Load plugin permissions from database
      * @param {string} pluginId 
+     * @returns {Promise} Promise resolves once plugin permissions are loaded (database operation completed).
      */
     _loadPluginPermission(pluginId) {
         this._permissions[pluginId] = new Permission(this.discordId, pluginId, []);
         // TODO: Fix n + 1 query here
-        db.select("Permissions", ["userRoleId"], {
+        return db.select("Permissions", ["userRoleId"], {
             discordGuildId: this.discordId,
             pluginId: pluginId
         }).then((rows) => {
@@ -324,60 +338,60 @@ class Guild extends GuildModel {
             }
 
             return Promise.all(promises);
-        }).catch(Logger.err);
+        });
     }
 
     /**
      * Load plugins enabled on this guild from database
+     * @returns {Promise} Promise resolves once plugin enabled list is loaded (database operation completed).
      */
     _loadEnabledPlugins() {
-        db.select("GuildEnabledPlugins", ["pluginId"], {
+        return db.select("GuildEnabledPlugins", ["pluginId"], {
             discordGuildId: this.discordId
         }).then((rows) => {
             for (let i = 0; i < rows.length; ++i) {
                 this._enabledPlugins.add(rows[i].pluginId);
             }
-        }).catch(Logger.err);
+        });
     }
 
     /**
      * Load allowed channels from database
+     * @returns {Promise} Promise resolves once list of allowed channels is loaded (database operation completed).
      */
     _loadAllowedChannels() {
-        db.select("AllowedChannels", ["discordChannelId"], {
+        return db.select("AllowedChannels", ["discordChannelId"], {
             discordGuildId: this.discordId
         }).then((rows) => {
             for (let i = 0; i < rows.length; ++i) {
                 this._allowedChannelIds.add(rows[i].discordChannelId);
             }
-        }).catch(Logger.err);
+        });
     }
 
     /**
-     * Load prefix from database, insert default value in db if none found
+     * Load guild settings from database
+     * @returns {Promise} Promise resolves once guild settings are loaded (database operation completed).
      */
-    _loadPrefix() {
-        db.select("GuildSettings", ["prefix"], {
+    _loadGuildSettings() {
+        return db.select("GuildSettings", ["prefix"], {
             discordGuildId: this.discordId
         }).then((rows) => {
             if (rows.length > 0) {
                 this._commandPrefix = rows[0].prefix;
             } else {
-                return db.insert("GuildSettings", {
-                    discordGuildId: this.discordId,
-                    prefix: "!"
-                });
+                return Promise.reject(new Error("GuildSettings not found"));
             }
-        }).catch(Logger.err);
-
+        });
     }
 
     /**
      * Loads admins from db, inserts default values if none found
+     * @returns {Promise} Promise resolves once admin list is loaded (database operation completed).
      */
     _loadAdminsFromDatabase() {
         // TODO: Fix n + 1 query here
-        db.select("Admins", ["userRoleId"], {
+        return db.select("Admins", ["userRoleId"], {
             discordGuildId: this.discordId
         }).then((rows) => {
             let promises = [];
@@ -387,31 +401,38 @@ class Guild extends GuildModel {
                 }));
             }
             return Promise.all(promises);
-        }).catch(Logger.err);
+        });
     }
 
     /**
      * Removes the guild from the database
+     * @returns {Promise} Promise resolves once database operation completed.
      */
     delete() {
-        Promise.all([
-            db.delete("Admins", {
-                discordGuildId: this.discordId
-            }),
-            db.delete("AllowedChannels", {
-                discordGuildId: this.discordId
-            }),
-            db.delete("GuildSettings", {
-                discordGuildId: this.discordId
-            }),
-            db.delete("GuildEnabledPlugins", {
-                discordGuildId: this.discordId
-            }),
-            db.delete("Permissions", {
-                discordGuildId: this.discordId
-            })
-        ]).catch(Logger.err).then(() => {
+        return db.delete("Guilds", {
+            discordGuildId: this.discordId
+        }).then(() => {
             delete Guild._guilds[this.discordId];
+        }).catch(Logger.err);
+    }
+
+    /**
+     * Called when guild is first discovered by Discotron and added to the database.
+     * @returns {Promise} Promise resolves once database operation completed.
+     */
+    _tryAdd() {
+        return db.select("Guilds", ["discordGuildId"], {
+            discordGuildId: this.discordId
+        }).then((rows) => {
+            if (rows.length === 0) {
+                // Newly discovered guild, add to database
+                Logger.log("Discord guild with id **" + this.discordId + "** added to database.");
+                return db.insert("Guilds", {
+                    discordGuildId: this.discordId
+                }).then(() => db.insert("GuildSettings", {
+                    discordGuildId: this.discordId
+                }));
+            }
         });
     }
 
@@ -498,7 +519,7 @@ class Guild extends GuildModel {
 
         webAPI.registerAction("set-plugin-permission", (data, reply, discordUserId, discordGuildId) => {
             let usersRoles = data.userRoles.map((ur) => {
-                return new UserRole(ur._discordId, ur._type, discordGuildId);
+                return new UserRole(ur._discordUserId, ur._discordRoleId, discordGuildId);
             });
             Guild.get(discordGuildId).setPluginPermission(data.pluginId, usersRoles);
             reply();

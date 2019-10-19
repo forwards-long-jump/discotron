@@ -113,12 +113,6 @@ class Plugin extends PluginModel {
         Promise.all([
             db.delete("Plugins", {
                 id: this.id
-            }),
-            db.delete("GuildEnabledPlugins", {
-                pluginId: this.id
-            }),
-            db.delete("Permissions", {
-                pluginId: this.id
             })
         ]).then(() => {
             global.discotron.triggerEvent("plugin-deleted", this.id);
