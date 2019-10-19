@@ -76,14 +76,14 @@ function handleDiscordAPIQuery(authToken, reply, addOwner = false) {
 
         }).then((userInfo_) => {
             userInfo = userInfo_;
-            if (userInfo.id !== undefined) {
+            if (userInfo.discordId !== undefined) {
                 if (addOwner) {
-                    Owner.setOwners([userInfo.id]);
+                    Owner.setOwners([userInfo.discordId]);
                     ownerSecret = undefined;
                     firstLaunch = false;
                 }
 
-                return requestAppToken(userInfo.id, accessInfo.accessToken, accessInfo.refreshToken, accessInfo.expireDate);
+                return requestAppToken(userInfo.discordId, accessInfo.accessToken, accessInfo.refreshToken, accessInfo.expireDate);
             } else {
                 return Promise.reject();
             }
@@ -95,7 +95,7 @@ function handleDiscordAPIQuery(authToken, reply, addOwner = false) {
                 avatar: userInfo.avatar,
                 username: userInfo.username,
                 discriminator: userInfo.discriminator,
-                discordUserId: userInfo.id
+                discordUserId: userInfo.discordId
             });
 
         })
@@ -243,7 +243,7 @@ function queryDiscordUserId(accessToken) {
                 try {
                     let result = JSON.parse(body);
                     resolve({
-                        id: result.id,
+                        discordId: result.id,
                         avatar: result.avatar,
                         username: result.username,
                         discriminator: result.discriminator

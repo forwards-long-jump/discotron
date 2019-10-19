@@ -97,7 +97,7 @@ window.Discotron.BotStatusController = class extends window.Discotron.Controller
 							return userRole.discordUserId;
 						})
 					});
-				}, false, "Owner list", false, () => {});
+				}, false, "Owner list", false, [], () => {}, "Please paste the Discord id of the user you want to add");
 			}).catch(console.error);
 		};
 	}

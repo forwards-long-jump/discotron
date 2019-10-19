@@ -33,7 +33,7 @@ window.Discotron.ChannelListWidgetController = class extends window.Discotron.Wi
         for (let i = 0; i < allContainers.length; i++) {
             const element = allContainers[i];
             if (element.querySelector(".channel-selector-checkbox").checked) {
-                results.push(element.dataset.channelId);
+                results.push(element.dataset.discordId);
             }
         }
         return results;
@@ -50,15 +50,19 @@ window.Discotron.ChannelListWidgetController = class extends window.Discotron.Wi
      * Add a list of channel that can be selected to the modal
      */
     _displayChannels() {
-        for (let i = 0; i < this._channels.length; i++) {
-            const channel = this._channels[i];
+        for (let discordId in this._channels) {
+            const channel = this._channels[discordId];
+            if (channel.type !== "text") {
+                continue;
+            }
+
             let template = document.getElementById("template-channel-state");
             let channelContainer = document.importNode(template.content, true);
 
-            channelContainer.querySelector(".channel-state").dataset.channelId = channel.id;
+            channelContainer.querySelector(".channel-state").dataset.discordId = channel.discordId;
             channelContainer.querySelector(".channel-selector-channel").textContent = "#" + channel.name;
-            // No channel selected => "everything" is enabled
-            channelContainer.querySelector(".channel-selector-checkbox").checked = this._selectedChannels.includes(channel.id) || this._selectedChannels.length === 0;
+            // No channel selected => "everything" is enabled      
+            channelContainer.querySelector(".channel-selector-checkbox").checked = this._selectedChannels.includes(channel.discordId) || this._selectedChannels.length === 0;
 
             this._widgetContainer.querySelector(".channel-selector").appendChild(channelContainer);
         }

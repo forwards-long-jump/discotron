@@ -61,17 +61,11 @@ window.Discotron.GuildSettingsController = class extends window.Discotron.Contro
 
         document.getElementById("channel-locking").onclick = () => {
             this._guild.getChannels().then((channels) => {
-                let channelsId = [];
-                for (const id in channels) {
-                    if (channels[id].type === "text") {
-                        channelsId.push(channels[id]);
-                    }
-                }
-
                 let channelListArray = Array.from(this._guild.allowedChannelIds);
 
-                new Discotron.ChannelListWidgetController(channelsId, channelListArray, (selectedChannels) => {
-                    if (selectedChannels.length === channelsId.length) {
+                new Discotron.ChannelListWidgetController(channels, channelListArray, (selectedChannels) => {
+                    if (selectedChannels.length === Object.keys(channelListArray).length) {
+                        // TODO: Add a checkbox for this in particular
                         selectedChannels = []; // Everything selected => nothing selected
                     }
                     this._guild.allowedChannelIds = selectedChannels;

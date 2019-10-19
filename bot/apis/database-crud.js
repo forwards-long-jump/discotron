@@ -3,15 +3,8 @@
  */
 const databaseHelper = require("../utils/database-helper.js");
 const Logger = require("../utils/logger.js");
+const utils = require("../utils/utils.js");
 
-/**
- * Source: https://stackoverflow.com/questions/4482686/check-synchronously-if-file-directory-exists-in-node-js
- * @param {object} object object
- * @returns {boolean} True if the object is empty
- */
-function isEmpty(object) {
-    return Object.entries(object).length === 0 && object.constructor === Object;
-}
 
 /**
  * @param {object} where {fieldName: value, ...}
@@ -145,7 +138,7 @@ module.exports.delete = (table, where, eraseAll = false) => {
     return new Promise((resolve, reject) => {
         let sql = "DELETE FROM " + table;
 
-        if (!isEmpty(where)) {
+        if (!utils.isEmpty(where)) {
             let parameters = generateParameters(where);
             sql += " WHERE " + parameters.text;
 
@@ -193,7 +186,7 @@ module.exports.select = (table, fields = [], where = {}) => {
 
         sql += " FROM " + table + " ";
 
-        if (!isEmpty(where)) {
+        if (!utils.isEmpty(where)) {
             let parameters = generateParameters(where);
             sql += "WHERE " + parameters.text;
 

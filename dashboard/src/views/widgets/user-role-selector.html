@@ -11,12 +11,14 @@
 
 <template id="user-entry">
     <span class="shadow-small deletable user-role-name-container">
-        <!--span class="deletion-hover">Delete</span>--><i class="fas fa-user"></i> <span class="username"></span></span>
+        <!--span class="deletion-hover">Delete</span>--><i class="fas fa-user"></i> <span
+            class="username"></span></span>
 </template>
 
 <template id="role-entry">
     <span class="deletable user-role-name-container" style="color: white;">
-        <!--<span class="deletion-hover">Delete</span>--><i class="role-color fas fa-users"></i> <span class="role"></span></span>
+        <!--<span class="deletion-hover">Delete</span>--><i class="role-color fas fa-users"></i> <span
+            class="role"></span></span>
 </template>
 
 <span class="widget-header"></span>
@@ -26,19 +28,22 @@
 </div>
 <span class="additional-settings-spacer widget-header" style="display: none;">Permissions</span>
 
-<label>Grant permission to user / role</label><br>
+<span id="input-description"></span><br>
 <input id="name-input" type="text" placeholder="Type user / role"><input id="add-button" type="button" value="Add">
 
 <hr>
 
-<label>Allowed users:</label><br>
-<div class="user-list-container">
-</div>
+<span id="no-entries">No users or roles found!</span>
+<div id="users-roles-container">
+    <label>Allowed users: </label><br>
+    <div class="user-list-container">
+    </div>
 
-<br>
+    <br>
 
-<div id="role-container">
-    <label>Allowed roles:</label><br>
-    <div class="role-list-container">
+    <div id="role-container">
+        <label>Allowed roles: </label><br>
+        <div class="role-list-container">
+        </div>
     </div>
 </div>
