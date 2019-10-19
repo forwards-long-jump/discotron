@@ -316,6 +316,7 @@ class Guild extends GuildModel {
     /**
      * Load plugin permissions from database
      * @param {string} pluginId 
+     * @returns {Promise} Promise resolves once plugin permissions are loaded (database operation completed).
      */
     _loadPluginPermission(pluginId) {
         this._permissions[pluginId] = new Permission(this.discordId, pluginId, []);
@@ -339,6 +340,7 @@ class Guild extends GuildModel {
 
     /**
      * Load plugins enabled on this guild from database
+     * @returns {Promise} Promise resolves once plugin enabled list is loaded (database operation completed).
      */
     _loadEnabledPlugins() {
         return db.select("GuildEnabledPlugins", ["pluginId"], {
@@ -352,6 +354,7 @@ class Guild extends GuildModel {
 
     /**
      * Load allowed channels from database
+     * @returns {Promise} Promise resolves once list of allowed channels is loaded (database operation completed).
      */
     _loadAllowedChannels() {
         return db.select("AllowedChannels", ["discordChannelId"], {
@@ -365,6 +368,7 @@ class Guild extends GuildModel {
 
     /**
      * Load guild settings from database
+     * @returns {Promise} Promise resolves once guild settings are loaded (database operation completed).
      */
     _loadGuildSettings() {
         return db.select("GuildSettings", ["prefix"], {
@@ -380,6 +384,7 @@ class Guild extends GuildModel {
 
     /**
      * Loads admins from db, inserts default values if none found
+     * @returns {Promise} Promise resolves once admin list is loaded (database operation completed).
      */
     _loadAdminsFromDatabase() {
         // TODO: Fix n + 1 query here
@@ -398,6 +403,7 @@ class Guild extends GuildModel {
 
     /**
      * Removes the guild from the database
+     * @returns {Promise} Promise resolves once database operation completed.
      */
     delete() {
         return db.delete("Guilds", {
@@ -409,6 +415,7 @@ class Guild extends GuildModel {
 
     /**
      * Called when guild is first discovered by Discotron and added to the database.
+     * @returns {Promise} Promise resolves once database operation completed.
      */
     _tryAdd() {
         return db.select("Guilds", ["discordGuildId"], {
