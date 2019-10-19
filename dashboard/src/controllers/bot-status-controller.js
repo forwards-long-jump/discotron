@@ -89,12 +89,12 @@ window.Discotron.BotStatusController = class extends window.Discotron.Controller
 		document.getElementById("owners-selector").onclick = () => {
 			Discotron.WebAPI.queryBot("discotron-dashboard", "get-owner-ids").then((owners) => {
 				let userRoles = owners.map((owner) => {
-					return new Discotron.UserRole(owner, "user");
+					return new Discotron.UserRole(owner, null);
 				});
 				new Discotron.UserRoleWidgetController(undefined, userRoles, (newOwners) => {
 					return Discotron.WebAPI.queryBot("discotron-dashboard", "set-owners", {
 						discordUserIds: newOwners.map((userRole) => {
-							return userRole.discordId;
+							return userRole.discordUserId;
 						})
 					});
 				}, false, "Owner list", false, () => {});
