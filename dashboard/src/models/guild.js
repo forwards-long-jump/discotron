@@ -83,12 +83,12 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
      * @returns {Promise} resolve(), reject()
      */
     _loadMembers() {
-        return new Promise((resolve, reject) => {
-            return Discotron.User.loadGuildMembers(this.discordId).then((users) => {
-                this._members = users;
-                resolve();
+        return Discotron.WebAPI.queryBot("discotron-dashboard", "get-members", {}, this.discordId).then((users) => {
+            for (let i = 0; i < users.length; i++) {
+                const user = users[i];
+                this._members[user.discordId] = new Discotron.User(user.name, user.discordId, user.avatar, user.discriminator);
+            }
             });
-        });
     }
 
     /**
@@ -96,15 +96,12 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
      * @returns {Promise} resolve(), reject()
      */
     _loadRoles() {
-        return new Promise((resolve, reject) => {
-            return Discotron.Role.getGuildRoles(this.discordId).then((roles) => {
-                for (let i = 0; i < roles.length; ++i) {
+        return Discotron.WebAPI.queryBot("discotron-dashboard", "get-roles", {}, this.discordId).then((roles) => {
+            for (let i = 0; i < roles.length; i++) {
                     const role = roles[i];
-                    this._roles[role.id] = role;
+                this._roles[role.discordId] = new Discotron.Role(role.name, role.discordId, role.color);
                 }
-                resolve();
             });
-        });
     }
 
     /**
@@ -112,15 +109,12 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
      * @returns {Promise} resolve(), reject()
      */
     _loadChannels() {
-        return new Promise((resolve, reject) => {
-            return Discotron.WebAPI.queryBot("discotron-dashboard", "get-channels", {}, this.discordId).then((serializedChannels) => {
-                for (let i = 0; i < serializedChannels.length; i++) {
-                    const channel = serializedChannels[i];
-                    this._channels[channel.id] = new Discotron.Channel(channel.name, channel.id, channel.type);
+        return Discotron.WebAPI.queryBot("discotron-dashboard", "get-channels", {}, this.discordId).then((channels) => {
+            for (let discordId in channels) {
+                const channel = channels[discordId];
+                this._channels[discordId] = new Discotron.Channel(channel.name, channel.discordId, channel.type);
                 }
-                resolve();
             });
-        });
     }
 
 

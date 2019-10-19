@@ -55,22 +55,6 @@ window.Discotron.User = class {
     }
 
     /**
-     * Load the members of a given guild
-     * @static
-     * @param {string} discordGuildId  Discord guild id
-     * @returns {Promise} resolve(users {array}) users: Array of User
-     */
-    static loadGuildMembers(discordGuildId) {
-        return new Promise((resolve, reject) => {
-            return Discotron.WebAPI.queryBot("discotron-dashboard", "get-members", {}, discordGuildId).then((users) => {
-                resolve(users.map((user) => {
-                    return new Discotron.User(user.name, user.id, user.avatar, user.discriminator).id;
-                }));
-            });
-        });
-    }
-
-    /**
      * Get a user from its id (load it if necessary)
      * @static
      * @param {string} discordId  User id

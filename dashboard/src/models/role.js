@@ -34,25 +34,4 @@ window.Discotron.Role = class {
     get color() {
         return this._color;
     }
-
-    /**
-     * Returns the roles of a guild, loads it if needed
-     * @static
-     * @param {string} discordGuildId 
-     * @returns {Promise} resolve(roleList {array}) roleList: Array of Role, reject()
-     */
-    static getGuildRoles(discordGuildId) {
-        return new Promise((resolve, reject) => {
-            return Discotron.WebAPI.queryBot("discotron-dashboard", "get-roles", {}, discordGuildId).then((roles) => {
-
-                let roleList = [];
-                for (let i = 0; i < roles.length; i++) {
-                    const role = roles[i];
-                    roleList.push(new Discotron.Role(role.name, role.id, role.color));
-                }
-
-                resolve(roleList);
-            });
-        });
-    }
 };
