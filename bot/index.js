@@ -4,13 +4,11 @@ Logger.setSeverity("info");
 const DiscordJS = require("discord.js");
 const parseArgs = require("minimist");
 
-let configPath = __dirname + "/../instance";
+global.discotronConfigPath = __dirname + "/../instance";
 handleArgs(parseArgs(process.argv));
 
 let appConfig;
 loadConfig();
-
-global.discotronConfigPath = configPath;
 
 const databaseHelper = require("./utils/database-helper.js");
 // Database
@@ -105,9 +103,9 @@ function handleArgs(args) {
     // Path where all configs are stored
     const cfgPath = args["config-path"] || args.c;
     if (cfgPath) {
-        configPath = cfgPath;
-        if (configPath[configPath.length-1] === "/") {
-            configPath = configPath.substr(0, configPath.length - 1);
+        global.discotronConfigPath = cfgPath;
+        if (cfgPath[cfgPath.length - 1] === "/") {
+            global.discotronConfigPath = cfgPath.substr(0, cfgPath.length - 1);
         }
     }
 }
@@ -117,7 +115,7 @@ function handleArgs(args) {
  */
 function loadConfig() {
     try {
-        appConfig = require(configPath + "/bot.json");
+        appConfig = require(global.discotronConfigPath + "/bot.json");
         if (typeof appConfig.token === "undefined" || appConfig.token === "") {
             Logger.log("Missing **token** in **bot.json**.", "err");
             process.exit();
