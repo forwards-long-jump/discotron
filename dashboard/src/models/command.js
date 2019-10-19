@@ -9,11 +9,4 @@ window.Discotron.Command = class extends window.Discotron.CommandModel {
     constructor(settings) {
         super(settings);
     }
-
-    /**
-     * @returns {string} <plugin-prefix><command>
-     */
-    getCommandText(prefix) {
-        // build: prefix + plugin prefix + command
-    }
 };
