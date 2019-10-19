@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # We leave behind a file which remembers if we ran the install script
-FOOTPRINT=./.installed
+FOOTPRINT=../instance/.installed
 if [[ -f "$FOOTPRINT" ]]; then
     echo "Discotron install script already finished, skipping."
     echo ""
