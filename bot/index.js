@@ -10,7 +10,7 @@ handleArgs(parseArgs(process.argv));
 let appConfig;
 loadConfig();
 
-global.discotron = {configPath: configPath};
+global.discotronConfigPath = configPath;
 
 const databaseHelper = require("./utils/database-helper.js");
 // Database
@@ -27,8 +27,6 @@ const discordClient = new DiscordJS.Client();
 
 global.discotron = discotron;
 global.discordClient = discordClient;
-
-discotron.configPath = configPath;
 
 discotron.loadOwners();
 

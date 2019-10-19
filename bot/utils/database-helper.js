@@ -1,7 +1,7 @@
 const sqlite = require("sqlite3");
 const fs = require("fs");
 const config = require("../config/config.json");
-let dbPath = global.discotron.configPath + "/" + config.database.saveName;
+let dbPath = global.discotronConfigPath + "/" + config.database.saveName;
 
 const Logger = require("../utils/logger.js");
 
