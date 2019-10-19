@@ -128,13 +128,7 @@ class Guild extends GuildModel {
         });
         for (let i = 0; i < usersRoles.length; i++) {
             const userRole = usersRoles[i];
-            if (userRole !== null || userRole !== null) {
-                usersRoles[i] = new UserRole(userRole._discordUserId, userRole._discordRoleId, this.discordId);
-            } else {
-                usersRoles.splice(i, 1);
-                i--;
-                Logger.log("Attempted to insert invalid userRoles", "warn");
-            }
+            usersRoles[i] = new UserRole(userRole._discordUserId, userRole._discordRoleId, this.discordId);
         }
 
         this._admins = new Set(usersRoles);
