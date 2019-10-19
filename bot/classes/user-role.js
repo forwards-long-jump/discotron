@@ -31,7 +31,7 @@ class UserRole extends UserRoleModel {
      */
     toObject() {
         return {
-            id: this.discordId,
+            discordId: this.discordId,
             type: this.type
         };
     }

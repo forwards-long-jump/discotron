@@ -5,12 +5,12 @@ window.Discotron.Role = class {
     /**
      * @constructor
      * @param {string} name Name of the role
-     * @param {string} id Id of the role
+     * @param {string} discordId Id of the role
      * @param {string} color Color of the role 
      */
-    constructor(name, id, color) {
+    constructor(name, discordId, color) {
         this._name = name;
-        this._id = id;
+        this._discordId = discordId;
         this._color = color;
     }
 
@@ -24,8 +24,8 @@ window.Discotron.Role = class {
     /**
      * @returns {string} role discord id
      */
-    get id() {
-        return this._id;
+    get discordId() {
+        return this._discordId;
     }
 
     /**

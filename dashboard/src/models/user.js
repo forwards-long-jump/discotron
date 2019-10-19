@@ -5,18 +5,18 @@ window.Discotron.User = class {
     /**
      * @constructor
      * @param {string} name Name of the user
-     * @param {string} id Id of the user
+     * @param {string} discordId Id of the user
      * @param {string} avatarURL Avatar of the user
      * @param {string} discriminator Discriminator of the user (numbers after the #)
      */
-    constructor(name, id, avatarURL, discriminator) {
+    constructor(name, discordId, avatarURL, discriminator) {
         this._name = name;
         this._discriminator = discriminator;
-        this._id = id;
+        this._discordId = discordId;
         this._tag = name + "#" + discriminator;
         this._avatarURL = avatarURL;
 
-        Discotron.User._users[id] = this;
+        Discotron.User._users[discordId] = this;
     }
 
     /**
@@ -43,8 +43,8 @@ window.Discotron.User = class {
     /**
      * @returns {string} returns discord user id
      */
-    get id() {
-        return this._id;
+    get discordId() {
+        return this._discordId;
     }
 
     /**
@@ -73,20 +73,20 @@ window.Discotron.User = class {
     /**
      * Get a user from its id (load it if necessary)
      * @static
-     * @param {string} id  User id
+     * @param {string} discordId  User id
      * @returns {Promise} resolve(user {User}), reject()
      */
-    static get(id) {
+    static get(discordId) {
         return new Promise((resolve, reject) => {
-            if (Discotron.User._users[id] === undefined) {
+            if (Discotron.User._users[discordId] === undefined) {
                 // Since the user should be loaded if he was in a guild, we are here trying to fetch an out-of-guild user (typically for the owner)
                 return Discotron.WebAPI.queryBot("discotron-dashboard", "get-user-info", {
-                    discordId: id
+                    discordId: discordId
                 }).then((userObject) => {
-                    resolve(new Discotron.User(userObject.name, userObject.id, userObject.avatarURL, userObject.discriminator));
+                    resolve(new Discotron.User(userObject.name, userObject.discordId, userObject.avatarURL, userObject.discriminator));
                 });
             } else {
-                resolve(Discotron.User._users[id]);
+                resolve(Discotron.User._users[discordId]);
             }
         });
     }

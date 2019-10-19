@@ -243,7 +243,7 @@ function getUserInfo(discordId) {
     return new Promise((resolve, reject) => {
         global.discordClient.fetchUser(discordId).then((user) => {
             resolve({
-                id: user.id,
+                discordId: user.id,
                 name: user.username,
                 tag: user.tag,
                 discriminator: user.discriminator,

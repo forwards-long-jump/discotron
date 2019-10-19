@@ -243,7 +243,7 @@ function queryDiscordUserId(accessToken) {
                 try {
                     let result = JSON.parse(body);
                     resolve({
-                        id: result.id,
+                        discordId: result.id,
                         avatar: result.avatar,
                         username: result.username,
                         discriminator: result.discriminator

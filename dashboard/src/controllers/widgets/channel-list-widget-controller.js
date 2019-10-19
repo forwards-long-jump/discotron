@@ -33,7 +33,7 @@ window.Discotron.ChannelListWidgetController = class extends window.Discotron.Wi
         for (let i = 0; i < allContainers.length; i++) {
             const element = allContainers[i];
             if (element.querySelector(".channel-selector-checkbox").checked) {
-                results.push(element.dataset.channelId);
+                results.push(element.dataset.discordId);
             }
         }
         return results;
@@ -55,10 +55,10 @@ window.Discotron.ChannelListWidgetController = class extends window.Discotron.Wi
             let template = document.getElementById("template-channel-state");
             let channelContainer = document.importNode(template.content, true);
 
-            channelContainer.querySelector(".channel-state").dataset.channelId = channel.id;
+            channelContainer.querySelector(".channel-state").dataset.discordId = channel.discordId;
             channelContainer.querySelector(".channel-selector-channel").textContent = "#" + channel.name;
             // No channel selected => "everything" is enabled
-            channelContainer.querySelector(".channel-selector-checkbox").checked = this._selectedChannels.includes(channel.id) || this._selectedChannels.length === 0;
+            channelContainer.querySelector(".channel-selector-checkbox").checked = this._selectedChannels.includes(channel.discordId) || this._selectedChannels.length === 0;
 
             this._widgetContainer.querySelector(".channel-selector").appendChild(channelContainer);
         }

@@ -60,7 +60,7 @@ class Guild extends GuildModel {
             permissions[pluginId] = permission.toObject();
         }
         return {
-            id: this.discordId,
+            discordId: this.discordId,
             prefix: this.commandPrefix,
             name: guild.name,
             nameAcronym: guild.nameAcronym,
@@ -110,6 +110,7 @@ class Guild extends GuildModel {
      * @param {array} usersRoles Array of UserRole 
      */
     set admins(usersRoles) {
+        // TODO: Handle role validity
         // Note : the users / roles we receive come from the dashboard, and as such do not have the discordGuildId attribute set
         usersRoles = usersRoles.map((ur) => {
             return new UserRole(ur._discordId, ur._type, this.discordId);
@@ -432,7 +433,7 @@ class Guild extends GuildModel {
             let members = guild.members;
             reply(members.map(member => {
                 return {
-                    id: member.user.id,
+                    discordId: member.user.id,
                     name: member.user.username,
                     discriminator: member.user.discriminator,
                     avatar: member.user.displayAvatarURL
@@ -444,7 +445,7 @@ class Guild extends GuildModel {
             let guild = global.discordClient.guilds.get(discordGuildId);
             reply(guild.roles.map((role) => {
                 return {
-                    id: role.id,
+                    discordId: role.id,
                     name: role.name,
                     color: role.hexColor
                 };
@@ -455,7 +456,7 @@ class Guild extends GuildModel {
             let guild = global.discordClient.guilds.get(discordGuildId);
             reply(guild.channels.map((channel) => {
                 return {
-                    id: channel.id,
+                    discordId: channel.id,
                     name: channel.name,
                     type: channel.type
                 };
