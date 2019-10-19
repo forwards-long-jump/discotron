@@ -67,7 +67,7 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
             }
         });
     }
-    
+
     /**
      * Load channels using the WebAPI
      * @returns {Promise} resolve(), reject()
@@ -88,24 +88,24 @@ window.Discotron.Guild = class extends window.Discotron.GuildModel {
     static _loadAll() {
         return Discotron.WebAPI.queryBot("discotron-dashboard", "get-guilds-where-is-admin").then((guilds) => {
             for (const discordGuildId in guilds) {
-                let obj = guilds[discordGuildId];
+                let guild = guilds[discordGuildId];
 
-                let admins = new Set(obj.admins.map((admin) => {
-                    return new Discotron.UserRole(admin.discordId, null);
+                let admins = new Set(guild.admins.map((admin) => {
+                    return new Discotron.UserRole(admin.discordUserId, admin.discordRoleId, guild.discordId);
                 }));
 
                 let permissions = {};
-                for (const pluginId in obj.permissions) {
-                    const permission = obj.permissions[pluginId];
+                for (const pluginId in guild.permissions) {
+                    const permission = guild.permissions[pluginId];
                     let usersRoles = permission.map((userRole) => {
-                        return new Discotron.UserRole(null, userRole.discordRoleId);
+                        return new Discotron.UserRole(userRole.discordUserId, userRole.discordRoleId);
                     });
                     permissions[pluginId] = new Discotron.Permission(this.discordId, pluginId, usersRoles);
                 }
 
                 // Guilds register themselves in window.Discotron.Guild._guilds
-                new Discotron.Guild(obj.discordId, obj.name, obj.image, obj.nameAcronym,
-                    obj.prefix, new Set(obj.allowedChannelIds), new Set(obj.enabledPluginIds), new Set(admins), permissions);
+                new Discotron.Guild(guild.discordId, guild.name, guild.image, guild.nameAcronym,
+                    guild.prefix, new Set(guild.allowedChannelIds), new Set(guild.enabledPluginIds), new Set(admins), permissions);
             }
         });
     }

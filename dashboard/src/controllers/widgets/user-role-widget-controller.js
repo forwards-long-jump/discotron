@@ -21,10 +21,9 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
         }, () => {
             this._guild = guild;
             this._headerText = headerText;
-
+            
             this._usersRoles = usersRoles.map((userRole) => {
-                return new Discotron.UserRole(userRole.discordUserId, userRole.discordRoleId);
-
+                return new Discotron.UserRole(userRole.discordUserId, userRole.discordRoleId, this._guild ? this._guild.discordId : undefined);
             });
 
             this._displayRoles = displayRoles;
