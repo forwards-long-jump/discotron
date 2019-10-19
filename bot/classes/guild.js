@@ -106,7 +106,7 @@ class Guild extends GuildModel {
         return isAdmin;
     }
 
-        /**
+    /**
      * @static
      * @param {string} discordUserId Discord user id
      * @param {string} discordGuildId Discord gulid id
@@ -115,7 +115,7 @@ class Guild extends GuildModel {
     static isGuildAdmin(discordUserId, discordGuildId) {
         return Guild.get(discordGuildId).isAdmin(discordUserId);
     }
-    
+
     /**
      * Adds a bot admin to the guild
      * @param {array} usersRoles Array of UserRole 
@@ -126,6 +126,16 @@ class Guild extends GuildModel {
         usersRoles = usersRoles.map((ur) => {
             return new UserRole(ur._discordUserId, ur._discordRoleId, this.discordId);
         });
+        for (let i = 0; i < usersRoles.length; i++) {
+            const userRole = usersRoles[i];
+            if (userRole !== null || userRole !== null) {
+                usersRoles[i] = new UserRole(userRole._discordUserId, userRole._discordRoleId, this.discordId);
+            } else {
+                usersRoles.splice(i, 1);
+                i--;
+                Logger.log("Attempted to insert invalid userRoles", "warn");
+            }
+        }
 
         this._admins = new Set(usersRoles);
 
