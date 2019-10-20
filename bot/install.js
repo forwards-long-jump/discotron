@@ -55,17 +55,11 @@ while (true) {
     console.log("Invalid value! Must be 32 bytes long.");
 }
 
-let domain;
-while (true) {
-    domain = readlineSync.question("IP address or domain name to access the dashboard from (if not set, localhost is used): ");
+let domain = readlineSync.question("IP address or domain name to access the dashboard from (if not set, localhost is used): ");
 
-    if (domain.length === 0) {
-        // fallback value: localhost
-        domain = "http://localhost";
-    }
-
-    // correctly specified
-    break;
+if (domain.length === 0) {
+    // fallback value: localhost
+    domain = "http://localhost";
 }
 
 // Remove port and slash suffix
@@ -80,11 +74,10 @@ while (true) {
     redirurl = readlineSync.question("             Select scopes 'identify' and 'guilds' and copy the generated URL: ");
    
     // just check if we specified anything
-    if (redirurl.length === 0) {
-        console.log("Invalid value! Must be a domain name (http(s)://) or an IP address.");
-        continue;
+    if (redirurl.length !== 0) {
+        break;
     }
-    break;
+    console.log("Invalid value! Must be a domain name (http(s)://) or an IP address.");
 }
 
 let token;
