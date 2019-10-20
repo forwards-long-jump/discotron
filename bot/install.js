@@ -18,14 +18,14 @@ if (fs.existsSync(footprint)) {
 //Check if some files are already existing
 const appcfg = instancePath + "/bot.json";
 if (fs.existsSync(appcfg)) {
-    console.log("File", appcfg, " already exists, but installation was not run yet!");
+    console.log("File", appcfg, "already exists, but installation was not run yet!");
     console.log("Please delete the file to re-run the installation.");
     process.exit(1);
 }
 
 const dashcfg = instancePath + "/dashboard.js";
 if (fs.existsSync(dashcfg)) {
-    console.log("File", dashcfg, " already exists, but installation was not run yet!");
+    console.log("File", dashcfg, "already exists, but installation was not run yet!");
     console.log("Please delete the file to re-run the installation.");
     process.exit(1);
 }
@@ -128,10 +128,10 @@ while (true){
 console.log("Creating required files...");
 
 let data = `{
-  "token":"${token}",
-  "applicationId":"${appId}",
+  "token": "${token}",
+  "applicationId": "${appId}",
   "oauth2Secret": "${appSecret}",
-  "redirectURI":"${domain}",
+  "redirectURI": "${domain}",
   "privateKey": "${pkey}",
   "certificate": "${cert}"
 }`;
