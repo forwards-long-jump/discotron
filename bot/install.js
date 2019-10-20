@@ -1,26 +1,28 @@
 const fs = require("fs");
 const readlineSync = require("readline-sync");
 
+const instancePath = "../instance";
+
 //Create the directory if it does not exist
-if (!fs.existsSync("../instance")) {
-    fs.mkdirSync("../instance");
+if (!fs.existsSync(instancePath)) {
+    fs.mkdirSync(instancePath);
 }
 
-const footprint = "../instance/.installed";
+const footprint = instancePath + "/.installed";
 if (fs.existsSync(footprint)) {
     console.log("Discotron Install Script already ran, skipping.");
     process.exit(0);
 }
 
 //Check if some files are already existing
-const appcfg = "../instance/bot.json";
+const appcfg = instancePath + "/bot.json";
 if (fs.existsSync(appcfg)) {
     console.log("File", appcfg, " already exists, but installation was not run yet!");
     console.log("Please delete the file to re-run the installation.");
     process.exit(1);
 }
 
-const dashcfg = "../instance/dashboard.js";
+const dashcfg = instancePath + "/dashboard.js";
 if (fs.existsSync(dashcfg)) {
     console.log("File", dashcfg, " already exists, but installation was not run yet!");
     console.log("Please delete the file to re-run the installation.");
@@ -29,6 +31,7 @@ if (fs.existsSync(dashcfg)) {
 
 console.log("=== Discotron Install Script ===");
 console.log("This script will create a default configuration in the 'instance' folder to get the bot up and running.");
+console.log("Check the readme file inside for how Discotron handles its configuration files.");
 console.log("If you haven't already, visit https://discordapp.com/developers/applications/ and create a new application for Discotron.");
 console.log("The following information is retrieved from the application's page and settings. (The tab name and text box label is specified for each prompt.)\n");
 
