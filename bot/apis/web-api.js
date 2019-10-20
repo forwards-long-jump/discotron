@@ -30,13 +30,19 @@ module.exports.onPost = (req, res) => {
     Login.getDiscordUserId(appToken).then((discordUserId) => {
         let response = actions[plugin][action];
 
-        Logger.log("[WebAPI] Action triggered: " + action);
-        if (authLevelCheck[response.authLevel](discordUserId, discordGuildId)) {
+        Logger.log("[WebAPI] Received " + plugin + "/" + action);
+
+        if (appToken !== undefined && discordUserId === false) {
+            // Provided an invalid app token
+            reply(res, "invalid-app-token");
+        } else if (authLevelCheck[response.authLevel](discordUserId, discordGuildId)) {
+            // Permission granted
             response.action(data, (requestedData) => {
                 reply(res, requestedData);
             }, discordUserId, discordGuildId);
         } else {
-            Logger.log("Wrong app token / perm", "warn");
+            // Permission refused (should not happen!)
+            Logger.log("[WebAPI] Insufficient permission to execute " + plugin + "/" + action, "warn");
             reply(res, "invalid-app-token");
         }
     }).catch(console.error);
