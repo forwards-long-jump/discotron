@@ -2,6 +2,7 @@ const fs = require("fs");
 const readlineSync = require("readline-sync");
 
 const instancePath = "../instance";
+const port = 47131;
 
 //Create the directory if it does not exist
 if (!fs.existsSync(instancePath)) {
@@ -60,20 +61,17 @@ while (true) {
 
     if (domain.length === 0) {
         // fallback value: localhost
-        domain = "http://localhost:47131";
+        domain = "http://localhost";
     }
 
-    //correctly specified
+    // correctly specified
     break;
 }
 
-// Force slash suffix
-if (!domain.endsWith("/")) {
-    domain = domain + "/";
-}
-
-// todo: this must always include the port of our web server, else redirection will cause oauth errors!
-domain += "dashboard/login.html";
+// Remove port and slash suffix
+// Although it can be configured, we do not care about this for first time setup!
+domain = domain.replace(/(:\d+)?\//, "");
+domain += `:${port}/dashboard/login.html`;
 
 var redirurl;
 while (true) {
