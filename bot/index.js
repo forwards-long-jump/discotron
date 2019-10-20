@@ -54,7 +54,21 @@ function connectToDiscord() {
     });
 }
 
+const _statusText = {
+    0: "Ready",
+    1: "Connecting",
+    2: "Reconnecting",
+    3: "Idle",
+    4: "Nearly",
+    5: "Disconnected"
+};
 global.discordClient._connectToDiscord = connectToDiscord;
+Object.defineProperty(global.discordClient, "_ready", {
+    get: () => discordClient.status === 0
+});
+Object.defineProperty(global.discordClient, "_statusText", {
+    get: () => _statusText[discordClient.status]
+});
 
 /**
  * Register Discord events and associate them to Discotron handlers
