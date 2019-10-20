@@ -79,6 +79,10 @@ class BotSettings extends BotSettingsModel {
      * Update the presence of the bot on Discord
      */
     setBotPresence() {
+        if (!global.discordClient._ready) {
+            return;
+        }
+
         global.discordClient.user.setPresence({
             game: {
                 name: this.presenceText

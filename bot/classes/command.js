@@ -36,6 +36,11 @@ class Command extends CommandModel {
      * @returns True if the command is triggered by the discordMessage
      */
     triggeredBy(discordMessage, loweredCaseMessage, prefixes) {
+        if (!global.discordClient._ready) {
+            // Never triggered if discord is unavailable when handling command
+            return false;
+        }
+
         if (this.ownersOnly && !Owner.isOwner(discordMessage.author.id)) {
             return false;
         }

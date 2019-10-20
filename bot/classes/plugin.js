@@ -45,7 +45,7 @@ class Plugin extends PluginModel {
     getApiObject() {
         return {
             discotron: global.discotron,
-            discordClient: global.discordClient,
+            discordClient: global.discordClient._ready ? global.discordClient : undefined,
             plugin: this,
             Logger: Logger
         };

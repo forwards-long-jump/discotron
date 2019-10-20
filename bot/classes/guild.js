@@ -60,6 +60,10 @@ class Guild extends GuildModel {
      * @returns {object} Object containing {id, prefix, name, nameAcronym, image, allowedChannelIds, enabledPluginIds, admins, permissions}
      */
     toObject() {
+        if (!global.discordClient._ready) {
+            return null;
+        }
+
         let guild = global.discordClient.guilds.get(this.discordId);
         let permissions = {};
         for (const pluginId in this.permissions) {
@@ -163,7 +167,8 @@ class Guild extends GuildModel {
     }
 
     /**
-     * Load guild admins from Discord
+     * Load guild admins from Discord.
+     * Expects Discord to be available when calling.
      */
     loadDiscordAdmins() {
         // TODO: Refresh that when it changes on Discord

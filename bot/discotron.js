@@ -171,7 +171,8 @@ module.exports.loadGuilds = () => {
 };
 
 /**
- * Reload guilds, admins from the guild object
+ * Reload guilds, admins from the guild object.
+ * Expects Discord to be available when called.
  * TODO: Move this in the Guild class
  * TODO: Call this when guilds change
  * TODO: Check if it's complete
