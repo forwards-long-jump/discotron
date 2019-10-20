@@ -4,7 +4,7 @@ const Permission = require("./permission.js");
 const webAPI = require("./../apis/web-api.js").getWebAPI("discotron-dashboard");
 const Plugin = require("./plugin.js");
 const db = require("./../apis/database-crud.js");
-const Logger = require("../utils/logger.js")
+const Logger = require("../utils/logger.js");
 /**
  * Discotron guild containing info related to a Discord guild
  */
@@ -15,6 +15,8 @@ class Guild extends GuildModel {
      */
     constructor(discordId) {
         super(discordId);
+
+        this._discordAdmins = new Set([]);
 
         global.discotron.on("plugin-loaded", (pluginId) => {
             this.onPluginLoaded(pluginId);
@@ -454,6 +456,11 @@ class Guild extends GuildModel {
         }, "guildAdmin");
 
         webAPI.registerAction("get-members", (data, reply, discordUserId, discordGuildId) => {
+            if (!global.discordClient._ready) {
+                reply([]);
+                return;
+            }
+
             let guild = global.discordClient.guilds.get(discordGuildId);
             let members = guild.members;
             reply(members.map(member => {
@@ -467,6 +474,11 @@ class Guild extends GuildModel {
         }, "guildAdmin");
 
         webAPI.registerAction("get-roles", (data, reply, discordUserId, discordGuildId) => {
+            if (!global.discordClient._ready) {
+                reply([]);
+                return;
+            }
+
             let guild = global.discordClient.guilds.get(discordGuildId);
             reply(guild.roles.map((role) => {
                 return {
@@ -478,6 +490,11 @@ class Guild extends GuildModel {
         }, "guildAdmin");
 
         webAPI.registerAction("get-channels", (data, reply, discordUserId, discordGuildId) => {
+            if (!global.discordClient._ready) {
+                reply([]);
+                return;
+            }
+
             let guild = global.discordClient.guilds.get(discordGuildId);
             reply(guild.channels.map((channel) => {
                 return {

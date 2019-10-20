@@ -234,14 +234,20 @@ module.exports.onError = (error) => {};
 module.exports.getBotInfo = () => {};
 
 /**
- * Retrieves user information from discord
+ * Retrieves user information from discord, or null if the API could not be queried
  * TODO: Fix possible call to undefined
  * TODO: Cache the results
  * TODO: Move this in a new user class
  * @param {string} discordId Discord user id
  */
-function getUserInfo(discordId) {
+function getUserInfo(discordId) {   
     return new Promise((resolve, reject) => {
+
+        if (!global.discordClient._ready) {
+            resolve(null);
+            return;
+        }
+
         global.discordClient.fetchUser(discordId).then((user) => {
             resolve({
                 discordId: user.id,
@@ -311,7 +317,8 @@ module.exports.registerActions = () => {
             helpText: botSettings.helpText,
             presenceText: botSettings.presenceText,
             maintenance: botSettings.maintenance,
-            status: global.discordClient.status
+            status: global.discordClient.status,
+            statusText: global.discordClient._statusText
         });
     }, "owner");
 

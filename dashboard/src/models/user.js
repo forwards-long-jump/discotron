@@ -67,7 +67,11 @@ window.Discotron.User = class {
                 return Discotron.WebAPI.queryBot("discotron-dashboard", "get-user-info", {
                     discordId: discordId
                 }).then((userObject) => {
-                    resolve(new Discotron.User(userObject.name, userObject.discordId, userObject.avatarURL, userObject.discriminator));
+                    if (userObject === null) {
+                        resolve(null);
+                    } else {
+                        resolve(new Discotron.User(userObject.name, userObject.discordId, userObject.avatarURL, userObject.discriminator));
+                    }
                 });
             } else {
                 resolve(Discotron.User._users[discordId]);

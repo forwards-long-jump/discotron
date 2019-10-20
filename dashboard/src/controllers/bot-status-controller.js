@@ -34,7 +34,7 @@ window.Discotron.BotStatusController = class extends window.Discotron.Controller
 				status = "Online";
 				classStatus = "green-text";
 			} else {
-				status = "Offline (Status: " + data.status + ")";
+				status = "Offline (Status: " + data.statusText + ")";
 				classStatus = "red-text";
 			}
 

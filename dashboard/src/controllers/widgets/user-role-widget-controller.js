@@ -80,6 +80,8 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
         };
 
         input.onpaste = (event) => {
+            //todo: show a loading spinner while fetching user data...
+            //  also give user feedback if api is down so he doesn't try adding user
             let paste = (event.clipboardData || window.clipboardData).getData("text");
             this._checkIdValidity(paste);
             event.preventDefault();
@@ -112,6 +114,9 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
         // This was not an existing user, check if it's an id
         if (id.match(/^[0-9]+$/)) {
             Discotron.User.get(id).then((user) => {
+                if (user === null) {
+                    return;
+                }
                 document.getElementById("name-input").value = user.tag;
                 button.disabled = false;
             }).catch(console.error);
@@ -208,7 +213,9 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
             let userRole = this._usersRoles[i];
             if (userRole.discordUserId !== null) {
                 Discotron.User.get(this._usersRoles[i].discordUserId).then((user) => {
-                    this._displayUserEntry(user);
+                    if (user !== null) {
+                        this._displayUserEntry(user);
+                    }
                 }).catch(console.error);
             }
         }
