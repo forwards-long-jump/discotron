@@ -47,9 +47,7 @@ discotron.loadGuilds().then(() => {
 function connectToDiscord() {
     return new Promise((resolve, reject) => {
         Logger.log("Connecting to discord...");
-        discordClient.login(appConfig.token).then(() => {
-            resolve();
-        }).catch((err) => {
+        discordClient.login(appConfig.token).catch((err) => {
             Logger.log("Could not connect to discord", "err");
             Logger.log(err.message, "err");
         });
@@ -62,7 +60,6 @@ global.discordClient._connectToDiscord = connectToDiscord;
  * Register Discord events and associate them to Discotron handlers
  */
 function registerEvents() {
-    // TODO: Handle error and reaction
 
     discordClient.on("ready", () => {
         Logger.log("Logged into Discord as **" + discordClient.user.tag + "**", "info");
@@ -74,9 +71,7 @@ function registerEvents() {
     discordClient.on("messageReactionAdd", discotron.onReaction);
     discordClient.on("guildCreate", discotron.onJoinGuild);
     discordClient.on("guildDelete", discotron.onLeaveGuild);
-    discordClient.on("error", () => {
-        // TODO: Handle reconnection and bot status update
-    });
+    discordClient.on("error", discotron.onError);
 
     // Handle disconnecting the bot gracefully
     process.stdin.resume();

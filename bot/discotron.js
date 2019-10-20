@@ -226,10 +226,11 @@ module.exports.loadOwners = () => {
     }).catch(Logger.err);
 };
 
-// TODO
+// TODO discordjs events
 module.exports.onReaction = (reaction) => {};
 module.exports.onJoinGuild = (guild) => {};
 module.exports.onLeaveGuild = (guild) => {};
+module.exports.onError = (error) => {};
 module.exports.getBotInfo = () => {};
 
 /**
