@@ -64,7 +64,7 @@ if (domain.length === 0) {
 
 // Remove port and slash suffix
 // Although it can be configured, we do not care about this for first time setup!
-domain = domain.replace(/(:\d+)?\//, "");
+domain = domain.replace(/(:\d+)?\/$/, "");
 domain += `:${port}/dashboard/login.html`;
 
 var redirurl;
@@ -153,6 +153,10 @@ fs.writeFile(dashcfg, data, function (err) {
     }
 });
 
-fs.writeFile(footprint, "");
+fs.writeFile(footprint, "", function (err) {
+    if (err) {
+        console.log("Error writing .installed: ", err);
+    }
+});
 
 console.log("Finished installation!");
