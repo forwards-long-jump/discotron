@@ -1,14 +1,13 @@
-name: Node CI
+name: Linter
 
 on: [pull_request]
 
 jobs:
-  lint:
+  es-lint:
     runs-on: ubuntu-latest
-    
     steps:
-      - name: ESLint checks
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-        uses: gimenete/eslint-action@1.0
+    - uses: actions/checkout@v1
+    - name: ESLint checks
+      uses: gimenete/eslint-action@1.0
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
