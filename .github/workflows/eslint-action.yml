@@ -1,13 +1,23 @@
-name: Linter
+name: Lint
 
-on: [pull_request]
+on: pull_request
 
 jobs:
-  es-lint:
+  eslint:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
-    - name: ESLint checks
-      uses: gimenete/eslint-action@1.0
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/checkout@v1
+        with:
+          fetch-depth: 1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12
+      - run: rm .yarnclean
+      - run: yarn --frozen-lockfile --ignore-engines --ignore-optional --no-bin-links --non-interactive --silent --ignore-scripts --production=false
+        env:
+          PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: true
+          HUSKY_SKIP_INSTALL: true
+      - uses: tinovyatkin/action-eslint@v1
+        with:
+          repo-token: ${{secrets.GITHUB_TOKEN}}
+          check-name: eslint
