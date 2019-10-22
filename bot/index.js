@@ -10,7 +10,7 @@ handleArgs(parseArgs(process.argv));
 let appConfig;
 loadConfig();
 
-const databaseHelper = require("./utils/database-helper.js");
+    const databaseHelper = require("./utils/database-helper.js");
 // Database
 if (!databaseHelper.databaseExists()) {
     databaseHelper.createDatabase();
