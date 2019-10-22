@@ -16,16 +16,16 @@ if (fs.existsSync(footprint)) {
 }
 
 //Check if some files are already existing
-const appcfg = instancePath + "/bot.json";
-if (fs.existsSync(appcfg)) {
-    console.log("File", appcfg, "already exists, but installation was not run yet!");
+const appConfig = instancePath + "/bot.json";
+if (fs.existsSync(appConfig)) {
+    console.log("File", appConfig, "already exists, but installation was not run yet!");
     console.log("Please delete the file to re-run the installation.");
     process.exit(1);
 }
 
-const dashcfg = instancePath + "/dashboard.js";
-if (fs.existsSync(dashcfg)) {
-    console.log("File", dashcfg, "already exists, but installation was not run yet!");
+const dashboardConfig = instancePath + "/dashboard.js";
+if (fs.existsSync(dashboardConfig)) {
+    console.log("File", dashboardConfig, "already exists, but installation was not run yet!");
     console.log("Please delete the file to re-run the installation.");
     process.exit(1);
 }
@@ -68,18 +68,18 @@ if (domain.length === 0) {
 domain = domain.replace(/(:\d+)?\/$/, "");
 domain += `:${port}/dashboard/login.html`;
 
-let redirurl;
+let redirectURL;
 do {
-    if (redirurl !== undefined) {
+    if (redirectURL !== undefined) {
 
         console.log("Invalid value! Must be a domain name (http(s)://) or an IP address.");
     }
     // todo we could auto-generate this url, but user still has to be prompted to specify on the app's page!
     console.log("(OAuth2 tab) On the tab, for the Redirection URL, enter", domain);
-    redirurl = readlineSync.question("             Select scopes 'identify' and 'guilds' and copy the generated URL: ");
+    redirectURL = readlineSync.question("             Select scopes 'identify' and 'guilds' and copy the generated URL: ");
 
     // just check if we specified anything
-} while (redirurl.length === 0);
+} while (redirectURL.length === 0);
 
 let token;
 do {
@@ -94,7 +94,7 @@ do {
 
 let pkey;
 let cert;
-if (redirurl.startsWith("https")) {
+if (redirectURL.startsWith("https")) {
     do {
         if (pkey === undefined) {
             console.log("Could not find given file. Please leave empty or make sure it exists.");
@@ -123,7 +123,7 @@ let data = `{
   "certificate": "${cert}"
 }`;
 
-fs.writeFileSync(appcfg, data, function (err) {
+fs.writeFileSync(appConfig, data, function (err) {
     if (err) {
         console.log("Error writing bot.json: ", err);
     }
@@ -131,10 +131,10 @@ fs.writeFileSync(appcfg, data, function (err) {
 
 data = `window.discotron.config = {
     inviteLink: "https://discordapp.com/oauth2/authorize?client_id=${appId}&scope=bot&permissions=0",
-    oauthURL: "${redirurl}"
+    oauthURL: "${redirectURL}"
 };`;
 
-fs.writeFile(dashcfg, data, function (err) {
+fs.writeFile(dashboardConfig, data, function (err) {
     if (err) {
         console.log("Error writing dashboard.js: ", err);
     }
