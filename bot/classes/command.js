@@ -6,7 +6,7 @@ const Owner = require("./owner.js");
  */
 class Command extends CommandModel {
     /**
-     * @constructor
+     * @class
      * @param {object} settings See CommandModel for details
      */
     constructor(settings) {
@@ -30,10 +30,10 @@ class Command extends CommandModel {
     }
 
     /**
-     * @param {Discord.DiscordMessage} discordMessage 
+     * @param {DiscordJS.DiscordMessage} discordMessage DiscordJS message
      * @param {string} loweredCaseMessage Message converted to lower case, passed as an arg to avoid calling toLowercase too many times
      * @param {string} prefixes Server and plugin prefix combined
-     * @returns True if the command is triggered by the discordMessage
+     * @returns {boolean} True if the command is triggered by the discordMessage
      */
     triggeredBy(discordMessage, loweredCaseMessage, prefixes) {
         if (this.ownersOnly && !Owner.isOwner(discordMessage.author.id)) {
@@ -45,10 +45,10 @@ class Command extends CommandModel {
         }
 
         switch (this._triggerType) {
-            case "command":
+            case "command": {
                 let command = prefixes + this.trigger;
                 return (loweredCaseMessage.startsWith(command + " ") || loweredCaseMessage === command);
-
+            }
             case "words":
                 return this.trigger.every((t) => {
                     return loweredCaseMessage.includes(t);
@@ -60,23 +60,23 @@ class Command extends CommandModel {
     }
 
     /**
-     * @param {Discord.MessageReaction} messageReaction 
-     * @returns True if the reaction triggers the command
+     * @param {DiscordJS.MessageReaction} messageReaction DiscordJS message reaction
+     * @returns {boolean} True if the reaction triggers the command
      */
     triggeredByReaction(messageReaction) {
         // TODO
+        return undefined;
     }
 
     /**
      * Triggers the action of this command, build expected args
-     * @param {Discord.Message} message 
-     * @param {array} words List of words in the message, passed as an argument to avoid splitting multiple times
+     * @param {DiscordJS.Message} message A DiscordJS message
+     * @param {Array} words List of words in the message, passed as an argument to avoid splitting multiple times
      * @param {object} apiCollection Object containing multiple APIs that can be used by the plugin
      */
     doMessageAction(message, words, apiCollection) {
-
         switch (this.triggerType) {
-            case "command":
+            case "command": {
                 let commandArgs = {
                     "all": words.slice(1)
                 };
@@ -97,7 +97,7 @@ class Command extends CommandModel {
                 }
                 this.action(message, commandArgs, apiCollection);
                 break;
-
+            }
             case "words":
                 this.action(message, words, apiCollection);
                 break;
@@ -110,10 +110,10 @@ class Command extends CommandModel {
 
     /**
      * Function to call to trigger the action of the command
-     * @param {Discord.MessageReaction} messageReaction
+     * @param {DiscordJS.MessageReaction} messageReaction A DiscordJS message reaction
      * @param {object} apiCollection Object containing multiple APIs that can be used by the plugin
      */
-    doReactionAction(messageReaction) {
+    doReactionAction(messageReaction, apiCollection) {
         // TODO
         this.action({
             messageReaction: messageReaction

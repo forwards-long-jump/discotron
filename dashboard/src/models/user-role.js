@@ -1,4 +1,4 @@
 /**
  * Represents a userRole, dashboard side
  */
-window.Discotron.UserRole = class extends window.Discotron.UserRoleModel {};
+window.discotron.UserRole = class extends window.discotron.UserRoleModel {};

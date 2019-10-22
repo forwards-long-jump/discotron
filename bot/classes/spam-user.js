@@ -5,8 +5,8 @@ const config = require("../config/config.json");
  */
 class SpamUser {
     /**
-     * @constructor
-     * @param {Discord.User} discordUser User managed by this class
+     * @class
+     * @param {DiscordJS.User} discordUser User managed by this class
      */
     constructor(discordUser) {
         this._damageTaken = 0;
@@ -20,7 +20,7 @@ class SpamUser {
 
     /**
      * @static
-     * @param {Discord.User} discordUser 
+     * @param {DiscordJS.User} discordUser DiscordJS user
      * @returns {boolean} True if the user has spammed too much and is being restricted
      */
     static isRestricted(discordUser) {
@@ -35,7 +35,7 @@ class SpamUser {
     /**
      * Should be called when a user performs an action which is spam restricted
      * @static
-     * @param {Discord.User} discordUser 
+     * @param {DiscordJS.User} discordUser DiscordJS user
      */
     static onAction(discordUser) {
         if (SpamUser._users[discordUser.id] !== undefined) {

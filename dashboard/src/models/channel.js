@@ -1,9 +1,9 @@
 /**
  * Represents a channel, dashboard side
  */
-window.Discotron.Channel = class {
+window.discotron.Channel = class {
     /**
-     * @constructor
+     * @class
      * @param {string} name Name of the channel
      * @param {string} discordId Discord channel id
      * @param {string} type Type of the channel. See discord.js documentation (dm, group, text, voice, category, news, store)

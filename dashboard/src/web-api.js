@@ -1,4 +1,4 @@
-window.Discotron.WebAPI = class {
+window.discotron.WebAPI = class {
     /**
      * Send a query to the bot via the API
      * @static
@@ -21,7 +21,7 @@ window.Discotron.WebAPI = class {
         }
 
         return new Promise((resolve, reject) => {
-            return Discotron.utils.post("/api", params).then((data) => {
+            return discotron.utils.post("/api", params).then((data) => {
                 if (data === "invalid-app-token") {
                     localStorage.clear();
                     window.location.replace("/login");

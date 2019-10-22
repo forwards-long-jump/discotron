@@ -3,7 +3,7 @@
  */
 class PluginModel {
     /**
-     * @constructor
+     * @class
      * @param {string} id Id of the plugin
      * @param {string} name Displayed name of the plugin
      * @param {string} description Short description of the plugin
@@ -12,7 +12,7 @@ class PluginModel {
      * @param {object} commands Object containing arrays of Command objects, grouped by trigger type
      * @param {string} defaultPermission Who can access the command if no permissions are set by the server owner, can be *everyone*, *admin*
      * @param {boolean} enabled True if plugin is enabled by the bot owner
-     * @param {array} logs List of logs the plugin can output to
+     * @param {Array} logs List of logs the plugin can output to
      */
     constructor(id = "", name = "", description = "", version = "", prefix = "", commands = {}, defaultPermission = "everyone", enabled = true, logs = []) {
         this._name = name;
@@ -61,7 +61,7 @@ class PluginModel {
     }
 
     /**
-     * @returns {array} Array of Command 
+     * @returns {Array} Array of Command 
      */
     get commands() {
         return this._commands;
@@ -82,7 +82,7 @@ class PluginModel {
     }
 
     /**
-     * @returns {array} Array of string
+     * @returns {Array} Array of string
      */
     get logs() {
         return this._logs;
@@ -92,5 +92,5 @@ class PluginModel {
 if (typeof module !== "undefined" && typeof module.exports !== "undefined") {
     module.exports = PluginModel;
 } else {
-    window.Discotron.PluginModel = PluginModel;
+    window.discotron.PluginModel = PluginModel;
 }

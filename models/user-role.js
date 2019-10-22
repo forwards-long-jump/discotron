@@ -3,7 +3,7 @@
  */
 class UserRoleModel {
     /**
-     * @constructor
+     * @class
      * @param {string} discordUserId Discord user id
      * @param {string} discordRoleId Discord role id
      */
@@ -30,5 +30,5 @@ class UserRoleModel {
 if (typeof module !== "undefined" && typeof module.exports !== "undefined") {
     module.exports = UserRoleModel;
 } else {
-    window.Discotron.UserRoleModel = UserRoleModel;
+    window.discotron.UserRoleModel = UserRoleModel;
 }

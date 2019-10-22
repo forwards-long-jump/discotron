@@ -16,7 +16,7 @@ const db = require("../apis/database-crud.js");
  */
 class Repository extends RepositoryModel {
     /**
-     * @constructor
+     * @class
      * @param {string} folderName Name of the folder for this repository
      * @param {string} url URL to use to clone a repository
      */
@@ -71,7 +71,7 @@ class Repository extends RepositoryModel {
     }
 
     /**
-     * @returns {array} Array of all repositories
+     * @returns {Array} Array of all repositories
      * @static
      */
     static getAll() {
@@ -109,20 +109,21 @@ class Repository extends RepositoryModel {
     }
 
     /**
-     * @param {string} url 
+     * @param {string} baseUrl URL to convert
      * @static
-     * @returns a folder name from a git url
+     * @returns {string} a folder name from a git url
      */
     static _generateFolderName(baseUrl) {
         let url = baseUrl.replace(/\.git/g, "");
         url = url.split("/");
         url = url[url.length - 1];
-        url = url.replace(/[^a-zA-Z0-9\-]/g, "");
+        url = url.replace(/[^a-zA-Z0-9-]/g, "");
         return url + "-" + crypto.createHash("md5").update(baseUrl).digest("hex"); // Should rather check if folder exists but we should not have collisions for that
     }
 
     /**
      * Pull from the distant repository, update the plugins
+     * @returns {Promise} resolve(), reject()
      */
     pull() {
         Logger.log("Updating **" + this._folderName + "**...");
@@ -166,6 +167,7 @@ class Repository extends RepositoryModel {
 
     /**
      * Delete the repository locally and remove it from database
+     * @returns {Promise} resolve(), reject()
      */
     delete() {
         return new Promise((resolve, reject) => {

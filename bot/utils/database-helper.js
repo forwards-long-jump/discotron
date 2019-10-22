@@ -47,7 +47,7 @@ module.exports.openDatabase = () => {
 };
 
 /** 
- * @returns {sqlite3.Database} Sqlite database
+ * @returns {sqlite.Database} Sqlite database
  */
 module.exports.getDatabase = () => {
     return database;
