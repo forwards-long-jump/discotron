@@ -4,12 +4,11 @@ on: [pull_request]
 
 jobs:
   lint:
-    
     runs-on: ubuntu-latest
     
     steps:
-      - name: ESLint Action
-        uses: hallee/eslint-action@1.0.1
-        with:
-          secrets: ${{ secrets.GITHUB_TOKEN }} 
+      - name: ESLint checks
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+        uses: gimenete/eslint-action@1.0
