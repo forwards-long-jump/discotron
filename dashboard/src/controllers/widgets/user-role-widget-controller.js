@@ -2,28 +2,28 @@
  * Widget to select userRole (mostly for permissions)
  * Allows for customInputs (only checkbox are supported atm)
  */
-window.Discotron.UserRoleWidgetController = class extends window.Discotron.WidgetController {
+window.discotron.UserRoleWidgetController = class extends window.discotron.WidgetController {
     /**
-     * @constructor
-     * @param {Guild} guild Guild for which we list the users and roles
-     * @param {array} usersRoles Currently selected users/roles for whatever setting this widget is needed
-     * @param {function} onUserRoleSave Callback to be called when the user is done selecting the users/roles
+     * @class
+     * @param {discotron.Guild} guild Guild for which we list the users and roles
+     * @param {Array} usersRoles Currently selected users/roles for whatever setting this widget is needed
+     * @param {Function} onUserRoleSave Callback to be called when the user is done selecting the users/roles
      * @param {boolean} displayRoles True is the widget allows choosing roles as well as users
      * @param {string} headerText Help text displayed on top
      * @param {boolean} allowNone Allows to enter no users nor roles
-     * @param {array} customInputs Array of objects for custom inputs, e.g: [{type: "input", name: ""}]
-     * @param {function} onClose Called when user cancels saving
+     * @param {Array} customInputs Array of objects for custom inputs, e.g: [{type: "input", name: ""}]
+     * @param {Function} onClose Called when user cancels saving
      * @param {string} [inputHelp="Grant permission to user / role"] Text display above the name input
      */
-    constructor(guild, usersRoles, onUserRoleSave, displayRoles = true, headerText = "", allowNone = false, customInputs = [], onClose = () => {}, inputHelp = "Grant permission to user / role") {
+    constructor(guild, usersRoles, onUserRoleSave, displayRoles = true, headerText = "", allowNone = false, customInputs = [], onClose = () => { }, inputHelp = "Grant permission to user / role") {
         super("user-role-selector.html", () => {
             onUserRoleSave(this._getUsersRoles(), this._getCustomSettings());
         }, () => {
             this._guild = guild;
             this._headerText = headerText;
-            
+
             this._usersRoles = usersRoles.map((userRole) => {
-                return new Discotron.UserRole(userRole.discordUserId, userRole.discordRoleId, this._guild ? this._guild.discordId : undefined);
+                return new discotron.UserRole(userRole.discordUserId, userRole.discordRoleId, this._guild ? this._guild.discordId : undefined);
             });
 
             this._displayRoles = displayRoles;
@@ -41,7 +41,7 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
     }
 
     /**
-     * @returns {array} List of userRoles selected by the user
+     * @returns {Array} List of userRoles selected by the user
      */
     _getUsersRoles() {
         return this._usersRoles;
@@ -103,7 +103,7 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
 
     /**
      * Activates the add button if the name corresponds to a valid discord name, or a valid user id
-     * @param {string} name Username of a discord user or role name
+     * @param {string} id Id of a discord user
      */
     _checkIdValidity(id) {
         let button = document.querySelector("#add-button");
@@ -111,7 +111,7 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
 
         // This was not an existing user, check if it's an id
         if (id.match(/^[0-9]+$/)) {
-            Discotron.User.get(id).then((user) => {
+            discotron.User.get(id).then((user) => {
                 document.getElementById("name-input").value = user.tag;
                 button.disabled = false;
             }).catch(console.error);
@@ -130,7 +130,7 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
             this._enableButtonIfValidName(this._guild, name, button);
         } else {
             // No guild specified means we are trying to add a "global" user, check in all guild just in case
-            Discotron.Guild.getAll().then((guilds) => {
+            discotron.Guild.getAll().then((guilds) => {
                 for (let guildId in guilds) {
                     this._enableButtonIfValidName(guilds[guildId], name, button);
                 }
@@ -153,7 +153,7 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
 
     /**
      * Enable the button if the specified name (tag) is present in the guild
-     * @param {Guild} guild Guild to search the username in
+     * @param {discotron.Guild} guild Guild to search the username in
      * @param {string} name tag of a discord user
      * @param {object} button Element to enable/disabled
      */
@@ -178,7 +178,7 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
             const customInput = this._customInputs[i];
 
             switch (customInput.type) {
-                case "switch":
+                case "switch": {
                     let switchTemplate = document.getElementById("template-custom-switch");
                     let switchContainer = document.importNode(switchTemplate.content, true);
 
@@ -190,6 +190,7 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
 
                     this._widgetContainer.querySelector(".additional-settings").appendChild(switchContainer);
                     break;
+                }
             }
         }
 
@@ -207,7 +208,7 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
         for (let i = 0; i < this._usersRoles.length; ++i) {
             let userRole = this._usersRoles[i];
             if (userRole.discordUserId !== null) {
-                Discotron.User.get(this._usersRoles[i].discordUserId).then((user) => {
+                discotron.User.get(this._usersRoles[i].discordUserId).then((user) => {
                     this._displayUserEntry(user);
                 }).catch(console.error);
             }
@@ -250,26 +251,26 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
 
     /**
      * Add user to the UserRole list
-     * @param {User} user user to add
+     * @param {discotron.User} user user to add
      */
     _addUserEntry(user) {
         if (this._hasUserRoleAlready(user.discordId, null)) {
             return;
         }
-        this._usersRoles.push(new Discotron.UserRole(user.discordId, null));
+        this._usersRoles.push(new discotron.UserRole(user.discordId, null));
 
         this._displayUserEntry(user);
     }
 
     /**
      * Add role to the UserRole list
-     * @param {Role} role role to add
+     * @param {discotron.Role} role role to add
      */
     _addRoleEntry(role) {
         if (this._hasUserRoleAlready(null, role.discordId)) {
             return;
         }
-        this._usersRoles.push(new Discotron.UserRole(null, role.discordId));
+        this._usersRoles.push(new discotron.UserRole(null, role.discordId));
 
         this._displayRoleEntry(role);
     }
@@ -279,9 +280,9 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
      * @param {string} name Tag or role name
      */
     _addEntry(name) {
-        let user = Discotron.User.getByTag(name);
+        let user = discotron.User.getByTag(name);
         if (user !== undefined) {
-            this._addUserEntry(Discotron.User.getByTag(name));
+            this._addUserEntry(discotron.User.getByTag(name));
         }
 
         // Check for roles as well
@@ -320,7 +321,7 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
 
     /**
      * Add a user to the user list
-     * @param {User} user 
+     * @param {discotron.User} user Discord user
      */
     _displayUserEntry(user) {
         let usersContainer = document.querySelector(".user-list-container");
@@ -341,7 +342,7 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
 
     /**
      * Add a role to the role list
-     * @param {Role} role 
+     * @param {discotron.Role} role Role
      */
     _displayRoleEntry(role) {
         let rolesContainer = document.querySelector(".role-list-container");
@@ -372,6 +373,7 @@ window.Discotron.UserRoleWidgetController = class extends window.Discotron.Widge
      * Returns true if the user or role is already present in this._usersRoles
      * @param {string} userId id of the user
      * @param {string} roleId id of the role
+     * @returns {boolean} True if userId is already in the list
      */
     _hasUserRoleAlready(userId, roleId) {
         for (let i = 0; i < this._usersRoles.length; ++i) {

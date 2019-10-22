@@ -3,13 +3,13 @@
  */
 class CommandModel {
     /**
-     * @constructor
+     * @class
      * @param {object} settings Settings
      * @param {string} [settings.triggerType = "command"] Type of trigger, can be "command|words|all|reaction" (note: "all" is not affected by spam detection)
      * @param {string[]} [settings.trigger = []] Word(s) triggering the command
      * @param {string} [settings.help = ""] Describe the command
      * @param {object} [settings.args = []] Arguments of the command : e.g. [{name: "turns", defaultValue: 8, help: "Number of turns"}]
-     * @param {function} [settings.action = () => {}] Action to trigger when the command is called. Receives args, discordMessage as parameters
+     * @param {Function} [settings.action = () => {}] Action to trigger when the command is called. Receives args, discordMessage as parameters
      * @param {boolean} [settings.ownersOnly = false] True to only allow the owner(s) to use the command
      * @param {boolean} [settings.requiresMention = false] Set to true if the bot must be mentioned for that
      * @param {boolean} [settings.bypassSpamDetection = false] Set to true to not penalize the user for spamming the command.
@@ -35,7 +35,7 @@ class CommandModel {
     }
 
     /**
-     * @returns {string} 
+     * @returns {string} trigger type
      */
     get triggerType() {
         return this._triggerType;
@@ -63,7 +63,7 @@ class CommandModel {
     }
 
     /**
-     * @returns {bool} ownersOnly
+     * @returns {boolean} ownersOnly
      */
     get ownersOnly() {
         return this._ownersOnly;
@@ -77,21 +77,21 @@ class CommandModel {
     }
 
     /**
-     * @returns {bool} requiresMention
+     * @returns {boolean} requiresMention
      */
     get requiresMention() {
         return this._requiresMention;
     }
 
     /**
-     * @returns {bool} bypassSpamDetection
+     * @returns {boolean} bypassSpamDetection
      */
     get bypassSpamDetection() {
         return this._bypassSpamDetection;
     }
 
     /**
-     * @returns {function} action
+     * @returns {Function} action
      */
     get action() {
         return this._action;
@@ -107,7 +107,7 @@ CommandModel.defaultSettings = {
     scope: "everywhere", // PM, GUILD
     requiresMention: false,
     bypassSpamDetection: false,
-    action: () => {}
+    action: () => { }
 };
 
 CommandModel.defaultArgSettings = {
@@ -120,5 +120,5 @@ CommandModel.defaultArgSettings = {
 if (typeof module !== "undefined" && typeof module.exports !== "undefined") {
     module.exports = CommandModel;
 } else {
-    window.Discotron.CommandModel = CommandModel;
+    window.discotron.CommandModel = CommandModel;
 }

@@ -55,7 +55,7 @@ function reply(res, data) {
 
 /**
  * Generate a function specifically for a pluginId, allowing to not pass the id every time
- * @param {String} pluginId Id of the plugin to use
+ * @param {string} pluginId Id of the plugin to use
  * @returns {object} Object containing a custom registerAction function
  */
 module.exports.getWebAPI = (pluginId) => {
@@ -71,7 +71,7 @@ module.exports.getWebAPI = (pluginId) => {
  * Register an action to be triggered by a webpage
  * @param {string} pluginId     Plugin ID
  * @param {string} name         Action name
- * @param {function} action     Action to trigger, *data* is passed as argument to the function
+ * @param {Function} action     Action to trigger, *data* is passed as argument to the function
  * @param {string} [authLevel="everyone"]    User "level" required to trigger this action, can be *everyone*, *guildAdmin*, *owner*
  */
 function registerAction(pluginId, name, action, authLevel = "everyone") {

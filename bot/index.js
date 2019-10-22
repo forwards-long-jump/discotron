@@ -43,6 +43,7 @@ discotron.loadGuilds().then(() => {
 
 /**
  * Attempts to connect the bot client to Discord
+ * @returns {Promise} resolve(), reject()
  */
 function connectToDiscord() {
     return new Promise((resolve, reject) => {
@@ -144,7 +145,7 @@ function loadConfig() {
 // Source: https://stackoverflow.com/questions/14031763/doing-a-cleanup-action-just-before-node-js-exits
 /**
  * Called when the application is about to be closed
- * @param {object} options 
+ * @param {object} options Set options.exit to true to leave
  */
 function exitHandler(options) {
     global.discordClient.destroy().then(() => {

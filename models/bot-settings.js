@@ -3,7 +3,7 @@
  */
 class BotSettingsModel {
     /**
-     * @constructor
+     * @class
      * @param {string} [helpText=""] Text displayed in the help of the bot
      * @param {boolean} [maintenance=false] True to only allow the owner(s) to use the bot
      * @param {string} [presenceText=""] Bot presence text
@@ -39,5 +39,5 @@ class BotSettingsModel {
 if (typeof module !== "undefined" && typeof module.exports !== "undefined") {
     module.exports = BotSettingsModel;
 } else {
-    window.Discotron.BotSettingsModel = BotSettingsModel;
+    window.discotron.BotSettingsModel = BotSettingsModel;
 }

@@ -18,7 +18,7 @@ let actions = {};
  * Add a listener for Discotron events
  * Valid actions are: "plugin-loaded", "plugin-delete"
  * @param {string} actionName Name of the action
- * @param {function} action Function to call when the action occurs
+ * @param {Function} action Function to call when the action occurs
  */
 module.exports.on = (actionName, action) => {
     if (actions[actionName] === undefined) {
@@ -46,7 +46,7 @@ module.exports.triggerEvent = (actionName, data) => {
 /**
  * Should be called when the bot receives a message
  * Handles message reception
- * @param {Discord.Message} message Received message
+ * @param {DiscordJS.Message} message Received message
  */
 module.exports.onMessage = (message) => {
     Logger.log(`__#${message.channel.name}__ <${message.author.tag}>: ${message.content}`);
@@ -158,6 +158,7 @@ module.exports.onMessage = (message) => {
 /**
  * Load guild settings from database
  * TODO: This should probably be moved into the guild class
+ * @returns {Promise} resolve(), reject();
  */
 module.exports.loadGuilds = () => {
     return new Promise((resolve, reject) => {
@@ -238,6 +239,7 @@ module.exports.getBotInfo = () => {};
  * TODO: Cache the results
  * TODO: Move this in a new user class
  * @param {string} discordId Discord user id
+ * @returns {Promise} resolve(user {object}), reject()
  */
 function getUserInfo(discordId) {
     return new Promise((resolve, reject) => {

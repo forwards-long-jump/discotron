@@ -1,7 +1,7 @@
 /**
  * Controller for the login page
  */
-window.Discotron.LoginController = class /* does not extends Controller because it is not a logged in page*/ {
+window.discotron.LoginController = class /* does not extends Controller because it is not a logged in page*/ {
     /**
      * Login and claim ownership
      * @static
@@ -11,17 +11,17 @@ window.Discotron.LoginController = class /* does not extends Controller because 
         let code = url.searchParams.get("code");
         let ownerSecret = document.querySelector("#owner-ship-token").value;
 
-        Discotron.WebAPI.queryBot("discotron-dashboard", "claim-ownership", {
+        discotron.WebAPI.queryBot("discotron-dashboard", "claim-ownership", {
             "code": code,
             "ownerSecret": ownerSecret
         }).then((data) => {
             switch (data.status) {
                 case "error":
-                    Discotron.LoginController._displayContainer("claim-ownership");
+                    discotron.LoginController._displayContainer("claim-ownership");
                     document.querySelector("#claim-error").style.display = "block";
                     break;
                 case "success":
-                    Discotron.LoginController._handleSuccess(data);
+                    discotron.LoginController._handleSuccess(data);
                     break;
             }
         }).catch(console.error);
@@ -33,7 +33,7 @@ window.Discotron.LoginController = class /* does not extends Controller because 
      * @static
      */
     static initPage() {
-        if (Discotron.config === undefined || Discotron.config.oauthURL === undefined || Discotron.config.inviteLink === undefined) {
+        if (discotron.config === undefined || discotron.config.oauthURL === undefined || discotron.config.inviteLink === undefined) {
             document.querySelector("h1").style.display = "none";
             document.querySelector("#login-text").textContent = "Bot installation is not complete, please check the installation " +
                 "guide and create the missing configuration file.";
@@ -44,28 +44,28 @@ window.Discotron.LoginController = class /* does not extends Controller because 
             return;
         }
 
-        document.querySelector("#auth-link").href = Discotron.config.oauthURL;
+        document.querySelector("#auth-link").href = discotron.config.oauthURL;
 
         let url = new URL(window.location.href);
         let code = url.searchParams.get("code");
 
         // Code is set, user is trying to log in
         if (code !== null) {
-            Discotron.LoginController._displayContainer("logging-in");
+            discotron.LoginController._displayContainer("logging-in");
 
-            Discotron.WebAPI.queryBot("discotron-dashboard", "login", {
+            discotron.WebAPI.queryBot("discotron-dashboard", "login", {
                 "code": code
             }).then((data) => {
                 switch (data.status) {
                     case "error":
-                        Discotron.LoginController._displayContainer("login");
+                        discotron.LoginController._displayContainer("login");
                         document.querySelector("#login-error").style.display = "block";
                         break;
                     case "success":
-                        Discotron.LoginController._handleSuccess(data);
+                        discotron.LoginController._handleSuccess(data);
                         break;
                     case "first-launch":
-                        Discotron.LoginController._displayContainer("claim-ownership");
+                        discotron.LoginController._displayContainer("claim-ownership");
                         break;
                 }
             }).catch(console.error);
@@ -104,7 +104,7 @@ window.Discotron.LoginController = class /* does not extends Controller because 
     static addEvents() {
         document.getElementById("owner-ship-token").onkeyup = (e) => {
             if (e.keyCode === 13) {
-                Discotron.LoginController.claimOwnership();
+                discotron.LoginController.claimOwnership();
             }
         };
     }
@@ -114,6 +114,6 @@ window.Discotron.LoginController = class /* does not extends Controller because 
 if (localStorage.getItem("appToken") !== null) {
     document.location.replace("/dashboard");
 } else {
-    Discotron.LoginController.initPage();
-    Discotron.LoginController.addEvents();
+    discotron.LoginController.initPage();
+    discotron.LoginController.addEvents();
 }

@@ -7,7 +7,7 @@ const Logger = require("../utils/logger.js");
  */
 class BotSettings extends BotSettingsModel {
     /**
-     * @constructor
+     * @class
      */
     constructor() {
         super();
@@ -33,8 +33,7 @@ class BotSettings extends BotSettingsModel {
     }
 
     /**
-     * Change help text displayed in the public dashboard and save it to the db
-     * @param {string} helpText
+     * @param {string} helpText help text displayed in the public dashboard and save it to the db
      */
     set helpText(helpText) {
         this._helpText = helpText;
