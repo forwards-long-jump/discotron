@@ -1,6 +1,6 @@
 window.discotron.BotStatusController = class extends window.discotron.Controller {
     /**
-     * @constructor
+     * @class
      */
     constructor() {
         super("owner/bot-status.html", () => {

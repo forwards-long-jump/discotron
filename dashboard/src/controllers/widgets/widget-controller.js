@@ -3,11 +3,11 @@
  */
 window.discotron.WidgetController = class {
     /**
-     * @constructor
+     * @class
      * @param {string} widgetPageName Name of the html file of the widget 
-     * @param {function} onSave  Called when the user saves
-     * @param {function} callback Called when widget is displayed
-     * @param {function} onClose Called when widget is closed
+     * @param {Function} onSave  Called when the user saves
+     * @param {Function} callback Called when widget is displayed
+     * @param {Function} onClose Called when widget is closed
      */
     constructor(widgetPageName, onSave, callback = () => { }, onClose = () => { }) {
         this._onClose = onClose;
@@ -19,7 +19,7 @@ window.discotron.WidgetController = class {
 
     /**
      * Display modal, OK and Cancel button, background
-     * @param {function} callback Called when widget is displayed
+     * @param {Function} callback Called when widget is displayed
      */
     _displayWidget(callback) {
         // Get html file and put it into <main>

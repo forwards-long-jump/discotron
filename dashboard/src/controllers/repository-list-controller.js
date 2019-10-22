@@ -3,7 +3,7 @@
  */
 window.discotron.RepositoryListController = class extends window.discotron.Controller {
     /**
-     * @constructor 
+     * @class 
      */
     constructor() {
         super("owner/repository-list.html", () => {

@@ -3,10 +3,10 @@
  */
 class RepositoryModel {
     /**
-     * @constructor
+     * @class
      * @param {string} url Url of the repository
-     * @param {array} pluginIds List of plugin ids
-     * @param {array} pages List of pages route exposed by the plugin
+     * @param {Array} pluginIds List of plugin ids
+     * @param {Array} pages List of pages route exposed by the plugin
      */
     constructor(url = "", pluginIds = [], pages = []) {
         this._url = url;
@@ -22,14 +22,14 @@ class RepositoryModel {
     }
 
     /**
-     * @returns {array} Array of string
+     * @returns {Array} Array of string
      */
     get pluginIds() {
         return this._pluginIds;
     }
 
     /**
-     * @returns {array} Array of string
+     * @returns {Array} Array of string
      */
     get pages() {
         return this._pages;

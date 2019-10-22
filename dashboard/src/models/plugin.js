@@ -3,8 +3,16 @@
  */
 window.discotron.Plugin = class extends window.discotron.PluginModel {
     /**
-     * @constructor
-     * @param {string} pluginId Id of the plugin 
+     * @class
+     * @param {string} pluginId Id of the plugin
+     * @param {string} name Displayed name of the plugin
+     * @param {string} description Short description of the plugin
+     * @param {string} version Version of the plugin (format x.y.z)
+     * @param {string} prefix Prefix set by the owner for all servers
+     * @param {object} commands Object containing arrays of Command objects, grouped by trigger type
+     * @param {string} defaultPermission Who can access the command if no permissions are set by the server owner, can be *everyone*, *admin*
+     * @param {boolean} enabled True if plugin is enabled by the bot owner
+     * @param {Array} logs List of logs the plugin can output to
      */
     constructor(pluginId, name, description, version, prefix, commands, defaultPermission, enabled, logs) {
         super(pluginId, name, description, version, prefix, commands, defaultPermission, enabled, logs);
@@ -79,14 +87,14 @@ window.discotron.Plugin = class extends window.discotron.PluginModel {
     }
 
     /**
-     * @param {array} logs array of string
+     * @param {Array} logs array of string
      */
     set logs(logs) {
         this._logs = logs;
     }
 
     /**
-     * @returns {array} array of string
+     * @returns {Array} array of string
      */
     get logs() {
         return super.logs;

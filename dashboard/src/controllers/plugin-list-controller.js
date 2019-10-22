@@ -3,7 +3,7 @@
  */
 window.discotron.PluginListController = class extends window.discotron.Controller {
     /**
-     * @constructor
+     * @class
      * @param {object} args Args given by the user in the URL
      */
     constructor(args) {
@@ -38,7 +38,6 @@ window.discotron.PluginListController = class extends window.discotron.Controlle
 
     /**
      * Display plugins
-     * @param {Plugin} plugin Plugin
      */
     _displayPlugins() {
         // Custom switches

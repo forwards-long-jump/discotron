@@ -3,8 +3,10 @@
  */
 window.discotron.Repository = class extends window.discotron.RepositoryModel {
     /**
-     * @constructor
+     * @class
      * @param {string} url URL of the repository
+     * @param {Array} pluginIds Array of plugin ids
+     * @param {Array} pages Array of page names
      */
     constructor(url, pluginIds, pages) {
         // get info from db
@@ -14,7 +16,7 @@ window.discotron.Repository = class extends window.discotron.RepositoryModel {
 
     /**
      * @static
-     * @returns {array} Array of Repository
+     * @returns {Array} Array of Repository
      */
     static getAll() {
         return new Promise((resolve, reject) => {

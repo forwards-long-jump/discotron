@@ -29,7 +29,8 @@ window.discotron.Router = class {
     /**
      * Find which controller is to be called
      * @static
-     * @returns {object|false} False if invalid url or {page: pageName, args: args}
+     * @param {string} url to parse
+     * @returns {object|boolean} False if invalid url or {page: pageName, args: args}
      */
     static _parseURL(url) {
         // Check if on correct page and split # 
@@ -62,7 +63,7 @@ window.discotron.Router = class {
     /**
      * Should be called when the hash is changed, reroute
      * @static
-     * @param {hashchangeevent} event 
+     * @param {window.hashchangeevent} event hashchangeevent event
      */
     static _onUrlChange(event) {
         discotron.Router.route(event.newURL);

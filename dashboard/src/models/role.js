@@ -3,7 +3,7 @@
  */
 window.discotron.Role = class {
     /**
-     * @constructor
+     * @class
      * @param {string} name Name of the role
      * @param {string} discordId Id of the role
      * @param {string} color Color of the role 

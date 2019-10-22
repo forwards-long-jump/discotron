@@ -168,7 +168,7 @@ module.exports.delete = (table, where, eraseAll = false) => {
 /**
  * Select entries from a table
  * @param {string} table Name of the table
- * @param {array} fields Fields to retrieve
+ * @param {Array} fields Fields to retrieve
  * @param {object} where Which values to retrieve, {fieldName: value, ...} 
  * @returns {Promise} resolve(rows {array}) rows: Contains {fieldName: value} objects, reject(error {string})
  */

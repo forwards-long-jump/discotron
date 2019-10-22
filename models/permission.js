@@ -3,10 +3,10 @@
  */
 class PermissionModel {
     /**
-     * @constructor
+     * @class
      * @param {string} discordGuildId Discord ID of the guild
      * @param {string} pluginId Id associated to the plugin
-     * @param {array} usersRoles Array of user roles allowed to use the plugin
+     * @param {Array} usersRoles Array of user roles allowed to use the plugin
      */
     constructor(discordGuildId = "", pluginId = undefined, usersRoles = []) {
         this._guildDiscordId = discordGuildId;
@@ -28,7 +28,7 @@ class PermissionModel {
         return this._pluginId;
     }
     /**
-     * @returns {array} Array of UserRoles
+     * @returns {Array} Array of UserRoles
      */
     get usersRoles() {
         return this._usersRoles;

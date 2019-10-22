@@ -3,15 +3,15 @@
  */
 window.discotron.Guild = class extends window.discotron.GuildModel {
     /**
-     * @constructor
+     * @class
      * @param {string} discordId Id of the guild
      * @param {string} name Name of the guild
      * @param {string} iconURL Icon of the guild
      * @param {string} acronym Server acronym, used in case no icon is defined
      * @param {string} commandPrefix Command prefix
-     * @param {array} allowedChannelIds Array of channel ids on which the bot is allowed
-     * @param {array} enabledPluginIds Array of plugin ids that are enabled
-     * @param {array} admins Array of UserRole who have admin privilege on the bot
+     * @param {Array} allowedChannelIds Array of channel ids on which the bot is allowed
+     * @param {Array} enabledPlugins Array of plugin ids that are enabled
+     * @param {Array} admins Array of UserRole who have admin privilege on the bot
      * @param {object} permissions Object binding pluginsIds to userRole array
      */
     constructor(discordId, name, iconURL, acronym, commandPrefix, allowedChannelIds, enabledPlugins, admins, permissions) {
@@ -157,7 +157,7 @@ window.discotron.Guild = class extends window.discotron.GuildModel {
 
     /**
      * Gives dashboard privileges to a user or role
-     * @param {array} admins Array of users or roles which will be given admin privileges
+     * @param {Array} admins Array of users or roles which will be given admin privileges
      */
     set admins(admins) {
         this._admins = new Set(admins);
@@ -167,7 +167,7 @@ window.discotron.Guild = class extends window.discotron.GuildModel {
     }
 
     /**
-     * @returns {array} Array of userRole with admin privileges
+     * @returns {Array} Array of userRole with admin privileges
      */
     get admins() {
         return super.admins;
@@ -192,7 +192,7 @@ window.discotron.Guild = class extends window.discotron.GuildModel {
 
     /**
      * Set allowed channels
-     * @param {array} allowedChannelIds Array of allowed channel ids
+     * @param {Array} allowedChannelIds Array of allowed channel ids
      */
     set allowedChannelIds(allowedChannelIds) {
         this._allowedChannelIds = allowedChannelIds;
@@ -202,7 +202,7 @@ window.discotron.Guild = class extends window.discotron.GuildModel {
     }
 
     /**
-     * @returns {array} array of allowed channel ids
+     * @returns {Array} array of allowed channel ids
      */
     get allowedChannelIds() {
         return super.allowedChannelIds;
@@ -243,7 +243,7 @@ window.discotron.Guild = class extends window.discotron.GuildModel {
     /**
      * Set the users/roles allowed to use the plugin
      * @param {string} pluginId Id of the plugin
-     * @param {array} usersRoles Array of UserRoles 
+     * @param {Array} usersRoles Array of UserRoles 
      */
     setPluginPermission(pluginId, usersRoles) {
         let permission = new discotron.Permission(this.discordId, pluginId, usersRoles);
@@ -258,7 +258,7 @@ window.discotron.Guild = class extends window.discotron.GuildModel {
     /**
      * Get the users/roles allowed to use the plugin
      * @param {string} pluginId ID of the plugin
-     * @returns {array} array of UserRoles
+     * @returns {Array} array of UserRoles
      */
     getPluginPermission(pluginId) {
         let perm = this.permissions[pluginId];

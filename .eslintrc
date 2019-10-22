@@ -12,7 +12,8 @@
         "plugin:jsdoc/recommended"
     ],
     "globals": {
-        "discotron": "readonly"
+        "discotron": "readonly",
+        "DiscordJS": "readonly"
     },
     "rules": {
         "eqeqeq": "error",

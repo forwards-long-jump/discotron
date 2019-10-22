@@ -7,7 +7,7 @@ const Logger = require("../utils/logger.js");
  */
 class UserRole extends UserRoleModel {
     /**
-     * @constructor
+     * @class
      * @param {string} discordUserId Id of the user
      * @param {string} discordRoleId Id of the role
      * @param {string} discordGuildId Id of the guild in which this role is located. Does not apply for users
@@ -83,6 +83,7 @@ class UserRole extends UserRoleModel {
      * @static
      * @param {number} id Id of the database entry
      * @param {string} discordGuildId Id of the guild in which the user/role exists
+     * @returns {Promise} resolve(userRole {UserRole}), reject()
      */
     static getById(id, discordGuildId) {
         return new Promise((resolve, reject) => {

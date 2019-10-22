@@ -5,25 +5,25 @@ const Guild = require("./guild.js");
 
 class Permission extends PermissionModel {
     /**
-     * @constructor
+     * @class
      * @param {string} discordGuildId Discord ID of the guild
      * @param {string} pluginId ID of the plugin
-     * @param {array} userRoles Array of user roles allowed to use 
+     * @param {Array} userRoles Array of user roles allowed to use 
      */
     constructor(discordGuildId, pluginId, userRoles) {
         super(discordGuildId, pluginId, userRoles);
     }
 
     /**
-     * @returns {array} [usersRoles] Array containing userRoles converted to object
+     * @returns {Array} [usersRoles] Array containing userRoles converted to object
      */
     toObject() {
         return this.usersRoles.map((userRole) => userRole.toObject());
     }
 
     /**
-     * @param {string} discordUserId
-     * @returns whether the user has the right to use the given plugin
+     * @param {string} discordUserId Discord user id
+     * @returns {boolean} whether the user has the right to use the given plugin
      */
     allows(discordUserId) {
         if (this.usersRoles.length === 0) {

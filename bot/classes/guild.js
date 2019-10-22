@@ -11,7 +11,7 @@ const Logger = require("../utils/logger.js");
  */
 class Guild extends GuildModel {
     /**
-     * @constructor
+     * @class
      * @param {string} discordId Discord guild id
      */
     constructor(discordId) {
@@ -41,7 +41,7 @@ class Guild extends GuildModel {
     /**
      * @static
      * @param {string} discordId Discord guild id
-     * @returns Discotron guild with the given discord guild id
+     * @returns {Guild} Discotron guild with the given discord guild id
      */
     static get(discordId) {
         return Guild._guilds[discordId];
@@ -49,7 +49,7 @@ class Guild extends GuildModel {
 
     /**
      * @static
-     * @returns {array} Array of Guild
+     * @returns {Array} Array of Guild
      */
     static getAll() {
         return Guild._guilds;
@@ -82,7 +82,7 @@ class Guild extends GuildModel {
 
     /**
      * @param {string} discordUserId Discord user id
-     * @returns Whether the given user id is a bot admin on the guild
+     * @returns {boolean} Whether the given user id is a bot admin on the guild
      */
     isAdmin(discordUserId) {
         let isAdmin = false;
@@ -119,7 +119,7 @@ class Guild extends GuildModel {
 
     /**
      * Adds a bot admin to the guild
-     * @param {array} usersRoles Array of UserRole 
+     * @param {Array} usersRoles Array of UserRole 
      */
     set admins(usersRoles) {
         // TODO: Handle role validity
@@ -155,7 +155,7 @@ class Guild extends GuildModel {
     }
 
     /**
-     * @returns {array} List of admins for this guild
+     * @returns {Array} List of admins for this guild
      */
     get admins() {
         return super.admins;
@@ -184,8 +184,7 @@ class Guild extends GuildModel {
 
 
     /**
-     * Set bot prefix for a guild, save it in the database
-     * @param {string} prefix 
+     * @param {string} prefix prefix for a guild, save it in the database
      */
     set commandPrefix(prefix) {
         this._commandPrefix = prefix;
@@ -205,7 +204,7 @@ class Guild extends GuildModel {
 
     /**
      * Set allowed channels
-     * @param {array} discordChannelIds List of Discord channel ids
+     * @param {Array} discordChannelIds List of Discord channel ids
      */
     set allowedChannelIds(discordChannelIds) {
         this._allowedChannelIds = new Set(discordChannelIds);
@@ -223,7 +222,7 @@ class Guild extends GuildModel {
     }
 
     /**
-     * @returns {array} List of Discord channel ids
+     * @returns {Array} List of Discord channel ids
      */
     get allowedChannelIds() {
         return super.allowedChannelIds;
@@ -239,8 +238,8 @@ class Guild extends GuildModel {
 
     /**
      * Set whether the given plugin is enabled on the guild
-     * @param {string} pluginId 
-     * @param {boolean} enabled 
+     * @param {string} pluginId plugin id
+     * @param {boolean} enabled enabled
      * @returns {Promise} Promise resolves once plugin fully enabled (database operation completed).
      */
     setPluginEnabled(pluginId, enabled) {
@@ -278,8 +277,8 @@ class Guild extends GuildModel {
 
     /**
      * Set the set of users and roles allowed to use the given plugin
-     * @param {string} pluginId
-     * @param {array} userRoles
+     * @param {string} pluginId plugin id
+     * @param {Array} userRoles Array of UserRole
      * @returns {Promise} Promise resolves once plugin permissions fully set (database operation completed).
      */
     setPluginPermission(pluginId, userRoles) {
@@ -314,7 +313,7 @@ class Guild extends GuildModel {
 
     /**
      * Must be called before a plugin is deleted
-     * @param {string} pluginId 
+     * @param {string} pluginId plugin id
      */
     onPluginDeleted(pluginId) {
         delete this.permissions[pluginId];
@@ -323,7 +322,7 @@ class Guild extends GuildModel {
 
     /**
      * Load plugin permissions from database
-     * @param {string} pluginId 
+     * @param {string} pluginId plugin id
      * @returns {Promise} Promise resolves once plugin permissions are loaded (database operation completed).
      */
     _loadPluginPermission(pluginId) {

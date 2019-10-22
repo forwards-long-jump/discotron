@@ -3,9 +3,9 @@
  */
 window.discotron.Controller = class {
     /**
-     * @constructor
+     * @class
      * @param {string} pageName Html file name that will be loaded
-     * @param {function} callback Function called when the page is loaded
+     * @param {Function} callback Function called when the page is loaded
      */
     constructor(pageName, callback) {
         discotron.Controller._loadPage(pageName, callback);
@@ -15,7 +15,7 @@ window.discotron.Controller = class {
      * Load specified html page
      * @static
      * @param {string} pageName Name of the page
-     * @param {function} callback Function called when the page is loaded
+     * @param {Function} callback Function called when the page is loaded
      */
     static _loadPage(pageName, callback) {
         // Get html file and put it into <main>

@@ -3,11 +3,11 @@
  */
 window.discotron.ChannelListWidgetController = class extends window.discotron.WidgetController {
     /**
-     * @constructor
-     * @param {array} channels An array of Channel
-     * @param {array} selectedChannels Default selected channel discord ids
-     * @param {function} onChannelSelectorSave Callback called when the user is done selecting channel
-     * @param {function} onClose Callback called when the widget is closed
+     * @class
+     * @param {Array} channels An array of Channel
+     * @param {Array} selectedChannels Default selected channel discord ids
+     * @param {Function} onChannelSelectorSave Callback called when the user is done selecting channel
+     * @param {Function} onClose Callback called when the widget is closed
      */
     constructor(channels, selectedChannels, onChannelSelectorSave, onClose = () => {}) {
         super("channels-selector.html", () => {
@@ -25,7 +25,7 @@ window.discotron.ChannelListWidgetController = class extends window.discotron.Wi
     }
 
     /**
-     * @returns An array of all channel ids that are currently selected
+     * @returns {Array} An array of all channel ids that are currently selected
      */
     _getSelectedChannels() {
         let allContainers = this._widgetContainer.querySelectorAll(".channel-state");

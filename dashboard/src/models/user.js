@@ -3,7 +3,7 @@
  */
 window.discotron.User = class {
     /**
-     * @constructor
+     * @class
      * @param {string} name Name of the user
      * @param {string} discordId Id of the user
      * @param {string} avatarURL Avatar of the user
@@ -78,7 +78,7 @@ window.discotron.User = class {
     /**
      * Find a previously *loaded* user from its tag
      * @param {string} tag of the user
-     * @returns {User} User if found
+     * @returns {discotron.User} User if found
      */
     static getByTag(tag) {
         for (const discordUserId in window.discotron.User._users) {

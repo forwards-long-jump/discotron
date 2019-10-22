@@ -77,8 +77,8 @@ window.discotron.utils = {
     },
     /**
      * Check if object is empty, if it is calls loadFunction before resolving
-     * @param {object|array} object object or array
-     * @param {function} loadFunction function that will fill object if empty (), must return a promise after changing object
+     * @param {object|Array} object object or array
+     * @param {Function} loadFunction function that will fill object if empty (), must return a promise after changing object
      * @returns {Promise} resolve(object {object}) object:
      */
     getOrLoad: (object, loadFunction) => {

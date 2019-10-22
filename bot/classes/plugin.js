@@ -10,7 +10,7 @@ const Owner = require("./owner.js");
  */
 class Plugin extends PluginModel {
     /**
-     * @constructor
+     * @class
      * @param {string} folder Folder name of the plugin in a repository 
      */
     constructor(folder) {
@@ -52,7 +52,7 @@ class Plugin extends PluginModel {
     }
 
     /**
-     * @returns {array} Array of all the plugins
+     * @returns {Array} Array of all the plugins
      * @static
      */
     static getAll() {
@@ -61,7 +61,7 @@ class Plugin extends PluginModel {
 
     /**
      * Loads the plugin from a folder located in git/...
-     * @param {string} folder 
+     * @param {string} folder Path of the folder
      */
     _loadFromFolder(folder) {
         delete require.cache[require.resolve(folder + "/index.js")];
@@ -121,6 +121,7 @@ class Plugin extends PluginModel {
 
     /**
      * Convert this plugin to an object containing value displayed on the dashboard
+     * @param {boolean} [publicInfoOnly=false] If set to false, displays logs as well
      * @returns {object} {name, id, description, version, commands: [commands.toObject()], defaultPermission, enabled}
      */
     toObject(publicInfoOnly = false) {
@@ -181,7 +182,7 @@ class Plugin extends PluginModel {
 
     /**
      * Set if the plugin can be used or not
-     * @param {boolean} enabled 
+     * @param {boolean} enabled Enable or disable the plugin
      */
     set enabled(enabled) {
         this._enabled = enabled;
@@ -200,8 +201,7 @@ class Plugin extends PluginModel {
     }
 
     /**
-     * Set prefix
-     * @param {prefix} prefix 
+     * @param {string} prefix prefix
      */
     set prefix(prefix) {
         this._prefix = prefix;

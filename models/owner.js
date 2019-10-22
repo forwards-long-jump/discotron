@@ -3,7 +3,7 @@
  */
 class OwnerModel {
     /**
-     * @constructor
+     * @class
      * @param  {string} discordId DiscordId of the owner
      */
     constructor(discordId = undefined) {

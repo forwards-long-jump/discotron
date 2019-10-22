@@ -3,7 +3,7 @@
  */
 class UserRoleModel {
     /**
-     * @constructor
+     * @class
      * @param {string} discordUserId Discord user id
      * @param {string} discordRoleId Discord role id
      */

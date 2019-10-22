@@ -3,7 +3,7 @@
  */
 window.discotron.HelpController = class extends window.discotron.Controller {
     /**
-     * @constructor
+     * @class
      */
     constructor() {
         super("index.html", () => {
