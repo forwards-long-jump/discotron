@@ -92,22 +92,25 @@ do {
     // 59 bytes long
 } while (token.length !== 59);
 
-let pkey;
-let cert;
+let privateKey;
+let certificate;
 if (redirectURL.startsWith("https")) {
     do {
-        if (pkey === undefined) {
+        if (privateKey !== undefined) {
             console.log("Could not find given file. Please leave empty or make sure it exists.");
         }
-        pkey = readlineSync.question("OPTIONAL: Path to a private key file for https: ");
+        privateKey = readlineSync.question("OPTIONAL: Path to a private key file for https: ");
 
         // Force the pkey to either be valid or empty
-    } while (pkey.length !== 0 && !fs.existsSync(pkey));
+    } while (privateKey.length !== 0 && !fs.existsSync(privateKey));
 
-    if (pkey.length !== 0) {
+    if (privateKey.length !== 0) {
         do {
-            cert = readlineSync.question("OPTIONAL: Path to a certificate file for https: ");
-        } while (cert.length !== 0 && !fs.existsSync(cert));
+            if (privateKey !== undefined) {
+                console.log("Could not find given file.");
+            }
+            certificate = readlineSync.question("Path to a certificate file for https: ");
+        } while (!fs.existsSync(certificate));
     }
 }
 
@@ -119,8 +122,8 @@ let data = `{
   "applicationId": "${appId}",
   "oauth2Secret": "${appSecret}",
   "redirectURI": "${domain}",
-  "privateKey": "${pkey}",
-  "certificate": "${cert}"
+  "privateKey": "${privateKey}",
+  "certificate": "${certificate}"
 }`;
 
 fs.writeFileSync(appConfig, data, function (err) {
