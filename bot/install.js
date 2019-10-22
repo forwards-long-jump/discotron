@@ -1,7 +1,7 @@
 const fs = require("fs");
 const readlineSync = require("readline-sync");
 
-const instancePath = "../instance";
+const instancePath = "./instance";
 const port = 47131;
 
 //Create the directory if it does not exist

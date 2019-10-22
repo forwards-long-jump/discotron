@@ -2,10 +2,10 @@
   "name": "discotron",
   "version": "0.0.1",
   "description": "Modular discord bot framework",
-  "main": "index.js",
+  "main": "./bot/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js",
+    "start": "node ./bot/index.js",
     "postinstall": "node install.js"
   },
   "keywords": [
@@ -22,5 +22,9 @@
     "uuid": "^3.3.3"
   },
   "author": "Pierre Bürki, Loïck Jeanneret",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "^6.5.1",
+    "eslint-plugin-jsdoc": "^15.12.0"
+  }
 }
