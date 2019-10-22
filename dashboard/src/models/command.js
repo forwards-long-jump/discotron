@@ -1,7 +1,7 @@
 /**
  * Represents a command, dashboard side
  */
-window.Discotron.Command = class extends window.Discotron.CommandModel {
+window.discotron.Command = class extends window.discotron.CommandModel {
     /**
      * @constructor
      * @param {object} settings Settings

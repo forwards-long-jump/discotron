@@ -66,5 +66,5 @@ class GuildModel {
 if (typeof module !== "undefined" && typeof module.exports !== "undefined") {
     module.exports = GuildModel;
 } else {
-    window.Discotron.GuildModel = GuildModel;
+    window.discotron.GuildModel = GuildModel;
 }

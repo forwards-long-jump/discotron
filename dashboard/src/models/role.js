@@ -1,7 +1,7 @@
 /**
  * Represents a role, dashboard side
  */
-window.Discotron.Role = class {
+window.discotron.Role = class {
     /**
      * @constructor
      * @param {string} name Name of the role

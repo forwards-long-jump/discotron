@@ -1,7 +1,7 @@
 /**
  * Represents a channel, dashboard side
  */
-window.Discotron.Channel = class {
+window.discotron.Channel = class {
     /**
      * @constructor
      * @param {string} name Name of the channel

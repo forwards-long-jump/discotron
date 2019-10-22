@@ -120,5 +120,5 @@ CommandModel.defaultArgSettings = {
 if (typeof module !== "undefined" && typeof module.exports !== "undefined") {
     module.exports = CommandModel;
 } else {
-    window.Discotron.CommandModel = CommandModel;
+    window.discotron.CommandModel = CommandModel;
 }

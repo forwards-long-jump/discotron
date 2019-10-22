@@ -117,7 +117,7 @@ class Repository extends RepositoryModel {
         let url = baseUrl.replace(/\.git/g, "");
         url = url.split("/");
         url = url[url.length - 1];
-        url = url.replace(/[^a-zA-Z0-9\-]/g, "");
+        url = url.replace(/[^a-zA-Z0-9-]/g, "");
         return url + "-" + crypto.createHash("md5").update(baseUrl).digest("hex"); // Should rather check if folder exists but we should not have collisions for that
     }
 

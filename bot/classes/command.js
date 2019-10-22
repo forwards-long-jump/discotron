@@ -45,10 +45,10 @@ class Command extends CommandModel {
         }
 
         switch (this._triggerType) {
-            case "command":
+            case "command": {
                 let command = prefixes + this.trigger;
                 return (loweredCaseMessage.startsWith(command + " ") || loweredCaseMessage === command);
-
+            }
             case "words":
                 return this.trigger.every((t) => {
                     return loweredCaseMessage.includes(t);
@@ -74,9 +74,8 @@ class Command extends CommandModel {
      * @param {object} apiCollection Object containing multiple APIs that can be used by the plugin
      */
     doMessageAction(message, words, apiCollection) {
-
         switch (this.triggerType) {
-            case "command":
+            case "command": {
                 let commandArgs = {
                     "all": words.slice(1)
                 };
@@ -97,7 +96,7 @@ class Command extends CommandModel {
                 }
                 this.action(message, commandArgs, apiCollection);
                 break;
-
+            }
             case "words":
                 this.action(message, words, apiCollection);
                 break;

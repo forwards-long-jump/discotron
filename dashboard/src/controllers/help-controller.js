@@ -1,7 +1,7 @@
 /**
  * Controller for the help page
  */
-window.Discotron.HelpController = class extends window.Discotron.Controller {
+window.discotron.HelpController = class extends window.discotron.Controller {
     /**
      * @constructor
      */
@@ -15,9 +15,9 @@ window.Discotron.HelpController = class extends window.Discotron.Controller {
      * Display command helps, invite link and more
      */
     _displayHelp() {
-        document.getElementById("bot-invite-link").href = Discotron.config.inviteLink;
+        document.getElementById("bot-invite-link").href = discotron.config.inviteLink;
         // Query cards
-        Discotron.Plugin.getAll().then((plugins) => {
+        discotron.Plugin.getAll().then((plugins) => {
 
             for (let pluginId in plugins) {
                 const plugin = plugins[pluginId];

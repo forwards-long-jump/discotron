@@ -2,11 +2,11 @@
 if (localStorage.getItem("appToken") === null) {
     document.location.replace("/login");
 } else {
-    Discotron.Router.addEvents();
-    Discotron.Router.route(document.location.href);
+    discotron.Router.addEvents();
+    discotron.Router.route(document.location.href);
 
-    Discotron.NavigationController.displayOwnerSettings();
-    Discotron.NavigationController.displayBot();
-    Discotron.NavigationController.displayServers();
-    Discotron.NavigationController.displayUser();
+    discotron.NavigationController.displayOwnerSettings();
+    discotron.NavigationController.displayBot();
+    discotron.NavigationController.displayServers();
+    discotron.NavigationController.displayUser();
 }

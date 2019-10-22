@@ -70,35 +70,33 @@ function handleDiscordAPIQuery(authToken, reply, addOwner = false) {
     let userInfo;
 
     getAccessToken(authToken).then((accessInfo_) => {
-
-            accessInfo = accessInfo_;
-            return queryDiscordUserId(accessInfo.accessToken);
-
-        }).then((userInfo_) => {
-            userInfo = userInfo_;
-            if (userInfo.discordId !== undefined) {
-                if (addOwner) {
-                    Owner.setOwners([userInfo.discordId]);
-                    ownerSecret = undefined;
-                    firstLaunch = false;
-                }
-
-                return requestAppToken(userInfo.discordId, accessInfo.accessToken, accessInfo.refreshToken, accessInfo.expireDate);
-            } else {
-                return Promise.reject();
+        accessInfo = accessInfo_;
+        return queryDiscordUserId(accessInfo.accessToken);
+    }).then((userInfo_) => {
+        userInfo = userInfo_;
+        if (userInfo.discordId !== undefined) {
+            if (addOwner) {
+                Owner.setOwners([userInfo.discordId]);
+                ownerSecret = undefined;
+                firstLaunch = false;
             }
-        }).then((appToken) => {
 
-            reply({
-                status: "success",
-                token: appToken,
-                avatar: userInfo.avatar,
-                username: userInfo.username,
-                discriminator: userInfo.discriminator,
-                discordUserId: userInfo.discordId
-            });
+            return requestAppToken(userInfo.discordId, accessInfo.accessToken, accessInfo.refreshToken, accessInfo.expireDate);
+        } else {
+            return Promise.reject();
+        }
+    }).then((appToken) => {
 
-        })
+        reply({
+            status: "success",
+            token: appToken,
+            avatar: userInfo.avatar,
+            username: userInfo.username,
+            discriminator: userInfo.discriminator,
+            discordUserId: userInfo.discordId
+        });
+
+    })
         .catch((err) => {
             Logger.err("handleDiscordAPIQuery failed");
             Logger.err(err);
@@ -157,7 +155,8 @@ function getAccessToken(authToken) {
     return new Promise((resolve, reject) => {
         Logger.log("Query made to Discord API (OAuth2/token)");
         request.post(
-            discordApiUrl + "oauth2/token", {
+            discordApiUrl + "oauth2/token",
+            {
                 form: {
                     "client_id": clientId,
                     "client_secret": clientSecret,
@@ -168,7 +167,6 @@ function getAccessToken(authToken) {
                 }
             },
             (err, response, body) => {
-
                 if (err !== null) {
                     Logger.log("Query rejected by Discord");
                     Logger.log(err);

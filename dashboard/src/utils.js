@@ -1,4 +1,4 @@
-window.Discotron.utils = {
+window.discotron.utils = {
     /**
      * Make a post request on the specified URL, with data encoded as json
      * @param {string} url Url to make the post request on
@@ -82,7 +82,7 @@ window.Discotron.utils = {
      * @returns {Promise} resolve(object {object}) object:
      */
     getOrLoad: (object, loadFunction) => {
-        let loaded = Array.isArray(object) ? object.length !== 0 : !window.Discotron.utils.isEmpty(object);
+        let loaded = Array.isArray(object) ? object.length !== 0 : !window.discotron.utils.isEmpty(object);
 
         return new Promise((resolve, reject) => {
             if (loaded) {

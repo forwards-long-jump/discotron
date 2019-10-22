@@ -22,5 +22,5 @@ class OwnerModel {
 if (typeof module !== "undefined" && typeof module.exports !== "undefined") {
     module.exports = OwnerModel;
 } else {
-    window.Discotron.OwnerModel = OwnerModel;
+    window.discotron.OwnerModel = OwnerModel;
 }

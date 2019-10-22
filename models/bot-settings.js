@@ -39,5 +39,5 @@ class BotSettingsModel {
 if (typeof module !== "undefined" && typeof module.exports !== "undefined") {
     module.exports = BotSettingsModel;
 } else {
-    window.Discotron.BotSettingsModel = BotSettingsModel;
+    window.discotron.BotSettingsModel = BotSettingsModel;
 }

@@ -1,7 +1,7 @@
 /**
  * Widget to select channels
  */
-window.Discotron.ChannelListWidgetController = class extends window.Discotron.WidgetController {
+window.discotron.ChannelListWidgetController = class extends window.discotron.WidgetController {
     /**
      * @constructor
      * @param {array} channels An array of Channel

@@ -126,7 +126,7 @@ class Plugin extends PluginModel {
     toObject(publicInfoOnly = false) {
         let commandObjects = [];
         for (const type in this.commands) {
-            if (this.commands.hasOwnProperty(type)) {
+            if (Object.prototype.hasOwnProperty.call(this.commands, type)) {
                 const commands = this.commands[type];
                 for (let i = 0; i < commands.length; i++) {
                     const command = commands[i];
@@ -257,8 +257,9 @@ class Plugin extends PluginModel {
         webAPI.registerAction("get-plugins", (data, reply, userDiscordId) => {
             let pluginsObjects = [];
 
-            for (const key in Plugin.getAll()) {
-                if (Plugin.getAll().hasOwnProperty(key)) {
+            let plugins = Plugin.getAll();
+            for (const key in plugins) {
+                if (Object.prototype.hasOwnProperty.call(plugins, key)) {
                     pluginsObjects.push(Plugin.getAll()[key].toObject(!Owner.isOwner(userDiscordId)));
                 }
             }

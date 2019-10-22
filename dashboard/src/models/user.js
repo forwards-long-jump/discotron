@@ -1,7 +1,7 @@
 /**
  * Represents a User, dashboard side
  */
-window.Discotron.User = class {
+window.discotron.User = class {
     /**
      * @constructor
      * @param {string} name Name of the user
@@ -16,7 +16,7 @@ window.Discotron.User = class {
         this._tag = name + "#" + discriminator;
         this._avatarURL = avatarURL;
 
-        Discotron.User._users[discordId] = this;
+        discotron.User._users[discordId] = this;
     }
 
     /**
@@ -62,15 +62,15 @@ window.Discotron.User = class {
      */
     static get(discordId) {
         return new Promise((resolve, reject) => {
-            if (Discotron.User._users[discordId] === undefined) {
+            if (discotron.User._users[discordId] === undefined) {
                 // Since the user should be loaded if he was in a guild, we are here trying to fetch an out-of-guild user (typically for the owner)
-                return Discotron.WebAPI.queryBot("discotron-dashboard", "get-user-info", {
+                return discotron.WebAPI.queryBot("discotron-dashboard", "get-user-info", {
                     discordId: discordId
                 }).then((userObject) => {
-                    resolve(new Discotron.User(userObject.name, userObject.discordId, userObject.avatarURL, userObject.discriminator));
+                    resolve(new discotron.User(userObject.name, userObject.discordId, userObject.avatarURL, userObject.discriminator));
                 });
             } else {
-                resolve(Discotron.User._users[discordId]);
+                resolve(discotron.User._users[discordId]);
             }
         });
     }
@@ -81,9 +81,10 @@ window.Discotron.User = class {
      * @returns {User} User if found
      */
     static getByTag(tag) {
-        for (const discordUserId in window.Discotron.User._users) {
-            if (window.Discotron.User._users.hasOwnProperty(discordUserId)) {
-                const user = window.Discotron.User._users[discordUserId];
+        for (const discordUserId in window.discotron.User._users) {
+
+            if (Object.prototype.hasOwnProperty.call(window.discotron.User._users, discordUserId)) {
+                const user = window.discotron.User._users[discordUserId];
                 if (user.tag === tag) {
                     return user;
                 }
@@ -96,8 +97,8 @@ window.Discotron.User = class {
      * @returns {object} {id: user} all loaded users
      */
     static getAll() {
-        return window.Discotron.User._users;
+        return window.discotron.User._users;
     }
 };
 
-window.Discotron.User._users = {}; // id: User
+window.discotron.User._users = {}; // id: User

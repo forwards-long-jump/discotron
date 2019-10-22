@@ -1,14 +1,14 @@
 /**
  * Represents a plugin, dashboard side
  */
-window.Discotron.Plugin = class extends window.Discotron.PluginModel {
+window.discotron.Plugin = class extends window.discotron.PluginModel {
     /**
      * @constructor
      * @param {string} pluginId Id of the plugin 
      */
     constructor(pluginId, name, description, version, prefix, commands, defaultPermission, enabled, logs) {
         super(pluginId, name, description, version, prefix, commands, defaultPermission, enabled, logs);
-        Discotron.Plugin._plugins[pluginId] = this;
+        discotron.Plugin._plugins[pluginId] = this;
     }
 
     /**
@@ -17,17 +17,17 @@ window.Discotron.Plugin = class extends window.Discotron.PluginModel {
      */
     static getAll() {
         return new Promise((resolve, reject) => {
-            if (Object.keys(Discotron.Plugin._plugins).length === 0) {
-                Discotron.WebAPI.queryBot("discotron-dashboard", "get-plugins").then((data) => {
+            if (Object.keys(discotron.Plugin._plugins).length === 0) {
+                discotron.WebAPI.queryBot("discotron-dashboard", "get-plugins").then((data) => {
                     for (let i = 0; i < data.length; i++) {
                         const plugin = data[i];
-                        new Discotron.Plugin(plugin.id, plugin.name, plugin.description, plugin.version, plugin.prefix,
+                        new discotron.Plugin(plugin.id, plugin.name, plugin.description, plugin.version, plugin.prefix,
                             plugin.commands, plugin.defaultPermission, plugin.enabled, plugin.logs);
                     }
-                    resolve(Discotron.Plugin._plugins);
+                    resolve(discotron.Plugin._plugins);
                 }).catch(console.error);
             } else {
-                resolve(Discotron.Plugin._plugins);
+                resolve(discotron.Plugin._plugins);
             }
         });
     }
@@ -37,7 +37,7 @@ window.Discotron.Plugin = class extends window.Discotron.PluginModel {
      * @static
      */
     static clearCache() {
-        Discotron.Plugin._plugins = {};
+        discotron.Plugin._plugins = {};
     }
 
     /**
@@ -46,7 +46,7 @@ window.Discotron.Plugin = class extends window.Discotron.PluginModel {
      */
     set prefix(prefix) {
         this._prefix = prefix;
-        Discotron.WebAPI.queryBot("discotron-dashboard", "set-plugin-prefix", {
+        discotron.WebAPI.queryBot("discotron-dashboard", "set-plugin-prefix", {
             prefix: prefix,
             pluginId: this._id
         });
@@ -65,7 +65,7 @@ window.Discotron.Plugin = class extends window.Discotron.PluginModel {
      */
     set enabled(enabled) {
         this._enabled = enabled;
-        Discotron.WebAPI.queryBot("discotron-dashboard", "set-enabled", {
+        discotron.WebAPI.queryBot("discotron-dashboard", "set-enabled", {
             enabled: enabled,
             pluginId: this._id
         });
@@ -93,4 +93,4 @@ window.Discotron.Plugin = class extends window.Discotron.PluginModel {
     }
 };
 
-window.Discotron.Plugin._plugins = {};
+window.discotron.Plugin._plugins = {};

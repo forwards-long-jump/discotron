@@ -1,7 +1,7 @@
 /**
  * Controller for the guild settings page
  */
-window.Discotron.GuildSettingsController = class extends window.Discotron.Controller {
+window.discotron.GuildSettingsController = class extends window.discotron.Controller {
     /**
      * @constructor
      * @param {object} args Args given by the user in the URL
@@ -14,7 +14,7 @@ window.Discotron.GuildSettingsController = class extends window.Discotron.Contro
                 window.location.replace("/dashboard");
                 return;
             }
-            Discotron.Guild.getAll().then((guilds) => {
+            discotron.Guild.getAll().then((guilds) => {
                 this._guild = guilds[this._discordGuildId];
                 if (this._guild === undefined) {
                     window.location.replace("/dashboard");
@@ -63,7 +63,7 @@ window.Discotron.GuildSettingsController = class extends window.Discotron.Contro
             this._guild.getChannels().then((channels) => {
                 let channelListArray = Array.from(this._guild.allowedChannelIds);
 
-                new Discotron.ChannelListWidgetController(channels, channelListArray, (selectedChannels) => {
+                new discotron.ChannelListWidgetController(channels, channelListArray, (selectedChannels) => {
                     if (selectedChannels.length === Object.keys(channelListArray).length) {
                         // TODO: Add a checkbox for this in particular
                         selectedChannels = []; // Everything selected => nothing selected
@@ -74,7 +74,7 @@ window.Discotron.GuildSettingsController = class extends window.Discotron.Contro
         };
         document.getElementById("admins").onclick = () => {
             let admins = Array.from(this._guild.admins);
-            new Discotron.UserRoleWidgetController(this._guild, admins, (newAdmins) => {
+            new discotron.UserRoleWidgetController(this._guild, admins, (newAdmins) => {
                 this._guild.admins = newAdmins;
             }, true, "Admins", true);
         };

@@ -39,5 +39,5 @@ class RepositoryModel {
 if (typeof module !== "undefined" && typeof module.exports !== "undefined") {
     module.exports = RepositoryModel;
 } else {
-    window.Discotron.RepositoryModel = RepositoryModel;
+    window.discotron.RepositoryModel = RepositoryModel;
 }

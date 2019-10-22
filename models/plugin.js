@@ -92,5 +92,5 @@ class PluginModel {
 if (typeof module !== "undefined" && typeof module.exports !== "undefined") {
     module.exports = PluginModel;
 } else {
-    window.Discotron.PluginModel = PluginModel;
+    window.discotron.PluginModel = PluginModel;
 }

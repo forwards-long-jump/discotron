@@ -38,5 +38,5 @@ class PermissionModel {
 if (typeof module !== "undefined" && typeof module.exports !== "undefined") {
     module.exports = PermissionModel;
 } else {
-    window.Discotron.PermissionModel = PermissionModel;
+    window.discotron.PermissionModel = PermissionModel;
 }

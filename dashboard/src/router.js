@@ -1,28 +1,28 @@
 /**
  * Handle routes
  */
-window.Discotron.Router = class {
+window.discotron.Router = class {
     /**
      * Parse URL and call the right new specificController(...)
      * @static
      * @param {string} url URL to route to
      */
     static route(url) {
-        let parsedURL = Discotron.Router._parseURL(url);
+        let parsedURL = discotron.Router._parseURL(url);
 
         const controllers = {
-            "home": Discotron.HelpController,
-            "bot-status": Discotron.BotStatusController,
-            "plugin-list": Discotron.PluginListController,
-            "repository-list": Discotron.RepositoryListController,
-            "guild-settings": Discotron.GuildSettingsController
+            "home": discotron.HelpController,
+            "bot-status": discotron.BotStatusController,
+            "plugin-list": discotron.PluginListController,
+            "repository-list": discotron.RepositoryListController,
+            "guild-settings": discotron.GuildSettingsController
         };
 
         let Controller = controllers[parsedURL.page];
         if (Controller !== undefined) {
             new Controller(parsedURL.args);
         } else {
-            new Discotron.HelpController();
+            new discotron.HelpController();
         }
     }
 
@@ -34,7 +34,7 @@ window.Discotron.Router = class {
     static _parseURL(url) {
         // Check if on correct page and split # 
         // <url>/dashboard#page?arg1=true
-        let urlRegex = /dashboard\/?#?([a-z\-]*)\??(.*)/;
+        let urlRegex = /dashboard\/?#?([a-z-]*)\??(.*)/;
         let match = urlRegex.exec(url);
 
         if (match === null) {
@@ -65,7 +65,7 @@ window.Discotron.Router = class {
      * @param {hashchangeevent} event 
      */
     static _onUrlChange(event) {
-        Discotron.Router.route(event.newURL);
+        discotron.Router.route(event.newURL);
     }
 
     /**
@@ -73,6 +73,6 @@ window.Discotron.Router = class {
      * @static
      */
     static addEvents() {
-        window.addEventListener("hashchange", Discotron.Router._onUrlChange);
+        window.addEventListener("hashchange", discotron.Router._onUrlChange);
     }
 };

@@ -4,7 +4,8 @@ const Permission = require("./permission.js");
 const webAPI = require("./../apis/web-api.js").getWebAPI("discotron-dashboard");
 const Plugin = require("./plugin.js");
 const db = require("./../apis/database-crud.js");
-const Logger = require("../utils/logger.js")
+const Logger = require("../utils/logger.js");
+
 /**
  * Discotron guild containing info related to a Discord guild
  */
