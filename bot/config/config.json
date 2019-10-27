@@ -1,6 +1,6 @@
 {
     "database": {
-        "templatePath": "./database/discotron-template.db",
+        "templatePath": "./bot/database/discotron-template.db",
         "saveName": "discotron.db"
     },
     "webServer": {
