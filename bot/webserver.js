@@ -35,7 +35,7 @@ module.exports.serveRepositoryFolder = (folderName, repositoryFolderName) => {
         Logger.log("Could not serve folder **" + folderName + "** because it is a reserved page name.", "warn");
         return;
     } else {
-        app.use("/" + folderName, express.static(__dirname + "/repositories/" + repositoryFolderName + "/pages/" + folderName));
+        app.use("/" + folderName, express.static(global.discotronConfigPath + "/repositories/" + repositoryFolderName + "/pages/" + folderName));
     }
 };
 
