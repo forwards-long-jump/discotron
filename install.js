@@ -83,7 +83,7 @@ do {
 
 let token;
 do {
-    if (token === undefined) {
+    if (token !== undefined) {
         console.log("Invalid value! Must be 59 bytes long.");
     }
 
