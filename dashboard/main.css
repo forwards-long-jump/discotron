@@ -609,3 +609,86 @@ input:checked+.slider:before {
     display: inline-block;
     width: 200px;
 }
+
+#toggle-menu {
+    display: none;
+}
+
+@media only screen and (max-width: 1000px) {
+    nav {
+        width: 100%;
+        height: auto;
+        position: fixed;
+        z-index: 1;
+    }
+
+    #nav-links, #user-info {
+        display: none;
+    }
+
+    main {
+        padding-top: 105px;
+        margin-left: 10px;
+        width: calc(100% - 20px);
+    }
+    
+    #toggle-menu span
+    {
+        display: block;
+        width: 33px;
+        height: 4px;
+        margin-bottom: 5px;
+        position: relative;
+        
+        background: #cdcdcd;
+        border-radius: 3px;
+        
+        z-index: 1;
+        
+        transform-origin: 4px 0px;
+        
+        transition: transform 0.5s cubic-bezier(0.77, 0.2, 0.05, 1.0), 
+                        background 0.5s cubic-bezier(0.77, 0.2, 0.05, 1.0), 
+                        opacity 0.55s ease;
+    }
+
+    #toggle-menu {
+        cursor: pointer;
+        display: block;
+        user-select: none;
+        float: right;
+        margin: 35px;
+    }
+
+    nav.menu-displayed {
+        display: block;
+        height: 100%;
+        overflow: auto;
+    }
+
+    #nav-links.menu-displayed {
+        display: block;
+        width: 100%;
+        overflow: visible;
+        max-height: unset;
+        padding-top: 100px;
+    }
+
+    #user-info.menu-displayed {
+        display: block;
+        width: 100%;
+        position: relative;
+        bottom: unset;
+        background-color: transparent;
+        border-top: 1px solid var(--color-background-dark);
+    }
+
+    #bot-info.menu-displayed {
+        position: fixed;
+        width: 100%;
+    }
+
+    nav li a {
+        width: calc(100% - 20px);
+    }
+}

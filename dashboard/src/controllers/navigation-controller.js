@@ -45,6 +45,7 @@ window.discotron.NavigationController = class {
                     let serverLink = document.importNode(template.content, true);
 
                     serverLink.querySelector(".server-link").href += guild.discordId;
+                    serverLink.querySelector(".server-link").onclick = discotron.mobileHelper.hideNavBar;
                     serverLink.querySelector(".server-icon").src = guild.iconURL;
                     serverLink.querySelector(".server-name").textContent = guild.name;
                     serverLinksContainer.appendChild(serverLink);
