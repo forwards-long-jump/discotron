@@ -699,7 +699,7 @@ input:checked+.slider:before {
     .widget-inner {
         width: calc(100% - 50px);
         min-width: unset;
-        max-height: 80%;;
+        max-height: 250px;
     }
 
     .channel-selector-channel {
