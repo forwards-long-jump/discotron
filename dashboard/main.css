@@ -693,12 +693,28 @@ input:checked+.slider:before {
     }
 
     .widget-background {
-        z-index: 2;
+        z-index: 5;
     }
 
     .widget-inner {
         width: calc(100% - 50px);
         min-width: unset;
         max-height: 80%;;
+    }
+
+    .channel-selector-channel {
+        width: calc(100% - 75px);
+    }
+
+    .plugin-bar {
+        width: 100%;
+    }
+
+    .repository-card-container {
+        text-align: center;
+    }
+
+    label {
+        width: auto;
     }
 }
