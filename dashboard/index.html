@@ -10,7 +10,7 @@
 
     <script src="https://kit.fontawesome.com/de85ecd0aa.js"
         integrity="sha384-tCIa9x35rFwAnPYwDCoqImEiB9Ai31jfzeslK4Q53KZAXSFi24Px912eIpefo9Bj" crossorigin="anonymous">
-    </script>
+        </script>
 </head>
 
 <body>
@@ -20,6 +20,10 @@
                 <img class="shadow-small round" src="" />
                 <span></span>
             </a>
+
+            <div id="toggle-menu" onclick="discotron.mobileHelper.toggleNavBarDisplay()">
+                <i class="fa fa-bars"></i>
+            </div>
         </div>
         <div id="nav-links">
             <template id="template-server-link">
@@ -27,12 +31,11 @@
                             class="server-icon shadow-small round" /><span class="server-name"></span></a></li>
             </template>
             <ul>
+                <li class="header bot-admin-link">General</li>
+                <li><a href="#home" onclick="discotron.mobileHelper.hideNavBar()"><i class="fas fa-home"></i> Home</a></li>
                 <li class="header bot-admin-link">Bot owner settings</li>
-                <li class="bot-admin-link"><a href="#bot-status"><i class="fas fa-wrench"></i> Bot settings</a></li>
-                <li class="bot-admin-link"><a href="#repository-list"><i class="fas fa-cubes"></i> Plugins</a></li>
-                <li>
-                    <hr class="bot-admin-link" />
-                </li>
+                <li class="bot-admin-link"><a href="#bot-status" onclick="discotron.mobileHelper.hideNavBar()"><i class="fas fa-wrench"></i> Bot settings</a></li>
+                <li class="bot-admin-link"><a href="#repository-list" onclick="discotron.mobileHelper.hideNavBar()"><i class="fas fa-cubes"></i> Plugins</a></li>
                 <li class="header">Server admin settings</li>
                 <li class="description">It's empty here. Try inviting the bot in a server where you are admin!</li>
             </ul>
@@ -54,6 +57,7 @@
 
     <!-- Utils-->
     <script src="/dashboard/src/utils.js"></script>
+    <script src="/dashboard/src/mobile-helper.js"></script>
 
     <!-- Models definition -->
     <script src="/models/bot-settings.js"></script>
