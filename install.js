@@ -106,7 +106,7 @@ if (redirectURL.startsWith("https")) {
 
     if (privateKey.length !== 0) {
         do {
-            if (privateKey !== undefined) {
+            if (certificate !== undefined) {
                 console.log("Could not find given file.");
             }
             certificate = readlineSync.question("Path to a certificate file for https: ");
