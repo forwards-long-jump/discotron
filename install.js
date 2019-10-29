@@ -106,11 +106,17 @@ if (redirectURL.startsWith("https")) {
 
     if (privateKey.length !== 0) {
         do {
-            if (privateKey !== undefined) {
+            if (certificate !== undefined) {
                 console.log("Could not find given file.");
             }
             certificate = readlineSync.question("Path to a certificate file for https: ");
-        } while (!fs.existsSync(certificate));
+        } while (certificate.length !== 0 && !fs.existsSync(certificate));
+
+        if (certificate.length === 0) {
+            // Although certificate is not labelled to be optional, if we accidentially enter this state,
+            // we wouldn't be able to leave it unless we entered something or cancel. This allows us to bail.
+            privateKey = "";
+        }
     }
 }
 
