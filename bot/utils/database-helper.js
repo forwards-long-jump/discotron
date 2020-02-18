@@ -15,14 +15,6 @@ module.exports.databaseExists = () => {
 };
 
 /**
- * Copy template as a normal database
- * TODO: Use migrations! This is going to hit us in the face at some point
- */
-module.exports.createDatabase = () => {
-    fs.copyFileSync(config.database.templatePath, databasePath);
-};
-
-/**
  * Delete database
  * I'm not sure why this exists
  */
@@ -35,10 +27,10 @@ module.exports.deleteDatabase = () => {
 };
 
 /**
- * Open sqlite database from its file
+ * Open sqlite database from its file. If it does not exist, it will be created.
  */
 module.exports.openDatabase = () => {
-    database = new sqlite.Database(databasePath, sqlite.OPEN_READWRITE, (err) => {
+    database = new sqlite.Database(databasePath, sqlite.OPEN_READWRITE | sqlite.OPEN_CREATE, (err) => {
         if (err) {
             Logger.log("Could not open database", "error");
             Logger.log(err, "err");
