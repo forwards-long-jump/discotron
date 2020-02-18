@@ -78,6 +78,6 @@ module.exports.doDatabaseMigrations = async (version = undefined, allowDown = fa
         }
     }
 
-    //Write the new current version to the database
+    // Write the new current version to the database
     await exec(`INSERT OR REPLACE INTO _Migrations(name, value) VALUES('version', '${version}');`);
 };

@@ -14,10 +14,10 @@ async function init() {
     const databaseHelper = require("./utils/database-helper.js");
 
     // Database
-    //todo: we need a config option to enforce a certain db version for testing older versions of the db
+    // TODO: We need a config option to enforce a certain db version for testing older versions of the db
     let dbVersion = undefined;
-    //todo: we need a config option to define whether downgrading db versions is ok (this REMOVES DATA!)
-    //  -> maybe ask whether to automatically create a backup of the current database?
+    // TODO: We need a config option to define whether downgrading db versions is ok (this REMOVES DATA!)
+    //  -> Maybe ask whether to automatically create a backup of the current database?
     let allowDown = false;
     databaseHelper.openDatabase();
     await databaseHelper.doDatabaseMigrations(dbVersion, allowDown);

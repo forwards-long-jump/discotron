@@ -7,7 +7,7 @@ const Logger = require("./logger.js");
  * @returns {Array<string>} List of migrations, formatted like yyyy-mm-dd-name.js
  */
 module.exports.listMigrations = () => {
-    //todo: is this ordering reliable on all OSes and all configurations?
+    // TODO: Is this ordering reliable on all OSes and all configurations?
     return fs.readdirSync(__dirname + "/../migrations/");
 };
 
@@ -29,15 +29,15 @@ module.exports.current = () => {
         name: "version"
     }).then(results => {
         if (results.length === 0) {
-            //Table does not contain a version key-value
+            // Table does not contain a version key-value
             return null;
         } else {
             return results[0].value;
         }
     }).catch((err) => {
         if (err.errno === 1) {
-            //Assume "no such table" error (has no more specific code than that)
-            //todo: can we rely on the error message -> filter string
+            // Assume "no such table" error (has no more specific code than that)
+            // TODO: Can we rely on the error message -> filter string
             return null;
         } else {
             Logger.err(err);
@@ -58,7 +58,7 @@ module.exports.listDiff = (oldVersion, newVersion) => {
 
     const migrations = this.listMigrations();
 
-    //Figure out the indices
+    // Figure out the indices
     let oldIndex;
     if (oldVersion === null) {
         oldIndex = -1;
@@ -73,16 +73,16 @@ module.exports.listDiff = (oldVersion, newVersion) => {
         newIndex = migrations.indexOf(newVersion);
     }
 
-    //What are the differences?
+    // What are the differences?
     if (oldIndex === newIndex) {
         return [];
     }
 
     if (newIndex > oldIndex) {
-        //Upgrade (from oldIndex + 1 to newIndex, incrementing)
+        // Upgrade (from oldIndex + 1 to newIndex, incrementing)
         return migrations.slice(oldIndex + 1, newIndex + 1).map(m => [m, "up"]);
     } else {
-        //Downgrade (from oldIndex to newIndex + 1, decrementing)
+        // Downgrade (from oldIndex to newIndex + 1, decrementing)
         return migrations.slice(newIndex + 1, oldIndex + 1).reverse().map(m => [m, "down"]);
     }
 };
