@@ -4,6 +4,9 @@
         "browser": true,
         "es6": true
     },
+    "parserOptions": {
+        "ecmaVersion": 8
+    },
     "plugins": [
         "jsdoc",
         "no-warning-comments-case"
