@@ -30,6 +30,8 @@
         "no-unused-vars": "warn",
         "keyword-spacing": "error",
         "comma-spacing": "error",
+        "no-implicit-coercion": "error",
+        "spaced-comment": ["error", "always", { "block": { "balanced": true } }],
         "indent": [
             2,
             4,
