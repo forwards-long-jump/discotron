@@ -8,7 +8,7 @@ window.discotron.WebAPI = class {
      * @param {object} [discordGuildId=undefined] Specify to which guild this action is targeted to
      * @returns {Promise} resolve(data {object}) data: result given by the API, reject()
      */
-    static queryBot(plugin, action, data, discordGuildId = undefined) {
+    static queryBot(plugin, action, data = undefined, discordGuildId = undefined) {
         let params = {
             plugin: plugin,
             action: action,

@@ -33,7 +33,6 @@ module.exports.serveDashboard = () => {
 module.exports.serveRepositoryFolder = (folderName, repositoryFolderName) => {
     if (["dashboard", "login", "models"].includes(folderName)) {
         Logger.log("Could not serve folder **" + folderName + "** because it is a reserved page name.", "warn");
-        return;
     } else {
         app.use("/" + folderName, express.static(global.discotronConfigPath + "/repositories/" + repositoryFolderName + "/pages/" + folderName));
     }

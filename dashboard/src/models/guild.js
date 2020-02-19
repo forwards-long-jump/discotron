@@ -246,8 +246,7 @@ window.discotron.Guild = class extends window.discotron.GuildModel {
      * @param {Array} usersRoles Array of UserRoles 
      */
     setPluginPermission(pluginId, usersRoles) {
-        let permission = new discotron.Permission(this.discordId, pluginId, usersRoles);
-        this._permissions[pluginId] = permission;
+        this._permissions[pluginId] = new discotron.Permission(this.discordId, pluginId, usersRoles);
 
         discotron.WebAPI.queryBot("discotron-dashboard", "set-plugin-permission", {
             pluginId: pluginId,
