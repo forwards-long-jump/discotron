@@ -28,6 +28,25 @@ window.discotron.NavigationController = class {
     }
 
     /**
+     * Logout the user and redirect to login page
+     * @static
+     */
+    static logout() {
+        localStorage.clear();
+        window.location.replace("/");
+    }
+
+    /**
+     * Add events related to navigation
+     * @static
+     */
+    static addEvents() {
+        document.getElementById("user-info-logout").addEventListener("click", () => {
+            discotron.NavigationController.logout();
+        });
+    }
+
+    /**
      * Display links in the "admin" section
      * @static
      */
