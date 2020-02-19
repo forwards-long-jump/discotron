@@ -22,3 +22,12 @@ jobs:
         with:
           repo-token: ${{secrets.GITHUB_TOKEN}}
           check-name: eslint
+  stylelint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+        with:
+          fetch-depth: 1
+      - uses: actions-hub/stylelint@v1.1.2
+        env:
+          INDENT_SPACES: 4
