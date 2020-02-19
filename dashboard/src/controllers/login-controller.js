@@ -1,7 +1,7 @@
 /**
  * Controller for the login page
  */
-window.discotron.LoginController = class /* does not extends Controller because it is not a logged in page*/ {
+window.discotron.LoginController = class /* does not extends Controller because it is not a logged in page */ {
     /**
      * Login and claim ownership
      * @static

@@ -4,7 +4,7 @@ const readlineSync = require("readline-sync");
 const instancePath = "./instance";
 const port = 47131;
 
-//Create the directory if it does not exist
+// Create the directory if it does not exist
 if (!fs.existsSync(instancePath)) {
     fs.mkdirSync(instancePath);
 }
@@ -15,7 +15,7 @@ if (fs.existsSync(footprint)) {
     process.exit(0);
 }
 
-//Check if some files are already existing
+// Check if some files are already existing
 const appConfig = instancePath + "/bot.json";
 if (fs.existsSync(appConfig)) {
     console.log("File", appConfig, "already exists, but installation was not run yet!");
