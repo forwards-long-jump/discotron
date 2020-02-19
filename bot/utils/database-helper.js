@@ -48,6 +48,7 @@ module.exports.getDatabase = () => {
 
 /**
  * Run all database migrations so that we reach the requested version.
+ * {@link https://github.com/forwards-long-jump/discotron/wiki/Database-migrations|More info on writing migrations.}
  * @param {string|null} version Which version to migrate to. If null, the latest version is chosen.
  * @param {boolean} allowDown If true, allow downgrading database version. Otherwise (default), we throw an error.
  */
