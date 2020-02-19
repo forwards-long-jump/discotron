@@ -15,7 +15,7 @@ async function init() {
 
     // Database
     // TODO: We need a config option to enforce a certain db version for testing older versions of the db
-    let dbVersion = undefined;
+    let dbVersion = null;
     // TODO: We need a config option to define whether downgrading db versions is ok (this REMOVES DATA!)
     //  -> Maybe ask whether to automatically create a backup of the current database?
     let allowDown = false;

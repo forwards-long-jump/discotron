@@ -48,11 +48,12 @@ module.exports.getDatabase = () => {
 
 /**
  * Run all database migrations so that we reach the requested version.
- * @param {string|undefined} version Which version to migrate to. If undefined, the latest version is chosen.
+ * @param {string|null} version Which version to migrate to. If null, the latest version is chosen.
  * @param {boolean} allowDown If true, allow downgrading database version. Otherwise (default), we throw an error.
  */
-module.exports.doDatabaseMigrations = async (version = undefined, allowDown = false) => {
-    if (!version) {
+module.exports.doDatabaseMigrations = async (version = null, allowDown = false) => {
+    // While listDiff already handles this similarly, we need a valid "version" string for the SQL as well
+    if (version === null) {
         version = migrations.latestMigration();
     }
 
