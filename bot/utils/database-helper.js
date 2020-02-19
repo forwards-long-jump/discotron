@@ -68,13 +68,18 @@ module.exports.doDatabaseMigrations = async (version = undefined, allowDown = fa
         });
     }
 
-    const diffList = migrations.listDiff(await migrations.current(), version);
-    for (let diff of diffList) {
-        if (diff[1] === "down" && (allowDown === false || allowDown === undefined)) {
+    const { names, type } = migrations.listDiff(await migrations.current(), version);
+    for (let name of names) {
+        if (type === "down" && allowDown !== true) {
             throw new Error("May not downgrade without allowDown set to true.");
         } else {
-            const statements = require(__dirname + "/../migrations/" + diff[0])[diff[1]]();
-            await exec(statements);
+            // Open migration file as module and retrieve the required function
+            const migration = require(__dirname + "/../migrations/" + name);
+            const func = migration[type];
+            if (func) {
+                // Execute in database
+                await exec(func());
+            }
         }
     }
 

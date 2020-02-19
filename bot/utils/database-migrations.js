@@ -49,7 +49,8 @@ module.exports.current = () => {
  * Gets the differences required to get from one version to another.
  * @param {string|null} oldVersion Full name of old version. If null, "no" version is used (index -1).
  * @param {string|null} newVersion Full name of new version. If null, latest version is used.
- * @returns {Array<Array<string>>} List of diff data, structured like [migrationName, "up"|"down"]
+ * @returns {{names: string[], type: string}} List of diff data,
+ *  or an object with an empty names list if there is no version change.
  */
 module.exports.listDiff = (oldVersion, newVersion) => {
     if (oldVersion === undefined || newVersion === undefined) {
@@ -75,14 +76,14 @@ module.exports.listDiff = (oldVersion, newVersion) => {
 
     // What are the differences?
     if (oldIndex === newIndex) {
-        return [];
+        return { names: [], type: "" };
     }
 
     if (newIndex > oldIndex) {
         // Upgrade (from oldIndex + 1 to newIndex, incrementing)
-        return migrations.slice(oldIndex + 1, newIndex + 1).map(m => [m, "up"]);
+        return { names: migrations.slice(oldIndex + 1, newIndex + 1), type: "up" };
     } else {
         // Downgrade (from oldIndex to newIndex + 1, decrementing)
-        return migrations.slice(newIndex + 1, oldIndex + 1).reverse().map(m => [m, "down"]);
+        return { names: migrations.slice(newIndex + 1, oldIndex + 1).reverse(), type: "down" };
     }
 };
