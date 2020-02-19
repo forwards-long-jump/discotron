@@ -4,11 +4,13 @@ const Logger = require("./logger.js");
 
 /**
  * Get a full list of available migrations, ordered from oldest to newest version.
+ * {@link https://github.com/forwards-long-jump/discotron/wiki/Database-migrations|More info on writing migrations.}
  * @returns {Array<string>} List of migrations, formatted like yyyy-mm-dd-name.js
  */
 module.exports.listMigrations = () => {
-    // TODO: Is this ordering reliable on all OSes and all configurations?
-    return fs.readdirSync(__dirname + "/../migrations/");
+    return fs.readdirSync(__dirname + "/../migrations/")
+        .filter((migration) => /^\d{4}-\d{2}-\d{2}-\w+\.js$/.test(migration))
+        .sort();
 };
 
 /**
