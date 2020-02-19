@@ -59,7 +59,7 @@ window.discotron.NavigationController = class {
      * @static
      */
     static displayUser() {
-        document.querySelector("#user-info img").src = `https://cdn.discordapp.com/avatars/${localStorage.getItem("discordUserId")}/${localStorage.getItem("avatar")}.png`;
-        document.querySelector("#user-info span").textContent = `${localStorage.getItem("username")}#${localStorage.getItem("discriminator")}`;
+        document.querySelector("#user-info-avatar").src = `https://cdn.discordapp.com/avatars/${localStorage.getItem("discordUserId")}/${localStorage.getItem("avatar")}.png`;
+        document.querySelector("#user-info-username").textContent = `${localStorage.getItem("username")}#${localStorage.getItem("discriminator")}`;
     }
 };
