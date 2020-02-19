@@ -67,6 +67,9 @@ module.exports.listDiff = (oldVersion, newVersion) => {
         oldIndex = -1;
     } else {
         oldIndex = migrations.indexOf(oldVersion);
+        if (oldIndex < 0) {
+            throw new Error("oldVersion specifies an unknown version.");
+        }
     }
 
     let newIndex;
@@ -74,6 +77,9 @@ module.exports.listDiff = (oldVersion, newVersion) => {
         newIndex = migrations.length - 1;
     } else {
         newIndex = migrations.indexOf(newVersion);
+        if (newIndex < 0) {
+            throw new Error("newVersion specifies an unknown version.");
+        }
     }
 
     // What are the differences?
