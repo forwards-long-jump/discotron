@@ -10,6 +10,9 @@ CREATE TABLE Admins (discordGuildId TEXT NOT NULL REFERENCES Guilds (discordGuil
 CREATE TABLE AllowedChannels (discordGuildId TEXT NOT NULL REFERENCES Guilds (discordGuildId) ON DELETE CASCADE, discordChannelId TEXT NOT NULL, PRIMARY KEY (discordGuildId, discordChannelId));
 
 CREATE TABLE BotSettings (name TEXT NOT NULL, value TEXT, PRIMARY KEY(name));
+INSERT INTO BotSettings (name, value) VALUES ('helpText', '');
+INSERT INTO BotSettings (name, value) VALUES ('maintenance', 'false');
+INSERT INTO BotSettings (name, value) VALUES ('presenceText', '');
 
 CREATE TABLE GuildEnabledPlugins (pluginId TEXT NOT NULL REFERENCES Plugins (id) ON DELETE CASCADE, discordGuildId INTEGER NOT NULL REFERENCES Guilds (discordGuildId) ON DELETE CASCADE, PRIMARY KEY (pluginId, discordGuildId));
 
