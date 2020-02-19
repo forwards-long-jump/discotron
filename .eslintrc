@@ -8,7 +8,8 @@
         "ecmaVersion": 8
     },
     "plugins": [
-        "jsdoc"
+        "jsdoc",
+        "no-warning-comments-case"
     ],
     "extends": [
         "eslint:recommended",
@@ -32,6 +33,7 @@
         "comma-spacing": "error",
         "no-implicit-coercion": "error",
         "spaced-comment": ["error", "always", { "block": { "balanced": true } }],
+        "no-warning-comments-case/no-warning-comments-case": "error",
         "indent": [
             2,
             4,
