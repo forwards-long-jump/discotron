@@ -27,6 +27,7 @@
   "devDependencies": {
     "eslint": "^6.5.1",
     "eslint-plugin-jsdoc": "^15.12.0",
+    "eslint-plugin-no-warning-comments-case": "git+https://gitlab.com/redmser/eslint-plugin-no-warning-comments-case.git",
     "stylelint": "^12.0.0"
   }
 }
