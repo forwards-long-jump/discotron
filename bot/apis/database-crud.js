@@ -208,3 +208,25 @@ module.exports.select = (table, fields = [], where = {}) => {
         }
     });
 };
+
+/**
+ * Executes one or more raw SQL statements.
+ *
+ * @param {string} statements A (multi-line) string containing the SQL statements to execute.
+ *  SQL comments are not allowed and will throw an error.
+ *  It may be worth considering the use of transactions, to ensure that any errors will rollback all changes.
+ * @returns {Promise<void>} A promise that resolves when all statements executed without error.
+ */
+module.exports.exec = (statements) => {
+    const database = databaseHelper.getDatabase();
+
+    return new Promise((resolve, reject) => {
+        database.exec(statements, (err) => {
+            if (err) {
+                Logger.log("Exec in database failed : " + statements, "err");
+                reject(err);
+            }
+            resolve();
+        });
+    });
+};
