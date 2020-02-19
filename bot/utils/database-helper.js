@@ -57,17 +57,7 @@ module.exports.doDatabaseMigrations = async (version = null, allowDown = false) 
         version = migrations.latestMigration();
     }
 
-    function exec(statements) {
-        return new Promise((resolve, reject) => {
-            module.exports.getDatabase().exec(statements, (err) => {
-                if (err) {
-                    Logger.log("Exec in database failed : " + statements, "err");
-                    reject(err);
-                }
-                resolve();
-            });
-        });
-    }
+    const { exec } = require("../apis/database-crud.js");
 
     const { names, type } = migrations.listDiff(await migrations.current(), version);
     for (let name of names) {
