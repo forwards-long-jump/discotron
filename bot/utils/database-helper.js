@@ -80,6 +80,10 @@ module.exports.doDatabaseMigrations = async (version = null, allowDown = false) 
 
         // Write the new current version to the database
         await exec(`INSERT OR REPLACE INTO _Migrations(name, value) VALUES('version', '${version}');`);
+
+        if (names.length > 0) {
+            Logger.log(`Migrated from database version "${current}" to "${version}" (delta: ${names.length}).`, "info");
+        }
     } catch (e) {
         Logger.err(`Error migrating from database version "${current}" to "${version}".
 Ensure you run migrations to downgrade the database before removing migration files, or you risk a broken database state.`);
