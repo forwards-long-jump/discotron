@@ -150,17 +150,8 @@ main hr {
     margin: 20px;
 }
 
-#user-info img {
-    height: 35px;
-    width: 35px;
-    vertical-align: middle;
-    margin: 20px;
-    background-color: var(--color-primary-light);
-}
-
 .page-header span,
-#bot-info span,
-#user-info span {
+#bot-info span {
     margin-left: 10px;
     font-size: 1.3em;
 }
@@ -170,17 +161,32 @@ main hr {
     margin-bottom: 30px;
 }
 
-#user-info span {
-    font-size: 1.1em;
-    vertical-align: middle;
-}
-
 #user-info {
     position: absolute;
     bottom: 1px;
     left: 0;
     width: 400px;
     font-size: 0.95em;
+    display: flex;
+    align-items:center;
+}
+
+#user-info-avatar {
+    height: 35px;
+    width: 35px;
+    vertical-align: middle;
+    margin: 20px;
+    background-color: var(--color-primary-light);
+}
+
+#user-info-text input {
+    margin: 0;
+    padding: 0;
+}
+
+#user-info-name {
+    font-size: 1.1em;
+    vertical-align: middle;
 }
 
 #reload-bot {
@@ -665,7 +671,7 @@ input:checked+.slider:before {
     }
 
     #user-info.menu-displayed {
-        display: block;
+        display: flex;
         width: 100%;
         position: relative;
         bottom: unset;

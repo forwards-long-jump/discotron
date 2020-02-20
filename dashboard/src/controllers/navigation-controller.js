@@ -28,6 +28,25 @@ window.discotron.NavigationController = class {
     }
 
     /**
+     * Logout the user and redirect to login page
+     * @static
+     */
+    static logout() {
+        localStorage.clear();
+        window.location.replace("/");
+    }
+
+    /**
+     * Add events related to navigation
+     * @static
+     */
+    static addEvents() {
+        document.getElementById("user-info-logout").addEventListener("click", () => {
+            discotron.NavigationController.logout();
+        });
+    }
+
+    /**
      * Display links in the "admin" section
      * @static
      */
@@ -59,7 +78,7 @@ window.discotron.NavigationController = class {
      * @static
      */
     static displayUser() {
-        document.querySelector("#user-info img").src = `https://cdn.discordapp.com/avatars/${localStorage.getItem("discordUserId")}/${localStorage.getItem("avatar")}.png`;
-        document.querySelector("#user-info span").textContent = `${localStorage.getItem("username")}#${localStorage.getItem("discriminator")}`;
+        document.querySelector("#user-info-avatar").src = `https://cdn.discordapp.com/avatars/${localStorage.getItem("discordUserId")}/${localStorage.getItem("avatar")}.png`;
+        document.querySelector("#user-info-username").textContent = `${localStorage.getItem("username")}#${localStorage.getItem("discriminator")}`;
     }
 };
