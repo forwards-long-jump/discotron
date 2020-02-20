@@ -82,7 +82,7 @@ module.exports.doDatabaseMigrations = async (version = null, allowDown = false) 
         await exec(`INSERT OR REPLACE INTO _Migrations(name, value) VALUES('version', '${version}');`);
     } catch (e) {
         Logger.err(`Error migrating from database version "${current}" to "${version}".
-Ensure you run migrations to downgrade the database (or manually update the migration version) before removing migration files.`);
+Ensure you run migrations to downgrade the database before removing migration files, or you risk a broken database state.`);
         Logger.err(e);
     }
 };
