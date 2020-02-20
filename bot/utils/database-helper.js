@@ -60,21 +60,29 @@ module.exports.doDatabaseMigrations = async (version = null, allowDown = false) 
 
     const { exec } = require("../apis/database-crud.js");
 
-    const { names, type } = migrations.listDiff(await migrations.current(), version);
-    for (let name of names) {
-        if (type === "down" && allowDown !== true) {
-            throw new Error("May not downgrade without allowDown set to true.");
-        } else {
-            // Open migration file as module and retrieve the required function
-            const migration = require(__dirname + "/../migrations/" + name);
-            const func = migration[type];
-            if (func) {
-                // Execute in database
-                await exec(func());
+    const current = await migrations.current();
+    try {
+        const { names, type } = migrations.listDiff(current, version);
+        for (let name of names) {
+            if (type === "down" && allowDown !== true) {
+                Logger.err("May not downgrade without allowDown set to true.");
+                return;
+            } else {
+                // Open migration file as module and retrieve the required function
+                const migration = require(__dirname + "/../migrations/" + name);
+                const func = migration[type];
+                if (func) {
+                    // Execute in database
+                    await exec(func());
+                }
             }
         }
-    }
 
-    // Write the new current version to the database
-    await exec(`INSERT OR REPLACE INTO _Migrations(name, value) VALUES('version', '${version}');`);
+        // Write the new current version to the database
+        await exec(`INSERT OR REPLACE INTO _Migrations(name, value) VALUES('version', '${version}');`);
+    } catch (e) {
+        Logger.err(`Error migrating from database version "${current}" to "${version}".
+Ensure you run migrations to downgrade the database (or manually update the migration version) before removing migration files.`);
+        Logger.err(e);
+    }
 };
