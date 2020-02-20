@@ -25,9 +25,18 @@ jobs:
   stylelint:
     runs-on: ubuntu-latest
     steps:
+      - run: ls .
+      - run: ls node_modules/
+      - run: ls node_modules/.bin/
       - uses: actions/checkout@v1
         with:
           fetch-depth: 1
-      - uses: actions-hub/stylelint@v1.1.2
+      - run: ls .
+      - run: ls node_modules/
+      - run: ls node_modules/.bin/
+      - uses: RedMser/stylelint@v1.1.2
         env:
           INDENT_SPACES: 4
+      - run: ls .
+      - run: ls node_modules/
+      - run: ls node_modules/.bin/
