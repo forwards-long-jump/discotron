@@ -85,8 +85,11 @@ module.exports.doDatabaseMigrations = async (version = null, allowDown = false) 
             Logger.log(`Migrated from database version "${current}" to "${version}" (delta: ${names.length}).`, "info");
         }
     } catch (e) {
+        // TODO: Only show the "run migrations to downgrade" etc. part of the message when we are actually missing
+        //  the migration file. There can be more reasons a migration fails, such as SQLite errors.
         Logger.err(`Error migrating from database version "${current}" to "${version}".
-Ensure you run migrations to downgrade the database before removing migration files, or you risk a broken database state.`);
+Ensure you run migrations to downgrade the database before removing any migration files, or you risk a broken database state.
+If you just downgraded Discotron, you must first switch back to the newer version and force a downgrade of the database there.`);
         Logger.err(e);
     }
 };
