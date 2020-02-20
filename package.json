@@ -4,9 +4,10 @@
   "description": "Modular discord bot framework",
   "main": "./bot/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node ./bot/index.js",
     "postinstall": "node install.js",
+    "start": "node ./bot/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "eslint": "eslint .",
     "stylelint": "stylelint dashboard/*.css"
   },
   "keywords": [
