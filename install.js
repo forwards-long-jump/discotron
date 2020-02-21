@@ -4,7 +4,7 @@ const readlineSync = require("readline-sync");
 const instancePath = "./instance";
 const port = 47131;
 
-//Create the directory if it does not exist
+// Create the directory if it does not exist
 if (!fs.existsSync(instancePath)) {
     fs.mkdirSync(instancePath);
 }
@@ -15,7 +15,7 @@ if (fs.existsSync(footprint)) {
     process.exit(0);
 }
 
-//Check if some files are already existing
+// Check if some files are already existing
 const appConfig = instancePath + "/bot.json";
 if (fs.existsSync(appConfig)) {
     console.log("File", appConfig, "already exists, but installation was not run yet!");
@@ -74,7 +74,7 @@ do {
 
         console.log("Invalid value! Must be a domain name (http(s)://) or an IP address.");
     }
-    // todo we could auto-generate this url, but user still has to be prompted to specify on the app's page!
+    // TODO: We could auto-generate this url, but user still has to be prompted to specify on the app's page!
     console.log("(OAuth2 tab) On the tab, for the Redirection URL, enter", domain);
     redirectURL = readlineSync.question("             Select scopes 'identify' and 'guilds' and copy the generated URL: ");
 

@@ -139,7 +139,6 @@ async function init() {
         } catch (err) {
             Logger.log("Please run **npm install** and set up the application config.", "err");
             process.exit();
-            return;
         }
 
     }

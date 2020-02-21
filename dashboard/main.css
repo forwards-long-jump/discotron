@@ -61,15 +61,14 @@ nav {
 }
 
 nav ul {
-    padding: 20px;
-    margin: 0px;
-    padding-top: 10px;
+    padding: 10px 20px 20px;
+    margin: 0;
 }
 
 nav li {
     list-style-type: none;
     font-size: 1.2em;
-    color: var(--color-primary-text);
+    color: var(--color-text);
 }
 
 nav .header {
@@ -81,16 +80,14 @@ nav li a,
 nav li a:visited {
     color: var(--color-text-dark);
     text-decoration: none;
-    padding: 10px;
-    padding-top: 20px;
-    padding-bottom: 20px;
+    padding: 20px 10px;
     border-radius: 2px;
     display: inline-block;
     width: 335px;
 }
 
 nav li a:hover {
-    color: var(--color-primary-text);
+    color: var(--color-text);
     text-decoration: none;
     background-color: rgba(255, 255, 255, 0.1);
 }
@@ -124,7 +121,7 @@ main hr {
 }
 
 .page-header {
-    border-radius: 4px 0px 0px 4px;
+    border-radius: 4px 0 0 4px;
     margin-bottom: 20px;
 }
 
@@ -157,7 +154,7 @@ main hr {
 }
 
 .bot-info-status {
-    border-radius: 5px 0px 0px 5px;
+    border-radius: 5px 0 0 5px;
     margin-bottom: 30px;
 }
 
@@ -187,11 +184,6 @@ main hr {
 #user-info-name {
     font-size: 1.1em;
     vertical-align: middle;
-}
-
-#reload-bot {
-    color: var(--color-primary-text);
-    background-color: var(--color-background-light);
 }
 
 /* Main */
@@ -445,7 +437,7 @@ label {
     left: -20px;
     padding: 10px;
     width: calc(100% + 20px);
-    border-radius: 0px 0px 4px 4px;
+    border-radius: 0 0 4px 4px;
     text-align: right;
 }
 
@@ -494,7 +486,7 @@ label {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: var(--color-background-dark);
+    background-color: var(--color-background-darkest);
     -webkit-transition: .4s;
     transition: .4s;
 }

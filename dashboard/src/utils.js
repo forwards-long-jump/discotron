@@ -64,8 +64,7 @@ window.discotron.utils = {
         ctx.fillText(acronym, size / 2, size / 2);
 
         // Render to data url
-        const img = canvas.toDataURL("image/png");
-        return img;
+        return canvas.toDataURL("image/png");
     },
     /**
      * Source: https://stackoverflow.com/questions/4482686/check-synchronously-if-file-directory-exists-in-node-js

@@ -57,4 +57,4 @@ module.exports = {
         "selector-attribute-brackets-space-inside": "always",
         "selector-pseudo-class-case": "lower"
     }
-}
+};

@@ -33,7 +33,6 @@ module.exports.serveDashboard = () => {
 module.exports.serveRepositoryFolder = (folderName, repositoryFolderName) => {
     if (["dashboard", "login", "models"].includes(folderName)) {
         Logger.log("Could not serve folder **" + folderName + "** because it is a reserved page name.", "warn");
-        return;
     } else {
         app.use("/" + folderName, express.static(global.discotronConfigPath + "/repositories/" + repositoryFolderName + "/pages/" + folderName));
     }
@@ -47,6 +46,7 @@ module.exports.startAPIServer = () => {
     app.post("/api", webAPI.onPost);
 };
 
+let server;
 if (typeof appConfig.privateKey === "undefined" || typeof appConfig.certificate === "undefined" ||
     appConfig.privateKey === "" || appConfig.certificate === "") {
 
@@ -56,15 +56,7 @@ if (typeof appConfig.privateKey === "undefined" || typeof appConfig.certificate 
     Logger.log("You can then add **privateKeyPath** and **certificatePath** in __bot.json__ to fix the issue.", "warn");
     Logger.log("This warning will go away once the server is secured.", "warn");
 
-
-    const httpServer = http.createServer(app);
-
-    httpServer.listen(config.webServer.port, () => {
-        Logger.log("Started webserver on port **" + config.webServer.port + "**", "info");
-    }).on("error", (error) => {
-        Logger.log("Could not start webserver on port **" + config.webServer.port + "**", "err");
-        Logger.log(error, "err");
-    });
+    server = http.createServer(app);
 } else {
     let credentials = {};
 
@@ -79,12 +71,12 @@ if (typeof appConfig.privateKey === "undefined" || typeof appConfig.certificate 
         process.exit();
     }
 
-    const httpsServer = https.createServer(credentials, app);
-    httpsServer.listen(config.webServer.port, () => {
-        Logger.log("Started webserver on port **" + config.webServer.port + "**", "info");
-    }).on("error", (error) => {
-        Logger.log("Could not start webserver on port **" + config.webServer.port + "**", "err");
-        Logger.log(error, "err");
-    });
-
+    server = https.createServer(credentials, app);
 }
+
+server.listen(config.webServer.port, () => {
+    Logger.log("Started webserver on port **" + config.webServer.port + "**", "info");
+}).on("error", (error) => {
+    Logger.log("Could not start webserver on port **" + config.webServer.port + "**", "err");
+    Logger.log(error, "err");
+});
