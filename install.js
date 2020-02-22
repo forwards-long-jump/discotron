@@ -128,8 +128,8 @@ let data = `{
   "applicationId": "${appId}",
   "oauth2Secret": "${appSecret}",
   "redirectURI": "${domain}",
-  "privateKey": "${privateKey}",
-  "certificate": "${certificate}"
+  "privateKey": "${privateKey ? privateKey : ""}",
+  "certificate": "${certificate ? privateKey : ""}"
 }`;
 
 fs.writeFileSync(appConfig, data, function (err) {
