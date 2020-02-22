@@ -48,15 +48,11 @@ async function init() {
      * Attempts to connect the bot client to Discord
      * @returns {Promise} resolve(), reject()
      */
-    function connectToDiscord() {
-        return new Promise((resolve, reject) => {
-            Logger.log("Connecting to discord...");
-            discordClient.login(appConfig.token).then(() => {
-                resolve();
-            }).catch((err) => {
-                Logger.log("Could not connect to discord", "err");
-                Logger.log(err.message, "err");
-            });
+    async function connectToDiscord() {
+        Logger.log("Connecting to discord...");
+        discordClient.login(appConfig.token).catch((err) => {
+            Logger.log("Could not connect to discord", "err");
+            Logger.log(err.message, "err");
         });
     }
 
