@@ -39,21 +39,27 @@ async function init() {
     webserver.startAPIServer();
     webserver.serveDashboard();
 
-    await connectToDiscord();
-
+    // Must register discordClient events before login or we will miss some
     registerEvents();
+    connectToDiscord();
+
     discotron.registerActions();
 
     /**
      * Attempts to connect the bot client to Discord
-     * @returns {Promise} resolve(), reject()
+     * @returns {boolean} true if login is successful, false otherwise
+     * @async
      */
     async function connectToDiscord() {
         Logger.log("Connecting to discord...");
-        discordClient.login(appConfig.token).catch((err) => {
+        try {
+            discordClient.login(appConfig.token);
+            return true;
+        } catch (err) {
             Logger.log("Could not connect to discord", "err");
             Logger.log(err.message, "err");
-        });
+            return false;
+        }
     }
 
     global.discordClient._connectToDiscord = connectToDiscord;
