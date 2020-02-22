@@ -1,6 +1,5 @@
 const fs = require("fs");
 const db = require("../apis/database-crud.js");
-const Logger = require("./logger.js");
 
 /**
  * Get a full list of available migrations, ordered from oldest to newest version.

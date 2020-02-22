@@ -1,3 +1,6 @@
+/**
+ * Init sequence of Discotron
+ */
 async function init() {
     const Logger = require("./utils/logger.js");
     Logger.setSeverity("info");
