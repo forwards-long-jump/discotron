@@ -44,19 +44,19 @@ async function init() {
 
     // Must register discordClient events before login or we will miss some
     registerEvents();
-    connectToDiscord();
+    await connectToDiscord();
 
     discotron.registerActions();
 
     /**
      * Attempts to connect the bot client to Discord
-     * @returns {boolean} true if login is successful, false otherwise
+     * @returns {Promise} true if login is successful, false otherwise
      * @async
      */
     async function connectToDiscord() {
         Logger.log("Connecting to discord...");
         try {
-            discordClient.login(appConfig.token);
+            await discordClient.login(appConfig.token);
             return true;
         } catch (err) {
             Logger.log("Could not connect to discord", "err");
