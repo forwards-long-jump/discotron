@@ -50,7 +50,7 @@ async function init() {
 
     /**
      * Attempts to connect the bot client to Discord
-     * @returns {Promise} true if login is successful, false otherwise
+     * @returns {Promise<boolean>} true if login is successful, false otherwise
      * @async
      */
     async function connectToDiscord() {
