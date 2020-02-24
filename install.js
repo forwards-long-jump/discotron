@@ -130,7 +130,7 @@ let data = JSON.stringify({
     redirectURI: domain,
     privateKey: privateKey,
     certificate: certificate
-});
+}, null, 4);
 
 fs.writeFileSync(appConfig, data, function (err) {
     if (err) {
