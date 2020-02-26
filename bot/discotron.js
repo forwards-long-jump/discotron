@@ -22,7 +22,7 @@ let actions = {};
  */
 module.exports.on = (actionName, action) => {
     if (actions[actionName] === undefined) {
-        actions[actionName] = [];
+            actions[actionName] = []
     }
 
     actions[actionName].push(action);
