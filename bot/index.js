@@ -1,3 +1,6 @@
+/**
+ * Init sequence of Discotron
+ */
 async function init() {
     const Logger = require("./utils/logger.js");
     Logger.setSeverity("info");
@@ -39,25 +42,27 @@ async function init() {
     webserver.startAPIServer();
     webserver.serveDashboard();
 
+    // Must register discordClient events before login or we will miss some
+    registerEvents();
     await connectToDiscord();
 
-    registerEvents();
     discotron.registerActions();
 
     /**
      * Attempts to connect the bot client to Discord
-     * @returns {Promise} resolve(), reject()
+     * @returns {Promise<boolean>} true if login is successful, false otherwise
+     * @async
      */
-    function connectToDiscord() {
-        return new Promise((resolve, reject) => {
-            Logger.log("Connecting to discord...");
-            discordClient.login(appConfig.token).then(() => {
-                resolve();
-            }).catch((err) => {
-                Logger.log("Could not connect to discord", "err");
-                Logger.log(err.message, "err");
-            });
-        });
+    async function connectToDiscord() {
+        Logger.log("Connecting to discord...");
+        try {
+            await discordClient.login(appConfig.token);
+            return true;
+        } catch (err) {
+            Logger.log("Could not connect to discord", "err");
+            Logger.log(err.message, "err");
+            return false;
+        }
     }
 
     global.discordClient._connectToDiscord = connectToDiscord;

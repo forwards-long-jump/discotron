@@ -75,17 +75,16 @@ function handleDiscordAPIQuery(authToken, reply, addOwner = false) {
     }).then((userInfo_) => {
         userInfo = userInfo_;
         if (userInfo.discordId !== undefined) {
-            if (addOwner) {
-                Owner.setOwners([userInfo.discordId]);
-                ownerSecret = undefined;
-                firstLaunch = false;
-            }
-
             return requestAppToken(userInfo.discordId, accessInfo.accessToken, accessInfo.refreshToken, accessInfo.expireDate);
         } else {
             return Promise.reject();
         }
     }).then((appToken) => {
+        if (addOwner) {
+            Owner.setOwners([userInfo.discordId]);
+            ownerSecret = undefined;
+            firstLaunch = false;
+        } 
 
         reply({
             status: "success",

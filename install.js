@@ -123,14 +123,14 @@ if (redirectURL.startsWith("https")) {
 // Create and populate application config file
 console.log("Creating required files...");
 
-let data = `{
-  "token": "${token}",
-  "applicationId": "${appId}",
-  "oauth2Secret": "${appSecret}",
-  "redirectURI": "${domain}",
-  "privateKey": "${privateKey}",
-  "certificate": "${certificate}"
-}`;
+let data = JSON.stringify({
+    token: token,
+    applicationId: appId,
+    oauth2Secret: appSecret,
+    redirectURI: domain,
+    privateKey: privateKey,
+    certificate: certificate
+}, null, 4);
 
 fs.writeFileSync(appConfig, data, function (err) {
     if (err) {

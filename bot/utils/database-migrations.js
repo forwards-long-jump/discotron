@@ -1,6 +1,5 @@
 const fs = require("fs");
 const db = require("../apis/database-crud.js");
-const Logger = require("./logger.js");
 
 /**
  * Get a full list of available migrations, ordered from oldest to newest version.
@@ -26,25 +25,21 @@ module.exports.latestMigration = () => {
  * Gets the currently applied migration.
  * @returns {Promise<string>} Promise resolving to the current migration's full name.
  */
-module.exports.current = () => {
-    return db.select("_Migrations", ["value"], {
-        name: "version"
-    }).then(results => {
-        if (results.length === 0) {
+module.exports.current = async () => {
+    const tableCountResult = await db.select("sqlite_master", ["count(*)"]);
+
+    if (tableCountResult[0]["count(*)"] !== 0) {
+        const migrationVersionResult = await db.select("_Migrations", ["value"], { name: "version" });
+
+        if (migrationVersionResult.length === 0) {
             // Table does not contain a version key-value
             return null;
         } else {
-            return results[0].value;
+            return migrationVersionResult[0].value;
         }
-    }).catch((err) => {
-        if (err.errno === 1) {
-            // Assume "no such table" error (has no more specific code than that)
-            // TODO: Can we rely on the error message -> filter string
-            return null;
-        } else {
-            Logger.err(err);
-        }
-    });
+    } else {
+        return null;
+    }
 };
 
 /**
