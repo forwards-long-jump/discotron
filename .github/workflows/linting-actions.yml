@@ -4,7 +4,7 @@ on: pull_request
 
 jobs:
   eslint:
-    runs-on: [ubuntu-latest]
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
       - uses: Blatoy/eslint-action@1.0.4
