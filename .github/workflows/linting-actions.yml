@@ -4,9 +4,9 @@ on: pull_request
 
 jobs:
   eslint:
-    runs-on: ubuntu-latest
+    runs-on: 
     steps:
-      - run: sudo apt-get install git
+      - uses: bahmutov/npm-install@v1.1.0
       - uses: actions/checkout@v1
       - uses: stefanoeb/eslint-action@1.0.2
 #  stylelint:
