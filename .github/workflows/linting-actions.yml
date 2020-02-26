@@ -7,8 +7,7 @@ jobs:
     runs-on: [ubuntu-latest]
     steps:
       - uses: actions/checkout@v1
-      - uses: bahmutov/npm-install@v1.1.0
-      - uses: stefanoeb/eslint-action@1.0.2
+      - uses: Blatoy/eslint-action@v1.0.3
 #  stylelint:
 #    runs-on: ubuntu-latest
 #    steps:
