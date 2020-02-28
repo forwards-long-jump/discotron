@@ -7,7 +7,6 @@ const webServer = require("../webserver.js");
 const Logger = require("../utils/logger.js");
 const fileHelper = require("../utils/file-helper.js");
 const Git = require("nodegit");
-const crypto = require("crypto");
 
 const db = require("../apis/database-crud.js");
 
@@ -82,30 +81,54 @@ class Repository extends RepositoryModel {
      * Clone a repository from a url, should be used the first time
      * @param {string} url Repository URL to clone
      * @static
-     * @returns {Promise} resolve(folderName {string}) folderName: Folder name of the repository, reject(error {string})
+     * @returns {Promise<string>} Folder name of the repository
      */
-    static clone(url) {
+    static async clone(url) {
         Logger.log("Cloning **" + url + "**...");
-        return new Promise((resolve, reject) => {
-            const folderName = Repository._generateFolderName(url);
-            Git.Clone(url, global.discotronConfigPath + "/repositories/" + folderName, {
+
+        let folderName;
+        let foundRepos;
+        try {
+            // Verify that the database does not already contain this repository
+            // We can assume that the generated folder name is a plugin's unique id
+            folderName = Repository._generateFolderName(url);
+            foundRepos = await db.select("Repositories", ["folderName"], {folderName: folderName});
+        } catch (err) {
+            Logger.log("Cloning failed!", "err");
+            Logger.log(err, "err");
+            throw new Error("Unexpected error occured retrieving repository information.");
+        }
+
+        if (foundRepos.length > 0) {
+            throw new Error("Attempted to clone a repository that is already loaded: " + folderName);
+        }
+
+        // Clone into path (must not exist)
+        const repoPath = global.discotronConfigPath + "/repositories/" + folderName;
+        if (fs.existsSync(repoPath)) {
+            throw new Error("Attempted to clone into a folder that already exists: " + folderName);
+        }
+
+        try {
+            await Git.Clone(url, repoPath, {
                 checkoutBranch: "master"
-            }).then((repo) => {
-                return db.insert("Repositories", {
-                    repositoryURL: url,
-                    folderName: folderName
-                }).then(() => {
-                    // Load itself
-                    new Repository(folderName, url);
-                    Logger.log("Cloning successful.");
-                    resolve(folderName);
-                });
-            }).catch((err) => {
-                Logger.log("Cloning failed!");
-                Logger.log(err);
-                reject(err);
             });
-        });
+
+            // Insert into repo table
+            await db.insert("Repositories", {
+                repositoryURL: url,
+                folderName: folderName
+            });
+
+            // Load itself
+            new Repository(folderName, url);
+            Logger.log("Cloning successful.");
+            return folderName;
+        } catch (err) {
+            Logger.log("Cloning failed!", "err");
+            Logger.log(err, "err");
+            throw new Error("Unexpected error occured cloning repository.");
+        }
     }
 
     /**
@@ -117,8 +140,8 @@ class Repository extends RepositoryModel {
         let url = baseUrl.replace(/\.git/g, "");
         url = url.split("/");
         url = url[url.length - 1];
-        url = url.replace(/[^a-zA-Z0-9-]/g, "");
-        return url + "-" + crypto.createHash("md5").update(baseUrl).digest("hex"); // Should rather check if folder exists but we should not have collisions for that
+        url = url.replace(/[^a-zA-Z0-9-_]/g, "");
+        return url;
     }
 
     /**
@@ -231,7 +254,7 @@ class Repository extends RepositoryModel {
         }, "owner");
 
         webAPI.registerAction("add-repository", (data, reply) => {
-            Repository.clone(data.url).then(() => reply(true)).catch(() => reply(false));
+            Repository.clone(data.url).then(() => reply()).catch((err) => reply(err.message));
         }, "owner");
 
         webAPI.registerAction("remove-repository", (data, reply) => {
