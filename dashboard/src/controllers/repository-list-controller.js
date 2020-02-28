@@ -144,10 +144,10 @@ window.discotron.RepositoryListController = class extends window.discotron.Contr
             document.getElementById("add-repository").disabled = true;
             discotron.WebAPI.queryBot("discotron-dashboard", "add-repository", {
                 url: repoUrl
-            }).then((data) => {
+            }).then((err) => {
                 document.getElementById("add-repository").disabled = false;
-                if (!data) {
-                    document.getElementById("repository-error").textContent = "Could not load repository";
+                if (err) {
+                    document.getElementById("repository-error").textContent = "Could not load repository: " + err;
                     document.getElementById("repository-url").focus();
                     document.getElementById("repository-url").select();
                 } else {

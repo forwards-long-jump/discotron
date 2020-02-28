@@ -86,20 +86,30 @@ class Repository extends RepositoryModel {
     static async clone(url) {
         Logger.log("Cloning **" + url + "**...");
 
+        let folderName;
+        let foundRepos;
         try {
             // Verify that the database does not already contain this repository
             // We can assume that the generated folder name is a plugin's unique id
-            const folderName = Repository._generateFolderName(url);
-            const foundRepos = await db.select("Repositories", ["folderName"], { folderName: folderName });
-            if (foundRepos.length > 0) {
-                throw new Error("Attempted to clone a repository that is already loaded: " + folderName);
-            }
+            folderName = Repository._generateFolderName(url);
+            foundRepos = await db.select("Repositories", ["folderName"], {folderName: folderName});
+        } catch (err) {
+            Logger.log("Cloning failed!", "err");
+            Logger.log(err, "err");
+            throw new Error("Unexpected error occured retrieving repository information.");
+        }
 
-            // Clone into path (must not exist)
-            const repoPath = global.discotronConfigPath + "/repositories/" + folderName;
-            if (fs.existsSync(repoPath)) {
-                throw new Error("Attempted to clone into a folder that already exists: " + folderName);
-            }
+        if (foundRepos.length > 0) {
+            throw new Error("Attempted to clone a repository that is already loaded: " + folderName);
+        }
+
+        // Clone into path (must not exist)
+        const repoPath = global.discotronConfigPath + "/repositories/" + folderName;
+        if (fs.existsSync(repoPath)) {
+            throw new Error("Attempted to clone into a folder that already exists: " + folderName);
+        }
+
+        try {
             await Git.Clone(url, repoPath, {
                 checkoutBranch: "master"
             });
@@ -117,7 +127,7 @@ class Repository extends RepositoryModel {
         } catch (err) {
             Logger.log("Cloning failed!", "err");
             Logger.log(err, "err");
-            throw err;
+            throw new Error("Unexpected error occured cloning repository.");
         }
     }
 
@@ -244,7 +254,7 @@ class Repository extends RepositoryModel {
         }, "owner");
 
         webAPI.registerAction("add-repository", (data, reply) => {
-            Repository.clone(data.url).then(() => reply(true)).catch(() => reply(false));
+            Repository.clone(data.url).then(() => reply()).catch((err) => reply(err.message));
         }, "owner");
 
         webAPI.registerAction("remove-repository", (data, reply) => {
