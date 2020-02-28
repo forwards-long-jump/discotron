@@ -7,7 +7,6 @@ const webServer = require("../webserver.js");
 const Logger = require("../utils/logger.js");
 const fileHelper = require("../utils/file-helper.js");
 const Git = require("nodegit");
-const crypto = require("crypto");
 
 const db = require("../apis/database-crud.js");
 
@@ -88,11 +87,24 @@ class Repository extends RepositoryModel {
         Logger.log("Cloning **" + url + "**...");
 
         try {
+            // Verify that the database does not already contain this repository
+            // We can assume that the generated folder name is a plugin's unique id
             const folderName = Repository._generateFolderName(url);
-            await Git.Clone(url, global.discotronConfigPath + "/repositories/" + folderName, {
+            const foundRepos = await db.select("Repositories", ["folderName"], { folderName: folderName });
+            if (foundRepos.length > 0) {
+                throw new Error("Attempted to clone a repository that is already loaded: " + folderName);
+            }
+
+            // Clone into path (must not exist)
+            const repoPath = global.discotronConfigPath + "/repositories/" + folderName;
+            if (fs.existsSync(repoPath)) {
+                throw new Error("Attempted to clone into a folder that already exists: " + folderName);
+            }
+            await Git.Clone(url, repoPath, {
                 checkoutBranch: "master"
             });
 
+            // Insert into repo table
             await db.insert("Repositories", {
                 repositoryURL: url,
                 folderName: folderName
@@ -118,8 +130,8 @@ class Repository extends RepositoryModel {
         let url = baseUrl.replace(/\.git/g, "");
         url = url.split("/");
         url = url[url.length - 1];
-        url = url.replace(/[^a-zA-Z0-9-]/g, "");
-        return url + "-" + crypto.createHash("md5").update(baseUrl).digest("hex"); // Should rather check if folder exists but we should not have collisions for that
+        url = url.replace(/[^a-zA-Z0-9-_]/g, "");
+        return url;
     }
 
     /**
