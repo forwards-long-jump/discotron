@@ -82,30 +82,31 @@ class Repository extends RepositoryModel {
      * Clone a repository from a url, should be used the first time
      * @param {string} url Repository URL to clone
      * @static
-     * @returns {Promise} resolve(folderName {string}) folderName: Folder name of the repository, reject(error {string})
+     * @returns {Promise<string>} Folder name of the repository
      */
-    static clone(url) {
+    static async clone(url) {
         Logger.log("Cloning **" + url + "**...");
-        return new Promise((resolve, reject) => {
+
+        try {
             const folderName = Repository._generateFolderName(url);
-            Git.Clone(url, global.discotronConfigPath + "/repositories/" + folderName, {
+            await Git.Clone(url, global.discotronConfigPath + "/repositories/" + folderName, {
                 checkoutBranch: "master"
-            }).then((repo) => {
-                return db.insert("Repositories", {
-                    repositoryURL: url,
-                    folderName: folderName
-                }).then(() => {
-                    // Load itself
-                    new Repository(folderName, url);
-                    Logger.log("Cloning successful.");
-                    resolve(folderName);
-                });
-            }).catch((err) => {
-                Logger.log("Cloning failed!");
-                Logger.log(err);
-                reject(err);
             });
-        });
+
+            await db.insert("Repositories", {
+                repositoryURL: url,
+                folderName: folderName
+            });
+
+            // Load itself
+            new Repository(folderName, url);
+            Logger.log("Cloning successful.");
+            return folderName;
+        } catch (err) {
+            Logger.log("Cloning failed!", "err");
+            Logger.log(err, "err");
+            throw err;
+        }
     }
 
     /**
