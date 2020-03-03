@@ -7,6 +7,7 @@ const SpamUser = require("./classes/spam-user.js");
 const Logger = require("./utils/logger.js");
 const Login = require("./classes/login.js");
 const db = require("./apis/database-crud.js");
+const discordClientProvider = require("./apis/discord-client-provider.js");
 
 const webAPI = require("./apis/web-api.js").getWebAPI("discotron-dashboard");
 
@@ -179,7 +180,7 @@ module.exports.loadGuilds = () => {
  */
 module.exports.updateGuilds = () => {
     let oldGuildIds = Object.keys(Guild.getAll());
-    let newGuildIds = global.discordClient.guilds.map((guild) => {
+    let newGuildIds = discordClientProvider.get().guilds.map((guild) => {
         return guild.id;
     });
 
@@ -243,7 +244,7 @@ module.exports.getBotInfo = () => {};
  */
 function getUserInfo(discordId) {
     return new Promise((resolve, reject) => {
-        global.discordClient.fetchUser(discordId).then((user) => {
+        discordClientProvider.get().fetchUser(discordId).then((user) => {
             resolve({
                 discordId: user.id,
                 name: user.username,
@@ -312,24 +313,25 @@ module.exports.registerActions = () => {
             helpText: botSettings.helpText,
             presenceText: botSettings.presenceText,
             maintenance: botSettings.maintenance,
-            status: global.discordClient.status
+            status: discordClientProvider.get().status
         });
     }, "owner");
 
     webAPI.registerAction("restart-bot", (data, reply) => {
         Logger.log("Restarting bot...");
-        global.discordClient.destroy().then(() => {
-            return global.discordClient._connectToDiscord().then(() => {
+        discordClientProvider.get().destroy().then(() => {
+            return global.discotron._connectToDiscord().then(() => {
                 reply(true);
             });
         }).catch(Logger.err);
     }, "owner");
 
     webAPI.registerAction("get-bot-info", (data, reply) => {
-        if (global.discordClient.user !== null) {
+        const discordClient = discordClientProvider.get();
+        if (discordClient.user !== null) {
             reply({
-                avatar: global.discordClient.user.displayAvatarURL,
-                tag: global.discordClient.user.tag
+                avatar: discordClient.user.displayAvatarURL,
+                tag: discordClient.user.tag
             });
         } else {
             reply({

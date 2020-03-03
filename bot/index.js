@@ -5,7 +5,7 @@ async function init() {
     const Logger = require("./utils/logger.js");
     Logger.setSeverity("info");
 
-    const DiscordJS = require("discord.js");
+    const discordClientProvider = require("./apis/discord-client-provider.js");
     const parseArgs = require("minimist");
 
     global.discotronConfigPath = __dirname + "/../instance";
@@ -28,10 +28,9 @@ async function init() {
     const webserver = require("./webserver.js");
     const discotron = require("./discotron.js");
 
-    const discordClient = new DiscordJS.Client();
+    const discordClient = discordClientProvider.get({allowOffline: true});
 
     global.discotron = discotron;
-    global.discordClient = discordClient;
 
     discotron.loadOwners();
 
@@ -65,7 +64,7 @@ async function init() {
         }
     }
 
-    global.discordClient._connectToDiscord = connectToDiscord;
+    global.discotron._connectToDiscord = connectToDiscord;
 
     /**
      * Register Discord events and associate them to Discotron handlers
@@ -155,7 +154,7 @@ async function init() {
      * @param {object} options Set options.exit to true to leave
      */
     function exitHandler(options) {
-        global.discordClient.destroy().then(() => {
+        discordClient.destroy().then(() => {
             if (options.exit) {
                 process.exit();
             }

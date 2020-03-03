@@ -1,6 +1,7 @@
 const BotSettingsModel = require("./../../models/bot-settings.js");
 const db = require("./../apis/database-crud.js");
 const Logger = require("../utils/logger.js");
+const discordClientProvider = require("./../apis/discord-client-provider.js");
 
 /**
  * Handle bot settings, server side
@@ -78,7 +79,7 @@ class BotSettings extends BotSettingsModel {
      * Update the presence of the bot on Discord
      */
     setBotPresence() {
-        global.discordClient.user.setPresence({
+        discordClientProvider.get().user.setPresence({
             game: {
                 name: this.presenceText
             },

@@ -5,6 +5,7 @@ const webAPI = require("./../apis/web-api.js").getWebAPI("discotron-dashboard");
 const Plugin = require("./plugin.js");
 const db = require("./../apis/database-crud.js");
 const Logger = require("../utils/logger.js");
+const discordClientProvider = require("./../apis/discord-client-provider.js");
 
 /**
  * Discotron guild containing info related to a Discord guild
@@ -59,7 +60,7 @@ class Guild extends GuildModel {
      * @returns {object} Object containing {id, prefix, name, nameAcronym, image, allowedChannelIds, enabledPluginIds, admins, permissions}
      */
     toObject() {
-        let guild = global.discordClient.guilds.get(this.discordId);
+        let guild = discordClientProvider.get().guilds.get(this.discordId);
         let permissions = {};
         for (const pluginId in this.permissions) {
             const permission = this.permissions[pluginId];
@@ -168,7 +169,7 @@ class Guild extends GuildModel {
         // TODO: Refresh that when it changes on Discord
         this._discordAdmins = new Set([]);
 
-        let guild = global.discordClient.guilds.get(this.discordId);
+        let guild = discordClientProvider.get().guilds.get(this.discordId);
         let admin = new UserRole(guild.ownerID, null, this.discordId);
         this._discordAdmins.add(admin);
 
@@ -454,7 +455,7 @@ class Guild extends GuildModel {
         }, "guildAdmin");
 
         webAPI.registerAction("get-members", (data, reply, discordUserId, discordGuildId) => {
-            let guild = global.discordClient.guilds.get(discordGuildId);
+            let guild = discordClientProvider.get().guilds.get(discordGuildId);
             let members = guild.members;
             reply(members.map(member => {
                 return {
@@ -467,7 +468,7 @@ class Guild extends GuildModel {
         }, "guildAdmin");
 
         webAPI.registerAction("get-roles", (data, reply, discordUserId, discordGuildId) => {
-            let guild = global.discordClient.guilds.get(discordGuildId);
+            let guild = discordClientProvider.get().guilds.get(discordGuildId);
             reply(guild.roles.map((role) => {
                 return {
                     discordId: role.id,
@@ -478,7 +479,7 @@ class Guild extends GuildModel {
         }, "guildAdmin");
 
         webAPI.registerAction("get-channels", (data, reply, discordUserId, discordGuildId) => {
-            let guild = global.discordClient.guilds.get(discordGuildId);
+            let guild = discordClientProvider.get().guilds.get(discordGuildId);
             reply(guild.channels.map((channel) => {
                 return {
                     discordId: channel.id,
