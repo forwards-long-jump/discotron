@@ -65,7 +65,7 @@ async function init() {
         }
     }
 
-    global.discordClient._connectToDiscord = connectToDiscord;
+    global.discotron._connectToDiscord = connectToDiscord;
 
     /**
      * Register Discord events and associate them to Discotron handlers

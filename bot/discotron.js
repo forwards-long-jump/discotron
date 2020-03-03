@@ -319,7 +319,7 @@ module.exports.registerActions = () => {
     webAPI.registerAction("restart-bot", (data, reply) => {
         Logger.log("Restarting bot...");
         global.discordClient.destroy().then(() => {
-            return global.discordClient._connectToDiscord().then(() => {
+            return global.discotron._connectToDiscord().then(() => {
                 reply(true);
             });
         }).catch(Logger.err);
