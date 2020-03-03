@@ -1,16 +1,25 @@
 const { Client } = require("discord.js");
 
+/**
+ * Error thrown when the Discord client cannot reach the discord API
+ */
 class DiscordAPIConnectionError extends Error {
+    /**
+     * @class
+     * @param {string} message Error message
+     */
     constructor(message) {
         super(message);
         this.name = "DiscordAPIConnectionError";
     }
 }
 
+/**
+ * The DiscordClientProvider provides the Discord.Client object and must be required in all files that want to access it
+ */
 class DiscordClientProvider {
 
     /**
-     * The DiscordClientProvider must be required in all files that want to access the DiscordClient object
      * @class
      */
     constructor() {
