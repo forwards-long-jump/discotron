@@ -43,8 +43,7 @@ class UserRole extends UserRoleModel {
             return this.discordUserId === userDiscordId;
         } else {
             try {
-                const discordClient = discordClientProvider.get();
-                const role = discordClient.guilds.get(this.discordGuildId).roles.get(this.discordRoleId);
+                const role = discordClientProvider.get().guilds.get(this.discordGuildId).roles.get(this.discordRoleId);
 
                 return role.members.has(userDiscordId);
             } catch (e) {
