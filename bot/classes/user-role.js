@@ -42,11 +42,12 @@ class UserRole extends UserRoleModel {
         if (this.discordUserId !== null) {
             return this.discordUserId === userDiscordId;
         } else {
-            const discordClient = discordClientProvider.get();
-            if (typeof discordClient !== "undefined" && typeof discordClient.guilds.get(this.discordGuildId) !== "undefined") {
-                let role = discordClient.guilds.get(this.discordGuildId).roles.get(this.discordRoleId);
+            try {
+                const discordClient = discordClientProvider.get();
+                const role = discordClient.guilds.get(this.discordGuildId).roles.get(this.discordRoleId);
+
                 return role.members.has(userDiscordId);
-            } else {
+            } catch (e) {
                 return false;
             }
         }
