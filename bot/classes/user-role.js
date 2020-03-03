@@ -1,7 +1,7 @@
 const UserRoleModel = require("./../../models/user-role.js");
 const db = require("./../apis/database-crud.js");
 const Logger = require("../utils/logger.js");
-
+const discordClientProvider = require("./../apis/discord-client-provider.js");
 /**
  * UserRole represents either a User or a Role, depending on which column is specified in the database.
  */
@@ -42,8 +42,9 @@ class UserRole extends UserRoleModel {
         if (this.discordUserId !== null) {
             return this.discordUserId === userDiscordId;
         } else {
-            if (typeof global.discordClient !== "undefined" && typeof global.discordClient.guilds.get(this.discordGuildId) !== "undefined") {
-                let role = global.discordClient.guilds.get(this.discordGuildId).roles.get(this.discordRoleId);
+            const discordClient = discordClientProvider.get();
+            if (typeof discordClient !== "undefined" && typeof discordClient.guilds.get(this.discordGuildId) !== "undefined") {
+                let role = discordClient.guilds.get(this.discordGuildId).roles.get(this.discordRoleId);
                 return role.members.has(userDiscordId);
             } else {
                 return false;

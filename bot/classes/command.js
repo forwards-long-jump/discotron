@@ -1,5 +1,6 @@
 const CommandModel = require("./../../models/command.js");
 const Owner = require("./owner.js");
+const discordClientProvider = require("../apis/discord-client-provider.js");
 
 /**
  * Command that can be executed, server side
@@ -40,7 +41,7 @@ class Command extends CommandModel {
             return false;
         }
 
-        if (this.requiresMention && !discordMessage.isMentioned(global.discordClient.user)) {
+        if (this.requiresMention && !discordMessage.isMentioned(discordClientProvider.get().user)) {
             return false;
         }
 

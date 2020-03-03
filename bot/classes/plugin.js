@@ -4,6 +4,7 @@ const webAPI = require("./../apis/web-api.js").getWebAPI("discotron-dashboard");
 const db = require("./../apis/database-crud.js");
 const Logger = require("../utils/logger.js");
 const Owner = require("./owner.js");
+const discordClientProvider = require("./../apis/discord-client-provider.js");
 
 /**
  * Server side plugin, contains commands and plugin status info
@@ -45,7 +46,7 @@ class Plugin extends PluginModel {
     getApiObject() {
         return {
             discotron: global.discotron,
-            discordClient: global.discordClient,
+            discordClient: discordClientProvider.get(),
             plugin: this,
             Logger: Logger
         };
