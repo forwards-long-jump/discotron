@@ -2,10 +2,10 @@
   "name": "discotron",
   "version": "0.0.1",
   "description": "Modular discord bot framework",
-  "main": "./bot/index.js",
+  "main": "./index.js",
   "scripts": {
     "postinstall": "node install.js",
-    "start": "node ./bot/index.js",
+    "start": "node ./index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "eslint": "eslint .",
     "stylelint": "stylelint dashboard/*.css"
