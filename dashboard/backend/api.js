@@ -105,4 +105,4 @@ const authLevelCheck = {
     "everyone": () => true
 };
 
-const Login = require("../../core/classes/login.js");
+const Login = require("../../core/login.js");
