@@ -1,8 +1,8 @@
 const sqlite = require("sqlite3");
 const migrations = require("./migrations.js");
 const fs = require("fs");
-const config = require("../config/config.json");
-const databasePath = global.discotronConfigPath + "/" + config.database.saveName;
+const config = require("./config.json");
+const databasePath = global.discotronConfigPath + "/" + config.fileName;
 
 const Logger = require("../utils/logger.js");
 

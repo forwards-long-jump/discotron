@@ -1,4 +1,4 @@
-const config = require("../config/config.json");
+const config = require("../config.json");
 
 /**
  * Handle spam limitations per users

@@ -1,7 +1,4 @@
 {
-    "database": {
-        "saveName": "discotron.db"
-    },
     "spam": {
         "incrementPerUsage": 40,
         "spamThreshold": 100,
