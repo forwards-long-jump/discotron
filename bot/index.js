@@ -25,7 +25,7 @@ async function init() {
     databaseHelper.openDatabase();
     await databaseHelper.doDatabaseMigrations(dbVersion, allowDown);
 
-    const webserver = require("./webserver.js");
+    const webserver = require("../dashboard/backend/webserver.js");
     const discotron = require("./discotron.js");
 
     const discordClient = discordClientProvider.get({allowOffline: true});

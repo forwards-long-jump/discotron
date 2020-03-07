@@ -9,7 +9,7 @@ const Login = require("./classes/login.js");
 const db = require("./apis/database-crud.js");
 const discordClientProvider = require("./apis/discord-client-provider.js");
 
-const webAPI = require("./apis/web-api.js").getWebAPI("discotron-dashboard");
+const webAPI = require("../dashboard/backend/api.js").getWebAPI("discotron-dashboard");
 
 const botSettings = new BotSettings();
 

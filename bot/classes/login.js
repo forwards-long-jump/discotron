@@ -1,7 +1,7 @@
 /**
  * Handle user login and first login
  */
-const webAPI = require("../apis/web-api.js").getWebAPI("discotron-dashboard");
+const webAPI = require("../../dashboard/backend/api.js").getWebAPI("discotron-dashboard");
 const Owner = require("./owner.js");
 const uuidv1 = require("uuid/v1");
 const request = require("request");

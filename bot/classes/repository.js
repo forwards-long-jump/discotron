@@ -2,8 +2,8 @@ const fs = require("fs");
 
 const RepositoryModel = require("./../../models/repository.js");
 const Plugin = require("./plugin.js");
-const webAPI = require("./../apis/web-api.js").getWebAPI("discotron-dashboard");
-const webServer = require("../webserver.js");
+const webAPI = require("../../dashboard/backend/api.js").getWebAPI("discotron-dashboard");
+const webServer = require("../../dashboard/backend/webserver.js");
 const Logger = require("../utils/logger.js");
 const fileHelper = require("../utils/file-helper.js");
 const Git = require("nodegit");

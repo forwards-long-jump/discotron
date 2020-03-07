@@ -1,5 +1,5 @@
 const OwnerModel = require("./../../models/owner.js");
-const webAPI = require("./../apis/web-api.js").getWebAPI("discotron-dashboard");
+const webAPI = require("../../dashboard/backend/api.js").getWebAPI("discotron-dashboard");
 const db = require("./../apis/database-crud.js");
 const Logger = require("../utils/logger.js");
 

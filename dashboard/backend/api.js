@@ -1,7 +1,7 @@
 /**
  * Handles communication between the dashboard and the bot
  */
-const Logger = require("../utils/logger.js");
+const Logger = require("../../bot/utils/logger.js");
 
 let actions = {};
 
@@ -100,9 +100,9 @@ function registerAction(pluginId, name, action, authLevel = "everyone") {
 
 // Object containing a method for each level of authentication
 const authLevelCheck = {
-    "owner": require("../classes/owner.js").isOwner,
-    "guildAdmin": require("../classes/guild.js").isGuildAdmin,
+    "owner": require("../../bot/classes/owner.js").isOwner,
+    "guildAdmin": require("../../bot/classes/guild.js").isGuildAdmin,
     "everyone": () => true
 };
 
-const Login = require("../classes/login.js");
+const Login = require("../../bot/classes/login.js");

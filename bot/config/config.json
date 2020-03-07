@@ -2,9 +2,6 @@
     "database": {
         "saveName": "discotron.db"
     },
-    "webServer": {
-        "port": 47131
-    },
     "spam": {
         "incrementPerUsage": 40,
         "spamThreshold": 100,

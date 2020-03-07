@@ -4,9 +4,9 @@ const fs = require("fs");
 
 const http = require("http");
 const https = require("https");
-const config = require("./config/config.json");
-const Logger = require("./utils/logger.js");
-const webAPI = require("./apis/web-api.js");
+const config = require("../config.json");
+const Logger = require("../../bot/utils/logger.js");
+const webAPI = require("./api.js");
 
 const appConfig = require(global.discotronConfigPath + "/bot.json");
 
@@ -14,8 +14,8 @@ const appConfig = require(global.discotronConfigPath + "/bot.json");
  * Serve the dashboard, login and models folders
  */
 module.exports.serveDashboard = () => {
-    app.use("/dashboard", express.static(__dirname + "/../dashboard/www"));
-    app.use("/models", express.static(__dirname + "/../models"));
+    app.use("/dashboard", express.static(__dirname + "/../www"));
+    app.use("/models", express.static(__dirname + "/../../models"));
     app.use("/dashboard/config/dashboard.js", express.static(global.discotronConfigPath + "/dashboard.js"));
     app.get("/", (req, res) => {
         res.redirect("/dashboard");

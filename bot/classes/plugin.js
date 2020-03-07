@@ -1,6 +1,6 @@
 const PluginModel = require("./../../models/plugin.js");
 const Command = require("./command.js");
-const webAPI = require("./../apis/web-api.js").getWebAPI("discotron-dashboard");
+const webAPI = require("../../dashboard/backend/api.js").getWebAPI("discotron-dashboard");
 const db = require("./../apis/database-crud.js");
 const Logger = require("../utils/logger.js");
 const Owner = require("./owner.js");
