@@ -1,5 +1,5 @@
 const fs = require("fs");
-const db = require("../apis/database-crud.js");
+const db = require("../database/crud.js");
 
 /**
  * Get a full list of available migrations, ordered from oldest to newest version.
@@ -7,7 +7,7 @@ const db = require("../apis/database-crud.js");
  * @returns {Array<string>} List of migrations, formatted like yyyy-mm-dd-name.js
  */
 module.exports.listMigrations = () => {
-    return fs.readdirSync(__dirname + "/../migrations/")
+    return fs.readdirSync(__dirname + "/migrations/")
         .filter((migration) => /^\d{4}-\d{2}-\d{2}-\w+\.js$/.test(migration))
         .sort();
 };

@@ -14,7 +14,7 @@ async function init() {
     let appConfig;
     loadConfig();
 
-    const databaseHelper = require("./core/utils/database-helper.js");
+    const databaseHelper = require("./core/database/database.js");
 
     // Database
     // TODO: We need a config option to enforce a certain db version for testing older versions of the db

@@ -1,5 +1,5 @@
 const sqlite = require("sqlite3");
-const migrations = require("../utils/database-migrations.js");
+const migrations = require("./migrations.js");
 const fs = require("fs");
 const config = require("../config/config.json");
 const databasePath = global.discotronConfigPath + "/" + config.database.saveName;
@@ -58,7 +58,7 @@ module.exports.doDatabaseMigrations = async (version = null, allowDown = false) 
         version = migrations.latestMigration();
     }
 
-    const { exec } = require("../apis/database-crud.js");
+    const { exec } = require("../database/crud.js");
 
     const current = await migrations.current();
     try {

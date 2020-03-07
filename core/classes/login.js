@@ -6,7 +6,7 @@ const Owner = require("./owner.js");
 const uuidv1 = require("uuid/v1");
 const request = require("request");
 const Logger = require("../utils/logger.js");
-const db = require("../apis/database-crud.js");
+const db = require("../database/crud.js");
 
 const appConfig = require(global.discotronConfigPath + "/bot.json");
 

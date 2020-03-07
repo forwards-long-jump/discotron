@@ -1,7 +1,7 @@
 /**
  * Helper functions for the database
  */
-const databaseHelper = require("../utils/database-helper.js");
+const databaseHelper = require("./database.js");
 const Logger = require("../utils/logger.js");
 const utils = require("../utils/utils.js");
 

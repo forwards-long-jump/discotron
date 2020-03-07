@@ -1,6 +1,6 @@
 const OwnerModel = require("./../../shared-models/owner.js");
 const webAPI = require("../../dashboard/backend/api.js").getWebAPI("discotron-dashboard");
-const db = require("./../apis/database-crud.js");
+const db = require("./../database/crud.js");
 const Logger = require("../utils/logger.js");
 
 /**

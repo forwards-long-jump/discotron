@@ -8,7 +8,7 @@ const Logger = require("../utils/logger.js");
 const fileHelper = require("../utils/file-helper.js");
 const Git = require("nodegit");
 
-const db = require("../apis/database-crud.js");
+const db = require("../database/crud.js");
 
 /**
  * Repository server side, contains plugins and pages

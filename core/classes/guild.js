@@ -3,7 +3,7 @@ const UserRole = require("./user-role.js");
 const Permission = require("./permission.js");
 const webAPI = require("../../dashboard/backend/api.js").getWebAPI("discotron-dashboard");
 const Plugin = require("./plugin.js");
-const db = require("./../apis/database-crud.js");
+const db = require("./../database/crud.js");
 const Logger = require("../utils/logger.js");
 const discordClientProvider = require("./../apis/discord-client-provider.js");
 

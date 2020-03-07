@@ -6,7 +6,7 @@ const Owner = require("./classes/owner.js");
 const SpamUser = require("./classes/spam-user.js");
 const Logger = require("./utils/logger.js");
 const Login = require("./classes/login.js");
-const db = require("./apis/database-crud.js");
+const db = require("./database/crud.js");
 const discordClientProvider = require("./apis/discord-client-provider.js");
 
 const webAPI = require("../dashboard/backend/api.js").getWebAPI("discotron-dashboard");
