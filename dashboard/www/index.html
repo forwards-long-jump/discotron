@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Discotron</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" type="text/css" href="styles/main.css" />
+
+    <script src="https://kit.fontawesome.com/de85ecd0aa.js"
+        integrity="sha384-tCIa9x35rFwAnPYwDCoqImEiB9Ai31jfzeslK4Q53KZAXSFi24Px912eIpefo9Bj" crossorigin="anonymous">
+        </script>
+</head>
+
+<body>
+    <nav class="shadow-small">
+        <div id="bot-info" class="shadow-small">
+            <a href="#home">
+                <img class="shadow-small round" src="" />
+                <span></span>
+            </a>
+
+            <div id="toggle-menu" onclick="discotron.mobileHelper.toggleNavBarDisplay()">
+                <i class="fa fa-bars"></i>
+            </div>
+        </div>
+        <div id="nav-links">
+            <template id="template-server-link">
+                <li><a class="server-link" href="#guild-settings?guild="><img
+                            class="server-icon shadow-small round" /><span class="server-name"></span></a></li>
+            </template>
+            <ul>
+                <li class="header bot-admin-link">General</li>
+                <li><a href="#home" onclick="discotron.mobileHelper.hideNavBar()"><i class="fas fa-home"></i> Home</a></li>
+                <li class="header bot-admin-link">Bot owner settings</li>
+                <li class="bot-admin-link"><a href="#bot-status" onclick="discotron.mobileHelper.hideNavBar()"><i class="fas fa-wrench"></i> Bot settings</a></li>
+                <li class="bot-admin-link"><a href="#repository-list" onclick="discotron.mobileHelper.hideNavBar()"><i class="fas fa-cubes"></i> Plugins</a></li>
+                <li class="header">Server admin settings</li>
+                <li class="description">It's empty here. Try inviting the bot in a server where you are admin!</li>
+            </ul>
+        </div>
+        <div id="user-info">
+            <img id="user-info-avatar" class="shadow-small round" src="./images/unknown-user.png">
+            <span id="user-info-text">
+                <span id="user-info-username">Loading#0000</span><br>
+                <input id="user-info-logout" type="button" class="link" value="Logout">
+            </span>
+        </div>
+    </nav>
+    <main>
+        <!-- Pages will be loaded with JS -->
+    </main>
+
+    <script>
+        window.discotron = {};
+    </script>
+
+    <!-- Config -->
+    <script src="/dashboard/config/dashboard.js"></script>
+
+    <!-- Utils-->
+    <script src="/dashboard/scripts/utils/utils.js"></script>
+    <script src="/dashboard/scripts/utils/mobile-helper.js"></script>
+
+    <!-- Models definition -->
+    <script src="/shared-models/bot-settings.js"></script>
+    <script src="/shared-models/command.js"></script>
+    <script src="/shared-models/guild.js"></script>
+    <script src="/shared-models/owner.js"></script>
+    <script src="/shared-models/permission.js"></script>
+    <script src="/shared-models/plugin.js"></script>
+    <script src="/shared-models/repository.js"></script>
+    <script src="/shared-models/user-role.js"></script>
+
+    <!-- Models -->
+    <script src="/dashboard/scripts/models/channel.js"></script>
+    <script src="/dashboard/scripts/models/command.js"></script>
+    <script src="/dashboard/scripts/models/guild.js"></script>
+    <script src="/dashboard/scripts/models/permission.js"></script>
+    <script src="/dashboard/scripts/models/plugin.js"></script>
+    <script src="/dashboard/scripts/models/repository.js"></script>
+    <script src="/dashboard/scripts/models/role.js"></script>
+    <script src="/dashboard/scripts/models/user.js"></script>
+    <script src="/dashboard/scripts/models/user-role.js"></script>
+
+    <!-- Controllers -->
+    <script src="/dashboard/scripts/controllers/controller.js"></script>
+    <script src="/dashboard/scripts/controllers/pages/owner/bot-status-controller.js"></script>
+    <script src="/dashboard/scripts/controllers/pages/owner/repository-list-controller.js"></script>
+    <script src="/dashboard/scripts/controllers/pages/admin/guild-settings-controller.js"></script>
+    <script src="/dashboard/scripts/controllers/pages/admin/plugin-list-controller.js"></script>
+    <script src="/dashboard/scripts/controllers/pages/help-controller.js"></script>
+    <script src="/dashboard/scripts/controllers/navigation-controller.js"></script>
+
+    <!-- Controllers/Widgets -->
+    <script src="/dashboard/scripts/controllers/widgets/widget-controller.js"></script>
+    <script src="/dashboard/scripts/controllers/widgets/channel-list-widget-controller.js"></script>
+    <script src="/dashboard/scripts/controllers/widgets/plugin-settings-widget-controller.js"></script>
+    <script src="/dashboard/scripts/controllers/widgets/user-role-widget-controller.js"></script>
+
+    <!-- Main -->
+    <script src="/dashboard/scripts/router.js"></script>
+    <script src="/dashboard/scripts/web-api.js"></script>
+    <script src="/dashboard/scripts/index.js"></script>
+
+
+</body>
+
+</html>
