@@ -5,7 +5,7 @@ const fs = require("fs");
 const http = require("http");
 const https = require("https");
 const config = require("../config.json");
-const Logger = require("../../bot/utils/logger.js");
+const Logger = require("../../core/utils/logger.js");
 const webAPI = require("./api.js");
 
 const appConfig = require(global.discotronConfigPath + "/bot.json");

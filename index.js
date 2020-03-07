@@ -2,10 +2,10 @@
  * Init sequence of Discotron
  */
 async function init() {
-    const Logger = require("./bot/utils/logger.js");
+    const Logger = require("./core/utils/logger.js");
     Logger.setSeverity("info");
 
-    const discordClientProvider = require("./bot/apis/discord-client-provider.js");
+    const discordClientProvider = require("./core/apis/discord-client-provider.js");
     const parseArgs = require("minimist");
 
     global.discotronConfigPath = __dirname + "/instance";
@@ -14,7 +14,7 @@ async function init() {
     let appConfig;
     loadConfig();
 
-    const databaseHelper = require("./bot/utils/database-helper.js");
+    const databaseHelper = require("./core/utils/database-helper.js");
 
     // Database
     // TODO: We need a config option to enforce a certain db version for testing older versions of the db
@@ -26,7 +26,7 @@ async function init() {
     await databaseHelper.doDatabaseMigrations(dbVersion, allowDown);
 
     const webserver = require("./dashboard/backend/webserver.js");
-    const discotron = require("./bot/discotron.js");
+    const discotron = require("./core/discotron.js");
 
     const discordClient = discordClientProvider.get({allowOffline: true});
 

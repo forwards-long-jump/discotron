@@ -5,8 +5,8 @@
             "type": "node",
             "request": "launch",
             "name": "Launch Discotron",
-            "program": "${workspaceFolder}/bot/index.js",
-            "cwd": "${workspaceFolder}/bot/",
+            "program": "${workspaceFolder}/index.js",
+            "cwd": "${workspaceFolder}/",
             "stopOnEntry": false
         }
     ]
