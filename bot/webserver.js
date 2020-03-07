@@ -14,7 +14,7 @@ const appConfig = require(global.discotronConfigPath + "/bot.json");
  * Serve the dashboard, login and models folders
  */
 module.exports.serveDashboard = () => {
-    app.use("/dashboard", express.static(__dirname + "/../dashboard"));
+    app.use("/dashboard", express.static(__dirname + "/../dashboard/www"));
     app.use("/models", express.static(__dirname + "/../models"));
     app.use("/dashboard/config/dashboard.js", express.static(global.discotronConfigPath + "/dashboard.js"));
     app.get("/", (req, res) => {
