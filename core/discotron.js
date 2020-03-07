@@ -7,7 +7,7 @@ const SpamUser = require("./models/spam-user.js");
 const Logger = require("./utils/logger.js");
 const Login = require("./login.js");
 const db = require("./database/crud.js");
-const discordClientProvider = require("./apis/discord-client-provider.js");
+const discordClientProvider = require("./utils/discord-client-provider.js");
 
 const webAPI = require("../dashboard/backend/api.js").getWebAPI("discotron-dashboard");
 

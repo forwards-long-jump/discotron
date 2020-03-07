@@ -5,7 +5,7 @@ const webAPI = require("../../dashboard/backend/api.js").getWebAPI("discotron-da
 const Plugin = require("./plugin.js");
 const db = require("./../database/crud.js");
 const Logger = require("../utils/logger.js");
-const discordClientProvider = require("./../apis/discord-client-provider.js");
+const discordClientProvider = require("./../utils/discord-client-provider.js");
 
 /**
  * Discotron guild containing info related to a Discord guild

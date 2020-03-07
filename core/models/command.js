@@ -1,6 +1,6 @@
 const CommandModel = require("./../../shared-models/command.js");
 const Owner = require("./owner.js");
-const discordClientProvider = require("../apis/discord-client-provider.js");
+const discordClientProvider = require("../utils/discord-client-provider.js");
 
 /**
  * Command that can be executed, server side

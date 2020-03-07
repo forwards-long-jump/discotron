@@ -1,7 +1,7 @@
 const UserRoleModel = require("./../../shared-models/user-role.js");
 const db = require("./../database/crud.js");
 const Logger = require("../utils/logger.js");
-const discordClientProvider = require("./../apis/discord-client-provider.js");
+const discordClientProvider = require("./../utils/discord-client-provider.js");
 /**
  * UserRole represents either a User or a Role, depending on which column is specified in the database.
  */

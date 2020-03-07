@@ -5,7 +5,7 @@ async function init() {
     const Logger = require("./core/utils/logger.js");
     Logger.setSeverity("info");
 
-    const discordClientProvider = require("./core/apis/discord-client-provider.js");
+    const discordClientProvider = require("./core/utils/discord-client-provider.js");
     const parseArgs = require("minimist");
 
     global.discotronConfigPath = __dirname + "/instance";

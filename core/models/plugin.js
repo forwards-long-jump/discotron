@@ -4,7 +4,7 @@ const webAPI = require("../../dashboard/backend/api.js").getWebAPI("discotron-da
 const db = require("./../database/crud.js");
 const Logger = require("../utils/logger.js");
 const Owner = require("./owner.js");
-const discordClientProvider = require("./../apis/discord-client-provider.js");
+const discordClientProvider = require("./../utils/discord-client-provider.js");
 
 /**
  * Server side plugin, contains commands and plugin status info
