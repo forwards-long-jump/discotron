@@ -6,7 +6,7 @@
     --color-primary-lightest: #D6EAF8;
 
     /* Dark mode */
-    --color-text-light: #ffffff;
+    --color-text-light: white;
     --color-text: #f0f0f0;
     --color-text-dark: #7e7e7e;
 
@@ -21,8 +21,7 @@
 
 
 /* General */
-html,
-body {
+html, body {
     height: 100%;
 }
 
@@ -42,9 +41,26 @@ body {
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
 }
 
-
 .round {
     border-radius: 50px;
+}
+
+a {
+    color: var(--color-primary-light);
+    text-decoration: none;
+}
+
+nav li a {
+    color: var(--color-text-dark);
+    text-decoration: none;
+    padding: 20px 10px;
+    border-radius: 2px;
+    display: inline-block;
+    width: 335px;
+}
+
+a:hover {
+    text-decoration: underline;
 }
 
 /* Nav */
@@ -76,16 +92,6 @@ nav .header {
     padding-bottom: 10px;
 }
 
-nav li a,
-nav li a:visited {
-    color: var(--color-text-dark);
-    text-decoration: none;
-    padding: 20px 10px;
-    border-radius: 2px;
-    display: inline-block;
-    width: 335px;
-}
-
 nav li a:hover {
     color: var(--color-text);
     text-decoration: none;
@@ -97,12 +103,12 @@ nav li i {
     color: var(--color-text-dark);
 }
 
-nav li hr {
-    border: 1px solid var(--color-background-dark);
-}
-
 main hr {
     border: 1px solid var(--color-background);
+}
+
+nav li hr {
+    border: 1px solid var(--color-background-dark);
 }
 
 .server-link {
@@ -125,10 +131,41 @@ main hr {
     margin-bottom: 20px;
 }
 
-.page-header,
-#bot-info,
-#user-info {
+.page-header, #bot-info, #user-info {
     background-color: var(--color-background-light);
+}
+
+
+.plugin-help-header {
+    font-size: 1.2em;
+    display: block;
+}
+
+.plugin-description {
+    margin-top: 10px;
+}
+
+.command-entry {
+    display: block;
+    margin-top: 20px;
+    font-size: 0.9em;
+}
+
+.command-args {
+    color: var(--color-text-dark);
+    display: inline-block;
+    width: 150px;
+}
+
+.command {
+    font-weight: bold;
+    color: var(--color-primary-light);
+    display: inline-block;
+    width: 200px;
+}
+
+.plugin-help>span {
+    display: block;
 }
 
 #bot-info a {
@@ -139,16 +176,14 @@ main hr {
     text-decoration: none;
 }
 
-.page-header img,
-#bot-info img {
+.page-header img, #bot-info img {
     height: 55px;
     width: 55px;
     vertical-align: middle;
     margin: 20px;
 }
 
-.page-header span,
-#bot-info span {
+.page-header span, #bot-info span {
     margin-left: 10px;
     font-size: 1.3em;
 }
@@ -156,6 +191,48 @@ main hr {
 .bot-info-status {
     border-radius: 5px 0 0 5px;
     margin-bottom: 30px;
+}
+
+
+/* Forms */
+button, .button-link, input, textarea, select {
+    color: var(--color-text);
+    border-radius: 2px;
+    margin: 5px;
+    padding: 12px;
+    background-color: var(--color-background);
+    border: none;
+}
+
+select:disabled, textarea:disabled, input[ type="text" ]:disabled {
+    color: var(--color-text-dark);
+}
+
+button, input[ type="button" ], input[ type="submit" ] {
+    background-color: var(--color-primary);
+    cursor: pointer;
+    width: 150px;
+}
+
+button, input[ type="button" ]:hover, input[ type="submit" ]:hover {
+    background-color: var(--color-primary-light);
+}
+
+input[ type="button" ]:disabled, input[ type="submit" ]:disabled {
+    background-color: var(--color-background-dark) !important;
+    border: 1px solid var(--color-background-light) !important;
+    color: var(--color-text-dark);
+    cursor: default;
+}
+
+input[ type="button" ]:disabled:hover, input[ type="submit" ]:disabled:hover {
+    background-color: var(--color-background-dark) !important;
+}
+
+label {
+    vertical-align: middle;
+    display: inline-block;
+    width: 300px;
 }
 
 #user-info {
@@ -198,18 +275,7 @@ main {
     width: calc(100% - 455px);
 }
 
-a,
-a:visited {
-    color: var(--color-primary-light);
-    text-decoration: none;
-}
-
-a:hover {
-    text-decoration: underline;
-}
-
-main h1,
-.widget-header {
+main h1, .widget-header {
     display: block;
     margin-top: 10px;
     margin-bottom: 5px;
@@ -219,67 +285,6 @@ main h1,
 
 .widget-header {
     margin-bottom: 20px;
-}
-
-/* Forms */
-button,
-.button-link,
-input,
-textarea,
-select {
-    /*
-    background-color: rgba(255,255,255,0.1);
-    */
-    color: var(--color-text);
-    border-radius: 2px;
-    margin: 5px;
-    padding: 12px;
-    background-color: var(--color-background);
-    border: none;
-}
-
-select:disabled,
-textarea:disabled,
-input[type="text"]:disabled {
-    color: var(--color-text-dark);
-}
-
-button,
-input[type="button"],
-input[type="submit"] {
-    background-color: var(--color-primary);
-    cursor: pointer;
-    width: 150px;
-}
-
-button,
-input[type="button"]:hover,
-input[type="submit"]:hover {
-    background-color: var(--color-primary-light);
-}
-
-input[type="button"]:disabled,
-input[type="submit"]:disabled {
-    background-color: var(--color-background-dark) !important;
-    border: 1px solid var(--color-background-light) !important;
-    color: var(--color-text-dark);
-    cursor: default;
-}
-
-input[type="button"]:disabled:hover,
-input[type="submit"]:disabled:hover {
-    background-color: var(--color-background-dark) !important;
-}
-
-.switch {
-    margin-top: 8px;
-    margin-bottom: 8px;
-}
-
-label {
-    vertical-align: middle;
-    display: inline-block;
-    width: 300px;
 }
 
 /* Repository */
@@ -371,7 +376,7 @@ label {
 
 .bot-status {
     margin-left: 20px;
-    font-size: 1.0em !important;
+    font-size: 1em !important;
 }
 
 .small {
@@ -449,9 +454,7 @@ label {
     text-decoration: underline;
 }
 
-.widget-inner input[type="text"],
-.widget-inner textarea,
-.widget-inner select {
+.widget-inner input[ type="text" ], .widget-inner textarea, .widget-inner select {
     background-color: var(--color-background-dark);
     color: var(--color-text);
 }
@@ -463,8 +466,11 @@ label {
 }
 
 /* Checkbox sliding, source: https://www.w3schools.com/howto/howto_css_switch.asp */
+
 /* The switch - the box around the slider */
 .switch {
+    margin-top: 8px;
+    margin-bottom: 8px;
     position: relative;
     display: inline-block;
     width: 60px;
@@ -472,7 +478,7 @@ label {
 }
 
 /* Hide default HTML checkbox */
-.switch input {
+input.switch {
     opacity: 0;
     width: 0;
     height: 0;
@@ -487,8 +493,8 @@ label {
     right: 0;
     bottom: 0;
     background-color: var(--color-background-darkest);
-    -webkit-transition: .4s;
-    transition: .4s;
+    -webkit-transition: 0.4s;
+    transition: 0.4s;
 }
 
 .slider:before {
@@ -499,8 +505,8 @@ label {
     left: 4px;
     bottom: 4px;
     background-color: var(--color-text);
-    -webkit-transition: .4s;
-    transition: .4s;
+    -webkit-transition: 0.4s;
+    transition: 0.4s;
 }
 
 input:checked+.slider {
@@ -535,8 +541,7 @@ input:checked+.slider:before {
     margin: 5px;
 }
 
-.link,
-.button-link {
+.link, .button-link {
     border: none;
     background: none !important;
     color: var(--color-primary-light);
@@ -576,38 +581,6 @@ input:checked+.slider:before {
     display: block;
 }
 
-.plugin-help-header {
-    font-size: 1.2em;
-    display: block;
-}
-
-.plugin-help>span {
-    display: block;
-}
-
-.plugin-description {
-    margin-top: 10px;
-}
-
-.command-entry {
-    display: block;
-    margin-top: 20px;
-    font-size: 0.9em;
-}
-
-.command-args {
-    color: var(--color-text-dark);
-    display: inline-block;
-    width: 150px;
-}
-
-.command {
-    font-weight: bold;
-    color: var(--color-primary-light);
-    display: inline-block;
-    width: 200px;
-}
-
 #toggle-menu {
     display: none;
 }
@@ -629,14 +602,13 @@ input:checked+.slider:before {
         margin-left: 10px;
         width: calc(100% - 20px);
     }
-    
-    #toggle-menu i
-    {
+
+    #toggle-menu i {
         font-size: 25px;
         position: relative;
-        
+
         border-radius: 3px;
-        
+
         z-index: 1;
     }
 
