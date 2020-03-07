@@ -19,7 +19,7 @@ window.discotron.Controller = class {
      */
     static _loadPage(pageName, callback) {
         // Get html file and put it into <main>
-        const baseURL = "/dashboard/src/views/";
+        const baseURL = "/dashboard/views/";
         discotron.utils.load(baseURL + pageName, document.querySelector("main"), callback);
     }
 };

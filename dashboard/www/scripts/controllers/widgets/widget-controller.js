@@ -23,7 +23,7 @@ window.discotron.WidgetController = class {
      */
     _displayWidget(callback) {
         // Get html file and put it into <main>
-        const baseURL = "/dashboard/src/views/widgets/";
+        const baseURL = "/dashboard/views/widgets/";
         this._widgetContainer = document.createElement("div");
         this._widgetContainer.classList.add("widget-background");
 
