@@ -5,7 +5,7 @@ const uuidv1 = require("uuid/v1");
 const request = require("request");
 
 const webAPI = require("../dashboard/backend/api.js").getWebAPI("discotron-dashboard");
-const Owner = require("./classes/owner.js");
+const Owner = require("./models/owner.js");
 const Logger = require("./utils/logger.js");
 const db = require("./database/crud.js");
 

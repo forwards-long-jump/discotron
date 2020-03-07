@@ -100,8 +100,8 @@ function registerAction(pluginId, name, action, authLevel = "everyone") {
 
 // Object containing a method for each level of authentication
 const authLevelCheck = {
-    "owner": require("../../core/classes/owner.js").isOwner,
-    "guildAdmin": require("../../core/classes/guild.js").isGuildAdmin,
+    "owner": require("../../core/models/owner.js").isOwner,
+    "guildAdmin": require("../../core/models/guild.js").isGuildAdmin,
     "everyone": () => true
 };
 
