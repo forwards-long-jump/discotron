@@ -1,4 +1,4 @@
-const PluginModel = require("./../../models/plugin.js");
+const PluginModel = require("./../../shared-models/plugin.js");
 const Command = require("./command.js");
 const webAPI = require("../../dashboard/backend/api.js").getWebAPI("discotron-dashboard");
 const db = require("./../apis/database-crud.js");

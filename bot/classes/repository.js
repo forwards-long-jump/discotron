@@ -1,6 +1,6 @@
 const fs = require("fs");
 
-const RepositoryModel = require("./../../models/repository.js");
+const RepositoryModel = require("./../../shared-models/repository.js");
 const Plugin = require("./plugin.js");
 const webAPI = require("../../dashboard/backend/api.js").getWebAPI("discotron-dashboard");
 const webServer = require("../../dashboard/backend/webserver.js");

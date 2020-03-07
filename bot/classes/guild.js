@@ -1,4 +1,4 @@
-const GuildModel = require("./../../models/guild.js");
+const GuildModel = require("./../../shared-models/guild.js");
 const UserRole = require("./user-role.js");
 const Permission = require("./permission.js");
 const webAPI = require("../../dashboard/backend/api.js").getWebAPI("discotron-dashboard");

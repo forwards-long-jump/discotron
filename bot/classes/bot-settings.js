@@ -1,4 +1,4 @@
-const BotSettingsModel = require("./../../models/bot-settings.js");
+const BotSettingsModel = require("./../../shared-models/bot-settings.js");
 const db = require("./../apis/database-crud.js");
 const Logger = require("../utils/logger.js");
 const discordClientProvider = require("./../apis/discord-client-provider.js");
