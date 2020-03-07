@@ -6,7 +6,7 @@ window.discotron.HelpController = class extends window.discotron.Controller {
      * @class
      */
     constructor() {
-        super("index.html", () => {
+        super("home.html", () => {
             this._displayHelp();
         });
     }
