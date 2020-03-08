@@ -46,7 +46,7 @@ class Plugin extends PluginModel {
     getApiObject() {
         return {
             discotron: global.discotron,
-            discordClient: discordClientProvider.get(),
+            discordClient: discordClientProvider.get({allowOffline: true}),
             plugin: this,
             Logger: Logger
         };
