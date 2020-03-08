@@ -32,10 +32,10 @@ window.discotron.BotStatusController = class extends window.discotron.Controller
 
             if (data.status === 0) {
                 status = "Online";
-                classStatus = "green-text";
+                classStatus = "bot-status-online";
             } else {
                 status = "Offline (Status: " + data.status + ")";
-                classStatus = "red-text";
+                classStatus = "bot-status-offline";
             }
 
             document.getElementById("bot-name").innerHTML += "<span class=\"bot-status " + classStatus + "\">" + status + "</span>";

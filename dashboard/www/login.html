@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Discotron - Connection</title>
     <link rel="stylesheet" type="text/css" href="styles/main.css" />
+    <link rel="stylesheet" type="text/css" href="styles/mobile.css" />
 </head>
 
 <body>
@@ -15,7 +16,7 @@
                 <div class="widget-inner shadow-big">
                     <h1>Login</h1>
                     <p id="login-text">You need to log in with Discord to use the dashboard.</p>
-                    <p style="display: none;" id="login-error" class="red-text">An error occurred. Make sure to use the
+                    <p style="display: none;" id="login-error" class="error">An error occurred. Make sure to use the
                         button below and grant permissions.</p>
                     <div class="widget-buttons">
                         <a id="auth-link" href="" class="button">Log in with discord</a>
@@ -31,7 +32,7 @@
                 <div class="widget-inner shadow-big">
                     <h1>Claim ownership</h1>
                     <p>Please check the bot console and paste the ownership token here to initialize the bot.</p>
-                    <p style="display: none;" id="claim-error" class="red-text">An error occurred. Make sure the
+                    <p style="display: none;" id="claim-error" class="error">An error occurred. Make sure the
                         ownership token is correct.<br>If you waited too long, <a href="/login">click here</a> to try
                         logging into Discord again.</p>
                     <div id="owner-token">
