@@ -1,19 +1,4 @@
-nav li a {
-    color: var(--color-text-dark);
-    text-decoration: none;
-    padding: 20px 10px;
-    border-radius: 2px;
-    display: inline-block;
-    width: 335px;
-}
-
-
-/* Nav */
-#nav-links {
-    max-height: calc(100% - 170px);
-    overflow: auto;
-}
-
+/* Navigation bar */
 nav {
     display: inline-block;
     background-color: var(--color-background);
@@ -32,29 +17,38 @@ nav li {
     color: var(--color-text);
 }
 
-nav .header {
-    padding-top: 20px;
-    padding-bottom: 10px;
+#nav-links {
+    max-height: calc(100% - 170px);
+    overflow: auto;
 }
 
-nav li a:hover {
+.nav-link {
+    color: var(--color-text-dark);
+    text-decoration: none;
+    padding: 20px 10px;
+    border-radius: 2px;
+    display: inline-block;
+    width: 335px;
+}
+
+.nav-link:hover {
     color: var(--color-text);
     text-decoration: none;
     background-color: rgba(255, 255, 255, 0.1);
 }
 
-nav li i {
+.nav-header {
+    padding-top: 20px;
+    padding-bottom: 10px;
+}
+
+.nav-icon {
     margin-right: 10px;
     color: var(--color-text-dark);
 }
 
-
 main hr {
     border: 1px solid var(--color-background);
-}
-
-nav li hr {
-    border: 1px solid var(--color-background-dark);
 }
 
 .server-link {
@@ -81,6 +75,13 @@ nav li hr {
     background-color: var(--color-background-light);
 }
 
+.bot-status-online {
+    color: var(--color-info);
+}
+
+.bot-status-offline {
+    color: var(--color-danger);
+}
 
 .plugin-help-header {
     font-size: 1.2em;
@@ -163,10 +164,6 @@ nav li hr {
     padding: 0;
 }
 
-#user-info-name {
-    font-size: 1.1em;
-    vertical-align: middle;
-}
 
 /* Main */
 
@@ -190,31 +187,6 @@ main h1 {
 
 
 /* Repository */
-.repository-header {
-    color: var(--color-text-dark);
-    font-size: 1.1em;
-}
-
-.repository-status {
-    color: var(--color-text-dark);
-    font-size: 0.8em;
-    margin-left: 15px;
-    margin-top: -10px;
-}
-
-.repository-status p {
-    display: inline-block;
-}
-
-.status-circle {
-    display: inline-block;
-    height: 10px;
-    width: 10px;
-    border-radius: 25px;
-    vertical-align: baseline;
-    margin-right: 8px;
-}
-
 .plugin-bar {
     width: calc(100% - 400px);
 }
@@ -294,4 +266,10 @@ main h1 {
     height: 100%;
     width: 100%;
     display: block;
+}
+
+
+.page-header span .bot-status {
+    margin-left: 20px;
+    font-size: 1em;
 }

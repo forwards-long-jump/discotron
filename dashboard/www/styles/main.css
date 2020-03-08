@@ -5,7 +5,6 @@
     --color-primary-light: #5DADE2;
     --color-primary-lightest: #D6EAF8;
 
-    /* Dark mode */
     --color-text-light: white;
     --color-text: #f0f0f0;
     --color-text-dark: #7e7e7e;
@@ -15,6 +14,10 @@
     --color-background: #202020;
     --color-background-light: #2e2e2e;
     --color-background-lightest: #4e4e4e;
+
+    --color-danger: #c0392b;
+    --color-warning: #e67e22;
+    --color-info: #2ecc71;
 
     --color-link: #927fbf;
 }
@@ -32,19 +35,7 @@ body {
     color: var(--color-text);
 }
 
-/* "Components" */
-.shadow-small {
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-}
-
-.shadow-big {
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
-}
-
-.round {
-    border-radius: 50px;
-}
-
+/* Links */
 a {
     color: var(--color-primary-light);
     text-decoration: none;
@@ -56,16 +47,15 @@ a:hover {
 
 /* Forms */
 button, .button-link, input, textarea, select {
-    color: var(--color-text);
     border-radius: 2px;
     margin: 5px;
     padding: 12px;
-    background-color: var(--color-background);
     border: none;
 }
 
-select:disabled, textarea:disabled, input[ type="text" ]:disabled {
-    color: var(--color-text-dark);
+input, textarea, select {
+    color: var(--color-text);
+    background-color: var(--color-background);
 }
 
 button, input[ type="button" ], input[ type="submit" ] {
@@ -74,19 +64,23 @@ button, input[ type="button" ], input[ type="submit" ] {
     width: 150px;
 }
 
+select:disabled, textarea:disabled, input[ type="text" ]:disabled {
+    color: var(--color-text-dark);
+}
+
 button, input[ type="button" ]:hover, input[ type="submit" ]:hover {
     background-color: var(--color-primary-light);
 }
 
 input[ type="button" ]:disabled, input[ type="submit" ]:disabled {
-    background-color: var(--color-background-dark) !important;
-    border: 1px solid var(--color-background-light) !important;
+    background-color: var(--color-background-dark);
+    border: 1px solid var(--color-background-light);
     color: var(--color-text-dark);
     cursor: default;
 }
 
 input[ type="button" ]:disabled:hover, input[ type="submit" ]:disabled:hover {
-    background-color: var(--color-background-dark) !important;
+    background-color: var(--color-background-dark);
 }
 
 label {
@@ -104,37 +98,44 @@ label {
 }
 
 /* Utilities */
-.red {
-    background-color: #c0392b !important;
+.error {
+    color: var(--color-danger);
 }
 
-.red-text {
-    color: #c0392b !important;
+span.warning, p.warning, div.warning {
+    color: var(--color-warning);
 }
 
-.orange {
-    background-color: #e67e22 !important;
+span.danger, p.danger, div.danger {
+    color: var(--color-danger);
 }
 
-.green {
-    background-color: #2ecc71 !important;
+span.info, p.info, div.info {
+    color: var(--color-info);
 }
 
-.green-text {
-    color: #2ecc71 !important;
+input.info {
+    background-color: var(--color-info);
 }
 
-.bot-status {
-    margin-left: 20px;
-    font-size: 1em !important;
+input.warning {
+    background-color: var(--color-warning);
 }
 
-.small {
-    width: 30%;
+input.danger {
+    background-color: var(--color-danger);
 }
 
-.clickable {
-    cursor: pointer;
+.shadow-small {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+}
+
+.shadow-big {
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+}
+
+.round {
+    border-radius: 50px;
 }
 
 /* Widgets */
@@ -179,7 +180,6 @@ label {
     overflow: auto;
 }
 
-
 .widget-buttons {
     position: relative;
     bottom: -20px;
@@ -189,14 +189,6 @@ label {
     width: calc(100% + 20px);
     border-radius: 0 0 4px 4px;
     text-align: right;
-}
-
-.widget-buttons .red {
-    background-color: transparent !important;
-}
-
-.widget-buttons .red:hover {
-    text-decoration: underline;
 }
 
 .widget-inner input[ type="text" ], .widget-inner textarea, .widget-inner select {
@@ -277,16 +269,24 @@ input:checked+.slider:before {
     border-radius: 50%;
 }
 
-.link, .button-link {
+.button-link, input[ type="button" ].button-link {
     border: none;
-    background: none !important;
+    background: transparent;
+    width: auto;
     color: var(--color-primary-light);
     padding-left: 2px;
     text-align: left;
     font-size: 0.9em;
-    width: auto !important;
 }
 
-.link:hover {
+.cancel-button, input[ type="button" ].cancel-button {
+    color: white;
+    width: 150px;
+    text-align: center;
+    font-size: 0.8em;
+    padding: 12px;
+}
+
+.button-link:hover {
     text-decoration: underline;
 }
