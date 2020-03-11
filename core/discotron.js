@@ -349,7 +349,6 @@ module.exports.registerActions = () => {
 
 
     Login.registerActions();
-    Owner.registerActions();
     Guild.registerActions();
     Plugin.registerActions();
 };
