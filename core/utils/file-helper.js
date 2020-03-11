@@ -29,26 +29,26 @@ module.exports.deleteFolder = deleteRecursive;
 // Source: https://gist.github.com/VinGarcia/ba278b9460500dad1f50
 /**
  * Recursively returns all files contained in the specified directory.
- * @param {string} dir Path to directory.
- * @param {Array<string>} filelist Currently discovered files list.
+ * @param {string} path Path to directory.
+ * @param {Array<string>} fileList Currently discovered files list.
  * @returns {Array<string>} List of files in directory tree.
  */
-let readRecursive = function (dir, filelist) {
+let readRecursive = function (path, fileList) {
 
-    if (dir[dir.length - 1] !== "/") {
-        dir = dir.concat("/");
+    if (path[path.length - 1] !== "/") {
+        path = path.concat("/");
     }
 
-    const files = fs.readdirSync(dir);
-    filelist = filelist || [];
+    const files = fs.readdirSync(path);
+    fileList = fileList || [];
     files.forEach(function (file) {
-        if (fs.statSync(dir + file).isDirectory()) {
-            filelist = readRecursive(dir + file + "/", filelist);
+        if (fs.statSync(path + file).isDirectory()) {
+            fileList = readRecursive(path + file + "/", fileList);
         } else {
-            filelist.push(dir + file);
+            fileList.push(path + file);
         }
     });
-    return filelist;
+    return fileList;
 };
 
 module.exports.readRecursive = function (path) {
