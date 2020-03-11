@@ -350,7 +350,6 @@ module.exports.registerActions = () => {
 
     Login.registerActions();
     Owner.registerActions();
-    Repository.registerActions();
     Guild.registerActions();
     Plugin.registerActions();
 };
