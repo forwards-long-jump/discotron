@@ -346,7 +346,4 @@ module.exports.registerActions = () => {
             reply(info);
         }).catch(Logger.err);
     });
-
-
-    Login.registerActions();
 };
