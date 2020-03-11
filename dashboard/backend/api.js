@@ -106,3 +106,15 @@ const authLevelCheck = {
 };
 
 const Login = require("../../core/login.js");
+
+module.exports.registerActions = () => {
+    const { readRecursive } = require("../../core/utils/file-helper.js");
+    const files = readRecursive(__dirname + "/endpoints/");
+
+    // For now, we can just require() each file to register all actions
+    // Later on, this will be module.exports that have to be parsed individually
+    // TODO: For that, the file paths must be converted to relative path!
+    for (let file of files) {
+        require(file);
+    }
+};

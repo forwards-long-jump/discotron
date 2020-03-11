@@ -45,6 +45,10 @@ async function init() {
     registerEvents();
     await connectToDiscord();
 
+    // Register actions
+    const webAPI = require("./dashboard/backend/api.js");
+    webAPI.registerActions();
+
     /**
      * Attempts to connect the bot client to Discord
      * @returns {Promise<boolean>} true if login is successful, false otherwise
