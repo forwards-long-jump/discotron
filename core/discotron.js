@@ -9,8 +9,6 @@ const Login = require("./login.js");
 const db = require("./database/crud.js");
 const discordClientProvider = require("./utils/discord-client-provider.js");
 
-const webAPI = require("../dashboard/backend/api.js").getWebAPI("discotron-dashboard");
-
 const botSettings = new BotSettings();
 
 let actions = {};
@@ -283,67 +281,4 @@ module.exports.loadRepositories = () => {
     }).catch(Logger.err);
 };
 
-/**
- * Register webAPI actions related to Discotron
- */
-module.exports.registerActions = () => {
-    webAPI.registerAction("set-bot-config", (data, reply) => {
-        if (data === undefined) {
-            reply(false);
-            return;
-        }
-
-        if (data.helpText !== undefined) {
-            botSettings.helpText = data.helpText;
-        }
-
-        if (data.maintenance !== undefined) {
-            botSettings.maintenance = data.maintenance;
-        }
-
-        if (data.presenceText !== undefined) {
-            botSettings.presenceText = data.presenceText;
-        }
-
-        reply();
-    }, "owner");
-
-    webAPI.registerAction("get-bot-config", (data, reply) => {
-        reply({
-            helpText: botSettings.helpText,
-            presenceText: botSettings.presenceText,
-            maintenance: botSettings.maintenance,
-            status: discordClientProvider.get().status
-        });
-    }, "owner");
-
-    webAPI.registerAction("restart-bot", (data, reply) => {
-        Logger.log("Restarting bot...");
-        discordClientProvider.get().destroy().then(() => {
-            return global.discotron._connectToDiscord().then(() => {
-                reply(true);
-            });
-        }).catch(Logger.err);
-    }, "owner");
-
-    webAPI.registerAction("get-bot-info", (data, reply) => {
-        const discordClient = discordClientProvider.get();
-        if (discordClient.user !== null) {
-            reply({
-                avatar: discordClient.user.displayAvatarURL,
-                tag: discordClient.user.tag
-            });
-        } else {
-            reply({
-                avatar: "/dashboard/images/outage.png",
-                tag: "Bot offline"
-            });
-        }
-    }, "everyone");
-
-    webAPI.registerAction("get-user-info", (data, reply) => {
-        getUserInfo(data.discordId).then((info) => {
-            reply(info);
-        }).catch(Logger.err);
-    });
-};
+module.exports.getUserInfo = getUserInfo;

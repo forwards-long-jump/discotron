@@ -45,8 +45,6 @@ async function init() {
     registerEvents();
     await connectToDiscord();
 
-    discotron.registerActions();
-
     /**
      * Attempts to connect the bot client to Discord
      * @returns {Promise<boolean>} true if login is successful, false otherwise
