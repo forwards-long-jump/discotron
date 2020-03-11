@@ -45,7 +45,9 @@ async function init() {
     registerEvents();
     await connectToDiscord();
 
-    discotron.registerActions();
+    // Register actions
+    const webAPI = require("./dashboard/backend/api.js");
+    webAPI.registerActions();
 
     /**
      * Attempts to connect the bot client to Discord
