@@ -1,4 +1,5 @@
 const webAPI = require("../api.js").getWebAPI("discotron-dashboard");
+const Plugin = require("../../../core/models/plugin.js");
 const Owner = require("../../../core/models/owner.js");
 
 webAPI.registerAction("get-plugins", (data, reply, userDiscordId) => {
