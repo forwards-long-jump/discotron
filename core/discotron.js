@@ -349,5 +349,4 @@ module.exports.registerActions = () => {
 
 
     Login.registerActions();
-    Plugin.registerActions();
 };
