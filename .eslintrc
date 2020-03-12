@@ -32,6 +32,7 @@
         "keyword-spacing": "error",
         "comma-spacing": "error",
         "no-implicit-coercion": "error",
+        "quotes": ["error", "double", { "avoidEscape": false }],
         "spaced-comment": ["error", "always", { "block": { "balanced": true } }],
         "no-warning-comments-case/no-warning-comments-case": "error",
         "indent": [
