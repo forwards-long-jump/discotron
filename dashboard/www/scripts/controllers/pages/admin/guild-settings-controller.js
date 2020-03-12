@@ -61,7 +61,7 @@ window.discotron.GuildSettingsController = class extends window.discotron.Contro
 
         document.getElementById("channel-locking").onclick = () => {
             this._guild.getChannels().then((channels) => {
-                let channelListArray = Array.from(this._guild.allowedChannelIds);
+                const channelListArray = Array.from(this._guild.allowedChannelIds);
 
                 new discotron.ChannelListWidgetController(channels, channelListArray, (selectedChannels) => {
                     if (selectedChannels.length === Object.keys(channelListArray).length) {
@@ -73,7 +73,7 @@ window.discotron.GuildSettingsController = class extends window.discotron.Contro
             }).catch(console.error);
         };
         document.getElementById("admins").onclick = () => {
-            let admins = Array.from(this._guild.admins);
+            const admins = Array.from(this._guild.admins);
             new discotron.UserRoleWidgetController(this._guild, admins, (newAdmins) => {
                 this._guild.admins = newAdmins;
             }, true, "Admins", true);

@@ -52,9 +52,9 @@ window.discotron.UserRoleWidgetController = class extends window.discotron.Widge
      */
     _getCustomSettings() {
         // Switches
-        let customSettings = {};
+        const customSettings = {};
 
-        let switches = this._widgetContainer.querySelectorAll(".custom-switch-checkbox");
+        const switches = this._widgetContainer.querySelectorAll(".custom-switch-checkbox");
         for (let i = 0; i < switches.length; i++) {
             const checkbox = switches[i];
             customSettings[checkbox.dataset.devName] = checkbox.checked;
@@ -70,8 +70,8 @@ window.discotron.UserRoleWidgetController = class extends window.discotron.Widge
     _addEvents() {
         super._addEvents();
 
-        let input = document.getElementById("name-input");
-        let button = document.getElementById("add-button");
+        const input = document.getElementById("name-input");
+        const button = document.getElementById("add-button");
 
         input.oninput = () => {
             if (input.value !== "") {
@@ -80,7 +80,7 @@ window.discotron.UserRoleWidgetController = class extends window.discotron.Widge
         };
 
         input.onpaste = (event) => {
-            let paste = (event.clipboardData || window.clipboardData).getData("text");
+            const paste = (event.clipboardData || window.clipboardData).getData("text");
             this._checkIdValidity(paste);
             event.preventDefault();
         };
@@ -93,7 +93,7 @@ window.discotron.UserRoleWidgetController = class extends window.discotron.Widge
 
         button.onclick = () => {
             button.disabled = true;
-            let value = input.value;
+            const value = input.value;
             input.value = "";
 
             // The text is the name of a role or a user
@@ -106,7 +106,7 @@ window.discotron.UserRoleWidgetController = class extends window.discotron.Widge
      * @param {string} id Id of a discord user
      */
     _checkIdValidity(id) {
-        let button = document.querySelector("#add-button");
+        const button = document.querySelector("#add-button");
         button.disabled = true;
 
         // This was not an existing user, check if it's an id
@@ -123,7 +123,7 @@ window.discotron.UserRoleWidgetController = class extends window.discotron.Widge
      * @param {string} name Username of a discord user or role name
      */
     _checkNameValidity(name) {
-        let button = document.querySelector("#add-button");
+        const button = document.querySelector("#add-button");
         button.disabled = true;
 
         if (this._guild !== undefined) {
@@ -131,7 +131,7 @@ window.discotron.UserRoleWidgetController = class extends window.discotron.Widge
         } else {
             // No guild specified means we are trying to add a "global" user, check in all guild just in case
             discotron.Guild.getAll().then((guilds) => {
-                for (let guildId in guilds) {
+                for (const guildId in guilds) {
                     this._enableButtonIfValidName(guilds[guildId], name, button);
                 }
             });
@@ -140,7 +140,7 @@ window.discotron.UserRoleWidgetController = class extends window.discotron.Widge
         // Also check for roles validity if they are displayed
         if (this._displayRoles) {
             this._guild.getRoles().then((roles) => {
-                for (let discordId in roles) {
+                for (const discordId in roles) {
                     if (roles[discordId].name === name) {
                         button.disabled = false;
                         break;
@@ -159,7 +159,7 @@ window.discotron.UserRoleWidgetController = class extends window.discotron.Widge
      */
     _enableButtonIfValidName(guild, name, button) {
         guild.getMembers().then((members) => {
-            for (let discordId in members) {
+            for (const discordId in members) {
                 if (members[discordId].tag === name) {
                     button.disabled = false;
                     break;
@@ -179,8 +179,8 @@ window.discotron.UserRoleWidgetController = class extends window.discotron.Widge
 
             switch (customInput.type) {
                 case "switch": {
-                    let switchTemplate = document.getElementById("template-custom-switch");
-                    let switchContainer = document.importNode(switchTemplate.content, true);
+                    const switchTemplate = document.getElementById("template-custom-switch");
+                    const switchContainer = document.importNode(switchTemplate.content, true);
 
                     switchContainer.querySelector(".custom-switch-checkbox").checked = customInput.value;
 
@@ -206,7 +206,7 @@ window.discotron.UserRoleWidgetController = class extends window.discotron.Widge
 
         // Users
         for (let i = 0; i < this._usersRoles.length; ++i) {
-            let userRole = this._usersRoles[i];
+            const userRole = this._usersRoles[i];
             if (userRole.discordUserId !== null) {
                 discotron.User.get(this._usersRoles[i].discordUserId).then((user) => {
                     this._displayUserEntry(user);
@@ -217,11 +217,11 @@ window.discotron.UserRoleWidgetController = class extends window.discotron.Widge
         // Roles
         if (this._displayRoles) {
             for (let i = 0; i < this._usersRoles.length; ++i) {
-                let userRole = this._usersRoles[i];
+                const userRole = this._usersRoles[i];
 
                 if (userRole.discordRoleId !== null) {
                     this._guild.getRoles().then((roles) => {
-                        for (let discordId in roles) {
+                        for (const discordId in roles) {
                             if (roles[discordId].discordId === userRole.discordRoleId) {
                                 this._displayRoleEntry(roles[discordId]);
                             }
@@ -280,7 +280,7 @@ window.discotron.UserRoleWidgetController = class extends window.discotron.Widge
      * @param {string} name Tag or role name
      */
     _addEntry(name) {
-        let user = discotron.User.getByTag(name);
+        const user = discotron.User.getByTag(name);
         if (user !== undefined) {
             this._addUserEntry(discotron.User.getByTag(name));
         }
@@ -288,7 +288,7 @@ window.discotron.UserRoleWidgetController = class extends window.discotron.Widge
         // Check for roles as well
         if (this._displayRoles) {
             this._guild.getRoles().then((roles) => {
-                for (let discordId in roles) {
+                for (const discordId in roles) {
                     if (roles[discordId].name === name) {
                         this._addRoleEntry(roles[discordId]);
                         break;
@@ -305,7 +305,7 @@ window.discotron.UserRoleWidgetController = class extends window.discotron.Widge
      */
     _removeEntry(userId, roleId) {
         for (let i = 0; i < this._usersRoles.length; ++i) {
-            let ur = this._usersRoles[i];
+            const ur = this._usersRoles[i];
             if (ur._discordUserId === userId && ur._discordRoleId === roleId) {
                 this._usersRoles.splice(i, 1);
                 break;
@@ -324,13 +324,13 @@ window.discotron.UserRoleWidgetController = class extends window.discotron.Widge
      * @param {discotron.User} user Discord user
      */
     _displayUserEntry(user) {
-        let usersContainer = document.querySelector(".user-list-container");
-        let userTemplate = document.querySelector("#user-entry");
+        const usersContainer = document.querySelector(".user-list-container");
+        const userTemplate = document.querySelector("#user-entry");
 
-        let userEntry = document.importNode(userTemplate.content, true);
+        const userEntry = document.importNode(userTemplate.content, true);
         userEntry.querySelector(".username").textContent = user._name;
 
-        let container = userEntry.querySelector("span");
+        const container = userEntry.querySelector("span");
         userEntry.querySelector("span").onclick = () => {
             this._removeEntry(user.discordId, null);
             container.remove();
@@ -345,14 +345,14 @@ window.discotron.UserRoleWidgetController = class extends window.discotron.Widge
      * @param {discotron.Role} role Role
      */
     _displayRoleEntry(role) {
-        let rolesContainer = document.querySelector(".role-list-container");
-        let roleTemplate = document.querySelector("#role-entry");
+        const rolesContainer = document.querySelector(".role-list-container");
+        const roleTemplate = document.querySelector("#role-entry");
 
-        let roleEntry = document.importNode(roleTemplate.content, true);
+        const roleEntry = document.importNode(roleTemplate.content, true);
         roleEntry.querySelector(".role-color").style.color = role.color;
         roleEntry.querySelector(".role").textContent = role.name;
 
-        let container = roleEntry.querySelector("span");
+        const container = roleEntry.querySelector("span");
         roleEntry.querySelector("span").onclick = () => {
             this._removeEntry(null, role.discordId);
             container.remove();

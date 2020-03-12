@@ -20,7 +20,7 @@ class Owner extends OwnerModel {
         Owner._owners = new Set(discordUserIds);
 
         db.delete("Owners", {}, true).then(() => {
-            let promises = [];
+            const promises = [];
 
             for (let i = 0; i < discordUserIds.length; ++i) {
                 promises.push(db.insert("Owners", {

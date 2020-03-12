@@ -10,13 +10,13 @@ const db = require("./database/crud.js");
 
 const appConfig = require(global.discotronConfigPath + "/bot.json");
 
-let users = {};
+const users = {};
 let firstLaunch = false;
 let ownerSecret;
 
-let clientSecret = appConfig.oauth2Secret;
-let clientId = appConfig.applicationId;
-let redirectURI = appConfig.redirectURI;
+const clientSecret = appConfig.oauth2Secret;
+const clientId = appConfig.applicationId;
+const redirectURI = appConfig.redirectURI;
 
 const discordApiUrl = "https://discordapp.com/api/v6/";
 
@@ -152,7 +152,7 @@ function requestAppToken(discordUserId, accessToken, refreshToken, expireDate) {
 
             } else {
                 // User does not exists, create it
-                let appToken = uuidv1();
+                const appToken = uuidv1();
                 return addUser(discordUserId, appToken, accessToken, refreshToken, expireDate).then(() => {
                     resolve(appToken);
                 });
@@ -188,7 +188,7 @@ function getAccessToken(authToken) {
                     reject(err);
                 } else {
                     try {
-                        let answer = JSON.parse(body);
+                        const answer = JSON.parse(body);
 
                         if (answer.error !== undefined) {
                             reject(answer.error);
@@ -254,7 +254,7 @@ function queryDiscordUserId(accessToken) {
         }, (err, response, body) => {
             if (err === null) {
                 try {
-                    let result = JSON.parse(body);
+                    const result = JSON.parse(body);
                     resolve({
                         discordId: result.id,
                         avatar: result.avatar,

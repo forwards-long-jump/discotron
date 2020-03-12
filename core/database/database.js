@@ -63,7 +63,7 @@ module.exports.doDatabaseMigrations = async (version = null, allowDown = false) 
     const current = await migrations.current();
     try {
         const { names, type } = migrations.listDiff(current, version);
-        for (let name of names) {
+        for (const name of names) {
             if (type === "down" && allowDown !== true) {
                 Logger.err("May not downgrade without allowDown set to true.");
                 return;

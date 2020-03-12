@@ -49,7 +49,7 @@ window.discotron.RepositoryListController = class extends window.discotron.Contr
                 // Query cards
                 discotron.Plugin.getAll().then((plugins) => {
                     let pluginFound = false;
-                    for (let pluginId in plugins) {
+                    for (const pluginId in plugins) {
                         const plugin = plugins[pluginId];
                         if (repo.pluginIds.includes(pluginId)) {
                             pluginFound = true;
@@ -80,8 +80,8 @@ window.discotron.RepositoryListController = class extends window.discotron.Contr
                         const page = repo.pages[i];
                         pluginFound = true;
 
-                        let cardTemplate = document.getElementById("template-card");
-                        let cardContainer = document.importNode(cardTemplate.content, true);
+                        const cardTemplate = document.getElementById("template-card");
+                        const cardContainer = document.importNode(cardTemplate.content, true);
                         cardContainer.querySelector(".repository-card-title").textContent = "Page: /" + page;
                         cardContainer.querySelector(".repository-card-description").innerHTML = "Web page accessible <a href=\"/" + page + "\">here</a>";
 
@@ -139,7 +139,7 @@ window.discotron.RepositoryListController = class extends window.discotron.Contr
      * Called when add repository button is pressed
      */
     _onAddRepository() {
-        let repoUrl = document.getElementById("repository-url").value;
+        const repoUrl = document.getElementById("repository-url").value;
         if (repoUrl !== "") {
             document.getElementById("add-repository").disabled = true;
             discotron.WebAPI.queryBot("discotron-dashboard", "add-repository", {

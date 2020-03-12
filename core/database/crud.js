@@ -13,9 +13,9 @@ const utils = require("../utils/utils.js");
  */
 function generateParameters(where, separator = " AND ") {
     let params = "";
-    let objParam = {};
+    const objParam = {};
 
-    for (let key in where) {
+    for (const key in where) {
         let comparison;
         if (where[key] === null) {
             comparison = "IS";
@@ -39,9 +39,9 @@ function generateParameters(where, separator = " AND ") {
 function generateValuesForInsert(values) {
     let columns = "(";
     let params = "(";
-    let data = {};
+    const data = {};
 
-    for (let key in values) {
+    for (const key in values) {
         columns += key + ",";
         params += "$" + key + ",";
         data["$" + key] = values[key];
@@ -67,9 +67,9 @@ module.exports.update = (table, values, where) => {
     return new Promise((resolve, reject) => {
         let sql = "UPDATE " + table + " SET ";
         let valuesText = "";
-        let params = [];
+        const params = [];
 
-        for (let key in values) {
+        for (const key in values) {
             valuesText += key + "=?,";
             params.push(values[key]);
         }
@@ -78,7 +78,7 @@ module.exports.update = (table, values, where) => {
 
         let whereText = "";
 
-        for (let key in where) {
+        for (const key in where) {
             whereText += key + "=? AND ";
             params.push(where[key]);
         }
@@ -110,7 +110,7 @@ module.exports.insert = (table, values) => {
 
     return new Promise((resolve, reject) => {
         let sql = "INSERT INTO " + table;
-        let parameters = generateValuesForInsert(values);
+        const parameters = generateValuesForInsert(values);
         sql += " " + parameters.columns + " VALUES " + parameters.params;
 
         database.run(sql, parameters.data, (err) => {
@@ -139,7 +139,7 @@ module.exports.delete = (table, where, eraseAll = false) => {
         let sql = "DELETE FROM " + table;
 
         if (!utils.isEmpty(where)) {
-            let parameters = generateParameters(where);
+            const parameters = generateParameters(where);
             sql += " WHERE " + parameters.text;
 
             database.run(sql, parameters.objParam, (err) => {
@@ -187,7 +187,7 @@ module.exports.select = (table, fields = [], where = {}) => {
         sql += " FROM " + table + " ";
 
         if (!utils.isEmpty(where)) {
-            let parameters = generateParameters(where);
+            const parameters = generateParameters(where);
             sql += "WHERE " + parameters.text;
 
             database.all(sql, parameters.objParam, (err, rows) => {

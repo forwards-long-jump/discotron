@@ -55,8 +55,8 @@ window.discotron.BotStatusController = class extends window.discotron.Controller
      * Add events to open widgets and change variables, change the save button status
      */
     _addEvents() {
-        let saveSettingsButton = document.getElementById("save-settings");
-        let restartButton = document.getElementById("restart-bot");
+        const saveSettingsButton = document.getElementById("save-settings");
+        const restartButton = document.getElementById("restart-bot");
 
         document.getElementById("bot-presence").onkeyup = () => {
             saveSettingsButton.disabled = false;
@@ -88,7 +88,7 @@ window.discotron.BotStatusController = class extends window.discotron.Controller
 
         document.getElementById("owners-selector").onclick = () => {
             discotron.WebAPI.queryBot("discotron-dashboard", "get-owner-ids").then((owners) => {
-                let userRoles = owners.map((owner) => {
+                const userRoles = owners.map((owner) => {
                     return new discotron.UserRole(owner, null);
                 });
                 new discotron.UserRoleWidgetController(undefined, userRoles, (newOwners) => {

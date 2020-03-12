@@ -161,11 +161,11 @@ class Repository extends RepositoryModel {
                     return repo.mergeBranches("master", "origin/master");
                 })
                 .then((oid) => {
-                    let oldPluginList = this._pluginIds.splice(0);
+                    const oldPluginList = this._pluginIds.splice(0);
                     this.loadPluginsFromDisk();
                     this.loadPagesFromDisk();
 
-                    let deletedPlugins = [];
+                    const deletedPlugins = [];
 
                     for (let i = 0; i < oldPluginList.length; i++) {
                         const oldPluginId = oldPluginList[i];
@@ -193,7 +193,7 @@ class Repository extends RepositoryModel {
      */
     delete() {
         return new Promise((resolve, reject) => {
-            let index = Repository._repositories.indexOf(this);
+            const index = Repository._repositories.indexOf(this);
             if (index < 0) {
                 return;
             }
@@ -203,7 +203,7 @@ class Repository extends RepositoryModel {
             return db.delete("Repositories", {
                 folderName: this._folderName
             }).then(() => {
-                let plugins = Plugin.getAll();
+                const plugins = Plugin.getAll();
                 for (let i = 0; i < this._pluginIds.length; ++i) {
                     plugins[this._pluginIds[i]].delete();
                 }

@@ -19,11 +19,11 @@ window.discotron.HelpController = class extends window.discotron.Controller {
         // Query cards
         discotron.Plugin.getAll().then((plugins) => {
 
-            for (let pluginId in plugins) {
+            for (const pluginId in plugins) {
                 const plugin = plugins[pluginId];
 
-                let template = document.getElementById("template-plugin-help");
-                let pluginCard = document.importNode(template.content, true);
+                const template = document.getElementById("template-plugin-help");
+                const pluginCard = document.importNode(template.content, true);
 
                 pluginCard.querySelector(".plugin-help-header").textContent = plugin.name;
                 pluginCard.querySelector(".plugin-description").textContent = plugin.description;
@@ -31,8 +31,8 @@ window.discotron.HelpController = class extends window.discotron.Controller {
                 for (let i = 0; i < plugin.commands.length; i++) {
                     const command = plugin.commands[i];
 
-                    let commandTemplate = document.getElementById("template-command");
-                    let commandContainer = document.importNode(commandTemplate.content, true);
+                    const commandTemplate = document.getElementById("template-command");
+                    const commandContainer = document.importNode(commandTemplate.content, true);
 
                     let displayedCommand = "";
 
