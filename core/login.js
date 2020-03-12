@@ -4,7 +4,6 @@
 const uuidv1 = require("uuid/v1");
 const request = require("request");
 
-const webAPI = require("../dashboard/backend/api.js").getWebAPI("discotron-dashboard");
 const Owner = require("./models/owner.js");
 const Logger = require("./utils/logger.js");
 const db = require("./database/crud.js");
@@ -20,6 +19,22 @@ const clientId = appConfig.applicationId;
 const redirectURI = appConfig.redirectURI;
 
 const discordApiUrl = "https://discordapp.com/api/v6/";
+
+/**
+ * Called every time a user tries to claim discotron ownership
+ * @param {string} authToken Discord oauth2 token
+ * @param {Function} reply Function to call to end the request
+ * @param {string} [userOwnerSecret=undefined] Token the user provided as an admin token
+ */
+function claimOwnership(authToken, reply, userOwnerSecret = undefined) {
+    if (firstLaunch) {
+        handleLogin(authToken, reply, userOwnerSecret);
+    } else {
+        reply({
+            status: "error"
+        });
+    }
+}
 
 /**
  * Called every time a user tries to login, perform required checks
@@ -283,25 +298,6 @@ function addUser(discordId, appToken, accessToken, refreshToken, expireDate) {
 }
 
 /**
- * Register webAPI actions related to log-in
- */
-function registerActions() {
-    webAPI.registerAction("claim-ownership", (data, reply) => {
-        if (firstLaunch) {
-            handleLogin(data.code, reply, data.ownerSecret);
-        } else {
-            reply({
-                status: "error"
-            });
-        }
-    });
-
-    webAPI.registerAction("login", (data, reply) => {
-        handleLogin(data.code, reply);
-    });
-}
-
-/**
  * Put Discotron in "first launch" mode when called, allows creating a new admin
  */
 function setFirstLaunch() {
@@ -310,5 +306,6 @@ function setFirstLaunch() {
 }
 
 module.exports.setFirstLaunch = setFirstLaunch;
-module.exports.registerActions = registerActions;
+module.exports.handleLogin = handleLogin;
+module.exports.claimOwnership = claimOwnership;
 module.exports.getDiscordUserId = getDiscordUserId;

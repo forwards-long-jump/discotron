@@ -219,55 +219,6 @@ class Plugin extends PluginModel {
     get prefix() {
         return super.prefix;
     }
-
-    /**
-     * Register webAPI actions related to plugins
-     * @static
-     */
-    static registerActions() {
-        webAPI.registerAction("get-plugin-prefix", (data, reply) => {
-            if (Plugin._plugins[data.pluginId] !== undefined) {
-                reply(Plugin._plugins[data.pluginId].prefix);
-            } else {
-                reply(false);
-            }
-        });
-
-        webAPI.registerAction("get-plugin-logs", (data, reply) => {
-            reply(Plugin._plugins[data.pluginId].logs);
-        }, "owner");
-
-        webAPI.registerAction("set-plugin-prefix", (data, reply) => {
-            Plugin._plugins[data.pluginId].prefix = data.prefix;
-            reply();
-        }, "owner");
-
-        webAPI.registerAction("get-enabled", (data, reply) => {
-            if (Plugin._plugins[data.pluginId] !== undefined) {
-                reply(Plugin._plugins[data.pluginId].enabled);
-            } else {
-                reply(false);
-            }
-        });
-
-        webAPI.registerAction("set-enabled", (data, reply) => {
-            Plugin._plugins[data.pluginId].enabled = data.enabled;
-            reply();
-        }, "owner");
-
-        webAPI.registerAction("get-plugins", (data, reply, userDiscordId) => {
-            const pluginsObjects = [];
-
-            const plugins = Plugin.getAll();
-            for (const key in plugins) {
-                if (Object.prototype.hasOwnProperty.call(plugins, key)) {
-                    pluginsObjects.push(Plugin.getAll()[key].toObject(!Owner.isOwner(userDiscordId)));
-                }
-            }
-
-            reply(pluginsObjects);
-        });
-    }
 }
 
 Plugin._plugins = {};

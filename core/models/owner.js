@@ -1,5 +1,4 @@
 const OwnerModel = require("./../../shared-models/owner.js");
-const webAPI = require("../../dashboard/backend/api.js").getWebAPI("discotron-dashboard");
 const db = require("./../database/crud.js");
 const Logger = require("../utils/logger.js");
 
@@ -40,25 +39,6 @@ class Owner extends OwnerModel {
      */
     static isOwner(discordUserId) {
         return discordUserId !== undefined && Owner._owners.has(discordUserId);
-    }
-
-    /**
-     * Register webAPI actions related to owners
-     * @static
-     */
-    static registerActions() {
-        webAPI.registerAction("set-owners", (data, reply) => {
-            Owner.setOwners(data.discordUserIds);
-            reply();
-        }, "owner");
-
-        webAPI.registerAction("get-owner-ids", (data, reply) => {
-            reply(Array.from(Owner._owners));
-        }, "owner");
-
-        webAPI.registerAction("is-owner", (data, reply, discordUserId) => {
-            reply(Owner.isOwner(discordUserId));
-        });
     }
 
     /**

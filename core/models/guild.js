@@ -1,7 +1,6 @@
 const GuildModel = require("./../../shared-models/guild.js");
 const UserRole = require("./user-role.js");
 const Permission = require("./permission.js");
-const webAPI = require("../../dashboard/backend/api.js").getWebAPI("discotron-dashboard");
 const Plugin = require("./plugin.js");
 const db = require("./../database/crud.js");
 const Logger = require("../utils/logger.js");
@@ -439,114 +438,6 @@ class Guild extends GuildModel {
                 }));
             }
         });
-    }
-
-    /**
-     * Register WebAPI actions related to a guild
-     * @static
-     */
-    static registerActions() {
-        webAPI.registerAction("get-guilds", (data, reply, discordUserId, discordGuildId) => {
-            const guilds = {};
-            for (const discordGuildId in Guild.getAll()) {
-                guilds[discordGuildId] = Guild.get(discordGuildId).toObject();
-            }
-            reply(guilds);
-        }, "guildAdmin");
-
-        webAPI.registerAction("get-members", (data, reply, discordUserId, discordGuildId) => {
-            const guild = discordClientProvider.get().guilds.get(discordGuildId);
-            const members = guild.members;
-            reply(members.map(member => {
-                return {
-                    discordId: member.user.id,
-                    name: member.user.username,
-                    discriminator: member.user.discriminator,
-                    avatar: member.user.displayAvatarURL
-                };
-            }));
-        }, "guildAdmin");
-
-        webAPI.registerAction("get-roles", (data, reply, discordUserId, discordGuildId) => {
-            const guild = discordClientProvider.get().guilds.get(discordGuildId);
-            reply(guild.roles.map((role) => {
-                return {
-                    discordId: role.id,
-                    name: role.name,
-                    color: role.hexColor
-                };
-            }));
-        }, "guildAdmin");
-
-        webAPI.registerAction("get-channels", (data, reply, discordUserId, discordGuildId) => {
-            const guild = discordClientProvider.get().guilds.get(discordGuildId);
-            reply(guild.channels.map((channel) => {
-                return {
-                    discordId: channel.id,
-                    name: channel.name,
-                    type: channel.type
-                };
-            }));
-        }, "guildAdmin");
-
-        webAPI.registerAction("get-guilds-where-is-admin", (data, reply, discordUserId) => {
-            const guilds = [];
-            for (const discordGuildId in Guild._guilds) {
-                const guild = Guild.get(discordGuildId);
-                if (guild.isAdmin(discordUserId)) {
-                    guilds.push(guild.toObject());
-                }
-            }
-            reply(guilds);
-        });
-
-        webAPI.registerAction("get-allowed-channels", (data, reply, discordUserId, discordGuildId) => {
-            reply(Guild.get(discordGuildId).allowedChannelIds);
-        }, "guildAdmin");
-
-        webAPI.registerAction("set-allowed-channels", (data, reply, discordUserId, discordGuildId) => {
-            Guild.get(discordGuildId).allowedChannelIds = data.allowedChannelIds;
-            reply();
-        }, "guildAdmin");
-
-        webAPI.registerAction("get-plugin-enabled", (data, reply, discordUserId, discordGuildId) => {
-            reply(Guild.get(discordGuildId).isPluginEnabled(data.pluginId));
-        }, "guildAdmin");
-
-        webAPI.registerAction("set-plugin-enabled", (data, reply, discordUserId, discordGuildId) => {
-            Guild.get(discordGuildId).setPluginEnabled(data.pluginId, data.enabled);
-            reply();
-        }, "guildAdmin");
-
-        webAPI.registerAction("get-plugin-permission", (data, reply, discordUserId, discordGuildId) => {
-            reply(Guild.get(discordGuildId).permissions[data.pluginId].toObject());
-        }, "guildAdmin");
-
-        webAPI.registerAction("set-plugin-permission", (data, reply, discordUserId, discordGuildId) => {
-            const usersRoles = data.userRoles.map((ur) => {
-                return new UserRole(ur._discordUserId, ur._discordRoleId, discordGuildId);
-            });
-            Guild.get(discordGuildId).setPluginPermission(data.pluginId, usersRoles);
-            reply();
-        }, "guildAdmin");
-
-        webAPI.registerAction("get-guild-prefix", (data, reply, discordUserId, discordGuildId) => {
-            reply(Guild.get(discordGuildId).commandPrefix);
-        }, "guildAdmin");
-
-        webAPI.registerAction("set-guild-prefix", (data, reply, discordUserId, discordGuildId) => {
-            Guild.get(discordGuildId).commandPrefix = data.prefix;
-            reply();
-        }, "guildAdmin");
-
-        webAPI.registerAction("get-admins", (data, reply, discordUserId, discordGuildId) => {
-            reply(Array.from(Guild.get(discordGuildId).admins));
-        }, "guildAdmin");
-
-        webAPI.registerAction("set-admins", (data, reply, discordUserId, discordGuildId) => {
-            Guild.get(discordGuildId).admins = data.admins;
-            reply();
-        }, "guildAdmin");
     }
 }
 
