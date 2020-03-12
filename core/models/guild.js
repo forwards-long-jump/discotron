@@ -60,8 +60,8 @@ class Guild extends GuildModel {
      * @returns {object} Object containing {id, prefix, name, nameAcronym, image, allowedChannelIds, enabledPluginIds, admins, permissions}
      */
     toObject() {
-        let guild = discordClientProvider.get().guilds.get(this.discordId);
-        let permissions = {};
+        const guild = discordClientProvider.get().guilds.get(this.discordId);
+        const permissions = {};
         for (const pluginId in this.permissions) {
             const permission = this.permissions[pluginId];
             permissions[pluginId] = permission.toObject();
@@ -138,7 +138,7 @@ class Guild extends GuildModel {
         db.delete("Admins", {
             discordGuildId: this.discordId
         }).then(() => {
-            let promises = [];
+            const promises = [];
 
             for (let i = 0; i < usersRoles.length; ++i) {
                 const userRole = usersRoles[i];
@@ -169,15 +169,15 @@ class Guild extends GuildModel {
         // TODO: Refresh that when it changes on Discord
         this._discordAdmins = new Set([]);
 
-        let guild = discordClientProvider.get().guilds.get(this.discordId);
-        let admin = new UserRole(guild.ownerID, null, this.discordId);
+        const guild = discordClientProvider.get().guilds.get(this.discordId);
+        const admin = new UserRole(guild.ownerID, null, this.discordId);
         this._discordAdmins.add(admin);
 
-        let roles = guild.roles.array();
+        const roles = guild.roles.array();
         for (let i = 0; i < roles.length; ++i) {
             const role = roles[i];
             if (role.hasPermission("ADMINISTRATOR")) {
-                let userRole = new UserRole(null, role.id, this.discordId);
+                const userRole = new UserRole(null, role.id, this.discordId);
                 this._discordAdmins.add(userRole);
             }
         }
@@ -246,7 +246,7 @@ class Guild extends GuildModel {
     setPluginEnabled(pluginId, enabled) {
         if (this._enabledPlugins.size === 0) {
             if (!enabled) {
-                for (let pluginId_ in Plugin.getAll()) {
+                for (const pluginId_ in Plugin.getAll()) {
                     if (pluginId !== pluginId_) {
                         this._enabledPlugins.add(pluginId_);
                     }
@@ -265,7 +265,7 @@ class Guild extends GuildModel {
         return db.delete("GuildEnabledPlugins", {
             discordGuildId: this.discordId
         }).then(() => {
-            let promises = [];
+            const promises = [];
             this._enabledPlugins.forEach((element) => {
                 promises.push(db.insert("GuildEnabledPlugins", {
                     pluginId: element,
@@ -290,7 +290,7 @@ class Guild extends GuildModel {
             discordGuildId: this.discordId,
             pluginId: pluginId
         }).then(() => {
-            let promises = [];
+            const promises = [];
             for (let i = 0; i < userRoles.length; ++i) {
                 promises.push(userRoles[i].getId().then((id) => {
                     return db.insert("Permissions", {
@@ -333,7 +333,7 @@ class Guild extends GuildModel {
             discordGuildId: this.discordId,
             pluginId: pluginId
         }).then((rows) => {
-            let promises = [];
+            const promises = [];
             const pluginPermission = this._permissions[pluginId];
 
             for (let i = 0; i < rows.length; ++i) {
@@ -399,7 +399,7 @@ class Guild extends GuildModel {
         return db.select("Admins", ["userRoleId"], {
             discordGuildId: this.discordId
         }).then((rows) => {
-            let promises = [];
+            const promises = [];
             for (let i = 0; i < rows.length; ++i) {
                 promises.push(UserRole.getById(rows[i].userRoleId, this.discordId).then((userRole) => {
                     this._admins.add(userRole);
@@ -447,7 +447,7 @@ class Guild extends GuildModel {
      */
     static registerActions() {
         webAPI.registerAction("get-guilds", (data, reply, discordUserId, discordGuildId) => {
-            let guilds = {};
+            const guilds = {};
             for (const discordGuildId in Guild.getAll()) {
                 guilds[discordGuildId] = Guild.get(discordGuildId).toObject();
             }
@@ -455,8 +455,8 @@ class Guild extends GuildModel {
         }, "guildAdmin");
 
         webAPI.registerAction("get-members", (data, reply, discordUserId, discordGuildId) => {
-            let guild = discordClientProvider.get().guilds.get(discordGuildId);
-            let members = guild.members;
+            const guild = discordClientProvider.get().guilds.get(discordGuildId);
+            const members = guild.members;
             reply(members.map(member => {
                 return {
                     discordId: member.user.id,
@@ -468,7 +468,7 @@ class Guild extends GuildModel {
         }, "guildAdmin");
 
         webAPI.registerAction("get-roles", (data, reply, discordUserId, discordGuildId) => {
-            let guild = discordClientProvider.get().guilds.get(discordGuildId);
+            const guild = discordClientProvider.get().guilds.get(discordGuildId);
             reply(guild.roles.map((role) => {
                 return {
                     discordId: role.id,
@@ -479,7 +479,7 @@ class Guild extends GuildModel {
         }, "guildAdmin");
 
         webAPI.registerAction("get-channels", (data, reply, discordUserId, discordGuildId) => {
-            let guild = discordClientProvider.get().guilds.get(discordGuildId);
+            const guild = discordClientProvider.get().guilds.get(discordGuildId);
             reply(guild.channels.map((channel) => {
                 return {
                     discordId: channel.id,
@@ -490,7 +490,7 @@ class Guild extends GuildModel {
         }, "guildAdmin");
 
         webAPI.registerAction("get-guilds-where-is-admin", (data, reply, discordUserId) => {
-            let guilds = [];
+            const guilds = [];
             for (const discordGuildId in Guild._guilds) {
                 const guild = Guild.get(discordGuildId);
                 if (guild.isAdmin(discordUserId)) {
@@ -523,7 +523,7 @@ class Guild extends GuildModel {
         }, "guildAdmin");
 
         webAPI.registerAction("set-plugin-permission", (data, reply, discordUserId, discordGuildId) => {
-            let usersRoles = data.userRoles.map((ur) => {
+            const usersRoles = data.userRoles.map((ur) => {
                 return new UserRole(ur._discordUserId, ur._discordRoleId, discordGuildId);
             });
             Guild.get(discordGuildId).setPluginPermission(data.pluginId, usersRoles);

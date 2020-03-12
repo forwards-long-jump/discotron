@@ -8,7 +8,7 @@ window.discotron.utils = {
     post: (url, data) => {
         return new Promise((resolve, reject) => {
             // source: http://youmightnotneedjquery.com/
-            let request = new XMLHttpRequest();
+            const request = new XMLHttpRequest();
             request.open("POST", url, true);
             request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
             request.send(JSON.stringify(data));
@@ -81,7 +81,7 @@ window.discotron.utils = {
      * @returns {Promise} resolve(object {object}) object:
      */
     getOrLoad: (object, loadFunction) => {
-        let loaded = Array.isArray(object) ? object.length !== 0 : !window.discotron.utils.isEmpty(object);
+        const loaded = Array.isArray(object) ? object.length !== 0 : !window.discotron.utils.isEmpty(object);
 
         return new Promise((resolve, reject) => {
             if (loaded) {

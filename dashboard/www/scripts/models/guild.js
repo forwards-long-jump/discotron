@@ -74,7 +74,7 @@ window.discotron.Guild = class extends window.discotron.GuildModel {
      */
     _loadChannels() {
         return discotron.WebAPI.queryBot("discotron-dashboard", "get-channels", {}, this.discordId).then((channels) => {
-            for (let discordId in channels) {
+            for (const discordId in channels) {
                 const channel = channels[discordId];
                 this._channels[discordId] = new discotron.Channel(channel.name, channel.discordId, channel.type);
             }
@@ -88,16 +88,16 @@ window.discotron.Guild = class extends window.discotron.GuildModel {
     static _loadAll() {
         return discotron.WebAPI.queryBot("discotron-dashboard", "get-guilds-where-is-admin").then((guilds) => {
             for (const discordGuildId in guilds) {
-                let guild = guilds[discordGuildId];
+                const guild = guilds[discordGuildId];
 
-                let admins = new Set(guild.admins.map((admin) => {
+                const admins = new Set(guild.admins.map((admin) => {
                     return new discotron.UserRole(admin.discordUserId, admin.discordRoleId, guild.discordId);
                 }));
 
-                let permissions = {};
+                const permissions = {};
                 for (const pluginId in guild.permissions) {
                     const permission = guild.permissions[pluginId];
-                    let usersRoles = permission.map((userRole) => {
+                    const usersRoles = permission.map((userRole) => {
                         return new discotron.UserRole(userRole.discordUserId, userRole.discordRoleId);
                     });
                     permissions[pluginId] = new discotron.Permission(this.discordId, pluginId, usersRoles);
@@ -217,7 +217,7 @@ window.discotron.Guild = class extends window.discotron.GuildModel {
         if (this._enabledPlugins.size === 0) {
             if (!enabled) {
                 discotron.Plugin.getAll().then((plugins) => {
-                    for (let pluginId_ in plugins) {
+                    for (const pluginId_ in plugins) {
                         if (pluginId_ !== pluginId) {
                             this._enabledPlugins.add(pluginId_);
                         }
@@ -260,7 +260,7 @@ window.discotron.Guild = class extends window.discotron.GuildModel {
      * @returns {Array} array of UserRoles
      */
     getPluginPermission(pluginId) {
-        let perm = this.permissions[pluginId];
+        const perm = this.permissions[pluginId];
         return perm === undefined ? [] : perm;
     }
 };

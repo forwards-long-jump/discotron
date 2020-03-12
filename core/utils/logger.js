@@ -63,7 +63,7 @@ class Logger {
      * @param {string} [severity="debug"] Severity of the message (can be: err, info, warn, debug)
      */
     static log(value, severity = "debug") {
-        let level = severityToLevel[severity];
+        const level = severityToLevel[severity];
 
         if (Logger.level <= level) {
 
@@ -72,8 +72,8 @@ class Logger {
                 value = value.replace(/__(.*?)__/g, controlCodes.underscore + "$1" + controlCodes.reset);
             }
 
-            let date = new Date();
-            let displayedDate = `[${date.toLocaleDateString()} ${date.toLocaleTimeString()}]`;
+            const date = new Date();
+            const displayedDate = `[${date.toLocaleDateString()} ${date.toLocaleTimeString()}]`;
 
             console.log(
                 `${controlCodes.dim}${displayedDate}${controlCodes.reset} ` +

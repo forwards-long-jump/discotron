@@ -8,7 +8,7 @@ window.discotron.Router = class {
      * @param {string} url URL to route to
      */
     static route(url) {
-        let parsedURL = discotron.Router._parseURL(url);
+        const parsedURL = discotron.Router._parseURL(url);
 
         const controllers = {
             "home": discotron.HelpController,
@@ -18,7 +18,7 @@ window.discotron.Router = class {
             "guild-settings": discotron.GuildSettingsController
         };
 
-        let Controller = controllers[parsedURL.page];
+        const Controller = controllers[parsedURL.page];
         if (Controller !== undefined) {
             new Controller(parsedURL.args);
         } else {
@@ -35,19 +35,19 @@ window.discotron.Router = class {
     static _parseURL(url) {
         // Check if on correct page and split # 
         // <url>/dashboard#page?arg1=true
-        let urlRegex = /dashboard\/?#?([a-z-]*)\??(.*)/;
-        let match = urlRegex.exec(url);
+        const urlRegex = /dashboard\/?#?([a-z-]*)\??(.*)/;
+        const match = urlRegex.exec(url);
 
         if (match === null) {
             return false;
         }
-        let args = {};
+        const args = {};
 
         if (match[2] !== "") {
-            let couples = match[2].split("&");
+            const couples = match[2].split("&");
 
             for (let i = 0; i < couples.length; i++) {
-                let split = couples[i].split("=");
+                const split = couples[i].split("=");
                 if (split.length === 2) {
                     args[split[0]] = split[1];
                 }

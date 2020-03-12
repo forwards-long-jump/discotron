@@ -16,14 +16,14 @@ class CommandModel {
      * @param {string} [settings.scope = "everywhere"] Scope where the command can be triggered, can be "everywhere|pm|guild"
      */
     constructor(settings) {
-        let options = Object.assign({}, CommandModel.defaultSettings, settings);
+        const options = Object.assign({}, CommandModel.defaultSettings, settings);
 
         this._triggerType = options.triggerType;
         this._trigger = options.trigger;
         this._help = options.help;
         this._args = [];
         for (let i = 0; i < options.args.length; ++i) {
-            let arg = Object.assign({}, CommandModel.defaultArgSettings, options.args);
+            const arg = Object.assign({}, CommandModel.defaultArgSettings, options.args);
             this._args.push(arg);
         }
         this._args = options.args;

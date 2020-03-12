@@ -55,13 +55,13 @@ window.discotron.NavigationController = class {
             if (Object.keys(guilds).length > 0) {
                 document.querySelector(".description").style.display = "none";
 
-                let serverLinksContainer = document.querySelector("#nav-links ul");
-                let template = document.getElementById("template-server-link");
+                const serverLinksContainer = document.querySelector("#nav-links ul");
+                const template = document.getElementById("template-server-link");
 
-                for (let i in guilds) {
+                for (const i in guilds) {
                     const guild = guilds[i];
 
-                    let serverLink = document.importNode(template.content, true);
+                    const serverLink = document.importNode(template.content, true);
 
                     serverLink.querySelector(".server-link").href += guild.discordId;
                     serverLink.querySelector(".server-link").onclick = discotron.mobileHelper.hideNavBar;

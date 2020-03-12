@@ -56,7 +56,7 @@ class SpamUser {
         }
 
         // Calculate regeneration
-        let currentTime = (new Date().getTime() / 1000);
+        const currentTime = (new Date().getTime() / 1000);
 
         this._damageTaken -= (currentTime - this._lastActionTime) * config.spam.decrementPerSecond;
         this._damageTaken = Math.max(0, this._damageTaken);
@@ -79,7 +79,7 @@ class SpamUser {
      */
     _isDead() {
         if (this._dead) {
-            let currentTime = (new Date().getTime() / 1000);
+            const currentTime = (new Date().getTime() / 1000);
             if (currentTime - this._deathTime > config.spam.timePenaltyInSeconds) {
                 this._dead = false;
                 this._damageTaken = 0;

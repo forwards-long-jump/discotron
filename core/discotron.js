@@ -13,7 +13,7 @@ const webAPI = require("../dashboard/backend/api.js").getWebAPI("discotron-dashb
 
 const botSettings = new BotSettings();
 
-let actions = {};
+const actions = {};
 
 /**
  * Add a listener for Discotron events
@@ -68,9 +68,9 @@ module.exports.onMessage = (message) => {
         return;
     }
 
-    let loweredCaseMessage = message.content.toLowerCase();
+    const loweredCaseMessage = message.content.toLowerCase();
 
-    let isCommand = guild === undefined || message.content.startsWith(guild.commandPrefix);
+    const isCommand = guild === undefined || message.content.startsWith(guild.commandPrefix);
 
     const plugins = Plugin.getAll();
     for (const pluginId in plugins) {
@@ -179,14 +179,14 @@ module.exports.loadGuilds = () => {
  * TODO: Check if it's complete
  */
 module.exports.updateGuilds = () => {
-    let oldGuildIds = Object.keys(Guild.getAll());
-    let newGuildIds = discordClientProvider.get().guilds.map((guild) => {
+    const oldGuildIds = Object.keys(Guild.getAll());
+    const newGuildIds = discordClientProvider.get().guilds.map((guild) => {
         return guild.id;
     });
 
     // Delete abandoned guilds and add new ones
-    let addedGuilds = [];
-    let removedGuilds = [];
+    const addedGuilds = [];
+    const removedGuilds = [];
     for (let i = 0; i < newGuildIds.length; ++i) {
         const discordGuildId = newGuildIds[i];
         if (!oldGuildIds.includes(discordGuildId)) {

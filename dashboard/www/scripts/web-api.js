@@ -9,7 +9,7 @@ window.discotron.WebAPI = class {
      * @returns {Promise} resolve(data {object}) data: result given by the API, reject()
      */
     static queryBot(plugin, action, data = undefined, discordGuildId = undefined) {
-        let params = {
+        const params = {
             plugin: plugin,
             action: action,
             data: data,

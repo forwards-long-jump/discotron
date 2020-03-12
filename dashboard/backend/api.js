@@ -3,7 +3,7 @@
  */
 const Logger = require("../../core/utils/logger.js");
 
-let actions = {};
+const actions = {};
 
 /**
  * Listen for requests on the /api endpoint
@@ -15,11 +15,11 @@ module.exports.onPost = (req, res) => {
         return;
     }
 
-    let plugin = req.body.plugin;
-    let action = req.body.action;
-    let data = req.body.data;
-    let appToken = req.body.appToken;
-    let discordGuildId = req.body.discordGuildId;
+    const plugin = req.body.plugin;
+    const action = req.body.action;
+    const data = req.body.data;
+    const appToken = req.body.appToken;
+    const discordGuildId = req.body.discordGuildId;
 
     if (actions[plugin] === undefined || actions[plugin][action] === undefined) {
         reply(res, "invalid-action");
@@ -28,7 +28,7 @@ module.exports.onPost = (req, res) => {
     }
 
     Login.getDiscordUserId(appToken).then((discordUserId) => {
-        let response = actions[plugin][action];
+        const response = actions[plugin][action];
 
         Logger.log("[WebAPI] Received " + plugin + "/" + action);
 

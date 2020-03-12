@@ -28,8 +28,8 @@ window.discotron.ChannelListWidgetController = class extends window.discotron.Wi
      * @returns {Array} An array of all channel ids that are currently selected
      */
     _getSelectedChannels() {
-        let allContainers = this._widgetContainer.querySelectorAll(".channel-state");
-        let results = [];
+        const allContainers = this._widgetContainer.querySelectorAll(".channel-state");
+        const results = [];
         for (let i = 0; i < allContainers.length; i++) {
             const element = allContainers[i];
             if (element.querySelector(".channel-selector-checkbox").checked) {
@@ -50,14 +50,14 @@ window.discotron.ChannelListWidgetController = class extends window.discotron.Wi
      * Add a list of channel that can be selected to the modal
      */
     _displayChannels() {
-        for (let discordId in this._channels) {
+        for (const discordId in this._channels) {
             const channel = this._channels[discordId];
             if (channel.type !== "text") {
                 continue;
             }
 
-            let template = document.getElementById("template-channel-state");
-            let channelContainer = document.importNode(template.content, true);
+            const template = document.getElementById("template-channel-state");
+            const channelContainer = document.importNode(template.content, true);
 
             channelContainer.querySelector(".channel-state").dataset.discordId = channel.discordId;
             channelContainer.querySelector(".channel-selector-channel").textContent = "#" + channel.name;

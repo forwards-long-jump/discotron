@@ -47,7 +47,7 @@ class Command extends CommandModel {
 
         switch (this._triggerType) {
             case "command": {
-                let command = prefixes + this.trigger;
+                const command = prefixes + this.trigger;
                 return (loweredCaseMessage.startsWith(command + " ") || loweredCaseMessage === command);
             }
             case "words":
@@ -78,7 +78,7 @@ class Command extends CommandModel {
     doMessageAction(message, words, apiCollection) {
         switch (this.triggerType) {
             case "command": {
-                let commandArgs = {
+                const commandArgs = {
                     "all": words.slice(1)
                 };
 

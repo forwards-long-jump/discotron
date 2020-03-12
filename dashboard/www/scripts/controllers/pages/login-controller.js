@@ -7,9 +7,9 @@ window.discotron.LoginController = class /* does not extends Controller because 
      * @static
      */
     static claimOwnership() {
-        let url = new URL(window.location.href);
-        let code = url.searchParams.get("code");
-        let ownerSecret = document.querySelector("#owner-ship-token").value;
+        const url = new URL(window.location.href);
+        const code = url.searchParams.get("code");
+        const ownerSecret = document.querySelector("#owner-ship-token").value;
 
         discotron.WebAPI.queryBot("discotron-dashboard", "claim-ownership", {
             "code": code,
@@ -46,8 +46,8 @@ window.discotron.LoginController = class /* does not extends Controller because 
 
         document.querySelector("#auth-link").href = discotron.config.oauthURL;
 
-        let url = new URL(window.location.href);
-        let code = url.searchParams.get("code");
+        const url = new URL(window.location.href);
+        const code = url.searchParams.get("code");
 
         // Code is set, user is trying to log in
         if (code !== null) {

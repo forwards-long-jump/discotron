@@ -25,7 +25,7 @@ class Plugin extends PluginModel {
 
         this._loadFromFolder(folder);
 
-        let oldVersion = Plugin._plugins[this.id];
+        const oldVersion = Plugin._plugins[this.id];
         if (oldVersion !== undefined) {
             this._prefix = oldVersion._prefix;
             this._enabled = oldVersion._enabled;
@@ -66,7 +66,7 @@ class Plugin extends PluginModel {
      */
     _loadFromFolder(folder) {
         delete require.cache[require.resolve(folder + "/index.js")];
-        let pluginFile = require(folder + "/index.js");
+        const pluginFile = require(folder + "/index.js");
 
         // from file
         this._name = pluginFile.config.name;
@@ -76,7 +76,7 @@ class Plugin extends PluginModel {
         this._version = pluginFile.config.version;
         this._onLoad = pluginFile.config.onLoad;
         for (let i = 0; i < pluginFile.commands.length; i++) {
-            let command = new Command(pluginFile.commands[i]);
+            const command = new Command(pluginFile.commands[i]);
             this._commands[command.triggerType].push(command);
         }
     }
@@ -126,7 +126,7 @@ class Plugin extends PluginModel {
      * @returns {object} {name, id, description, version, commands: [commands.toObject()], defaultPermission, enabled}
      */
     toObject(publicInfoOnly = false) {
-        let commandObjects = [];
+        const commandObjects = [];
         for (const type in this.commands) {
             if (Object.prototype.hasOwnProperty.call(this.commands, type)) {
                 const commands = this.commands[type];
@@ -168,8 +168,8 @@ class Plugin extends PluginModel {
      * @param {object} value String to log, attempts to JSON.stringify if it's an object
      */
     log(value) {
-        let date = new Date();
-        let displayedDate = `[${date.toLocaleDateString()} ${date.toLocaleTimeString()}]`;
+        const date = new Date();
+        const displayedDate = `[${date.toLocaleDateString()} ${date.toLocaleTimeString()}]`;
         if (typeof this.value === "string") {
             this._logs.push(displayedDate + " " + value);
         } else {
@@ -256,9 +256,9 @@ class Plugin extends PluginModel {
         }, "owner");
 
         webAPI.registerAction("get-plugins", (data, reply, userDiscordId) => {
-            let pluginsObjects = [];
+            const pluginsObjects = [];
 
-            let plugins = Plugin.getAll();
+            const plugins = Plugin.getAll();
             for (const key in plugins) {
                 if (Object.prototype.hasOwnProperty.call(plugins, key)) {
                     pluginsObjects.push(Plugin.getAll()[key].toObject(!Owner.isOwner(userDiscordId)));
