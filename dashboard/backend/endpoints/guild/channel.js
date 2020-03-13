@@ -3,7 +3,7 @@ const Guild = require("../../../../core/models/guild.js");
 const discordClientProvider = require("../../../../core/utils/discord-client-provider.js");
 
 webAPI.registerAction("get-channels", (data, reply, discordUserId, discordGuildId) => {
-    let guild = discordClientProvider.get().guilds.get(discordGuildId);
+    const guild = discordClientProvider.get().guilds.get(discordGuildId);
     reply(guild.channels.map((channel) => {
         return {
             discordId: channel.id,
