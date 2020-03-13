@@ -240,7 +240,7 @@ module.exports.getBotInfo = () => {};
  * @param {string} discordId Discord user id
  * @returns {Promise} resolve(user {object}), reject()
  */
-function getUserInfo(discordId) {
+module.exports.getUserInfo = function (discordId) {
     return new Promise((resolve, reject) => {
         discordClientProvider.get().fetchUser(discordId).then((user) => {
             resolve({
@@ -255,7 +255,7 @@ function getUserInfo(discordId) {
             Logger.log(e, "err");
         });
     });
-}
+};
 
 /**
  * @returns {object} Bot settings
@@ -280,5 +280,3 @@ module.exports.loadRepositories = () => {
         }
     }).catch(Logger.err);
 };
-
-module.exports.getUserInfo = getUserInfo;
