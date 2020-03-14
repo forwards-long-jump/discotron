@@ -275,7 +275,7 @@ module.exports.loadRepositories = () => {
             for (let i = 0; i < rows.length; i++) {
                 const row = rows[i];
                 Logger.log("Loading repository **" + row.folderName + "**");
-                new Repository(row.folderName, row.repositoryURL);
+                new Repository({folderName: row.folderName, url: row.repositoryURL});
             }
         }
     }).catch(Logger.err);
