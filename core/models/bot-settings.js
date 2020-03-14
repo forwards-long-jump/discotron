@@ -11,7 +11,7 @@ class BotSettings extends BotSettingsModel {
      * @class
      */
     constructor() {
-        super();
+        super({});
 
         // Each row in the database contains a key->setting so we have to make 3 queries
         // Everything could also be queried only once but then we have to iterate on everything to check the key
