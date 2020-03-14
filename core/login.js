@@ -28,7 +28,7 @@ const discordApiUrl = "https://discordapp.com/api/v6/";
  */
 module.exports.claimOwnership = function (authToken, reply, userOwnerSecret = undefined) {
     if (firstLaunch) {
-        this.handleLogin(authToken, reply, userOwnerSecret);
+        module.exports.handleLogin(authToken, reply, userOwnerSecret);
     } else {
         reply({
             status: "error"
