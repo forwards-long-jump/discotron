@@ -42,7 +42,7 @@ class CommandModel {
     }
 
     /**
-     * @returns {string} trigger
+     * @returns {string[]} trigger
      */
     get trigger() {
         return this._trigger;
