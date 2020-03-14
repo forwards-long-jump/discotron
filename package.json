@@ -17,7 +17,7 @@
   "dependencies": {
     "discord.js": "^11.5.1",
     "express": "^4.17.1",
-    "minimist": "^1.2.0",
+    "minimist": "^1.2.2",
     "nodegit": "^0.25.1",
     "readline-sync": "^1.4.10",
     "sqlite3": "^4.1.1",
