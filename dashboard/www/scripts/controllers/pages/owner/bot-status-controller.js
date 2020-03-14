@@ -91,13 +91,19 @@ window.discotron.BotStatusController = class extends window.discotron.Controller
                 const userRoles = owners.map((owner) => {
                     return new discotron.UserRole(owner, null);
                 });
-                new discotron.UserRoleWidgetController(undefined, userRoles, (newOwners) => {
-                    return discotron.WebAPI.queryBot("discotron-dashboard", "set-owners", {
-                        discordUserIds: newOwners.map((userRole) => {
-                            return userRole.discordUserId;
-                        })
-                    });
-                }, false, "Owner list", false, [], () => { }, "Please paste the Discord id of the user you want to add");
+                new discotron.UserRoleWidgetController({
+                    usersRoles: userRoles,
+                    onUserRoleSave: (newOwners) => {
+                        return discotron.WebAPI.queryBot("discotron-dashboard", "set-owners", {
+                            discordUserIds: newOwners.map((userRole) => {
+                                return userRole.discordUserId;
+                            })
+                        });
+                    },
+                    displayRoles: false,
+                    headerText: "Owner list",
+                    inputHelp: "Please paste the Discord id of the user you want to add"
+                });
             }).catch(console.error);
         };
     }

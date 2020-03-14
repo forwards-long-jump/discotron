@@ -4,18 +4,23 @@
 window.discotron.PluginSettingsWidgetController = class extends window.discotron.WidgetController {
     /**
      * @class
-     * @param {Plugin} plugin Plugin this page is dedicated to 
-     * @param {Function} onPluginSettingsSave Callback to be called when the user is done changing the settings
-     * @param {Function} [onClose=()=>{}] Callback to be called when the widget is closed
+     * @param {object} options Args
+     * @param {Plugin} options.plugin Plugin this page is dedicated to
+     * @param {Function} options.onPluginSettingsSave Callback to be called when the user is done changing the settings
+     * @param {Function} [options.onClose=()=>{}] Callback to be called when the widget is closed
      */
-    constructor(plugin, onPluginSettingsSave, onClose = () => { }) {
-        super("plugin-settings.html", () => {
-            onPluginSettingsSave(this._getPluginSettings());
-        }, () => {
-
-            this._plugin = plugin;
-            this._displaySettings();
-        }, onClose);
+    constructor({plugin, onPluginSettingsSave, onClose = () => { }}) {
+        super({
+            widgetPageName: "plugin-settings.html",
+            onSave: () => {
+                onPluginSettingsSave(this._getPluginSettings());
+            },
+            onLoad: () => {
+                this._plugin = plugin;
+                this._displaySettings();
+            },
+            onClose: onClose
+        });
     }
 
     /**

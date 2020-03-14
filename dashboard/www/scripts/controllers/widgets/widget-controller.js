@@ -4,17 +4,18 @@
 window.discotron.WidgetController = class {
     /**
      * @class
-     * @param {string} widgetPageName Name of the html file of the widget 
-     * @param {Function} onSave  Called when the user saves
-     * @param {Function} callback Called when widget is displayed
-     * @param {Function} onClose Called when widget is closed
+     * @param {object} options Args
+     * @param {string} options.widgetPageName Name of the html file of the widget
+     * @param {Function} options.onSave  Called when the user saves
+     * @param {Function} options.onLoad Called when widget is displayed
+     * @param {Function} options.onClose Called when widget is closed
      */
-    constructor(widgetPageName, onSave, callback = () => { }, onClose = () => { }) {
+    constructor({widgetPageName, onSave, onLoad = () => {}, onClose = () => {}}) {
         this._onClose = onClose;
         this._onSave = onSave;
         this._widgetPageName = widgetPageName;
         this._widgetContainer = undefined;
-        this._displayWidget(callback);
+        this._displayWidget(onLoad);
     }
 
     /**

@@ -5,39 +5,46 @@
 window.discotron.UserRoleWidgetController = class extends window.discotron.WidgetController {
     /**
      * @class
-     * @param {discotron.Guild} guild Guild for which we list the users and roles
-     * @param {Array} usersRoles Currently selected users/roles for whatever setting this widget is needed
-     * @param {Function} onUserRoleSave Callback to be called when the user is done selecting the users/roles
-     * @param {boolean} displayRoles True is the widget allows choosing roles as well as users
-     * @param {string} headerText Help text displayed on top
-     * @param {boolean} allowNone Allows to enter no users nor roles
-     * @param {Array} customInputs Array of objects for custom inputs, e.g: [{type: "input", name: ""}]
-     * @param {Function} onClose Called when user cancels saving
-     * @param {string} [inputHelp="Grant permission to user / role"] Text display above the name input
+     * @param {object} options Args
+     * @param {discotron.Guild} options.guild Guild for which we list the users and roles
+     * @param {Array} options.usersRoles Currently selected users/roles for whatever setting this widget is needed
+     * @param {Function} options.onUserRoleSave Callback to be called when the user is done selecting the users/roles
+     * @param {boolean} options.displayRoles True is the widget allows choosing roles as well as users
+     * @param {string} options.headerText Help text displayed on top
+     * @param {boolean} options.allowNone Allows to enter no users nor roles
+     * @param {Array} options.customInputs Array of objects for custom inputs, e.g: [{type: "input", name: ""}]
+     * @param {Function} options.onClose Called when user cancels saving
+     * @param {string} [options.inputHelp="Grant permission to user / role"] Text display above the name input
      */
-    constructor(guild, usersRoles, onUserRoleSave, displayRoles = true, headerText = "", allowNone = false, customInputs = [], onClose = () => { }, inputHelp = "Grant permission to user / role") {
-        super("user-role-selector.html", () => {
-            onUserRoleSave(this._getUsersRoles(), this._getCustomSettings());
-        }, () => {
-            this._guild = guild;
-            this._headerText = headerText;
+    constructor({guild, usersRoles, onUserRoleSave, displayRoles = true, headerText = "",
+        allowNone = false, customInputs = [], onClose = () => {}, inputHelp = "Grant permission to user / role"}) {
 
-            this._usersRoles = usersRoles.map((userRole) => {
-                return new discotron.UserRole(userRole.discordUserId, userRole.discordRoleId, this._guild ? this._guild.discordId : undefined);
-            });
+        super({
+            widgetPageName: "user-role-selector.html",
+            onSave: () => {
+                onUserRoleSave(this._getUsersRoles(), this._getCustomSettings());
+            },
+            onLoad: () => {
+                this._guild = guild;
+                this._headerText = headerText;
 
-            this._displayRoles = displayRoles;
-            this._allowNone = allowNone;
-            this._customInputs = customInputs;
+                this._usersRoles = usersRoles.map((userRole) => {
+                    return new discotron.UserRole(userRole.discordUserId, userRole.discordRoleId, this._guild ? this._guild.discordId : undefined);
+                });
 
-            document.querySelector("#users-roles-container").style.display = "none";
-            document.querySelector("#input-description").textContent = inputHelp;
-            document.querySelector("#add-button").disabled = true;
+                this._displayRoles = displayRoles;
+                this._allowNone = allowNone;
+                this._customInputs = customInputs;
 
-            this._displayCustomElements();
-            this._displayUserRoleSelector();
-        }, onClose);
+                document.querySelector("#users-roles-container").style.display = "none";
+                document.querySelector("#input-description").textContent = inputHelp;
+                document.querySelector("#add-button").disabled = true;
 
+                this._displayCustomElements();
+                this._displayUserRoleSelector();
+            },
+            onClose: onClose
+        });
     }
 
     /**
