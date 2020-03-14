@@ -15,7 +15,7 @@ class Guild extends GuildModel {
      * @param {string} discordId Discord guild id
      */
     constructor(discordId) {
-        super(discordId);
+        super({discordId: discordId});
 
         global.discotron.on("plugin-loaded", (pluginId) => {
             this.onPluginLoaded(pluginId);

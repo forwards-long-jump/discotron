@@ -4,18 +4,19 @@
 window.discotron.Guild = class extends window.discotron.GuildModel {
     /**
      * @class
-     * @param {string} discordId Id of the guild
-     * @param {string} name Name of the guild
-     * @param {string} iconURL Icon of the guild
-     * @param {string} acronym Server acronym, used in case no icon is defined
-     * @param {string} commandPrefix Command prefix
-     * @param {Array} allowedChannelIds Array of channel ids on which the bot is allowed
-     * @param {Array} enabledPlugins Array of plugin ids that are enabled
-     * @param {Array} admins Array of UserRole who have admin privilege on the bot
-     * @param {object} permissions Object binding pluginsIds to userRole array
+     * @param {object} options Args
+     * @param {string} options.discordId Id of the guild
+     * @param {string} options.name Name of the guild
+     * @param {string} options.iconURL Icon of the guild
+     * @param {string} options.acronym Server acronym, used in case no icon is defined
+     * @param {string} options.commandPrefix Command prefix
+     * @param {Set} options.allowedChannelIds Array of channel ids on which the bot is allowed
+     * @param {Set} options.enabledPlugins Array of plugin ids that are enabled
+     * @param {Set} options.admins Array of UserRole who have admin privilege on the bot
+     * @param {object} options.permissions Object binding pluginsIds to userRole array
      */
-    constructor(discordId, name, iconURL, acronym, commandPrefix, allowedChannelIds, enabledPlugins, admins, permissions) {
-        super(discordId, commandPrefix, allowedChannelIds, enabledPlugins, admins, permissions);
+    constructor({discordId, name, iconURL, acronym, commandPrefix, allowedChannelIds, enabledPlugins, admins, permissions}) {
+        super({discordId, commandPrefix, allowedChannelIds, enabledPlugins, admins, permissions});
 
         this._name = name;
         this._iconURL = (iconURL === null) ? discotron.utils.generateAcronymIcon(acronym, "#fff", "#4e4e4e") : iconURL;
@@ -104,8 +105,17 @@ window.discotron.Guild = class extends window.discotron.GuildModel {
                 }
 
                 // Guilds register themselves in window.discotron.Guild._guilds
-                new discotron.Guild(guild.discordId, guild.name, guild.image, guild.nameAcronym,
-                    guild.prefix, new Set(guild.allowedChannelIds), new Set(guild.enabledPluginIds), new Set(admins), permissions);
+                new discotron.Guild({
+                    discordId: guild.discordId,
+                    name: guild.name,
+                    iconURL: guild.image,
+                    acronym: guild.nameAcronym,
+                    commandPrefix: guild.prefix,
+                    allowedChannelIds: new Set(guild.allowedChannelIds),
+                    enabledPlugins: new Set(guild.enabledPluginIds),
+                    admins: new Set(admins),
+                    permissions: permissions
+                });
             }
         });
     }
