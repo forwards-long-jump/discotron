@@ -51,7 +51,12 @@ window.discotron.Guild = class extends window.discotron.GuildModel {
         return discotron.WebAPI.queryBot("discotron-dashboard", "get-members", {}, this.discordId).then((users) => {
             for (let i = 0; i < users.length; i++) {
                 const user = users[i];
-                this._members[user.discordId] = new discotron.User(user.name, user.discordId, user.avatar, user.discriminator);
+                this._members[user.discordId] = new discotron.User({
+                    name: user.name,
+                    discordId: user.discordId,
+                    avatarURL: user.avatar,
+                    discriminator: user.discriminator
+                });
             }
         });
     }

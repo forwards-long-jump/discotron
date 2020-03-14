@@ -4,12 +4,13 @@
 window.discotron.User = class {
     /**
      * @class
-     * @param {string} name Name of the user
-     * @param {string} discordId Id of the user
-     * @param {string} avatarURL Avatar of the user
-     * @param {string} discriminator Discriminator of the user (numbers after the #)
+     * @param {object} options Args
+     * @param {string} options.name Name of the user
+     * @param {string} options.discordId Id of the user
+     * @param {string} options.avatarURL Avatar of the user
+     * @param {string} options.discriminator Discriminator of the user (numbers after the #)
      */
-    constructor(name, discordId, avatarURL, discriminator) {
+    constructor({name, discordId, avatarURL, discriminator}) {
         this._name = name;
         this._discriminator = discriminator;
         this._discordId = discordId;
@@ -67,7 +68,12 @@ window.discotron.User = class {
                 return discotron.WebAPI.queryBot("discotron-dashboard", "get-user-info", {
                     discordId: discordId
                 }).then((userObject) => {
-                    resolve(new discotron.User(userObject.name, userObject.discordId, userObject.avatarURL, userObject.discriminator));
+                    resolve(new discotron.User({
+                        name: userObject.name,
+                        discordId: userObject.discordId,
+                        avatarURL: userObject.avatarURL,
+                        discriminator: userObject.discriminator
+                    }));
                 });
             } else {
                 resolve(discotron.User._users[discordId]);
