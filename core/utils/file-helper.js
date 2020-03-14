@@ -14,7 +14,7 @@ module.exports.deleteFolder = function (path) {
             const currentPath = path + "/" + file;
 
             if (fs.lstatSync(currentPath).isDirectory()) {
-                this.deleteFolder(currentPath);
+                module.exports.deleteFolder(currentPath);
             } else {
                 fs.unlinkSync(currentPath);
             }
@@ -40,7 +40,7 @@ module.exports.readRecursive = function (path, fileList = []) {
     fileList = fileList || [];
     files.forEach(function (file) {
         if (fs.statSync(path + file).isDirectory()) {
-            fileList = this.readRecursive(path + file + "/", fileList);
+            fileList = module.exports.readRecursive(path + file + "/", fileList);
         } else {
             fileList.push(path + file);
         }
