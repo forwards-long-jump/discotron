@@ -69,7 +69,11 @@ window.discotron.Guild = class extends window.discotron.GuildModel {
         return discotron.WebAPI.queryBot("discotron-dashboard", "get-roles", {}, this.discordId).then((roles) => {
             for (let i = 0; i < roles.length; i++) {
                 const role = roles[i];
-                this._roles[role.discordId] = new discotron.Role(role.name, role.discordId, role.color);
+                this._roles[role.discordId] = new discotron.Role({
+                    name: role.name,
+                    discordId: role.discordId,
+                    color: role.color
+                });
             }
         });
     }
