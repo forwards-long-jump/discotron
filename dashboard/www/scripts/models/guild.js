@@ -86,7 +86,11 @@ window.discotron.Guild = class extends window.discotron.GuildModel {
         return discotron.WebAPI.queryBot("discotron-dashboard", "get-channels", {}, this.discordId).then((channels) => {
             for (const discordId in channels) {
                 const channel = channels[discordId];
-                this._channels[discordId] = new discotron.Channel(channel.name, channel.discordId, channel.type);
+                this._channels[discordId] = new discotron.Channel({
+                    name: channel.name,
+                    discordId: channel.discordId,
+                    type: channel.type
+                });
             }
         });
     }
