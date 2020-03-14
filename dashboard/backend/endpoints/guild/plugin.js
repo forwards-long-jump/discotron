@@ -16,7 +16,7 @@ webAPI.registerAction("get-plugin-permission", (data, reply, discordUserId, disc
 }, "guildAdmin");
 
 webAPI.registerAction("set-plugin-permission", (data, reply, discordUserId, discordGuildId) => {
-    let usersRoles = data.userRoles.map((ur) => {
+    const usersRoles = data.userRoles.map((ur) => {
         return new UserRole(ur._discordUserId, ur._discordRoleId, discordGuildId);
     });
     Guild.get(discordGuildId).setPluginPermission(data.pluginId, usersRoles);

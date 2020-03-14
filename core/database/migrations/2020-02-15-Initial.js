@@ -1,4 +1,4 @@
-module.exports.up = function() {
+module.exports.up = function () {
     return `
 PRAGMA foreign_keys = off;
 BEGIN TRANSACTION;

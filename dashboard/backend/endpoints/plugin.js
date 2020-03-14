@@ -3,9 +3,9 @@ const Plugin = require("../../../core/models/plugin.js");
 const Owner = require("../../../core/models/owner.js");
 
 webAPI.registerAction("get-plugins", (data, reply, userDiscordId) => {
-    let pluginsObjects = [];
+    const pluginsObjects = [];
 
-    let plugins = Plugin.getAll();
+    const plugins = Plugin.getAll();
     for (const key in plugins) {
         if (Object.prototype.hasOwnProperty.call(plugins, key)) {
             pluginsObjects.push(Plugin.getAll()[key].toObject(!Owner.isOwner(userDiscordId)));
