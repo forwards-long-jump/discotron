@@ -9,7 +9,7 @@ class RepositoryModel {
      * @param {Array} options.pluginIds List of plugin ids
      * @param {Array} options.pages List of pages route exposed by the plugin
      */
-    constructor({url = "", pluginIds = [], pages = []}) {
+    constructor({url = "", pluginIds = [], pages = []} = {}) {
         this._url = url;
         this._pluginIds = pluginIds;
         this._pages = pages;

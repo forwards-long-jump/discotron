@@ -47,7 +47,7 @@ class CommandModel {
      * @param {boolean} [settings.bypassSpamDetection = false] Set to true to not penalize the user for spamming the command.
      * @param {string} [settings.scope = "everywhere"] Scope where the command can be triggered, can be "everywhere|pm|guild"
      */
-    constructor({ triggerType = "command", trigger = [], help = "", args = [], ownersOnly = false, scope = "everywhere", requiresMention = false, bypassSpamDetection = false, action = () => { } }) {
+    constructor({ triggerType = "command", trigger = [], help = "", args = [], ownersOnly = false, scope = "everywhere", requiresMention = false, bypassSpamDetection = false, action = () => { } } = {}) {
         this._triggerType = triggerType;
         this._trigger = trigger;
         this._help = help;

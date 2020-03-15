@@ -12,7 +12,7 @@ class GuildModel {
      * @param {Set} options.admins Array of users/roles allowed to change the bot settings in the guild
      * @param {object} options.permissions {plugin Id => permissions} describing for each plugin who has the right tu use it
      */
-    constructor({discordId = undefined, commandPrefix = "!", allowedChannelIds = new Set([]), enabledPlugins = new Set([]), admins = new Set([]), permissions = {}}) {
+    constructor({discordId = undefined, commandPrefix = "!", allowedChannelIds = new Set([]), enabledPlugins = new Set([]), admins = new Set([]), permissions = {}} = {}) {
         this._discordId = discordId;
         this._commandPrefix = commandPrefix;
         this._allowedChannelIds = allowedChannelIds;
