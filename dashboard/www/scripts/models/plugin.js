@@ -5,7 +5,7 @@ window.discotron.Plugin = class extends window.discotron.PluginModel {
     /**
      * @class
      * @param {object} options Args
-     * @param {string} options.pluginId Id of the plugin
+     * @param {string} options.id Id of the plugin
      * @param {string} options.name Displayed name of the plugin
      * @param {string} options.description Short description of the plugin
      * @param {string} options.version Version of the plugin (format x.y.z)
@@ -15,9 +15,9 @@ window.discotron.Plugin = class extends window.discotron.PluginModel {
      * @param {boolean} options.enabled True if plugin is enabled by the bot owner
      * @param {Array} options.logs List of logs the plugin can output to
      */
-    constructor({pluginId, name, description, version, prefix, commands, defaultPermission, enabled, logs}) {
-        super({pluginId, name, description, version, prefix, commands, defaultPermission, enabled, logs});
-        discotron.Plugin._plugins[pluginId] = this;
+    constructor({id, name, description, version, prefix, commands, defaultPermission, enabled, logs}) {
+        super({id, name, description, version, prefix, commands, defaultPermission, enabled, logs});
+        discotron.Plugin._plugins[id] = this;
     }
 
     /**
@@ -31,7 +31,7 @@ window.discotron.Plugin = class extends window.discotron.PluginModel {
                     for (let i = 0; i < data.length; i++) {
                         const plugin = data[i];
                         new discotron.Plugin({
-                            pluginId: plugin.id,
+                            id: plugin.id,
                             name: plugin.name,
                             description: plugin.description,
                             version: plugin.version,
