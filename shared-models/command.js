@@ -1,4 +1,36 @@
 /**
+ * Represents an argument of a command of a plugin
+ */
+class CommandArgumentModel {
+    constructor({ name = "", help = "", allowsSpace = "" }) {
+        this._name = name;
+        this._help = help;
+        this._allowsSpace = allowsSpace;
+    }
+
+    /**
+     * @returns {string} Name of the argument
+     */
+    get name() {
+        return this._name; 
+    }
+
+    /**
+     * @returns {string} Help of the argument
+     */
+    get help() {
+        return this._help; 
+    }
+
+    /**
+     * @returns {boolean} True if the argument consumes the rest of the command
+     */
+    get allowsSpace() {
+        return this._allowsSpace; 
+    }
+}
+
+/**
  * Represents a command of a plugin
  */
 class CommandModel {
@@ -15,23 +47,22 @@ class CommandModel {
      * @param {boolean} [settings.bypassSpamDetection = false] Set to true to not penalize the user for spamming the command.
      * @param {string} [settings.scope = "everywhere"] Scope where the command can be triggered, can be "everywhere|pm|guild"
      */
-    constructor(settings) {
-        const options = Object.assign({}, CommandModel.defaultSettings, settings);
-
-        this._triggerType = options.triggerType;
-        this._trigger = options.trigger;
-        this._help = options.help;
+    constructor({ triggerType = "command", trigger = [], help = "", args = [], ownersOnly = false, scope = "everywhere", requiresMention = false, bypassSpamDetection = false, action = () => { } }) {
+        this._triggerType = triggerType;
+        this._trigger = trigger;
+        this._help = help;
         this._args = [];
-        for (let i = 0; i < options.args.length; ++i) {
-            const arg = Object.assign({}, CommandModel.defaultArgSettings, options.args);
-            this._args.push(arg);
+
+        for (let i = 0; i < args.length; ++i) {
+            this._args.push(new CommandArgumentModel(args[i]));
         }
-        this._args = options.args;
-        this._ownersOnly = options.ownersOnly;
-        this._scope = options.scope;
-        this._requiresMention = options.requiresMention;
-        this._bypassSpamDetection = options.bypassSpamDetection;
-        this._action = options.action;
+
+        this._args = args;
+        this._ownersOnly = ownersOnly;
+        this._scope = scope;
+        this._requiresMention = requiresMention;
+        this._bypassSpamDetection = bypassSpamDetection;
+        this._action = action;
     }
 
     /**
@@ -97,25 +128,6 @@ class CommandModel {
         return this._action;
     }
 }
-
-CommandModel.defaultSettings = {
-    triggerType: "command",
-    trigger: [], // can be array
-    help: "",
-    args: [], // {name: "turn", defaultValue: 0, help: "", allowsSpace: false}
-    ownersOnly: false,
-    scope: "everywhere", // PM, GUILD
-    requiresMention: false,
-    bypassSpamDetection: false,
-    action: () => { }
-};
-
-CommandModel.defaultArgSettings = {
-    name: "",
-    help: "",
-    allowsSpace: false
-};
-
 
 if (typeof module !== "undefined" && typeof module.exports !== "undefined") {
     module.exports = CommandModel;
