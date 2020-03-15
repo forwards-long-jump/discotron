@@ -4,13 +4,14 @@
 window.discotron.Repository = class extends window.discotron.RepositoryModel {
     /**
      * @class
-     * @param {string} url URL of the repository
-     * @param {Array} pluginIds Array of plugin ids
-     * @param {Array} pages Array of page names
+     * @param {object} options Args
+     * @param {string} options.url URL of the repository
+     * @param {Array} options.pluginIds Array of plugin ids
+     * @param {Array} options.pages Array of page names
      */
-    constructor(url, pluginIds, pages) {
+    constructor({url, pluginIds, pages}) {
         // get info from db
-        super(url, pluginIds, pages);
+        super({url, pluginIds, pages});
         discotron.Repository._repositories.push(this);
     }
 
@@ -24,7 +25,11 @@ window.discotron.Repository = class extends window.discotron.RepositoryModel {
                 return discotron.WebAPI.queryBot("discotron-dashboard", "get-repositories").then((data) => {
                     for (let i = 0; i < data.length; i++) {
                         const repository = data[i];
-                        new discotron.Repository(repository.url, repository.pluginIds, repository.pages);
+                        new discotron.Repository({
+                            url: repository.url,
+                            pluginIds: repository.pluginIds,
+                            pages: repository.pages
+                        });
                     }
                     resolve(discotron.Repository._repositories);
                 });

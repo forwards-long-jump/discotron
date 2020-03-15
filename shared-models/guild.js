@@ -4,14 +4,15 @@
 class GuildModel {
     /**
      * @class
-     * @param  {string} discordId DiscordId of the guild
-     * @param  {string} commandPrefix Prefix of the bot, "!" by default
-     * @param  {Set} allowedChannelIds Array of the channel DiscordIds where the bot is allowed
-     * @param  {Set} enabledPlugins Set of the plugin Ids the bot is allowed to use in the guild
-     * @param  {Set} admins Array of users/roles allowed to change the bot settings in the guild
-     * @param  {object} permissions {plugin Id => permissions} describing for each plugin who has the right tu use it
+     * @param {object} options Args
+     * @param {string} options.discordId DiscordId of the guild
+     * @param {string} options.commandPrefix Prefix of the bot, "!" by default
+     * @param {Set} options.allowedChannelIds Array of the channel DiscordIds where the bot is allowed
+     * @param {Set} options.enabledPlugins Set of the plugin Ids the bot is allowed to use in the guild
+     * @param {Set} options.admins Array of users/roles allowed to change the bot settings in the guild
+     * @param {object} options.permissions {plugin Id => permissions} describing for each plugin who has the right tu use it
      */
-    constructor(discordId = undefined, commandPrefix = "!", allowedChannelIds = new Set([]), enabledPlugins = new Set([]), admins = new Set([]), permissions = {}) {
+    constructor({discordId = undefined, commandPrefix = "!", allowedChannelIds = new Set([]), enabledPlugins = new Set([]), admins = new Set([]), permissions = {}} = {}) {
         this._discordId = discordId;
         this._commandPrefix = commandPrefix;
         this._allowedChannelIds = allowedChannelIds;

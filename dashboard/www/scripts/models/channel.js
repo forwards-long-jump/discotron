@@ -4,11 +4,12 @@
 window.discotron.Channel = class {
     /**
      * @class
-     * @param {string} name Name of the channel
-     * @param {string} discordId Discord channel id
-     * @param {string} type Type of the channel. See discord.js documentation (dm, group, text, voice, category, news, store)
+     * @param {object} options Args
+     * @param {string} options.name Name of the channel
+     * @param {string} options.discordId Discord channel id
+     * @param {string} options.type Type of the channel. See discord.js documentation (dm, group, text, voice, category, news, store)
      */
-    constructor(name, discordId, type) {
+    constructor({name, discordId, type}) {
         this._name = name;
         this._discordId = discordId;
         this._type = type;

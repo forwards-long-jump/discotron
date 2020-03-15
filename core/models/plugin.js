@@ -1,9 +1,7 @@
 const PluginModel = require("./../../shared-models/plugin.js");
 const Command = require("./command.js");
-const webAPI = require("../../dashboard/backend/api.js").getWebAPI("discotron-dashboard");
 const db = require("./../database/crud.js");
 const Logger = require("../utils/logger.js");
-const Owner = require("./owner.js");
 const discordClientProvider = require("./../utils/discord-client-provider.js");
 
 /**

@@ -15,11 +15,12 @@ const db = require("../database/crud.js");
 class Repository extends RepositoryModel {
     /**
      * @class
-     * @param {string} folderName Name of the folder for this repository
-     * @param {string} url URL to use to clone a repository
+     * @param {object} options Args
+     * @param {string} options.folderName Name of the folder for this repository
+     * @param {string} options.url URL to use to clone a repository
      */
-    constructor(folderName, url) {
-        super(url);
+    constructor({folderName, url}) {
+        super({url: url});
         this._folderName = folderName;
 
         this.loadPluginsFromDisk();
@@ -120,7 +121,7 @@ class Repository extends RepositoryModel {
             });
 
             // Load itself
-            new Repository(folderName, url);
+            new Repository({folderName, url});
             Logger.log("Cloning successful.");
             return folderName;
         } catch (err) {

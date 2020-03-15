@@ -4,19 +4,20 @@
 window.discotron.Plugin = class extends window.discotron.PluginModel {
     /**
      * @class
-     * @param {string} pluginId Id of the plugin
-     * @param {string} name Displayed name of the plugin
-     * @param {string} description Short description of the plugin
-     * @param {string} version Version of the plugin (format x.y.z)
-     * @param {string} prefix Prefix set by the owner for all servers
-     * @param {object} commands Object containing arrays of Command objects, grouped by trigger type
-     * @param {string} defaultPermission Who can access the command if no permissions are set by the server owner, can be *everyone*, *admin*
-     * @param {boolean} enabled True if plugin is enabled by the bot owner
-     * @param {Array} logs List of logs the plugin can output to
+     * @param {object} options Args
+     * @param {string} options.id Id of the plugin
+     * @param {string} options.name Displayed name of the plugin
+     * @param {string} options.description Short description of the plugin
+     * @param {string} options.version Version of the plugin (format x.y.z)
+     * @param {string} options.prefix Prefix set by the owner for all servers
+     * @param {object} options.commands Object containing arrays of Command objects, grouped by trigger type
+     * @param {string} options.defaultPermission Who can access the command if no permissions are set by the server owner, can be *everyone*, *admin*
+     * @param {boolean} options.enabled True if plugin is enabled by the bot owner
+     * @param {Array} options.logs List of logs the plugin can output to
      */
-    constructor(pluginId, name, description, version, prefix, commands, defaultPermission, enabled, logs) {
-        super(pluginId, name, description, version, prefix, commands, defaultPermission, enabled, logs);
-        discotron.Plugin._plugins[pluginId] = this;
+    constructor({id, name, description, version, prefix, commands, defaultPermission, enabled, logs}) {
+        super({id, name, description, version, prefix, commands, defaultPermission, enabled, logs});
+        discotron.Plugin._plugins[id] = this;
     }
 
     /**
@@ -29,8 +30,17 @@ window.discotron.Plugin = class extends window.discotron.PluginModel {
                 discotron.WebAPI.queryBot("discotron-dashboard", "get-plugins").then((data) => {
                     for (let i = 0; i < data.length; i++) {
                         const plugin = data[i];
-                        new discotron.Plugin(plugin.id, plugin.name, plugin.description, plugin.version, plugin.prefix,
-                            plugin.commands, plugin.defaultPermission, plugin.enabled, plugin.logs);
+                        new discotron.Plugin({
+                            id: plugin.id,
+                            name: plugin.name,
+                            description: plugin.description,
+                            version: plugin.version,
+                            prefix: plugin.prefix,
+                            commands: plugin.commands,
+                            defaultPermission: plugin.defaultPermission,
+                            enabled: plugin.enabled,
+                            logs: plugin.logs
+                        });
                     }
                     resolve(discotron.Plugin._plugins);
                 }).catch(console.error);

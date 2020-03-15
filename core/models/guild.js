@@ -15,7 +15,7 @@ class Guild extends GuildModel {
      * @param {string} discordId Discord guild id
      */
     constructor(discordId) {
-        super(discordId);
+        super({discordId: discordId});
 
         global.discotron.on("plugin-loaded", (pluginId) => {
             this.onPluginLoaded(pluginId);
@@ -326,7 +326,7 @@ class Guild extends GuildModel {
      * @returns {Promise} Promise resolves once plugin permissions are loaded (database operation completed).
      */
     _loadPluginPermission(pluginId) {
-        this._permissions[pluginId] = new Permission(this.discordId, pluginId, []);
+        this._permissions[pluginId] = new Permission({discordGuildId: this.discordId, pluginId: pluginId, userRoles: []});
         // TODO: Fix n + 1 query here
         return db.select("Permissions", ["userRoleId"], {
             discordGuildId: this.discordId,
