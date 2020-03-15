@@ -13,7 +13,7 @@ class Plugin extends PluginModel {
      * @param {string} folder Folder name of the plugin in a repository 
      */
     constructor(folder) {
-        super({});
+        super();
         this._commands = {
             "command": [],
             "words": [],

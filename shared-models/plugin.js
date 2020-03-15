@@ -15,7 +15,7 @@ class PluginModel {
      * @param {boolean} options.enabled True if plugin is enabled by the bot owner
      * @param {Array} options.logs List of logs the plugin can output to
      */
-    constructor({id = "", name = "", description = "", version = "", prefix = "", commands = {}, defaultPermission = "everyone", enabled = true, logs = []}) {
+    constructor({id = "", name = "", description = "", version = "", prefix = "", commands = {}, defaultPermission = "everyone", enabled = true, logs = []} = {}) {
         this._name = name;
         this._id = id;
         this._description = description;
