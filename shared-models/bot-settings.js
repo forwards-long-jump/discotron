@@ -4,11 +4,12 @@
 class BotSettingsModel {
     /**
      * @class
-     * @param {string} [helpText=""] Text displayed in the help of the bot
-     * @param {boolean} [maintenance=false] True to only allow the owner(s) to use the bot
-     * @param {string} [presenceText=""] Bot presence text
+     * @param {object} options Args.
+     * @param {string} [options.helpText=""] Text displayed in the help of the bot
+     * @param {boolean} [options.maintenance=false] True to only allow the owner(s) to use the bot
+     * @param {string} [options.presenceText=""] Bot presence text
      */
-    constructor(helpText = "", maintenance = false, presenceText = "") {
+    constructor({helpText = "", maintenance = false, presenceText = ""} = {}) {
         this._helpText = helpText;
         this._presenceText = presenceText;
         this._maintenance = maintenance;

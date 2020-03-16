@@ -62,13 +62,16 @@ window.discotron.RepositoryListController = class extends window.discotron.Contr
                             const cardTitle = cardContainer.querySelector(".repository-card-title");
 
                             cardContainer.querySelector(".repository-card").onclick = () => {
-                                new discotron.PluginSettingsWidgetController(plugin, (settings) => {
-                                    // Query API
-                                    plugin.enabled = settings.enabled;
-                                    plugin.prefix = settings.globalPrefix;
+                                new discotron.PluginSettingsWidgetController({
+                                    plugin: plugin,
+                                    onPluginSettingsSave: (settings) => {
+                                        // Query API
+                                        plugin.enabled = settings.enabled;
+                                        plugin.prefix = settings.globalPrefix;
 
-                                    // Update card
-                                    cardTitle.textContent = (plugin.enabled ? "" : "[Disabled] ") + plugin.name;
+                                        // Update card
+                                        cardTitle.textContent = (plugin.enabled ? "" : "[Disabled] ") + plugin.name;
+                                    }
                                 });
                             };
 

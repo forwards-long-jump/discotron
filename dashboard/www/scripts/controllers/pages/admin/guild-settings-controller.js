@@ -63,20 +63,30 @@ window.discotron.GuildSettingsController = class extends window.discotron.Contro
             this._guild.getChannels().then((channels) => {
                 const channelListArray = Array.from(this._guild.allowedChannelIds);
 
-                new discotron.ChannelListWidgetController(channels, channelListArray, (selectedChannels) => {
-                    if (selectedChannels.length === Object.keys(channelListArray).length) {
-                        // TODO: Add a checkbox for this in particular
-                        selectedChannels = []; // Everything selected => nothing selected
+                new discotron.ChannelListWidgetController({
+                    channels: channels,
+                    selectedChannels: channelListArray,
+                    onChannelSelectorSave: (selectedChannels) => {
+                        if (selectedChannels.length === Object.keys(channelListArray).length) {
+                            // TODO: Add a checkbox for this in particular
+                            selectedChannels = []; // Everything selected => nothing selected
+                        }
+                        this._guild.allowedChannelIds = selectedChannels;
                     }
-                    this._guild.allowedChannelIds = selectedChannels;
                 });
             }).catch(console.error);
         };
         document.getElementById("admins").onclick = () => {
             const admins = Array.from(this._guild.admins);
-            new discotron.UserRoleWidgetController(this._guild, admins, (newAdmins) => {
-                this._guild.admins = newAdmins;
-            }, true, "Admins", true);
+            new discotron.UserRoleWidgetController({
+                guild: this._guild,
+                usersRoles: admins,
+                onUserRoleSave: (newAdmins) => {
+                    this._guild.admins = newAdmins;
+                },
+                headerText: "Admins",
+                allowNone: true
+            });
         };
     }
 };

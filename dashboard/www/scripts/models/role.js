@@ -4,11 +4,12 @@
 window.discotron.Role = class {
     /**
      * @class
-     * @param {string} name Name of the role
-     * @param {string} discordId Id of the role
-     * @param {string} color Color of the role 
+     * @param {object} options Args
+     * @param {string} options.name Name of the role
+     * @param {string} options.discordId Id of the role
+     * @param {string} options.color Color of the role
      */
-    constructor(name, discordId, color) {
+    constructor({name, discordId, color}) {
         this._name = name;
         this._discordId = discordId;
         this._color = color;

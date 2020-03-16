@@ -57,15 +57,22 @@ window.discotron.PluginListController = class extends window.discotron.Controlle
                 card.querySelector(".repository-card").onclick = () => {
                     const userRoles = this._guild.getPluginPermission(pluginId)._usersRoles;
 
-                    new discotron.UserRoleWidgetController(this._guild, userRoles, (userRoles, settings) => {
-                        this._guild.setPluginEnabled(pluginId, settings.enabled);
-                        this._guild.setPluginPermission(pluginId, userRoles);
-                    }, true, "Plugin settings: " + plugin.name, true, [{
-                        type: "switch",
-                        name: "Enabled",
-                        value: this._guild.enabledPlugins.has(pluginId) || this._guild.enabledPlugins.size === 0,
-                        devName: "enabled"
-                    }]);
+                    new discotron.UserRoleWidgetController({
+                        guild: this._guild,
+                        usersRoles: userRoles,
+                        onUserRoleSave: (userRoles, settings) => {
+                            this._guild.setPluginEnabled(pluginId, settings.enabled);
+                            this._guild.setPluginPermission(pluginId, userRoles);
+                        },
+                        headerText: "Plugin settings: " + plugin.name,
+                        allowNone: true,
+                        customInputs: [{
+                            type: "switch",
+                            name: "Enabled",
+                            value: this._guild.enabledPlugins.has(pluginId) || this._guild.enabledPlugins.size === 0,
+                            devName: "enabled"
+                        }]
+                    });
                 };
 
                 document.getElementById("plugin-container").appendChild(card);
