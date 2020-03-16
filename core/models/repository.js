@@ -181,27 +181,24 @@ class Repository extends RepositoryModel {
      * Delete the repository locally and remove it from database
      * @returns {Promise} resolve(), reject()
      */
-    delete() {
-        return new Promise((resolve, reject) => {
-            const index = Repository._repositories.indexOf(this);
-            if (index < 0) {
-                return;
-            }
+    async delete() {
+        const index = Repository._repositories.indexOf(this);
+        if (index < 0) {
+            return;
+        }
 
-            Repository._repositories.splice(index, 1);
+        Repository._repositories.splice(index, 1);
 
-            return db.delete("Repositories", {
-                folderName: this._folderName
-            }).then(() => {
-                const plugins = Plugin.getAll();
-                for (let i = 0; i < this._pluginIds.length; ++i) {
-                    plugins[this._pluginIds[i]].delete();
-                }
-
-                this._deleteFolder(); // sync
-                resolve();
-            });
+        await db.delete("Repositories", {
+            folderName: this._folderName
         });
+
+        const plugins = Plugin.getAll();
+        for (let i = 0; i < this._pluginIds.length; ++i) {
+            plugins[this._pluginIds[i]].delete();
+        }
+
+        this._deleteFolder();
     }
 
     /**
