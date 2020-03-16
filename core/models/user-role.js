@@ -56,26 +56,26 @@ class UserRole extends UserRoleModel {
      * Creates an entry if there isn't one
      * @returns {number} Id of the database entry for this UserRole
      */
-    getId() {
-        return new Promise((resolve, reject) => {
-            db.select("UsersRoles", ["id"], {
+    async getId() {
+        try {
+            const rows = await db.select("UsersRoles", ["id"], {
                 discordUserId: this.discordUserId,
                 discordRoleId: this.discordRoleId
-            }).then((rows) => {
-                if (rows.length !== 0) {
-                    resolve(rows[0].id);
-                } else {
-                    return db.insert("UsersRoles", {
-                        discordUserId: this.discordUserId,
-                        discordRoleId: this.discordRoleId
-                    }).then(() => {
-                        return this.getId().then((id) => {
-                            resolve(id);
-                        });
-                    });
-                }
-            }).catch(Logger.err);
-        });
+            });
+
+            if (rows.length !== 0) {
+                return rows[0].id;
+            } else {
+                await db.insert("UsersRoles", {
+                    discordUserId: this.discordUserId,
+                    discordRoleId: this.discordRoleId
+                });
+
+                return await this.getId();
+            }
+        } catch (err) {
+            Logger.err(err);
+        }
     }
 
     /**
@@ -86,17 +86,20 @@ class UserRole extends UserRoleModel {
      * @param {string} discordGuildId Id of the guild in which the user/role exists
      * @returns {Promise} resolve(userRole {UserRole}), reject()
      */
-    static getById(id, discordGuildId) {
-        return new Promise((resolve, reject) => {
-            db.select("UsersRoles", ["discordUserId", "discordRoleId"], {
+    static async getById(id, discordGuildId) {
+        try {
+            const rows = await db.select("UsersRoles", ["discordUserId", "discordRoleId"], {
                 id: id
-            }).then((rows) => {
-                if (rows.length === 0) {
-                    throw new Error("UserRole inexistent in db");
-                }
-                resolve(new UserRole(rows[0].discordUserId, rows[0].discordRoleId, discordGuildId));
-            }).catch(Logger.err);
-        });
+            });
+
+            if (rows.length === 0) {
+                throw new Error("UserRole inexistent in db");
+            }
+
+            return new UserRole(rows[0].discordUserId, rows[0].discordRoleId, discordGuildId);
+        } catch (err) {
+            Logger.err(err);
+        }
     }
 }
 

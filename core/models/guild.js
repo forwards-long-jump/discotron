@@ -25,15 +25,7 @@ class Guild extends GuildModel {
             this.onPluginDeleted(pluginId);
         });
 
-        this._tryAdd().then(() => {
-            return this._loadGuildSettings();
-        }).then(() => {
-            return this._loadAdminsFromDatabase();
-        }).then(() => {
-            return this._loadAllowedChannels();
-        }).then(() => {
-            return this._loadEnabledPlugins();
-        }).catch(Logger.err);
+        this._init();
 
         Guild._guilds[discordId] = this;
     }
@@ -318,6 +310,18 @@ class Guild extends GuildModel {
     onPluginDeleted(pluginId) {
         delete this.permissions[pluginId];
         this._enabledPlugins.delete(pluginId);
+    }
+
+    async _init() {
+        try {
+            await this._tryAdd();
+            await this._loadGuildSettings();
+            await this._loadAdminsFromDatabase();
+            await this._loadAllowedChannels();
+            await this._loadEnabledPlugins();
+        } catch (err) {
+            Logger.err(err);
+        }
     }
 
     /**
