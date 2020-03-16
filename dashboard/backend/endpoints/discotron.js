@@ -37,13 +37,16 @@ webAPI.registerAction("get-bot-config", (data, reply) => {
     });
 }, "owner");
 
-webAPI.registerAction("restart-bot", (data, reply) => {
+webAPI.registerAction("restart-bot", async (data, reply) => {
     Logger.log("Restarting bot...");
-    discordClientProvider.get().destroy().then(() => {
-        return global.discotron._connectToDiscord().then(() => {
-            reply(true);
-        });
-    }).catch(Logger.err);
+
+    try {
+        await discordClientProvider.get().destroy();
+        await global.discotron._connectToDiscord();
+        reply(true);
+    } catch (err) {
+        Logger.err(err);
+    }
 }, "owner");
 
 webAPI.registerAction("get-bot-info", (data, reply) => {
