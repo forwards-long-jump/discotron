@@ -81,26 +81,22 @@ module.exports.handleLogin = function (authToken, reply, userOwnerSecret = undef
  * @param {Function} reply Function to call to end the request
  * @param {boolean} [addOwner=false] Set it to true to add the user to the owner list
  */
-function handleDiscordAPIQuery(authToken, reply, addOwner = false) {
-    let accessInfo;
-    let userInfo;
+async function handleDiscordAPIQuery(authToken, reply, addOwner = false) {
+    try {
+        const accessInfo = await getAccessToken(authToken);
+        const userInfo = await queryDiscordUserId(accessInfo.accessToken);
 
-    getAccessToken(authToken).then((accessInfo_) => {
-        accessInfo = accessInfo_;
-        return queryDiscordUserId(accessInfo.accessToken);
-    }).then((userInfo_) => {
-        userInfo = userInfo_;
-        if (userInfo.discordId !== undefined) {
-            return requestAppToken(userInfo.discordId, accessInfo.accessToken, accessInfo.refreshToken, accessInfo.expireDate);
-        } else {
-            return Promise.reject();
+        if (userInfo.discordId === undefined) {
+            throw new Error("No discordId specified");
         }
-    }).then((appToken) => {
+
+        const appToken = await requestAppToken(userInfo.discordId, accessInfo.accessToken, accessInfo.refreshToken, accessInfo.expireDate);
+
         if (addOwner) {
             Owner.setOwners([userInfo.discordId]);
             ownerSecret = undefined;
             firstLaunch = false;
-        } 
+        }
 
         reply({
             status: "success",
@@ -110,17 +106,14 @@ function handleDiscordAPIQuery(authToken, reply, addOwner = false) {
             discriminator: userInfo.discriminator,
             discordUserId: userInfo.discordId
         });
-
-    })
-        .catch((err) => {
-            Logger.err("handleDiscordAPIQuery failed");
-            Logger.err(err);
-            // No identify scope / invalid code
-            reply({
-                status: "error"
-            });
-
+    } catch (err) {
+        Logger.err("handleDiscordAPIQuery failed");
+        Logger.err(err);
+        // No identify scope / invalid code
+        reply({
+            status: "error"
         });
+    }
 }
 
 /**
