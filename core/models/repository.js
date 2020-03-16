@@ -147,44 +147,34 @@ class Repository extends RepositoryModel {
      * Pull from the distant repository, update the plugins
      * @returns {Promise} resolve(), reject()
      */
-    pull() {
+    async pull() {
         Logger.log("Updating **" + this._folderName + "**...");
-        return new Promise((resolve, reject) => {
-            let repo;
-            // Source: https://stackoverflow.com/questions/20955393/nodegit-libgit2-for-node-js-how-to-push-and-pull
-            Git.Repository.open(global.discotronConfigPath + "/repositories/" + this._folderName)
-                .then((repository) => {
-                    repo = repository;
-                    return repository.fetch("origin");
-                })
-                .then(() => {
-                    return repo.mergeBranches("master", "origin/master");
-                })
-                .then((oid) => {
-                    const oldPluginList = this._pluginIds.splice(0);
-                    this.loadPluginsFromDisk();
-                    this.loadPagesFromDisk();
+        // Original Source: https://stackoverflow.com/questions/20955393/nodegit-libgit2-for-node-js-how-to-push-and-pull
+        try {
+            const repo = await Git.Repository.open(global.discotronConfigPath + "/repositories/" + this._folderName);
+            await repo.fetch("origin");
+            await repo.mergeBranches("master", "origin/master");
 
-                    const deletedPlugins = [];
+            const oldPluginList = this._pluginIds.splice(0);
+            this.loadPluginsFromDisk();
+            this.loadPagesFromDisk();
 
-                    for (let i = 0; i < oldPluginList.length; i++) {
-                        const oldPluginId = oldPluginList[i];
+            const deletedPlugins = [];
 
-                        if (!this._pluginIds.includes(oldPluginId)) {
-                            deletedPlugins.push(oldPluginId);
-                        }
-                    }
+            for (let i = 0; i < oldPluginList.length; i++) {
+                const oldPluginId = oldPluginList[i];
 
-                    for (let i = 0; i < deletedPlugins.length; i++) {
-                        Plugin.getAll()[deletedPlugins[i]].delete();
-                    }
+                if (!this._pluginIds.includes(oldPluginId)) {
+                    deletedPlugins.push(oldPluginId);
+                }
+            }
 
-                    resolve();
-                }).catch((err) => {
-                    Logger.err(err);
-                    reject();
-                });
-        });
+            for (let i = 0; i < deletedPlugins.length; i++) {
+                Plugin.getAll()[deletedPlugins[i]].delete();
+            }
+        } catch (err) {
+            Logger.err(err);
+        }
     }
 
     /**
