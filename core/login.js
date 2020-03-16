@@ -122,36 +122,32 @@ async function handleDiscordAPIQuery(authToken, reply, addOwner = false) {
  * @param {string} accessToken Access token requested from the oauth2 API
  * @param {string} refreshToken Refresh token requested from the oauth2 API
  * @param {number} expireDate Date when the refresh token expires
- * @returns {Promise} resolve(appToken {string})
+ * @returns {Promise<string>} App token
  */
-function requestAppToken(discordUserId, accessToken, refreshToken, expireDate) {
-    return new Promise((resolve, reject) => {
-        return db.select("Tokens", ["appToken"], {
-            discordUserId: discordUserId
-        }).then((rows) => {
-            // User exists, update it
-            if (rows.length === 1) {
-                Logger.log("Discord user with id **" + discordUserId + "** logged in using existing information.");
-
-                return db.update("Tokens", {
-                    accessToken: accessToken,
-                    refreshToken: refreshToken,
-                    expireDate: expireDate
-                }, {
-                    discordUserId: discordUserId
-                }).then(() => {
-                    resolve(rows[0].appToken);
-                });
-
-            } else {
-                // User does not exists, create it
-                const appToken = uuidv1();
-                return addUser(discordUserId, appToken, accessToken, refreshToken, expireDate).then(() => {
-                    resolve(appToken);
-                });
-            }
-        });
+async function requestAppToken(discordUserId, accessToken, refreshToken, expireDate) {
+    const rows = await db.select("Tokens", ["appToken"], {
+        discordUserId: discordUserId
     });
+
+    // User exists, update it
+    if (rows.length === 1) {
+        Logger.log("Discord user with id **" + discordUserId + "** logged in using existing information.");
+
+        await db.update("Tokens", {
+            accessToken: accessToken,
+            refreshToken: refreshToken,
+            expireDate: expireDate
+        }, {
+            discordUserId: discordUserId
+        });
+
+        return rows[0].appToken;
+    } else {
+        // User does not exists, create it
+        const appToken = uuidv1();
+        await addUser(discordUserId, appToken, accessToken, refreshToken, expireDate);
+        return appToken;
+    }
 }
 
 /**
