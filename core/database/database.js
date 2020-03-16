@@ -69,7 +69,7 @@ module.exports.doDatabaseMigrations = async (version = null, allowDown = false) 
                 return;
             } else {
                 // Open migration file as module and retrieve the required function
-                const migration = require(__dirname + "/../migrations/" + name);
+                const migration = require(__dirname + "/migrations/" + name);
                 const func = migration[type];
                 if (typeof func === "function") {
                     // Execute in database
