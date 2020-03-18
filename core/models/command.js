@@ -1,4 +1,4 @@
-const CommandModel = require("./../../shared-models/command.js");
+const CommandModel = require("./../../shared/models/command.js");
 const Owner = require("./owner.js");
 const discordClientProvider = require("../utils/discord-client-provider.js");
 

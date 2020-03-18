@@ -1,4 +1,4 @@
-const PermissionModel = require("./../../shared-models/permission.js");
+const PermissionModel = require("./../../shared/models/permission.js");
 
 const Plugin = require("./plugin.js");
 const Guild = require("./guild.js");

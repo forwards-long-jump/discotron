@@ -1,4 +1,4 @@
-const OwnerModel = require("./../../shared-models/owner.js");
+const OwnerModel = require("./../../shared/models/owner.js");
 const db = require("./../database/crud.js");
 const Logger = require("../utils/logger.js");
 

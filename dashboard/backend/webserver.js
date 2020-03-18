@@ -15,7 +15,7 @@ const appConfig = require(global.discotronConfigPath + "/bot.json");
  */
 module.exports.serveDashboard = () => {
     app.use("/dashboard", express.static(__dirname + "/../www"));
-    app.use("/shared-models", express.static(__dirname + "/../../shared-models"));
+    app.use("/shared", express.static(__dirname + "/../../shared"));
     app.use("/dashboard/config/dashboard.js", express.static(global.discotronConfigPath + "/dashboard.js"));
     app.get("/", (req, res) => {
         res.redirect("/dashboard");
