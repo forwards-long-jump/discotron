@@ -12,7 +12,7 @@ class WebApi {
      * @returns {Promise<object>} Result object containing the data, or a WebApiError is thrown.
      */
     get(endpoint, data = {}) {
-        return this.query("GET", endpoint, data);
+        return this._query("GET", endpoint, data);
     }
 
     /**
@@ -22,7 +22,7 @@ class WebApi {
      * @returns {Promise<object>} Result object containing the data, or a WebApiError is thrown.
      */
     post(endpoint, data = {}) {
-        return this.query("POST", endpoint, data);
+        return this._query("POST", endpoint, data);
     }
 
     /**
@@ -32,7 +32,7 @@ class WebApi {
      * @returns {Promise<object>} Result object containing the data, or a WebApiError is thrown.
      */
     put(endpoint, data = {}) {
-        return this.query("PUT", endpoint, data);
+        return this._query("PUT", endpoint, data);
     }
 
     /**
@@ -42,7 +42,7 @@ class WebApi {
      * @returns {Promise<object>} Result object containing the data, or a WebApiError is thrown.
      */
     delete(endpoint, data = {}) {
-        return this.query("DELETE", endpoint, data);
+        return this._query("DELETE", endpoint, data);
     }
 
     /**
@@ -53,14 +53,14 @@ class WebApi {
      * @param {object} data User data to add to the request.
      * @returns {Promise<object>} Result object containing the data, or a WebApiError is thrown.
      */
-    query(verb, endpoint, data) {
-        const url = this._expandEndpoint(endpoint);
+    async _query(verb, endpoint, data) {
+        const url = this._parseEndpoint(endpoint);
 
         // Do a cache lookup if possible
         if (verb === "GET") {
             const cachedValue = this._lookupCache(url, data);
-            if (cachedValue !== undefined) {
-                return cachedValue;
+            if (cachedValue !== null) {
+                return cachedValue; 
             }
         }
 
@@ -71,31 +71,32 @@ class WebApi {
         };
 
         // Send request to API
-        return new Promise((resolve, reject) => {
-            discotron.utils.query(verb, `/api${url}`, body).then((response) => {
-                if (response.error) {
-                    if (response.source === "core") {
-                        switch (response.error.codeName) {
-                            case "authentication-invalid-app-token":
-                                // TODO: Logout
-                                return;
-                            // TODO: do we have to handle any other core errors in a special way?
+        const response = await discotron.utils.query(verb, `/api${url}`, body);
+        if (response.error) {
+            if (response.source === "core") {
+                switch (response.error.codeName) {
+                    case "authentication-invalid-app-token":
+                        // Logout
+                        for (const key of ["username", "discordUserId", "discriminator", "avatar", "appToken"]) {
+                            localStorage.removeItem(key);
                         }
-                    }
-                    
-                    // An error caused by the endpoint can be caught by the caller
-                    // But otherwise, it will be handled by window.onerror globally
-                    reject(discotron.WebApiError.deserialize(response.error));
-                } else {
-                    // Server's response
-                    if (verb === "GET" && response.timeToLive) {
-                        // Add to cache
-                        this._addToCache(`${url}`, body.data, response);
-                    }
-                    resolve(response.data);
+                        window.location.replace("/");
+                        break;
+                    // TODO: do we have to handle any other core errors in a special way?
                 }
-            });
-        });
+            }
+
+            // An error caused by the endpoint can be caught by the caller
+            // But otherwise, it will be handled by window.onerror globally
+            throw discotron.WebApiError.deserialize(response.error);
+        } else {
+            // Server's response
+            if (verb === "GET" && response.timeToLive) {
+                // Add to cache
+                this._addToCache(`${url}`, body.data, response);
+            }
+            return response.data;
+        }
     }
 
     /**
@@ -114,7 +115,7 @@ class WebApi {
         const cacheValue = {
             parameters: requestData,
             data: response.data,
-            validUntil: new Date(new Date().getTime() + response.timeToLive * 60000) /* 60000 to convert minutes to milliseconds */
+            validUntil: new Date().getTime() + response.timeToLive * 60000 /* 60000 to convert minutes to milliseconds */
         };
 
         // Add to cache
@@ -127,13 +128,13 @@ class WebApi {
      * Does a lookup in the cache, comparing the *requestData* with the cache's *parameters*.
      * @param {string} endpoint Endpoint URL to cache.
      * @param {object} requestData Data object of the request.
-     * @returns {object} The `cacheValue` if it exists (includes *validUntil*, *data* and *parameters*), otherwise `undefined`.
-     * If the to-be-returned `cacheValue` expired, it is deleted from the cache and `undefined` is returned.
+     * @returns {object} The `cacheValue` if it exists (includes *validUntil*, *data* and *parameters*), otherwise `null`.
+     * If the to-be-returned `cacheValue` expired, it is deleted from the cache and `null` is returned.
      */
     _lookupCache(endpoint, requestData) {
         const cacheArray = this._cache[endpoint];
         if (cacheArray === undefined || cacheArray.length === 0) {
-            return undefined;
+            return null;
         }
 
         for (let i = 0; i < cacheArray.length; i++) {
@@ -144,24 +145,24 @@ class WebApi {
                 // Purge if needed
                 if (new Date().getTime() >= cacheValue.validUntil) {
                     cacheArray.splice(i, 1);
-                    return undefined;
+                    return null;
                 }
                 return cacheValue;
             }
         }
 
-        return undefined;
+        return null;
     }
 
     /**
-     * Expands the given endpoint's URL from relative to absolute form,
+     * Parses the given endpoint's URL from relative to absolute form,
      * verifying its format for integrity (but not whether it exists!).
      * @param {string} endpoint The endpoint URL.
-     * @returns {string} Expanded form of the endpoint URL.
+     * @returns {string} Absolute form of the endpoint URL.
      */
-    _expandEndpoint(endpoint) {
+    _parseEndpoint(endpoint) {
         if (!endpoint) {
-            throw new Error("No endpoint to expand.");
+            throw new Error("No endpoint to parse.");
         }
 
         if (endpoint.startsWith("/")) {
@@ -188,7 +189,7 @@ class WebApi {
     clearCache(endpoint, clean = false) {
         // TODO: We should probably run the cache clean function every now and again,
         //       to ensure our cache doesn't just grow over time if we keep getting cache misses
-        const url = this._expandEndpoint(endpoint);
+        const url = this._parseEndpoint(endpoint);
         const targets = [];
         if (url.endsWith("/*")) {
             // Handle endpoint globbing
