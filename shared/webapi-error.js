@@ -26,7 +26,7 @@ class WebApiError extends Error {
 }
 
 if (typeof module !== "undefined" && typeof module.exports !== "undefined") {
-    module.exports.WebApiError = WebApiError;
+    module.exports = WebApiError;
 } else {
     window.discotron.WebApiError = WebApiError;
 }

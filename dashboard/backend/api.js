@@ -49,7 +49,7 @@ function createEndpointHandler(endpoint, { mustReturn = false } = {}) {
          * Can either be *endpoint* if the api endpoint threw it, or *core* if the WebApi threw this error.
          */
         function reply({data, error, source = "core", status = 200} = {}) {
-            res.setStatus(status).json({
+            res.status(status).json({
                 data: data,
                 error: error && error.serialize(),
                 source: source
@@ -159,13 +159,22 @@ async function getTrustedData(appToken, untrustedData, authentication) {
     return trustedData;
 }
 
+// REMOVE ME LATER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+module.exports.getWebAPI = () => ({ registerAction: () => {} });
+
 module.exports.registerActions = (app) => {
     const sourceDir = __dirname + "/endpoints/";
     const scope = "dashboard";
     const files = readRecursive(sourceDir);
 
     // Go through all endpoints and parse the objects
-    app.get("/api/dashboard/test", createEndpointHandler((userData, trustedData) => console.log("lel", userData, trustedData), { mustReturn: true }));
+    app.get("/api/dashboard/test", createEndpointHandler({
+        authentication: "loggedIn",
+        action: (userData, trustedData) => {
+            console.log("lel", userData, trustedData);
+            return { "coolValue": new Date().getTime() };
+        }
+    }, { mustReturn: true }));
 
     const verbOptions = {
         "get": { mustReturn: true },

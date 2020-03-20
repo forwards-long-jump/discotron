@@ -99,6 +99,17 @@ class WebApi {
         }
     }
 
+    static _stringify(obj) {
+        const keys = Object.keys(obj);
+        if (keys.length <= 1) {
+            return JSON.stringify(obj);
+        } else {
+            const ordered = {};
+            keys.sort().forEach((key) => ordered[key] = obj[key]);
+            return ordered;
+        }
+    }
+
     /**
      * Adds a query's result to the cache.
      * @param {string} endpoint Endpoint URL to cache.
@@ -108,12 +119,11 @@ class WebApi {
     _addToCache(endpoint, requestData, response) {
         // Add missing endpoint key
         if (!Object.prototype.hasOwnProperty.call(this._cache, endpoint)) {
-            this._cache[endpoint] = [];
+            this._cache[endpoint] = {};
         }
 
         // Construct cache value
         const cacheValue = {
-            parameters: requestData,
             data: response.data,
             validUntil: new Date().getTime() + response.timeToLive * 60000 /* 60000 to convert minutes to milliseconds */
         };
@@ -121,7 +131,7 @@ class WebApi {
         // Add to cache
         // TODO: In theory we should do a cache lookup first to check if this parameter combination already exists.
         //       Although it can't with the location we're currently calling _addToCache, this might change and cause the cache to fill up rapidly?
-        this._cache[endpoint].push(cacheValue);
+        this._cache[endpoint][WebApi._stringify(requestData)] = cacheValue;
     }
 
     /**
@@ -132,26 +142,23 @@ class WebApi {
      * If the to-be-returned `cacheValue` expired, it is deleted from the cache and `null` is returned.
      */
     _lookupCache(endpoint, requestData) {
-        const cacheArray = this._cache[endpoint];
-        if (cacheArray === undefined || cacheArray.length === 0) {
+        const cacheEndpoint = this._cache[endpoint];
+        if (cacheEndpoint === undefined || cacheEndpoint.length === 0) {
             return null;
         }
 
-        for (let i = 0; i < cacheArray.length; i++) {
-            const cacheValue = cacheArray[i];
-
-            // Find same parameters combination
-            if (discotron.utils.objectEquals(cacheValue.parameters, requestData)) {
-                // Purge if needed
-                if (new Date().getTime() >= cacheValue.validUntil) {
-                    cacheArray.splice(i, 1);
-                    return null;
-                }
-                return cacheValue;
-            }
+        const key = WebApi._stringify(requestData);
+        const cacheValue = cacheEndpoint[key];
+        if (cacheValue === undefined) {
+            return null;
         }
 
-        return null;
+        // Purge if needed
+        if (new Date().getTime() >= cacheValue.validUntil) {
+            delete cacheEndpoint[key];
+            return null;
+        }
+        return cacheValue;
     }
 
     /**
@@ -193,7 +200,7 @@ class WebApi {
         const targets = [];
         if (url.endsWith("/*")) {
             // Handle endpoint globbing
-            const glob = url.slice(0, -2); /* 2 is length of "/*" */
+            const glob = url.slice(0, -2); // 2 is length of "/*"
             for (const key in this._cache) {
                 if (key.startsWith(glob)) {
                     targets.push(key);
@@ -207,25 +214,23 @@ class WebApi {
         const now = new Date().getTime();
         for (const target of targets) {
             // Verify it exists first
-            const cacheArray = this._cache[target];
-            if (cacheArray === undefined) {
+            const cacheEndpoint = this._cache[target];
+            if (cacheEndpoint === undefined) {
                 continue;
             }
 
             // Do some action
             if (clean) {
                 // Remove based on ttl
-                // Source: https://stackoverflow.com/a/9882349/7475278
-                let i = cacheArray.length;
-                while (i--) {
-                    const cacheValue = cacheArray[i];
+                for (const prop in cacheEndpoint) {
+                    const cacheValue = cacheEndpoint[prop];
                     if (now >= cacheValue.validUntil) {
-                        cacheArray.splice(i, 1);
+                        delete cacheEndpoint[prop];
                     }
                 }
             } else {
                 // Just remove all values
-                this._cache[target] = [];
+                this._cache[target] = {};
             }
         }
     }

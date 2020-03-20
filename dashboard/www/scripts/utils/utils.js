@@ -3,27 +3,27 @@ window.discotron.utils = class {
      * Make a HTTP request on the specified URL, with data encoded as json
      * @param {string} verb HTTP verb to send request with
      * @param {string} url Url to make the post request on
-     * @param {object} data Data that will be JSON.stringified and sent to the website
+     * @param {object} [body] Data that will be JSON.stringified and sent to the website. Does not work for GET requests.
      * @returns {Promise} resolve(data {object|string}) data: object if could parse JSON, reject()
      */
-    static query(verb, url, data) {
-        return new Promise((resolve, reject) => {
-            // source: http://youmightnotneedjquery.com/
-            const request = new XMLHttpRequest();
-            request.open(verb, url, true);
-            request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-            request.send(JSON.stringify(data));
+    static async query(verb, url, body) {
+        if (verb === "GET" && body !== undefined) {
+            throw new Error("GET cannot have a body.");
+        }
 
-            request.onreadystatechange = () => {
-                if (request.readyState === XMLHttpRequest.DONE) {
-                    try {
-                        resolve(JSON.parse(request.responseText));
-                    } catch (err) {
-                        resolve(request.responseText);
-                    }
-                }
-            };
+        const response = await fetch(url, {
+            method: verb,
+            mode: "cors",
+            cache: "no-cache",
+            credentials: "same-origin",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            redirect: "follow",
+            referrerPolicy: "no-referrer",
+            body: JSON.stringify(body)
         });
+        return await response.json();
     }
     static load(url, targetElement, callback) {
         // source: https://stackoverflow.com/questions/38132510/equivalent-to-load-without-jquery
