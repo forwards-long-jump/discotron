@@ -94,4 +94,29 @@ window.discotron.utils = class {
             }
         });
     }
+    /**
+     * Compare the equality of two objects, by eqeqeq-comparing each property's value.
+     * @param {object} obj1 Left object.
+     * @param {object} obj2 Right object.
+     * @returns {boolean} True if they are equal.
+     */
+    static objectEquals(obj1, obj2) {
+        const props1 = Object.getOwnPropertyNames(obj1);
+        const props2 = Object.getOwnPropertyNames(obj2);
+
+        // Different number of properties
+        if (props1.length !== props2.length) {
+            return false;
+        }
+
+        // Value-compare each property's value
+        for (let i = 0; i < props1.length; i++) {
+            const prop = props1[i];
+            if (obj1[prop] !== obj2[prop]) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 };

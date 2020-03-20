@@ -94,7 +94,7 @@ function createEndpointHandler(endpoint, { mustReturn = false } = {}) {
             if (mustReturn && returnValue === undefined) {
                 throw new Error("Endpoint " + req.url + " was set to mustReturn (most likely a HTTP GET), but it did not!");
             }
-            reply({ data: returnValue });
+            reply({ data: returnValue, timeToLive: endpoint.timeToLive });
         } catch (err) {
             if (err instanceof WebApiError) {
                 reply({ status: 400, error: err.serialize(), source: "endpoint" });
