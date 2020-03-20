@@ -1,12 +1,16 @@
 const express = require("express");
 const app = express();
-const fs = require("fs");
+app.use(express.json());
 
+const fs = require("fs");
 const http = require("http");
 const https = require("https");
 const config = require("../config.json");
 const Logger = require("../../core/utils/logger.js");
+
+// Register WebAPI actions
 const webAPI = require("./api.js");
+webAPI.registerActions(app);
 
 const appConfig = require(global.discotronConfigPath + "/bot.json");
 
@@ -36,14 +40,6 @@ module.exports.serveRepositoryFolder = (folderName, repositoryFolderName) => {
     } else {
         app.use("/" + folderName, express.static(global.discotronConfigPath + "/repositories/" + repositoryFolderName + "/pages/" + folderName));
     }
-};
-
-/**
- * Serve API pages
- */
-module.exports.startAPIServer = () => {
-    app.use(express.json());
-    app.post("/api", webAPI.onPost);
 };
 
 let server;
@@ -76,5 +72,6 @@ This warning will go away once the server is secured.`);
 server.listen(config.webServer.port, () => {
     Logger.info("Started webserver on port **" + config.webServer.port + "**");
 }).on("error", (error) => {
-    Logger.err("Could not start webserver on port **" + config.webServer.port + "**", error);
+    Logger.log("Could not start webserver on port **" + config.webServer.port + "**", "err");
+    Logger.log(error, "err");
 });

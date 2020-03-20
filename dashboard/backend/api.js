@@ -1,120 +1,185 @@
-/**
- * Handles communication between the dashboard and the bot
- */
 const Logger = require("../../core/utils/logger.js");
-
-const actions = {};
-
-/**
- * Listen for requests on the /api endpoint
- * @param {object} req Request object from express
- * @param {object} res Result object from express
- */
-module.exports.onPost = (req, res) => {
-    if (req === undefined || req.body === undefined) {
-        return;
-    }
-
-    const plugin = req.body.plugin;
-    const action = req.body.action;
-    const data = req.body.data;
-    const appToken = req.body.appToken;
-    const discordGuildId = req.body.discordGuildId;
-
-    if (actions[plugin] === undefined || actions[plugin][action] === undefined) {
-        reply(res, "invalid-action");
-        Logger.warn("[WebAPI] Invalid action triggered: " + plugin + "/" + action);
-        return;
-    }
-
-    Login.getDiscordUserId(appToken).then((discordUserId) => {
-        const response = actions[plugin][action];
-
-        Logger.debug("[WebAPI] Received " + plugin + "/" + action);
-
-        if (appToken !== undefined && discordUserId === false) {
-            // Provided an invalid app token
-            reply(res, "invalid-app-token");
-        } else if (authLevelCheck[response.authLevel](discordUserId, discordGuildId)) {
-            // Permission granted
-            response.action(data, (requestedData) => {
-                reply(res, requestedData);
-            }, discordUserId, discordGuildId);
-        } else {
-            // Permission refused (should not happen!)
-            Logger.warn("[WebAPI] Insufficient permission to execute " + plugin + "/" + action);
-            reply(res, "invalid-app-token");
-        }
-    }).catch(console.error);
-};
-
-/**
- * Replies to a query
- * @param {object} res Result object from express 
- * @param {object} data Will be JSON.stringified and sent to the user 
- */
-function reply(res, data) {
-    res.setHeader("Content-Type", "application/json");
-    res.end(JSON.stringify(data));
-}
-
-
-/**
- * Generate a function specifically for a pluginId, allowing to not pass the id every time
- * @param {string} pluginId Id of the plugin to use
- * @returns {object} Object containing a custom registerAction function
- */
-module.exports.getWebAPI = (pluginId) => {
-    return {
-        registerAction: function (name, action, authLevel = "everyone") {
-            registerAction(pluginId, name, action, authLevel);
-        }
-    };
-};
-
-
-/**
- * Register an action to be triggered by a webpage
- * @param {string} pluginId     Plugin ID
- * @param {string} name         Action name
- * @param {Function} action     Action to trigger, *data* is passed as argument to the function
- * @param {string} [authLevel="everyone"]    User "level" required to trigger this action, can be *everyone*, *guildAdmin*, *owner*
- */
-function registerAction(pluginId, name, action, authLevel = "everyone") {
-    // TODO: Create registerActions that takes an object with action -> {} and pass it better params
-    if (typeof actions[pluginId] === "undefined") {
-        actions[pluginId] = {};
-    }
-
-    if (typeof actions[pluginId][name] !== "undefined") {
-        throw new Error(`Action with name ${name} already exists for plugin ${pluginId}`);
-    }
-
-    actions[pluginId][name] = {
-        action: action,
-        authLevel: authLevel
-    };
-
-    Logger.debug(`Registered action ${name} for plugin ${pluginId}`);
-}
-
-// Object containing a method for each level of authentication
-const authLevelCheck = {
-    "owner": require("../../core/models/owner.js").isOwner,
-    "guildAdmin": require("../../core/models/guild.js").isGuildAdmin,
-    "everyone": () => true
-};
-
 const Login = require("../../core/login.js");
+const { isOwner } = require("../../core/models/owner.js");
+const { isGuildAdmin } = require("../../core/models/guild.js");
+const { readRecursive } = require("../../core/utils/file-helper.js");
 
-module.exports.registerActions = () => {
-    const { readRecursive } = require("../../core/utils/file-helper.js");
-    const files = readRecursive(__dirname + "/endpoints/");
+const WebApiError = require("../../shared/webapi-error.js");
 
-    // For now, we can just require() each file to register all actions
-    // Later on, this will be module.exports that have to be parsed individually
-    // TODO: For that, the file paths must be converted to relative path!
+const authenticationRequirements = {
+    "owner": {
+        useUserId: true
+    },
+    "guildAdmin": {
+        useUserId: true
+    },
+    "loggedIn": {
+        useUserId: true
+    },
+    "everyone": {
+        useUserId: false
+    },
+};
+
+/**
+ * Action to run when an endpoint is called.
+ * @callback EndpointAction
+ * @param {object} userData Data passed to the API by the user.
+ * @param {object} trustedData Data which is verified by the API to be valid before being passed here.
+ * This for example includes the Discord user's ID, which is retrieved from a valid AppToken.
+ */
+/**
+ * Returns a function which is used for handling an API request
+ * @param {object} endpoint The endpoint information.
+ * @param {EndpointAction} endpoint.action Action to run when endpoint is called.
+ * @param {object} options Options.
+ * @param {boolean} options.mustReturn Whether the action must return a value, otherwise an error would be thrown.
+ * Useful for GET, where a value is always expected by the client.
+ * @returns {Function} Express.JS callback.
+ */
+function createEndpointHandler(endpoint, { mustReturn = false } = {}) {
+    return async (req, res) => {
+        /**
+         * Send a reply to client.
+         * @param {object} object Object.
+         * @param {object} object.data User data.
+         * @param {WebApiError} object.error Error object.
+         * @param {number} [object.status] Status code
+         * @param {string} [object.source] Check on the client to determine who threw this error on the server side.
+         * Can either be *endpoint* if the api endpoint threw it, or *core* if the WebApi threw this error.
+         */
+        function reply({data, error, source = "core", status = 200} = {}) {
+            res.setStatus(status).json({
+                data: data,
+                error: error && error.serialize(),
+                source: source
+            });
+        }
+
+        if (endpoint === undefined) {
+            // Endpoint is undefined for this verb
+            Logger.log("[WebAPI] Endpoint __" + req.url + "__ accessed with incompatible HTTP verb", "warn");
+            reply({
+                status: 405, /* Method Not Allowed */
+                error: new WebApiError("Endpoint " + req.url + " accessed with incompatible HTTP verb", "invalid-verb")
+            });
+            return;
+        }
+
+        Logger.log("[WebAPI] Accessing " + req.url);
+
+        // Strip trustedData off the userData
+        const appToken = req.body.appToken;
+        const userData = req.body.data;
+
+        let trustedData = {};
+
+        try {
+            // If trusted data can't be established (e.g. not logged in), an error is thrown
+            trustedData = await getTrustedData(appToken, userData, endpoint.authentication);
+        } catch (err) {
+            if (err instanceof WebApiError) {
+                Logger.log("[WebAPI] Insufficient permission to execute " + req.url + " (authentication was set to " + endpoint.authentication + ").", "warn");
+                reply({status: 401, error: err});
+                return;
+            } else {
+                // Unexpected exceptions should be re-thrown
+                reply();
+                throw err;
+            }
+        }
+
+        try {
+            const returnValue = endpoint.action(userData, trustedData);
+            if (mustReturn && returnValue === undefined) {
+                throw new Error("Endpoint " + req.url + " was set to mustReturn (most likely a HTTP GET), but it did not!");
+            }
+            reply({ data: returnValue });
+        } catch (err) {
+            if (err instanceof WebApiError) {
+                reply({ status: 400, error: err.serialize(), source: "endpoint" });
+                return;
+            } else {
+                // Unexpected exceptions should be re-thrown
+                reply();
+                throw err;
+            }
+        }
+    };
+}
+
+
+/**
+ * Uses appToken to verify that the user is authenticated and have access to the resource wanted by 
+ * Throws an exception if the data can't be trusted, or the authentication mode is unknown.
+ * @param {string} appToken User's appToken.
+ * @param {object} untrustedData Untrusted data provided by user. May be modified when trusting data.
+ * @param {string} authentication Auth mode, should be one of *authenticationRequirements* keys.
+ * @returns {Promise<object>} The trusted data.
+ */
+async function getTrustedData(appToken, untrustedData, authentication) {
+    const trustedData = {};
+
+    // If userId is required, we check and set it
+    if (authenticationRequirements[authentication].useUserId) {
+        // Retrieve from appToken
+        const discordUserId = await Login.getDiscordUserId(appToken);
+        
+        if (!discordUserId) {
+            throw new WebApiError("Invalid app token.", "authentication-invalid-app-token");
+        }
+
+        trustedData.userId = discordUserId;
+    }
+
+    switch (authentication) {
+        case "owner":
+            // Is the dude owner of discotron?
+            if (!isOwner(trustedData.userId)) {
+                throw new WebApiError("Permission denied.", "authentication-not-owner");
+            }
+            break;
+        case "guildAdmin":
+            // Is the dude associated to the userId admin of the untrusted guild id?
+            if (!isGuildAdmin(trustedData.userId, untrustedData.guildId)) {
+                throw new WebApiError("You are not an admin of that guild.", "authentication-not-guild-admin");
+            }
+
+            // We now trust the guildId
+            trustedData.guildId = untrustedData.guildId;
+            delete untrustedData.guildId;
+            break;
+        case "loggedIn": /* trustedData.userId is set above */ break;
+        case "everyone": /* This is always true */ break;
+        default: {
+            throw new Error("Unknown authentication mode specified: " + authentication);
+        }
+    }
+
+    return trustedData;
+}
+
+module.exports.registerActions = (app) => {
+    const sourceDir = __dirname + "/endpoints/";
+    const scope = "dashboard";
+    const files = readRecursive(sourceDir);
+
+    // Go through all endpoints and parse the objects
+    app.get("/api/dashboard/test", createEndpointHandler((userData, trustedData) => console.log("lel", userData, trustedData), { mustReturn: true }));
+
+    const verbOptions = {
+        "get": { mustReturn: true },
+        "post": {},
+        "put": {},
+        "delete": {}
+    };
+
     for (const file of files) {
-        require(file);
+        const endpoint = require(file);
+        const url = file.slice(sourceDir.length, -3); // -3 is length of the .js suffix
+
+        for (const verb in verbOptions) {
+            app[verb](`/api/${scope}/${url}`, createEndpointHandler(endpoint[verb], verbOptions[verb]));
+        }
     }
 };

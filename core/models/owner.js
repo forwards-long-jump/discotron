@@ -38,7 +38,7 @@ class Owner extends OwnerModel {
      * @returns {boolean} True if user is owner
      */
     static isOwner(discordUserId) {
-        return discordUserId !== undefined && Owner._owners.has(discordUserId);
+        return discordUserId && Owner._owners.has(discordUserId);
     }
 
     /**
