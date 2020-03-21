@@ -24,7 +24,31 @@ window.discotron.utils = class {
             referrerPolicy: "no-referrer",
         };
 
-        return await response.json();
+        // Get cannot have a body, but we want to easily be able to use an object in the parameters
+        if (verb === "GET") {
+            const parameters = {};
+            for (const key in body) {
+                const element = body[key];
+
+                // We sadly convert everything to JSON, as we may want to be able to use more complex objects
+                parameters[key] = JSON.stringify(element);
+            }
+
+            url += "?" + new URLSearchParams(parameters).toString();
+            body = undefined; // Unset the body as get cannot have one
+        }
+
+        if (body !== undefined) {
+            request.body = JSON.stringify(body);
+        }
+
+        const response = await fetch(url, request);
+        try {
+            return await response.json();
+        } catch (error) {
+            console.error("API Query failed for URL", response);
+            throw new discotron.WebApiError("An error occurred when communicating with the bot. Status code: " + response.status);
+        }
     }
     static load(url, targetElement, callback) {
         // source: https://stackoverflow.com/questions/38132510/equivalent-to-load-without-jquery

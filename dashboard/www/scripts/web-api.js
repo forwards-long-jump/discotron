@@ -88,7 +88,7 @@ class WebApi {
             // Server's response
             if (verb === "GET" && response.timeToLive) {
                 // Add to cache
-                this._addToCache(`${url}`, body.data, response);
+                this._addToCache(`${url}`, data, response);
             }
             return response.data;
         }

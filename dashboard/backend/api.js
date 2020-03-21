@@ -48,7 +48,7 @@ function createEndpointHandler(endpoint, { mustReturn = false } = {}) {
          * @param {string} [object.source] Check on the client to determine who threw this error on the server side.
          * Can either be *endpoint* if the api endpoint threw it, or *core* if the WebApi threw this error.
          */
-        function reply({data, error, source = "core", status = 200} = {}) {
+        function reply({ data, error, source = "core", status = 200 } = {}) {
             res.status(status).json({
                 data: data,
                 error: error && error.serialize(),
@@ -75,6 +75,22 @@ function createEndpointHandler(endpoint, { mustReturn = false } = {}) {
             appToken = authorizationHeader.slice(7);
         }
 
+        let userData = {};
+
+        if (req.method === "GET") {
+            // We except GET query params to be JSON encoded
+            try {
+                for (const key in req.query) {
+                    userData[key] = JSON.parse(req.query[key]);
+                }
+            } catch (err) {
+                reply({ status: 400, error: new WebApiError("GET endpoint excepts values to be JSON encoded", "get-params-not-json-encoded"), source: "core" });
+                return;
+            }
+        } else {
+            userData = req.body.data;
+        }
+
         let trustedData = {};
 
         try {
@@ -83,7 +99,7 @@ function createEndpointHandler(endpoint, { mustReturn = false } = {}) {
         } catch (err) {
             if (err instanceof WebApiError) {
                 Logger.log("[WebAPI] Insufficient permission to execute " + req.url + " (authentication was set to " + endpoint.authentication + ").", "warn");
-                reply({status: 401, error: err});
+                reply({ status: 401, error: err });
                 return;
             } else {
                 // Unexpected exceptions should be re-thrown
@@ -100,7 +116,7 @@ function createEndpointHandler(endpoint, { mustReturn = false } = {}) {
             reply({ data: returnValue, timeToLive: endpoint.timeToLive });
         } catch (err) {
             if (err instanceof WebApiError) {
-                reply({ status: 400, error: err.serialize(), source: "endpoint" });
+                reply({ status: 400, error: err, source: "endpoint" });
                 return;
             } else {
                 // Unexpected exceptions should be re-thrown
@@ -127,7 +143,7 @@ async function getTrustedData(appToken, untrustedData, authentication) {
     if (authenticationRequirements[authentication].useUserId) {
         // Retrieve from appToken
         const discordUserId = await Login.getDiscordUserId(appToken);
-        
+
         if (!discordUserId) {
             throw new WebApiError("Invalid app token.", "authentication-invalid-app-token");
         }
@@ -163,7 +179,7 @@ async function getTrustedData(appToken, untrustedData, authentication) {
 }
 
 // REMOVE ME LATER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-module.exports.getWebAPI = () => ({ registerAction: () => {} });
+module.exports.getWebAPI = () => ({ registerAction: () => { } });
 
 module.exports.registerActions = (app) => {
     const sourceDir = __dirname + "/endpoints/";
@@ -174,7 +190,9 @@ module.exports.registerActions = (app) => {
     app.get("/api/dashboard/test", createEndpointHandler({
         authentication: "loggedIn",
         action: (userData, trustedData) => {
-            console.log("lel", userData, trustedData);
+            console.log("IN ENDPOINT");
+            console.log(userData, trustedData);
+            console.log("END ENDPOINT");
             return { "coolValue": new Date().getTime() };
         }
     }, { mustReturn: true }));
