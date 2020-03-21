@@ -64,14 +64,9 @@ class WebApi {
             }
         }
 
-        // Create the query's body
-        const body = {
-            data: data,
-            appToken: localStorage.appToken
-        };
-
         // Send request to API
-        const response = await discotron.utils.query(verb, `/api${url}`, body);
+        const response = await discotron.utils.query(verb, `/api${url}`, data, localStorage.appToken);
+
         if (response.error) {
             if (response.source === "core") {
                 switch (response.error.codeName) {

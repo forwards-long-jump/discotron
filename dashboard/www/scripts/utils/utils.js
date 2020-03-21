@@ -4,25 +4,26 @@ window.discotron.utils = class {
      * @param {string} verb HTTP verb to send request with
      * @param {string} url Url to make the post request on
      * @param {object} [body] Data that will be JSON.stringified and sent to the website. Does not work for GET requests.
+     * @param {object} [appToken] Application token that will be sent in the Authorization header
      * @returns {Promise} resolve(data {object|string}) data: object if could parse JSON, reject()
      */
-    static async query(verb, url, body) {
-        if (verb === "GET" && body !== undefined) {
-            throw new Error("GET cannot have a body.");
+    static async query(verb, url, body, appToken) {
+        const headers = { "Content-Type": "application/json" };
+
+        if (appToken !== undefined) {
+            headers["Authorization"] = `Bearer ${appToken}`;
         }
 
-        const response = await fetch(url, {
+        const request = {
             method: verb,
+            headers: headers,
             mode: "cors",
             cache: "no-cache",
             credentials: "same-origin",
-            headers: {
-                "Content-Type": "application/json"
-            },
             redirect: "follow",
             referrerPolicy: "no-referrer",
-            body: JSON.stringify(body)
-        });
+        };
+
         return await response.json();
     }
     static load(url, targetElement, callback) {

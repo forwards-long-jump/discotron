@@ -68,9 +68,12 @@ function createEndpointHandler(endpoint, { mustReturn = false } = {}) {
 
         Logger.log("[WebAPI] Accessing " + req.url);
 
-        // Strip trustedData off the userData
-        const appToken = req.body.appToken;
-        const userData = req.body.data;
+        let appToken;
+        const authorizationHeader = req.header("authorization");
+
+        if (typeof authorizationHeader === "string" && authorizationHeader.startsWith("Bearer ")) {
+            appToken = authorizationHeader.slice(7);
+        }
 
         let trustedData = {};
 
