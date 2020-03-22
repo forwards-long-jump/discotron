@@ -58,20 +58,22 @@ class Logger {
         const level = severityToLevel[severity];
 
         if (Logger.level <= level) {
+            const date = new Date();
+            const displayedLevel = levelToText[level].padEnd(13);
+            const displayedDate = `[${date.toLocaleDateString()} ${date.toLocaleTimeString()}]`;
+
             const mdValues = values.map((value) => {
                 if (typeof value === "string") {
                     value = value.replace(/\*\*(.*?)\*\*/g, controlCodes.bright + "$1" + controlCodes.reset);
                     value = value.replace(/__(.*?)__/g, controlCodes.underscore + "$1" + controlCodes.reset);
+                    value = value.replace(/(\r?\n)/g, "$1" + " ".repeat(displayedLevel.length + displayedDate.length - 1));
                 }
                 return value;
             });
 
-            const date = new Date();
-            const displayedDate = `[${date.toLocaleDateString()} ${date.toLocaleTimeString()}]`;
-
             console.log(
                 `${controlCodes.dim}${displayedDate}${controlCodes.reset} ` +
-                `${levelToText[level].padEnd(13)}${controlCodes.reset}: `,
+                `${displayedLevel}${controlCodes.reset}: `,
                 ...mdValues,
                 controlCodes.reset
             );
