@@ -38,7 +38,7 @@ webAPI.registerAction("get-bot-config", (data, reply) => {
 }, "owner");
 
 webAPI.registerAction("restart-bot", async (data, reply) => {
-    Logger.log("Restarting bot...");
+    Logger.debug("Restarting bot...");
 
     try {
         await discordClientProvider.get().destroy();

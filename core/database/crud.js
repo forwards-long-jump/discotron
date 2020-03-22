@@ -89,8 +89,7 @@ module.exports.update = (table, values, where) => {
 
         database.run(sql, params, (err) => {
             if (err) {
-                Logger.log("Update in database failed : " + sql, "err");
-                Logger.log(err);
+                Logger.err("Update in database failed : " + sql, err);
                 reject(err);
             } else {
                 resolve();
@@ -115,8 +114,7 @@ module.exports.insert = (table, values) => {
 
         database.run(sql, parameters.data, (err) => {
             if (err) {
-                Logger.log("Insert in database failed : " + sql, "err");
-                Logger.log(err);
+                Logger.err("Insert in database failed : " + sql, err);
                 reject(err);
             } else {
                 resolve();
@@ -144,8 +142,7 @@ module.exports.delete = (table, where, eraseAll = false) => {
 
             database.run(sql, parameters.objParam, (err) => {
                 if (err) {
-                    Logger.log("Delete in database failed : " + sql, "err");
-                    Logger.log(err);
+                    Logger.err("Delete in database failed : " + sql, err);
                     reject(err);
                 } else {
                     resolve();
@@ -154,8 +151,7 @@ module.exports.delete = (table, where, eraseAll = false) => {
         } else if (eraseAll === true) {
             database.run(sql, (err) => {
                 if (err) {
-                    Logger.log("Delete in database failed : " + sql, "err");
-                    Logger.log(err);
+                    Logger.err("Delete in database failed : " + sql, err);
                     reject(err);
                 } else {
                     resolve();
@@ -192,7 +188,7 @@ module.exports.select = (table, fields = [], where = {}) => {
 
             database.all(sql, parameters.objParam, (err, rows) => {
                 if (err) {
-                    Logger.log("Select in database failed : " + sql, "err");
+                    Logger.err("Select in database failed : " + sql);
                     reject(err);
                 }
                 resolve(rows);
@@ -200,7 +196,7 @@ module.exports.select = (table, fields = [], where = {}) => {
         } else {
             database.all(sql, (err, rows) => {
                 if (err) {
-                    Logger.log("Select in database failed : " + sql, "err");
+                    Logger.err("Select in database failed : " + sql);
                     reject(err);
                 }
                 resolve(rows);
@@ -223,7 +219,7 @@ module.exports.exec = (statements) => {
     return new Promise((resolve, reject) => {
         database.exec(statements, (err) => {
             if (err) {
-                Logger.log("Exec in database failed : " + statements, "err");
+                Logger.err("Exec in database failed : " + statements);
                 reject(err);
             }
             resolve();

@@ -27,7 +27,7 @@ class Repository extends RepositoryModel {
         this.loadPagesFromDisk();
 
         if (this._pluginIds.length === 0 && this._pages.length === 0) {
-            Logger.log("No **plugins** or **pages** folders found for repository stored in **" + folderName + "**!", "warn");
+            Logger.warn("No **plugins** or **pages** folders found for repository stored in **" + folderName + "**!");
         }
 
         Repository._repositories.push(this);
@@ -41,7 +41,7 @@ class Repository extends RepositoryModel {
 
         if (fs.existsSync(pluginsPath)) {
             fs.readdirSync(global.discotronConfigPath + "/repositories/" + this._folderName + "/plugins").forEach(file => {
-                Logger.log("Building Plugin from folder **" + file + "**", "debug");
+                Logger.debug("Building Plugin from folder **" + file + "**");
                 const plugin = new Plugin(pluginsPath + "/" + file);
                 this._pluginIds.push(plugin.id);
             });
@@ -57,7 +57,7 @@ class Repository extends RepositoryModel {
 
         if (fs.existsSync(pagesPath)) {
             fs.readdirSync(global.discotronConfigPath + "/repositories/" + this._folderName + "/pages").forEach(file => {
-                Logger.log("Serving web folder **" + file + "**");
+                Logger.debug("Serving web folder **" + file + "**");
                 webServer.serveRepositoryFolder(file, this._folderName);
 
                 const oldPageIndex = this._pages.indexOf(file);
@@ -84,7 +84,7 @@ class Repository extends RepositoryModel {
      * @returns {Promise<string>} Folder name of the repository
      */
     static async clone(url) {
-        Logger.log("Cloning **" + url + "**...");
+        Logger.debug("Cloning **" + url + "**...");
 
         let folderName;
         let foundRepos;
@@ -94,8 +94,7 @@ class Repository extends RepositoryModel {
             folderName = Repository._generateFolderName(url);
             foundRepos = await db.select("Repositories", ["folderName"], {folderName: folderName});
         } catch (err) {
-            Logger.log("Cloning failed!", "err");
-            Logger.log(err, "err");
+            Logger.err("Cloning failed!", err);
             throw new Error("Unexpected error occured retrieving repository information.");
         }
 
@@ -122,11 +121,10 @@ class Repository extends RepositoryModel {
 
             // Load itself
             new Repository({folderName, url});
-            Logger.log("Cloning successful.");
+            Logger.debug("Cloning successful.");
             return folderName;
         } catch (err) {
-            Logger.log("Cloning failed!", "err");
-            Logger.log(err, "err");
+            Logger.err("Cloning failed!", err);
             throw new Error("Unexpected error occured cloning repository.");
         }
     }
@@ -149,7 +147,7 @@ class Repository extends RepositoryModel {
      * @returns {Promise} resolve(), reject()
      */
     async pull() {
-        Logger.log("Updating **" + this._folderName + "**...");
+        Logger.debug("Updating **" + this._folderName + "**...");
         // Original Source: https://stackoverflow.com/questions/20955393/nodegit-libgit2-for-node-js-how-to-push-and-pull
         try {
             const repo = await Git.Repository.open(global.discotronConfigPath + "/repositories/" + this._folderName);

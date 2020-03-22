@@ -32,7 +32,7 @@ module.exports.serveDashboard = () => {
  */
 module.exports.serveRepositoryFolder = (folderName, repositoryFolderName) => {
     if (["dashboard", "login", "models"].includes(folderName)) {
-        Logger.log("Could not serve folder **" + folderName + "** because it is a reserved page name.", "warn");
+        Logger.warn("Could not serve folder **" + folderName + "** because it is a reserved page name.");
     } else {
         app.use("/" + folderName, express.static(global.discotronConfigPath + "/repositories/" + repositoryFolderName + "/pages/" + folderName));
     }
@@ -50,11 +50,11 @@ let server;
 if (typeof appConfig.privateKey === "undefined" || typeof appConfig.certificate === "undefined" ||
     appConfig.privateKey === "" || appConfig.certificate === "") {
 
-    Logger.log("**Dashboard and web pages are served without https!**", "warn");
-    Logger.log("A hacker could **easily** access your computer as well as compromising all Discord guilds the bot is in.", "warn");
-    Logger.log("To prevent that, secure your server using a service like **letsencrypt**.", "warn");
-    Logger.log("You can then add **privateKeyPath** and **certificatePath** in __bot.json__ to fix the issue.", "warn");
-    Logger.log("This warning will go away once the server is secured.", "warn");
+    Logger.warn(`**Dashboard and web pages are served without https!**
+A hacker could **easily** access your computer as well as compromising all Discord guilds the bot is in.
+To prevent that, secure your server using a service like **letsencrypt**.
+You can then add **privateKeyPath** and **certificatePath** in __bot.json__ to fix the issue.
+This warning will go away once the server is secured.`);
 
     server = http.createServer(app);
 } else {
@@ -66,8 +66,7 @@ if (typeof appConfig.privateKey === "undefined" || typeof appConfig.certificate 
             cert: fs.readFileSync(appConfig.certificate)
         };
     } catch (e) {
-        Logger.err(e);
-        Logger.err("Could not load https cert/key");
+        Logger.err("Could not load https cert/key", e);
         process.exit();
     }
 
@@ -75,8 +74,7 @@ if (typeof appConfig.privateKey === "undefined" || typeof appConfig.certificate 
 }
 
 server.listen(config.webServer.port, () => {
-    Logger.log("Started webserver on port **" + config.webServer.port + "**", "info");
+    Logger.info("Started webserver on port **" + config.webServer.port + "**");
 }).on("error", (error) => {
-    Logger.log("Could not start webserver on port **" + config.webServer.port + "**", "err");
-    Logger.log(error, "err");
+    Logger.err("Could not start webserver on port **" + config.webServer.port + "**", error);
 });

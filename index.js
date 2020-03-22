@@ -55,13 +55,12 @@ async function init() {
      * @async
      */
     async function connectToDiscord() {
-        Logger.log("Connecting to discord...");
+        Logger.debug("Connecting to discord...");
         try {
             await discordClient.login(appConfig.token);
             return true;
         } catch (err) {
-            Logger.log("Could not connect to discord", "err");
-            Logger.log(err.message, "err");
+            Logger.err("Could not connect to discord:", err.message);
             return false;
         }
     }
@@ -75,7 +74,7 @@ async function init() {
         // TODO: Handle error and reaction
 
         discordClient.on("ready", () => {
-            Logger.log("Logged into Discord as **" + discordClient.user.tag + "**", "info");
+            Logger.info("Logged into Discord as **" + discordClient.user.tag + "**");
             discotron.updateGuilds();
             discotron.getBotSettings().setBotPresence();
         });
@@ -127,23 +126,23 @@ async function init() {
         try {
             appConfig = require(global.discotronConfigPath + "/bot.json");
             if (typeof appConfig.token === "undefined" || appConfig.token === "") {
-                Logger.log("Missing **token** in **bot.json**.", "err");
+                Logger.err("Missing **token** in **bot.json**.");
                 process.exit();
             }
             if (typeof appConfig.applicationId === "undefined" || appConfig.applicationId === "") {
-                Logger.log("Missing **applicationId** in **bot.json**.", "err");
+                Logger.err("Missing **applicationId** in **bot.json**.");
                 process.exit();
             }
             if (typeof appConfig.oauth2Secret === "undefined" || appConfig.oauth2Secret === "") {
-                Logger.log("Missing **oauth2Secret** in **bot.json**.", "err");
+                Logger.err("Missing **oauth2Secret** in **bot.json**.");
                 process.exit();
             }
             if (typeof appConfig.redirectURI === "undefined" || appConfig.redirectURI === "") {
-                Logger.log("Missing **redirectURI** in **bot.json**.", "err");
+                Logger.err("Missing **redirectURI** in **bot.json**.");
                 process.exit();
             }
         } catch (err) {
-            Logger.log("Please run **npm install** and set up the application config.", "err");
+            Logger.err("Please run **npm install** and set up the application config.");
             process.exit();
         }
 
