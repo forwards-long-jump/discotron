@@ -3,7 +3,7 @@ window.discotron.utils = class {
      * Make a HTTP request on the specified URL, with data encoded as json
      * @param {string} verb HTTP verb to send request with
      * @param {string} url Url to make the post request on
-     * @param {object} [body] Data that will be JSON.stringified and sent to the website. Does not work for GET requests.
+     * @param {object} [body] Data that will be JSON.stringified and sent to the website. Will be converted as URL params for GET requests, which will convert everything to string.
      * @param {object} [appToken] Application token that will be sent in the Authorization header
      * @returns {Promise} resolve(data {object|string}) data: object if could parse JSON, reject()
      */
@@ -26,15 +26,7 @@ window.discotron.utils = class {
 
         // Get cannot have a body, but we want to easily be able to use an object in the parameters
         if (verb === "GET") {
-            const parameters = {};
-            for (const key in body) {
-                const element = body[key];
-
-                // We sadly convert everything to JSON, as we may want to be able to use more complex objects
-                parameters[key] = JSON.stringify(element);
-            }
-
-            url += "?" + new URLSearchParams(parameters).toString();
+            url += "?" + new URLSearchParams(body).toString();
             body = undefined; // Unset the body as get cannot have one
         }
 

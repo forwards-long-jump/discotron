@@ -79,15 +79,7 @@ function createEndpointHandler(endpoint, { mustReturn = false } = {}) {
         let userData = {};
 
         if (req.method === "GET") {
-            // We except GET query params to be JSON encoded
-            try {
-                for (const key in req.query) {
-                    userData[key] = JSON.parse(req.query[key]);
-                }
-            } catch (err) {
-                reply({ status: 400, error: new WebApiError("GET endpoint excepts values to be JSON encoded", "get-params-not-json-encoded"), source: "core" });
-                return;
-            }
+            userData = req.query;
         } else {
             userData = req.body.data;
         }
