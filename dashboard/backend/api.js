@@ -69,10 +69,11 @@ function createEndpointHandler(endpoint, { mustReturn = false } = {}) {
         Logger.log("[WebAPI] Accessing " + req.url);
 
         let appToken;
-        const authorizationHeader = req.header("authorization");
+        const authorizationHeader = req.header("Authorization");
+        const authorizationPrefix = "Bearer ";
 
-        if (typeof authorizationHeader === "string" && authorizationHeader.startsWith("Bearer ")) {
-            appToken = authorizationHeader.slice(7);
+        if (typeof authorizationHeader === "string" && authorizationHeader.startsWith(authorizationPrefix)) {
+            appToken = authorizationHeader.slice(authorizationPrefix.length);
         }
 
         let userData = {};
