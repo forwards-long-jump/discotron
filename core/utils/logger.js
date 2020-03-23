@@ -47,38 +47,34 @@ class Logger {
     }
 
     /**
-     * Shortcut for Logger.log(value, "err");
-     * @param {object} value to log, either string or object
-     */
-    static err(value) {
-        Logger.log(value, "err");
-    }
-
-    /**
      * Log something to the console.
-     * \**text** can be used for bold
-     * \__text__ can be used for underline
+     * \*\*text** can be used for bold
+     * \_\_text__ can be used for underline
      * @static
-     * @param {string|object} value Message to display. If it is not a string, it will be displayed on another line.
-     * @param {string} [severity="debug"] Severity of the message (can be: err, info, warn, debug)
+     * @param {string} severity Severity of the message (can be: err, info, warn, debug)
+     * @param {...any} values Values to display. If it is not a string, it will be displayed on another line.
      */
-    static log(value, severity = "debug") {
+    static log(severity, ...values) {
         const level = severityToLevel[severity];
 
         if (Logger.level <= level) {
-
-            if (typeof value === "string") {
-                value = value.replace(/\*\*(.*?)\*\*/g, controlCodes.bright + "$1" + controlCodes.reset);
-                value = value.replace(/__(.*?)__/g, controlCodes.underscore + "$1" + controlCodes.reset);
-            }
-
             const date = new Date();
+            const displayedLevel = levelToText[level].padEnd(13);
             const displayedDate = `[${date.toLocaleDateString()} ${date.toLocaleTimeString()}]`;
+
+            const mdValues = values.map((value) => {
+                if (typeof value === "string") {
+                    value = value.replace(/\*\*(.*?)\*\*/g, controlCodes.bright + "$1" + controlCodes.reset);
+                    value = value.replace(/__(.*?)__/g, controlCodes.underscore + "$1" + controlCodes.reset);
+                    value = value.replace(/(\r?\n)/g, "$1" + " ".repeat(displayedLevel.length + displayedDate.length - 1));
+                }
+                return value;
+            });
 
             console.log(
                 `${controlCodes.dim}${displayedDate}${controlCodes.reset} ` +
-                `${levelToText[level].padEnd(13)}${controlCodes.reset}: `,
-                value,
+                `${displayedLevel}${controlCodes.reset}: `,
+                ...mdValues,
                 controlCodes.reset
             );
         }
@@ -86,5 +82,12 @@ class Logger {
 }
 
 Logger.level = severityToLevel.info;
+
+// Register severity functions (such as Logger.err)
+for (const severity in severityToLevel) {
+    Logger[severity] = function (...values) {
+        Logger.log(severity, ...values);
+    };
+}
 
 module.exports = Logger;

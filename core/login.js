@@ -61,7 +61,7 @@ module.exports.handleLogin = function (authToken, reply, userOwnerSecret = undef
                 status: "first-launch"
             });
         } else if (ownerSecret === undefined || ownerSecret !== userOwnerSecret) {
-            Logger.log("Wrong secret provided");
+            Logger.debug("Wrong secret provided");
             // Wrong secret
             reply({
                 status: "error"
@@ -112,8 +112,7 @@ async function handleDiscordAPIQuery(authToken, reply, addOwner = false) {
             discordUserId: userInfo.discordId
         });
     } catch (err) {
-        Logger.err("handleDiscordAPIQuery failed");
-        Logger.err(err);
+        Logger.err("handleDiscordAPIQuery failed", err);
         // No identify scope / invalid code
         reply({
             status: "error"
@@ -137,7 +136,7 @@ async function requestAppToken(userInfo) {
 
     // User exists, update it
     if (rows.length === 1) {
-        Logger.log("Discord user with id **" + userInfo.discordUserId + "** logged in using existing information.");
+        Logger.debug("Discord user with id **" + userInfo.discordUserId + "** logged in using existing information.");
 
         await db.update("Tokens", {
             accessToken: userInfo.accessToken,
@@ -164,7 +163,7 @@ async function requestAppToken(userInfo) {
  */
 function getAccessToken(authToken) {
     return new Promise((resolve, reject) => {
-        Logger.log("Query made to Discord API (OAuth2/token)");
+        Logger.debug("Query made to Discord API (OAuth2/token)");
         request.post(
             discordApiUrl + "oauth2/token",
             {
@@ -179,8 +178,7 @@ function getAccessToken(authToken) {
             },
             (err, response, body) => {
                 if (err !== null) {
-                    Logger.log("Query rejected by Discord");
-                    Logger.log(err);
+                    Logger.debug("Query rejected by Discord", err);
                     reject(err);
                 } else {
                     try {
@@ -241,7 +239,7 @@ module.exports.getDiscordUserId = async function (appToken) {
 function queryDiscordUserId(accessToken) {
     return new Promise((resolve, reject) => {
 
-        Logger.log("Query made to Discord API (users/@me)");
+        Logger.debug("Query made to Discord API (users/@me)");
         request({
             url: discordApiUrl + "users/@me",
             headers: {
@@ -261,8 +259,7 @@ function queryDiscordUserId(accessToken) {
                     reject(err);
                 }
             } else {
-                Logger.log("Got an error while querying discord");
-                Logger.log(err);
+                Logger.debug("Got an error while querying discord", err);
                 reject(err);
             }
         });
@@ -280,7 +277,7 @@ function queryDiscordUserId(accessToken) {
  * @returns {Promise} resolve(), reject(error {string})
  */
 function addUser(userInfo) {
-    Logger.log("Discord user with id **" + userInfo.discordUserId + "** logged in for the first time.");
+    Logger.debug("Discord user with id **" + userInfo.discordUserId + "** logged in for the first time.");
     users[userInfo.appToken] = userInfo.discordUserId;
 
     return db.insert("Users", {

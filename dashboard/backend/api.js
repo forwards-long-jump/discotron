@@ -23,14 +23,14 @@ module.exports.onPost = (req, res) => {
 
     if (actions[plugin] === undefined || actions[plugin][action] === undefined) {
         reply(res, "invalid-action");
-        Logger.log("[WebAPI] Invalid action triggered: " + plugin + "/" + action, "warn");
+        Logger.warn("[WebAPI] Invalid action triggered: " + plugin + "/" + action);
         return;
     }
 
     Login.getDiscordUserId(appToken).then((discordUserId) => {
         const response = actions[plugin][action];
 
-        Logger.log("[WebAPI] Received " + plugin + "/" + action);
+        Logger.debug("[WebAPI] Received " + plugin + "/" + action);
 
         if (appToken !== undefined && discordUserId === false) {
             // Provided an invalid app token
@@ -42,7 +42,7 @@ module.exports.onPost = (req, res) => {
             }, discordUserId, discordGuildId);
         } else {
             // Permission refused (should not happen!)
-            Logger.log("[WebAPI] Insufficient permission to execute " + plugin + "/" + action, "warn");
+            Logger.warn("[WebAPI] Insufficient permission to execute " + plugin + "/" + action);
             reply(res, "invalid-app-token");
         }
     }).catch(console.error);
@@ -95,7 +95,7 @@ function registerAction(pluginId, name, action, authLevel = "everyone") {
         authLevel: authLevel
     };
 
-    Logger.log(`Registered action ${name} for plugin ${pluginId}`, "debug");
+    Logger.debug(`Registered action ${name} for plugin ${pluginId}`);
 }
 
 // Object containing a method for each level of authentication

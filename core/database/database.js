@@ -22,7 +22,7 @@ module.exports.databaseExists = () => {
 module.exports.deleteDatabase = () => {
     fs.unlink(databasePath, (err) => {
         if (err) {
-            Logger.log("Could not delete database", "error");
+            Logger.err("Could not delete database");
         }
     });
 };
@@ -33,8 +33,7 @@ module.exports.deleteDatabase = () => {
 module.exports.openDatabase = () => {
     database = new sqlite.Database(databasePath, sqlite.OPEN_READWRITE | sqlite.OPEN_CREATE, (err) => {
         if (err) {
-            Logger.log("Could not open database", "error");
-            Logger.log(err, "err");
+            Logger.err("Could not open database", err);
         }
     });
 };
@@ -82,14 +81,13 @@ module.exports.doDatabaseMigrations = async (version = null, allowDown = false) 
         await exec(`INSERT OR REPLACE INTO _Migrations(name, value) VALUES('version', '${version}');`);
 
         if (names.length > 0) {
-            Logger.log(`Migrated from database version "${current}" to "${version}" (delta: ${names.length}).`, "info");
+            Logger.info(`Migrated from database version "${current}" to "${version}" (delta: ${names.length}).`);
         }
     } catch (e) {
         // TODO: Only show the "run migrations to downgrade" etc. part of the message when we are actually missing
         //  the migration file. There can be more reasons a migration fails, such as SQLite errors.
         Logger.err(`Error migrating from database version "${current}" to "${version}".
 Ensure you run migrations to downgrade the database before removing any migration files, or you risk a broken database state.
-If you just downgraded Discotron, you must first switch back to the newer version and force a downgrade of the database there.`);
-        Logger.err(e);
+If you just downgraded Discotron, you must first switch back to the newer version and force a downgrade of the database there.`, e);
     }
 };

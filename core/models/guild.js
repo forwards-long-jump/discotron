@@ -434,7 +434,7 @@ class Guild extends GuildModel {
         }).then((rows) => {
             if (rows.length === 0) {
                 // Newly discovered guild, add to database
-                Logger.log("Discord guild with id **" + this.discordId + "** added to database.");
+                Logger.debug("Discord guild with id **" + this.discordId + "** added to database.");
                 return db.insert("Guilds", {
                     discordGuildId: this.discordId
                 }).then(() => db.insert("GuildSettings", {

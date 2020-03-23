@@ -34,7 +34,7 @@ module.exports.on = (actionName, action) => {
  */
 module.exports.triggerEvent = (actionName, data) => {
     if (actions[actionName] === undefined) {
-        Logger.log("Cannot trigger inexistent action: **" + actionName + "**", "warn");
+        Logger.warn("Cannot trigger inexistent action: **" + actionName + "**");
     } else {
         for (let i = 0; i < actions[actionName].length; i++) {
             actions[actionName][i](data);
@@ -48,7 +48,7 @@ module.exports.triggerEvent = (actionName, data) => {
  * @param {DiscordJS.Message} message Received message
  */
 module.exports.onMessage = (message) => {
-    Logger.log(`__#${message.channel.name}__ <${message.author.tag}>: ${message.content}`);
+    Logger.debug(`__#${message.channel.name}__ <${message.author.tag}>: ${message.content}`);
     if (message.author.bot) {
         return;
     }
@@ -145,8 +145,7 @@ module.exports.onMessage = (message) => {
                 try {
                     command.doMessageAction(message, words, plugin.getApiObject());
                 } catch (error) {
-                    Logger.log("An error occurred in plugin: **" + plugin.name + "** while executing command **" + command.trigger + "**", "err");
-                    Logger.log(error, "err");
+                    Logger.err("An error occurred in plugin: **" + plugin.name + "** while executing command **" + command.trigger + "**", error);
                 }
             }
         }
@@ -251,8 +250,7 @@ module.exports.getUserInfo = function (discordId) {
                 avatarURL: user.displayAvatarURL
             });
         }).catch((e) => {
-            Logger.log("Could not get user info", "err");
-            Logger.log(e, "err");
+            Logger.err("Could not get user info", e);
         });
     });
 };
@@ -270,11 +268,11 @@ module.exports.getBotSettings = () => {
 module.exports.loadRepositories = () => {
     db.select("Repositories").then((rows) => {
         if (rows.length === 0) {
-            Logger.log("No repositories found.", "warn");
+            Logger.warn("No repositories found.");
         } else {
             for (let i = 0; i < rows.length; i++) {
                 const row = rows[i];
-                Logger.log("Loading repository **" + row.folderName + "**");
+                Logger.debug("Loading repository **" + row.folderName + "**");
                 new Repository({folderName: row.folderName, url: row.repositoryURL});
             }
         }
