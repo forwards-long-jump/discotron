@@ -180,16 +180,6 @@ module.exports.registerActions = (app) => {
     const files = readRecursive(sourceDir);
 
     // Go through all endpoints and parse the objects
-    app.get("/api/dashboard/test", createEndpointHandler({
-        authentication: "loggedIn",
-        action: (userData, trustedData) => {
-            console.log("IN ENDPOINT");
-            console.log(userData, trustedData);
-            console.log("END ENDPOINT");
-            return { "coolValue": new Date().getTime() };
-        }
-    }, { mustReturn: true }));
-
     const verbOptions = {
         "get": { mustReturn: true },
         "post": {},
