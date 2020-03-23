@@ -35,12 +35,7 @@ window.discotron.utils = class {
         }
 
         const response = await fetch(url, request);
-        try {
-            return await response.json();
-        } catch (error) {
-            console.error("API Query failed for URL", response);
-            throw new discotron.WebApiError("An error occurred when communicating with the bot. Status code: " + response.status);
-        }
+        return await response.json();
     }
     static load(url, targetElement, callback) {
         // source: https://stackoverflow.com/questions/38132510/equivalent-to-load-without-jquery

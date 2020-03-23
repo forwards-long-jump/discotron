@@ -1,3 +1,6 @@
+window.onerror = (a, b, c, d, e) => {
+    console.log(a, b, c, d, e);
+};
 class WebApi {
     constructor() {
         // location.pathname is something like: /dashboard/#repository-list
@@ -60,12 +63,17 @@ class WebApi {
         if (verb === "GET") {
             const cachedValue = this._lookupCache(url, data);
             if (cachedValue !== null) {
-                return cachedValue; 
+                return cachedValue;
             }
         }
 
         // Send request to API
-        const response = await discotron.utils.query(verb, `/api${url}`, data, localStorage.appToken);
+        let response;
+        try {
+            response = await discotron.utils.query(verb, `/api${url}`, data, localStorage.appToken);
+        } catch (err) { 
+            throw new discotron.WebApiError("An error occurred when communicating with the server.");
+        }
 
         if (response.error) {
             if (response.source === "core") {
