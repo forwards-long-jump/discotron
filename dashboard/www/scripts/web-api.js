@@ -1,6 +1,3 @@
-window.onerror = (a, b, c, d, e) => {
-    console.log(a, b, c, d, e);
-};
 class WebApi {
     constructor() {
         // location.pathname is something like: /dashboard/#repository-list
