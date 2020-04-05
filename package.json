@@ -15,19 +15,19 @@
     "bot"
   ],
   "dependencies": {
-    "discord.js": "^11.5.1",
+    "discord.js": "^11.6.4",
     "express": "^4.17.1",
-    "minimist": "^1.2.2",
+    "minimist": "^1.2.5",
     "nodegit": "^0.25.1",
     "readline-sync": "^1.4.10",
     "sqlite3": "^4.1.1",
-    "uuid": "^3.3.3"
+    "uuid": "^3.4.0"
   },
   "author": "Pierre Bürki, Loïck Jeanneret",
   "license": "ISC",
   "devDependencies": {
-    "eslint": "^6.5.1",
-    "eslint-plugin-jsdoc": "^15.12.0",
+    "eslint": "^6.8.0",
+    "eslint-plugin-jsdoc": "^15.12.2",
     "eslint-plugin-no-warning-comments-case": "git+https://gitlab.com/redmser/eslint-plugin-no-warning-comments-case.git",
     "stylelint": "^12.0.0"
   }
