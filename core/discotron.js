@@ -9,7 +9,7 @@ const Login = require("./login.js");
 const db = require("./database/crud.js");
 const discordClientProvider = require("./utils/discord-client-provider.js");
 
-const botSettings = new BotSettings();
+const botSettings = BotSettings.create();
 
 const actions = {};
 
