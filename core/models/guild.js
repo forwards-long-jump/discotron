@@ -24,10 +24,18 @@ class Guild extends GuildModel {
         global.discotron.on("plugin-deleted", (pluginId) => {
             this.onPluginDeleted(pluginId);
         });
+    }
 
-        this._init();
-
-        Guild._guilds[discordId] = this;
+    /**
+     * Creates a new guild which is initialized and registered.
+     * @param {string} discordId Discord guild id
+     * @returns {Guild} New guild instance.
+     */
+    static create(discordId) {
+        const guild = new Guild(discordId);
+        guild._init();
+        Guild._guilds[discordId] = guild;
+        return guild;
     }
 
     /**
