@@ -42,7 +42,7 @@ class Repository extends RepositoryModel {
         if (fs.existsSync(pluginsPath)) {
             fs.readdirSync(global.discotronConfigPath + "/repositories/" + this._folderName + "/plugins").forEach(file => {
                 Logger.debug("Building Plugin from folder **" + file + "**");
-                const plugin = new Plugin(pluginsPath + "/" + file);
+                const plugin = Plugin.createFromFolder(pluginsPath + "/" + file);
                 this._pluginIds.push(plugin.id);
             });
         }
