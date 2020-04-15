@@ -32,9 +32,9 @@ class SpamUser {
      * @returns {boolean} True if the user has spammed too much and is being restricted
      */
     static isRestricted(discordUser) {
-        let spamuser = SpamUser._users[discordUser.id];
-        if (spamuser !== undefined) {
-            return spamuser._isDead();
+        const spamUser = SpamUser._users[discordUser.id];
+        if (spamUser !== undefined) {
+            return spamUser._isDead();
         } else {
             SpamUser.create(discordUser);
             return false;
@@ -47,12 +47,12 @@ class SpamUser {
      * @param {DiscordJS.User} discordUser DiscordJS user
      */
     static onAction(discordUser) {
-        let spamuser = SpamUser._users[discordUser.id];
-        if (spamuser !== undefined) {
-            spamuser._dealDamage();
+        let spamUser = SpamUser._users[discordUser.id];
+        if (spamUser !== undefined) {
+            spamUser._dealDamage();
         } else {
-            spamuser = SpamUser.create(discordUser);
-            spamuser._dealDamage();
+            spamUser = SpamUser.create(discordUser);
+            spamUser._dealDamage();
         }
     }
 
