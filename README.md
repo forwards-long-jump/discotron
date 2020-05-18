@@ -10,6 +10,8 @@ Discotron aims to solve this problem by allowing you to construct a single bot w
 It'll be made up of multiple [plugins](https://github.com/forwards-long-jump/discotron/wiki/Plugin-structure) which each have a certain feature set.
 This bot can then be invited to one or more servers, where it can then be further customized for each server individually (disable certain plugins, change their command prefix, select roles etc.).
 
+![Screenshot of Dashboard](https://orikaru.net/dl/discotron-demo.png)
+
 Because of this modular design, you can either use a [Discotron instance](https://github.com/forwards-long-jump/discotron/wiki/Configuration-files) hosted by someone else, or create your own if you like. By default, the server admins can access their own server on the dashboard to then configure the bot to their likings.
 
 ## Inviting Discotron to my server
