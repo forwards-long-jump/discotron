@@ -1,10 +1,13 @@
-const webAPI = require("../api.js").getWebAPI("discotron-dashboard");
-const { handleLogin, claimOwnership } = require("../../../core/login.js");
+const { login } = require("../../../core/login.js");
+const WebApiError = require("../../../shared/webapi-error.js");
 
-webAPI.registerAction("claim-ownership", (data, reply) => {
-    claimOwnership(data.code, reply, data.ownerSecret);
-});
-
-webAPI.registerAction("login", (data, reply) => {
-    handleLogin(data.code, reply);
-});
+module.exports.POST = {
+    authLevel: "everyone",
+    action: async (userData) => {
+        const result = await login(userData.authToken);
+        if (result.success) {
+            return result.data;
+        }
+        throw new WebApiError("Unable to login", "login-error");
+    }
+};

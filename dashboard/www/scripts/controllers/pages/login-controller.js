@@ -6,26 +6,23 @@ window.discotron.LoginController = class /* does not extends Controller because 
      * Login and claim ownership
      * @static
      */
-    static claimOwnership() {
-        const url = new URL(window.location.href);
-        const code = url.searchParams.get("code");
-        const ownerSecret = document.querySelector("#owner-ship-token").value;
+    static async claimOwnership() {
+        const secret = document.querySelector("#owner-ship-token").value;
 
-        discotron.WebAPI.queryBot("discotron-dashboard", "claim-ownership", {
-            "code": code,
-            "ownerSecret": ownerSecret
-        }).then((data) => {
-            switch (data.status) {
-                case "error":
-                    discotron.LoginController._displayContainer("claim-ownership");
-                    document.querySelector("#claim-error").style.display = "block";
-                    break;
-                case "success":
-                    discotron.LoginController._handleSuccess(data);
-                    break;
-            }
-        }).catch(console.error);
+        try {
+            await discotron.WebApi.post("login/claim-ownership", { secret: secret });
 
+            window.location.replace("/dashboard");
+        } catch (err) {
+            discotron.WebApiError.handleErrors(err, {"wrong-secret": () => {
+                discotron.LoginController._displayContainer("claim-ownership");
+                document.querySelector("#claim-error").style.display = "block";
+            }, "has-bot-owner": () => {
+                // TODO: update error text
+                discotron.LoginController._displayContainer("claim-ownership");
+                document.querySelector("#claim-error").style.display = "block";
+            }});
+        }
     }
 
     /** 
@@ -83,7 +80,6 @@ window.discotron.LoginController = class /* does not extends Controller because 
         localStorage.setItem("discriminator", data.discriminator);
         localStorage.setItem("avatar", data.avatar);
         localStorage.setItem("discordUserId", data.discordUserId);
-        window.location.replace("/dashboard");
     }
 
     /**

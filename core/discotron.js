@@ -219,8 +219,8 @@ module.exports.updateGuilds = () => {
  */
 module.exports.loadOwners = () => {
     Owner.getOwners().then((owners) => {
-        if (owners.length === 0) {
-            Login.setFirstLaunch();
+        if (owners.length > 0) {
+            Login.setHasBotOwner();
         }
     }).catch(Logger.err);
 };
