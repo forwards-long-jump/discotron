@@ -23,6 +23,22 @@ class WebApiError extends Error {
     static deserialize(error) {
         return new WebApiError(error.message, error.codeName);
     }
+
+    static handleErrors(error, handlers = {}) {
+        if (error instanceof WebApiError) {
+            const handler = handlers[error.codeName];
+
+            // Check if contained by the handlers
+            if (typeof handler === "function") {
+                // Call handler
+                handler(error);
+                return;
+            }
+        }
+
+        // Rethrow unexpected exception types / codeNames
+        throw error;
+    }
 }
 
 if (typeof module !== "undefined" && typeof module.exports !== "undefined") {

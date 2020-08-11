@@ -49,6 +49,7 @@ function createEndpointHandler(endpoint, { mustReturn = false } = {}) {
          * Can either be *endpoint* if the api endpoint threw it, or *core* if the WebApi threw this error.
          */
         function reply({ data, error, source = "core", status = 200 } = {}) {
+            // TODO: Get rid of source, replace with "reserved" code-names which endpoint errors are not allowed to use.
             res.status(status).json({
                 data: data,
                 error: error && error.serialize(),
@@ -96,7 +97,8 @@ function createEndpointHandler(endpoint, { mustReturn = false } = {}) {
                 return;
             } else {
                 // Unexpected exceptions should be re-thrown
-                reply();
+                Logger.err("Unexpected exception in WebAPI getTrustedData", err);
+                reply({ status: 500, error: new WebApiError("WebAPI server had an unexpected error.", "unexpected-error") });
                 throw err;
             }
         }
@@ -104,7 +106,9 @@ function createEndpointHandler(endpoint, { mustReturn = false } = {}) {
         try {
             const returnValue = endpoint.action(userData, trustedData);
             if (mustReturn && returnValue === undefined) {
-                throw new Error("Endpoint " + req.url + " was set to mustReturn (most likely a HTTP GET), but it did not!");
+                const errorMessage = "Endpoint " + req.url + " was set to mustReturn (most likely a HTTP GET), but it did not!";
+                Logger.err(errorMessage);
+                throw new Error(errorMessage);
             }
             reply({ data: returnValue, timeToLive: endpoint.timeToLive });
         } catch (err) {
@@ -113,7 +117,8 @@ function createEndpointHandler(endpoint, { mustReturn = false } = {}) {
                 return;
             } else {
                 // Unexpected exceptions should be re-thrown
-                reply();
+                Logger.err("Unexpected exception in WebAPI endpoint action", err);
+                reply({ status: 500, error: new WebApiError("WebAPI server had an unexpected error.", "unexpected-error") });
                 throw err;
             }
         }
@@ -172,7 +177,9 @@ async function getTrustedData(appToken, untrustedData, authentication) {
 }
 
 // REMOVE ME LATER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-module.exports.getWebAPI = () => ({ registerAction: () => { } });
+module.exports.getWebAPI = () => ({ registerAction: (...a) => { 
+    Logger.err("Unconverted web api:", ...a);
+} });
 
 module.exports.registerActions = (app) => {
     const sourceDir = __dirname + "/endpoints/";
