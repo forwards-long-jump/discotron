@@ -45,15 +45,11 @@ function createEndpointHandler(endpoint, { mustReturn = false } = {}) {
          * @param {object} object.data User data.
          * @param {WebApiError} object.error Error object.
          * @param {number} [object.status] Status code
-         * @param {string} [object.source] Check on the client to determine who threw this error on the server side.
-         * Can either be *endpoint* if the api endpoint threw it, or *core* if the WebApi threw this error.
          */
-        function reply({ data, error, source = "core", status = 200 } = {}) {
-            // TODO: Get rid of source, replace with "reserved" code-names which endpoint errors are not allowed to use.
+        function reply({ data, error, status = 200 } = {}) {
             res.status(status).json({
                 data: data,
-                error: error && error.serialize(),
-                source: source
+                error: error && error.serialize()
             });
         }
 
@@ -62,7 +58,7 @@ function createEndpointHandler(endpoint, { mustReturn = false } = {}) {
             Logger.log("[WebAPI] Endpoint __" + req.url + "__ accessed with incompatible HTTP verb", "warn");
             reply({
                 status: 405, /* Method Not Allowed */
-                error: new WebApiError("Endpoint " + req.url + " accessed with incompatible HTTP verb", "invalid-verb")
+                error: new WebApiError("Endpoint " + req.url + " accessed with incompatible HTTP verb", WebApiError.ERROR_INVALID_VERB)
             });
             return;
         }
@@ -98,7 +94,7 @@ function createEndpointHandler(endpoint, { mustReturn = false } = {}) {
             } else {
                 // Unexpected exceptions should be re-thrown
                 Logger.err("Unexpected exception in WebAPI getTrustedData", err);
-                reply({ status: 500, error: new WebApiError("WebAPI server had an unexpected error.", "unexpected-error") });
+                reply({ status: 500, error: new WebApiError("WebAPI server had an unexpected error.", WebApiError.ERROR_UNEXPECTED) });
                 throw err;
             }
         }
@@ -112,19 +108,27 @@ function createEndpointHandler(endpoint, { mustReturn = false } = {}) {
             }
 
             if (mustReturn && returnValue === undefined) {
-                const errorMessage = "Endpoint " + req.url + " was set to mustReturn (most likely a HTTP GET), but it did not!";
+                const errorMessage = "Endpoint " + req.url + " was set to mustReturn (HTTP " + req.method + "), but it did not!";
                 Logger.err(errorMessage);
+                reply({ status: 500, error: new WebApiError("WebAPI endpoint is not set up correctly.", WebApiError.ERROR_UNEXPECTED) });
                 throw new Error(errorMessage);
             }
             reply({ data: returnValue, timeToLive: endpoint.timeToLive });
         } catch (err) {
             if (err instanceof WebApiError) {
-                reply({ status: 400, error: err, source: "endpoint" });
+                if (WebApiError.getCoreErrors().includes(err.codeName)) {
+                    // Endpoint returns core error, not allowed!
+                    const errorMessage = "WebAPI endpoint action returned a core error code " + err.codeName;
+                    Logger.err(errorMessage);
+                    reply({ status: 500, error: new WebApiError("WebAPI endpoint is not set up correctly.", WebApiError.ERROR_UNEXPECTED) });
+                    throw new Error(errorMessage);
+                }
+                reply({ status: 400, error: err });
                 return;
             } else {
                 // Unexpected exceptions should be re-thrown
                 Logger.err("Unexpected exception in WebAPI endpoint action", err);
-                reply({ status: 500, error: new WebApiError("WebAPI server had an unexpected error.", "unexpected-error") });
+                reply({ status: 500, error: new WebApiError("WebAPI server had an unexpected error.", WebApiError.ERROR_UNEXPECTED) });
                 throw err;
             }
         }
@@ -149,7 +153,7 @@ async function getTrustedData(appToken, untrustedData, authentication) {
         const discordUserId = await Login.getDiscordUserId(appToken);
 
         if (!discordUserId) {
-            throw new WebApiError("Invalid app token.", "authentication-invalid-app-token");
+            throw new WebApiError("Invalid app token.", WebApiError.ERROR_AUTHENTICATION_INVALID_APP_TOKEN);
         }
 
         trustedData.userId = discordUserId;
@@ -159,13 +163,13 @@ async function getTrustedData(appToken, untrustedData, authentication) {
         case "owner":
             // Is the dude owner of discotron?
             if (!isOwner(trustedData.userId)) {
-                throw new WebApiError("Permission denied.", "authentication-not-owner");
+                throw new WebApiError("Permission denied.", WebApiError.ERROR_AUTHENTICATION_NOT_OWNER);
             }
             break;
         case "guildAdmin":
             // Is the dude associated to the userId admin of the untrusted guild id?
             if (!isGuildAdmin(trustedData.userId, untrustedData.guildId)) {
-                throw new WebApiError("You are not an admin of that guild.", "authentication-not-guild-admin");
+                throw new WebApiError("You are not an admin of that guild.", WebApiError.ERROR_AUTHENTICATION_NOT_GUILD_ADMIN);
             }
 
             // We now trust the guildId

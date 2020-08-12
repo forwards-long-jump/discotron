@@ -69,24 +69,22 @@ class WebApi {
         try {
             response = await discotron.utils.query(verb, `/api${url}`, data, localStorage.appToken);
         } catch (err) { 
-            throw new discotron.WebApiError("An error occurred when communicating with the server.");
+            throw new discotron.WebApiError("Failed communicating with the WebAPI server.", discotron.WebApiError.ERROR_CONNECTION);
         }
 
         if (response.error) {
-            if (response.source === "core") {
-                switch (response.error.codeName) {
-                    case "authentication-invalid-app-token":
-                        // Logout
-                        for (const key of ["username", "discordUserId", "discriminator", "avatar", "appToken"]) {
-                            localStorage.removeItem(key);
-                        }
-                        window.location.replace("/");
-                        break;
-                    // TODO: do we have to handle any other core errors in a special way?
-                }
+            switch (response.error.codeName) {
+                case discotron.WebApiError.ERROR_AUTHENTICATION_INVALID_APP_TOKEN:
+                    // Logout
+                    for (const key of ["username", "discordUserId", "discriminator", "avatar", "appToken"]) {
+                        localStorage.removeItem(key);
+                    }
+                    window.location.replace("/");
+                    break;
+                // TODO: do we have to handle any other core errors in a special way?
             }
 
-            // An error caused by the endpoint can be caught by the caller
+            // Any other error can be caught by the caller
             // But otherwise, it will be handled by window.onerror globally
             throw discotron.WebApiError.deserialize(response.error);
         } else {
