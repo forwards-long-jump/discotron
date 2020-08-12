@@ -81,7 +81,7 @@ module.exports.login = async (authToken) => {
             expireDate: accessInfo.expireDate
         });
         
-        Logger.info("Login successful for user", userInfo.username + "#" + userInfo.discriminator);
+        Logger.info("Discord login successful for user", userInfo.username + "#" + userInfo.discriminator);
 
         return {
             success: true,
@@ -95,7 +95,7 @@ module.exports.login = async (authToken) => {
         };
     } catch (err) {
         // No identify scope / invalid code
-        Logger.debug("Login failed", err);
+        Logger.debug("Discord login failed", err);
         return { success: false };
     }
 };
@@ -153,11 +153,12 @@ function queryAccessToken(authToken) {
                     "code": authToken,
                     "redirect_uri": redirectURI,
                     "scope": "identify,guilds"
-                }
+                },
+                timeout: 15000
             },
             (err, response, body) => {
                 if (err !== null) {
-                    Logger.debug("Query rejected by Discord", err);
+                    Logger.debug("OAuth2/token query rejected by Discord", err);
                     reject(err);
                 } else {
                     try {
@@ -176,7 +177,6 @@ function queryAccessToken(authToken) {
                         reject(err);
                     }
                 }
-
             }
         );
     });
@@ -218,29 +218,32 @@ function queryDiscordUserId(accessToken) {
     return new Promise((resolve, reject) => {
 
         Logger.debug("Query made to Discord API (users/@me)");
-        request({
-            url: DISCORD_API_URL + "users/@me",
-            headers: {
-                "Authorization": "Bearer " + accessToken
-            }
-        }, (err, response, body) => {
-            if (err === null) {
-                try {
-                    const result = JSON.parse(body);
-                    resolve({
-                        discordId: result.id,
-                        avatar: result.avatar,
-                        username: result.username,
-                        discriminator: result.discriminator
-                    });
-                } catch (err) {
+        request(
+            DISCORD_API_URL + "users/@me",
+            {
+                headers: {
+                    "Authorization": "Bearer " + accessToken
+                },
+                timeout: 15000
+            }, (err, response, body) => {
+                if (err === null) {
+                    try {
+                        const result = JSON.parse(body);
+                        resolve({
+                            discordId: result.id,
+                            avatar: result.avatar,
+                            username: result.username,
+                            discriminator: result.discriminator
+                        });
+                    } catch (err) {
+                        reject(err);
+                    }
+                } else {
+                    Logger.debug("Querying Discord API for user id failed", err);
                     reject(err);
                 }
-            } else {
-                Logger.debug("Got an error while querying discord", err);
-                reject(err);
             }
-        });
+        );
     });
 }
 

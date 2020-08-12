@@ -58,7 +58,7 @@ function createEndpointHandler(endpoint, { mustReturn = false } = {}) {
             Logger.log("[WebAPI] Endpoint __" + req.url + "__ accessed with incompatible HTTP verb", "warn");
             reply({
                 status: 405, /* Method Not Allowed */
-                error: new WebApiError("Endpoint " + req.url + " accessed with incompatible HTTP verb", WebApiError.ERROR_INVALID_VERB)
+                error: new WebApiError("Endpoint " + req.url + " accessed with incompatible HTTP verb", WebApiError.coreErrors.INVALID_VERB)
             });
             return;
         }
@@ -94,33 +94,28 @@ function createEndpointHandler(endpoint, { mustReturn = false } = {}) {
             } else {
                 // Unexpected exceptions should be re-thrown
                 Logger.err("Unexpected exception in WebAPI getTrustedData", err);
-                reply({ status: 500, error: new WebApiError("WebAPI server had an unexpected error.", WebApiError.ERROR_UNEXPECTED) });
+                reply({ status: 500, error: new WebApiError("WebAPI server had an unexpected error.", WebApiError.coreErrors.UNEXPECTED) });
                 throw err;
             }
         }
 
+        let returnValue;
         try {
-            let returnValue = endpoint.action(userData, trustedData);
+            // Execute the action and store its return value
+            returnValue = endpoint.action(userData, trustedData);
 
+            // Action can be promises (or async) in which case we have to await them
+            // This is done because we can only reply once the action is completely done (would not make sense to send a Promise to the user)
             if (Boolean(returnValue) && (typeof returnValue === "object" || typeof returnValue === "function") && typeof returnValue.then === "function") {
-                // Await the promise
                 returnValue = await returnValue;
             }
-
-            if (mustReturn && returnValue === undefined) {
-                const errorMessage = "Endpoint " + req.url + " was set to mustReturn (HTTP " + req.method + "), but it did not!";
-                Logger.err(errorMessage);
-                reply({ status: 500, error: new WebApiError("WebAPI endpoint is not set up correctly.", WebApiError.ERROR_UNEXPECTED) });
-                throw new Error(errorMessage);
-            }
-            reply({ data: returnValue, timeToLive: endpoint.timeToLive });
         } catch (err) {
             if (err instanceof WebApiError) {
                 if (WebApiError.getCoreErrors().includes(err.codeName)) {
                     // Endpoint returns core error, not allowed!
                     const errorMessage = "WebAPI endpoint action returned a core error code " + err.codeName;
                     Logger.err(errorMessage);
-                    reply({ status: 500, error: new WebApiError("WebAPI endpoint is not set up correctly.", WebApiError.ERROR_UNEXPECTED) });
+                    reply({ status: 500, error: new WebApiError("Discotron encountered an unexpected error. This issue should be reported to the owner of this bot.", WebApiError.coreErrors.RTFM) });
                     throw new Error(errorMessage);
                 }
                 reply({ status: 400, error: err });
@@ -128,10 +123,21 @@ function createEndpointHandler(endpoint, { mustReturn = false } = {}) {
             } else {
                 // Unexpected exceptions should be re-thrown
                 Logger.err("Unexpected exception in WebAPI endpoint action", err);
-                reply({ status: 500, error: new WebApiError("WebAPI server had an unexpected error.", WebApiError.ERROR_UNEXPECTED) });
+                reply({ status: 500, error: new WebApiError("Discotron encountered an unexpected error. Try again later.", WebApiError.coreErrors.UNEXPECTED) });
                 throw err;
             }
         }
+
+        // Missing required return value is a developer error
+        if (mustReturn && returnValue === undefined) {
+            const errorMessage = "Endpoint " + req.url + " was set to mustReturn (HTTP " + req.method + "), but it did not!";
+            Logger.err(errorMessage);
+            reply({ status: 500, error: new WebApiError("Discotron encountered an unexpected error. This issue should be reported to the owner of this bot.", WebApiError.coreErrors.RTFM) });
+            throw new Error(errorMessage);
+        }
+
+        // Answer client with the return value
+        reply({ data: returnValue, timeToLive: endpoint.timeToLive });
     };
 }
 
@@ -153,7 +159,7 @@ async function getTrustedData(appToken, untrustedData, authentication) {
         const discordUserId = await Login.getDiscordUserId(appToken);
 
         if (!discordUserId) {
-            throw new WebApiError("Invalid app token.", WebApiError.ERROR_AUTHENTICATION_INVALID_APP_TOKEN);
+            throw new WebApiError("Invalid app token.", WebApiError.coreErrors.AUTHENTICATION_INVALID_APP_TOKEN);
         }
 
         trustedData.userId = discordUserId;
@@ -163,13 +169,13 @@ async function getTrustedData(appToken, untrustedData, authentication) {
         case "owner":
             // Is the dude owner of discotron?
             if (!isOwner(trustedData.userId)) {
-                throw new WebApiError("Permission denied.", WebApiError.ERROR_AUTHENTICATION_NOT_OWNER);
+                throw new WebApiError("Permission denied.", WebApiError.coreErrors.AUTHENTICATION_NOT_OWNER);
             }
             break;
         case "guildAdmin":
             // Is the dude associated to the userId admin of the untrusted guild id?
             if (!isGuildAdmin(trustedData.userId, untrustedData.guildId)) {
-                throw new WebApiError("You are not an admin of that guild.", WebApiError.ERROR_AUTHENTICATION_NOT_GUILD_ADMIN);
+                throw new WebApiError("You are not an admin of that guild.", WebApiError.coreErrors.AUTHENTICATION_NOT_GUILD_ADMIN);
             }
 
             // We now trust the guildId

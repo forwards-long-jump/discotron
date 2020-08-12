@@ -69,12 +69,12 @@ class WebApi {
         try {
             response = await discotron.utils.query(verb, `/api${url}`, data, localStorage.appToken);
         } catch (err) { 
-            throw new discotron.WebApiError("Failed communicating with the WebAPI server.", discotron.WebApiError.ERROR_CONNECTION);
+            throw new discotron.WebApiError("Failed communicating with the WebAPI server.", discotron.WebApiError.coreErrors.CONNECTION);
         }
 
         if (response.error) {
             switch (response.error.codeName) {
-                case discotron.WebApiError.ERROR_AUTHENTICATION_INVALID_APP_TOKEN:
+                case discotron.WebApiError.coreErrors.AUTHENTICATION_INVALID_APP_TOKEN:
                     // Logout
                     for (const key of ["username", "discordUserId", "discriminator", "avatar", "appToken"]) {
                         localStorage.removeItem(key);

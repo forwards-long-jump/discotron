@@ -44,62 +44,61 @@ class WebApiError extends Error {
         throw error;
     }
 
+    /**
+     * Gets list of core error codes
+     * @returns {Array} Core error codes
+     */
     static getCoreErrors() {
-        // TODO: This can be cached
-        // Source: https://stackoverflow.com/a/39310917
-        return Object.entries(Object.getOwnPropertyDescriptors(WebApiError))
-            .filter(([key, descriptor]) => typeof descriptor.get === "function" && key.startsWith("ERROR_"))
-            .map(([key, descriptor]) => descriptor.get());
+        return Object.values(WebApiError.coreErrors);
     }
 
+    toString() {
+        return super.toString() + " - Error code: " + this.codeName;
+    }
+}
+
+/**
+ * Gets list of possible core errors
+ * @returns {object} Core errors enum
+ */
+WebApiError.coreErrors = {
     /**
      * User is not logged in to Discotron
      * @returns {string} Error code string
      */
-    static get ERROR_AUTHENTICATION_INVALID_APP_TOKEN() {
-        return "authentication-invalid-app-token";
-    }
-
+    AUTHENTICATION_INVALID_APP_TOKEN: "_core-authentication-invalid-app-token",
     /**
      * User is not authenticated as a bot owner
      * @returns {string} Error code string
      */
-    static get ERROR_AUTHENTICATION_NOT_OWNER() {
-        return "authentication-not-owner";
-    }
-
+    AUTHENTICATION_NOT_OWNER: "_core-authentication-not-owner",
     /**
      * User is not authenticated as a guild admin
      * @returns {string} Error code string
      */
-    static get ERROR_AUTHENTICATION_NOT_GUILD_ADMIN() {
-        return "authentication-not-guild-admin";
-    }
-
+    AUTHENTICATION_NOT_GUILD_ADMIN: "_core-authentication-not-guild_admin",
     /**
      * Unexpected exception has occurred
      * @returns {string} Error code string
      */
-    static get ERROR_UNEXPECTED() {
-        return "unexpected-error";
-    }
-
+    UNEXPECTED: "_core-unexpected-error",
     /**
      * Connection error between client and server occurred
      * @returns {string} Error code string
      */
-    static get ERROR_CONNECTION() {
-        return "connection-error";
-    }
-
+    CONNECTION: "_core-connection-error",
     /**
      * Invalid HTTP verb was used to access the endpoint
      * @returns {string} Error code string
      */
-    static get ERROR_INVALID_VERB() {
-        return "invalid-verb";
-    }
-}
+    INVALID_VERB: "_core-invalid-verb",
+    /**
+     * Endpoint of Discotron or plugin is not configured according to the documentation
+     * If you find a better name, please change it, we don't want to be rude
+     * @returns {string} Error code string
+     */
+    RTFM: "_core-dumb-devs",
+};
 
 if (typeof module !== "undefined" && typeof module.exports !== "undefined") {
     module.exports = WebApiError;
