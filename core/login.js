@@ -48,7 +48,7 @@ module.exports.claimOwnership = (userOwnerSecret, discordUserId) => {
         return "has-bot-owner";
     } else {
         if (ownerSecret !== userOwnerSecret) {
-            Logger.warn("User tried claiming ownership with wrong token");
+            Logger.warn("User " + discordUserId + " tried claiming ownership with wrong token");
             // Wrong secret
             return "wrong-secret";
         } else {

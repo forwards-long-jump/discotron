@@ -104,14 +104,11 @@ function createEndpointHandler(endpoint, { mustReturn = false } = {}) {
         }
 
         try {
-            const action = endpoint.action(userData, trustedData);
+            let returnValue = endpoint.action(userData, trustedData);
 
-            let returnValue;
-            // TODO: why the heck was "action" undefined for POST login/ownership ???
-            if (typeof action.then === "function") {
-                returnValue = await action;
-            } else {
-                returnValue = action;
+            if (Boolean(returnValue) && (typeof returnValue === "object" || typeof returnValue === "function") && typeof returnValue.then === "function") {
+                // Await the promise
+                returnValue = await returnValue;
             }
 
             if (mustReturn && returnValue === undefined) {
