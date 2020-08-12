@@ -6,11 +6,10 @@ window.discotron.NavigationController = class {
      * Load bot status and display it on top
      * @static
      */
-    static displayBot() {
-        discotron.WebAPI.queryBot("discotron-dashboard", "get-bot-info").then((data) => {
-            document.querySelector("#bot-info img").src = data.avatar;
-            document.querySelector("#bot-info span").textContent = data.tag;
-        }).catch(console.error);
+    static async displayBot() {
+        const data = await discotron.WebApi.get("discotron/bot-info");
+        document.querySelector("#bot-info img").src = data.avatar;
+        document.querySelector("#bot-info span").textContent = data.tag;
     }
 
     /**
