@@ -26,11 +26,9 @@ window.discotron.utils = class {
 
         // Get cannot have a body, but we want to easily be able to use an object in the parameters
         if (verb === "GET") {
+            // TODO: no body -> don't add the single '?'
             url += "?" + new URLSearchParams(body).toString();
-            body = undefined; // Unset the body as get cannot have one
-        }
-
-        if (body !== undefined) {
+        } else if (body !== undefined) {
             request.body = JSON.stringify(body);
         }
 

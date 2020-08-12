@@ -10,63 +10,45 @@ window.discotron.LoginController = class /* does not extends Controller because 
         const secret = document.querySelector("#owner-ship-token").value;
 
         try {
-            await discotron.WebApi.post("login/claim-ownership", { secret: secret });
+            await discotron.WebApi.post("login/ownership", { secret: secret });
 
+            // User is now the bot owner!
             window.location.replace("/dashboard");
         } catch (err) {
             discotron.WebApiError.handleErrors(err, {"wrong-secret": () => {
                 discotron.LoginController._displayContainer("claim-ownership");
                 document.querySelector("#claim-error").style.display = "block";
             }, "has-bot-owner": () => {
-                // TODO: update error text
-                discotron.LoginController._displayContainer("claim-ownership");
-                document.querySelector("#claim-error").style.display = "block";
+                // TODO: Show error message so the user knows what is happening
+                // This should not happen, the bot is already owned, so just continue since we're logged in already
+                window.location.replace("/dashboard");
             }});
         }
     }
 
-    /** 
-     * Set URL from config and check what to display
-     * @static
-     */
-    static initPage() {
-        if (discotron.config === undefined || discotron.config.oauthURL === undefined || discotron.config.inviteLink === undefined) {
-            document.querySelector("h1").style.display = "none";
-            document.querySelector("#login-text").textContent = "Bot installation is not complete, please check the installation " +
-                "guide and create the missing configuration file.";
-
-            document.querySelector(".widget-buttons").style.display = "none";
-            document.querySelector("#login-error").style.display = "block";
-            document.querySelector("#login-error").innerHTML = "Could not load <b>dashboard.js</b>";
-            return;
-        }
-
-        document.querySelector("#auth-link").href = discotron.config.oauthURL;
-
+    static async tryLogin() {
         const url = new URL(window.location.href);
-        const code = url.searchParams.get("code");
+        const authToken = url.searchParams.get("code");
 
         // Code is set, user is trying to log in
-        if (code !== null) {
+        if (authToken !== null) {
             discotron.LoginController._displayContainer("logging-in");
 
-            discotron.WebAPI.queryBot("discotron-dashboard", "login", {
-                "code": code
-            }).then((data) => {
-                switch (data.status) {
-                    case "error":
-                        discotron.LoginController._displayContainer("login");
-                        document.querySelector("#login-error").style.display = "block";
-                        break;
-                    case "success":
-                        discotron.LoginController._handleSuccess(data);
-                        break;
-                    case "first-launch":
-                        discotron.LoginController._displayContainer("claim-ownership");
-                        break;
-                }
-            }).catch(console.error);
+            try {
+                const loginStatus = await discotron.WebApi.post("login", { authToken: authToken });
 
+                // Login was successful
+                discotron.LoginController._handleSuccess(loginStatus);
+
+                // Check for ownership status
+                discotron.LoginController.checkOwnership();
+            } catch (err) {
+                // We did not successfully login
+                discotron.WebApiError.handleErrors(err, { "login-error": () => {
+                    discotron.LoginController._displayContainer("login");
+                    document.querySelector("#login-error").style.display = "block";
+                }});
+            }
         }
     }
 
@@ -104,12 +86,47 @@ window.discotron.LoginController = class /* does not extends Controller because 
             }
         };
     }
+
+    static validateConfig() {
+        if (discotron.config === undefined || discotron.config.oauthURL === undefined || discotron.config.inviteLink === undefined) {
+            document.querySelector("h1").style.display = "none";
+            document.querySelector("#login-text").textContent = "Bot installation is not complete, please check the installation " +
+                "guide and create the missing configuration file.";
+
+            document.querySelector(".widget-buttons").style.display = "none";
+            document.querySelector("#login-error").style.display = "block";
+            document.querySelector("#login-error").innerHTML = "Could not load <b>dashboard.js</b>";
+            return false;
+        }
+        return true;
+    }
+    
+    static checkLoginState() {
+        if (localStorage.getItem("appToken") === null) {
+            // Is not logged in
+            discotron.LoginController.tryLogin();
+        } else {
+            // Check if valid appToken, and redirect accordingly
+            discotron.LoginController.checkOwnership();
+        }
+    }
+
+    static async checkOwnership() {
+        // If we are not logged in, web api is gonna notice that and log out properly
+        const isBotOwned = await discotron.WebApi.get("login/ownership");
+        if (isBotOwned) {
+            // Redirect to good dashboard
+            document.location.replace("/dashboard");
+        } else {
+            // Ask user to claim ownership
+            discotron.LoginController._displayContainer("claim-ownership");
+        }
+    }
 };
 
-// App token set => we have are already logged in
-if (localStorage.getItem("appToken") !== null) {
-    document.location.replace("/dashboard");
-} else {
-    discotron.LoginController.initPage();
+if (discotron.LoginController.validateConfig()) {
+    document.querySelector("#auth-link").href = discotron.config.oauthURL;
+
+    discotron.LoginController.checkLoginState();
     discotron.LoginController.addEvents();
 }

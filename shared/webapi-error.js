@@ -31,7 +31,7 @@ class WebApiError extends Error {
             // Check if contained by the handlers
             if (typeof handler === "function") {
                 // Call handler
-                handler(error);
+                handler();
                 return;
             }
         }

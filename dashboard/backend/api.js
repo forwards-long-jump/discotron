@@ -67,7 +67,7 @@ function createEndpointHandler(endpoint, { mustReturn = false } = {}) {
             return;
         }
 
-        Logger.log("[WebAPI] Accessing " + req.url);
+        Logger.debug("[WebAPI] " + req.method + " " + req.url);
 
         let appToken;
         const authorizationHeader = req.header("Authorization");
@@ -82,7 +82,7 @@ function createEndpointHandler(endpoint, { mustReturn = false } = {}) {
         if (req.method === "GET") {
             userData = req.query;
         } else {
-            userData = req.body.data;
+            userData = req.body;
         }
 
         let trustedData = {};
@@ -104,7 +104,16 @@ function createEndpointHandler(endpoint, { mustReturn = false } = {}) {
         }
 
         try {
-            const returnValue = endpoint.action(userData, trustedData);
+            const action = endpoint.action(userData, trustedData);
+
+            let returnValue;
+            // TODO: why the heck was "action" undefined for POST login/ownership ???
+            if (typeof action.then === "function") {
+                returnValue = await action;
+            } else {
+                returnValue = action;
+            }
+
             if (mustReturn && returnValue === undefined) {
                 const errorMessage = "Endpoint " + req.url + " was set to mustReturn (most likely a HTTP GET), but it did not!";
                 Logger.err(errorMessage);
@@ -181,7 +190,7 @@ module.exports.getWebAPI = () => ({ registerAction: (...a) => {
     Logger.err("Unconverted web api:", ...a);
 } });
 
-module.exports.registerActions = (app) => {
+module.exports.registerEndpoints = (app) => {
     const sourceDir = __dirname + "/endpoints/";
     const scope = "dashboard";
     const files = readRecursive(sourceDir);

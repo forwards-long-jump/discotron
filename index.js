@@ -32,10 +32,10 @@ async function init() {
 
     global.discotron = discotron;
 
-    discotron.loadOwners();
-
     await discotron.loadGuilds();
     discotron.loadRepositories();
+
+    require("./core/login.js").updateHasBotOwner();
 
     // Web server
     webserver.serveDashboard();

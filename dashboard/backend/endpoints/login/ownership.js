@@ -1,8 +1,27 @@
-const { claimOwnership } = require("../../../../core/login.js");
+const { claimOwnership, isBotOwned, printOwnershipCode } = require("../../../../core/login.js");
 const WebApiError = require("../../../../shared/webapi-error.js");
 
-module.exports.POST = {
-    authLevel: "loggedIn",
+/**
+ * Check bot ownership status (print the code in the console if not owned)
+ */
+module.exports.get = {
+    authentication: "loggedIn",
+    action: () => {
+        if (isBotOwned()) {
+            return true;
+        } else {
+            printOwnershipCode();
+            return false;
+        }
+    }
+};
+
+/**
+ * Claim ownership of the bot, given the ownership code from console
+ * Errors: `wrong-secret|has-bot-owner|unexpected`
+ */
+module.exports.post = {
+    authentication: "loggedIn",
     action: (userData, trustedData) => {
         const result = claimOwnership(userData.secret, trustedData.userId);
         switch (result) {

@@ -21,7 +21,7 @@ const redirectURI = appConfig.redirectURI;
 
 const DISCORD_API_URL = "https://discordapp.com/api/v6/";
 
-function printOwnershipCode() {
+module.exports.printOwnershipCode = () => {
     console.log();
     console.log("                          ===== Ownership token =====");
     console.log();
@@ -32,12 +32,15 @@ function printOwnershipCode() {
     console.log("                      " + ownerSecret);
     console.log("                      ------------------------------------");
     console.log();
-}
+};
+
+module.exports.isBotOwned = () => hasBotOwner;
 
 /**
  * Called every time a user tries to claim discotron ownership
  * @param {string} userOwnerSecret Token the user provided as an admin token
  * @param {string} discordUserId User that tries claiming ownership
+ * @returns {string} Ownership status code (one of `has-bot-owner|wrong-secret|success`)
  */
 module.exports.claimOwnership = (userOwnerSecret, discordUserId) => {
     if (hasBotOwner) {
@@ -60,6 +63,7 @@ module.exports.claimOwnership = (userOwnerSecret, discordUserId) => {
 /**
  * Called every time a user tries to login, perform required checks
  * @param {string} authToken Discord oauth2 token
+ * @returns {object} Object containing success state and optional login data
  */
 module.exports.login = async (authToken) => {
     try {
@@ -193,7 +197,6 @@ module.exports.getDiscordUserId = async (appToken) => {
 
         if (rows.length === 1) {
             const userId = rows[0].discordUserId;
-            // eslint-disable-next-line require-atomic-updates
             users[appToken] = userId;
             return userId;
         } else {
@@ -249,31 +252,22 @@ function queryDiscordUserId(accessToken) {
  * @param {string} userInfo.accessToken OAuth2 access token
  * @param {string} userInfo.refreshToken OAuth2 refresh token
  * @param {number} userInfo.expireDate OAuth2 expire date
- * @returns {Promise} resolve(), reject(error {string})
  */
-function addUser(userInfo) {
+async function addUser(userInfo) {
     Logger.debug("Discord user with id **" + userInfo.discordUserId + "** logged in for the first time.");
     users[userInfo.appToken] = userInfo.discordUserId;
 
-    return db.insert("Users", {
+    await db.insert("Users", {
         discordUserId: userInfo.discordUserId
-    }).then(() => db.insert("Tokens", userInfo));
+    });
+    await db.insert("Tokens", userInfo);
 }
 
-module.exports.setHasBotOwner = () => {
-    hasBotOwner = true;
+module.exports.updateHasBotOwner = async () => {
+    try {
+        const owners = await Owner.getOwners();
+        hasBotOwner = owners.length > 0;
+    } catch (e) {
+        Logger.err("Unable to retrieve ownership list from database. Following error has occured:", e);
+    }
 };
-
-
-// => need discotron user account to claim ownership
-// best case:
-//  user arrives on the website, logs in normally
-//  after log-in, we tell the user "lel no admin" so instead of redirect, show the "admin token form"
-//  => user can navigate to the dashboard if he wants to, as long as we make sure we don't threat "no admin" as "everyone is admin" (aka check for bugs)
-//  after claiming ownership, redirect like if was login
-
-// query to the API look like that:à
-//  > login(authToken)
-//  < login ok + no admin flag
-//  > claimOwnerShip(secret) // we can use trustedData here to get the user ID // ez life
-//  < ok 

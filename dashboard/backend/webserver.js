@@ -10,7 +10,7 @@ const Logger = require("../../core/utils/logger.js");
 
 // Register WebAPI actions
 const webAPI = require("./api.js");
-webAPI.registerActions(app);
+webAPI.registerEndpoints(app);
 
 const appConfig = require(global.discotronConfigPath + "/bot.json");
 

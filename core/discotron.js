@@ -213,18 +213,6 @@ module.exports.updateGuilds = () => {
     }
 };
 
-/**
- * Load owners
- * TODO: Move this in the owner class
- */
-module.exports.loadOwners = () => {
-    Owner.getOwners().then((owners) => {
-        if (owners.length > 0) {
-            Login.setHasBotOwner();
-        }
-    }).catch(Logger.err);
-};
-
 // TODO
 module.exports.onReaction = (reaction) => {};
 module.exports.onJoinGuild = (guild) => {};
