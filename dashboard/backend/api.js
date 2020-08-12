@@ -81,6 +81,12 @@ function createEndpointHandler(endpoint, { mustReturn = false } = {}) {
             userData = req.body;
         }
 
+        if (typeof userData !== "object" && typeof userDate !== "undefined") {
+            Logger.warn("[WebAPI] User sent non-object userData.");
+            reply({ status: 400, error: new WebApiError("UserData must always be specified as an object.", WebApiError.coreErrors.INVALID_USERDATA) });
+            return;
+        }
+
         let trustedData = {};
 
         try {

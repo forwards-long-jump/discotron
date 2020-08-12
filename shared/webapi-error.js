@@ -98,6 +98,11 @@ WebApiError.coreErrors = {
      * @returns {string} Error code string
      */
     RTFM: "_core-dumb-devs",
+    /**
+     * User sent invalid data to the server
+     * @returns {string} Error code string
+     */
+    INVALID_USERDATA: "_core-invalid-userdata",
 };
 
 if (typeof module !== "undefined" && typeof module.exports !== "undefined") {
