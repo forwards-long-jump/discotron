@@ -108,13 +108,8 @@ function createEndpointHandler(endpoint, { mustReturn = false } = {}) {
         let returnValue;
         try {
             // Execute the action and store its return value
-            returnValue = endpoint.action(userData, trustedData);
-
-            // Action can be promises (or async) in which case we have to await them
-            // This is done because we can only reply once the action is completely done (would not make sense to send a Promise to the user)
-            if (Boolean(returnValue) && (typeof returnValue === "object" || typeof returnValue === "function") && typeof returnValue.then === "function") {
-                returnValue = await returnValue;
-            }
+            // Resolves both values and (chained) promises to its final return value
+            returnValue = await Promise.resolve(endpoint.action(userData, trustedData));
         } catch (err) {
             if (err instanceof WebApiError) {
                 if (WebApiError.getCoreErrors().includes(err.codeName)) {
