@@ -114,7 +114,7 @@ function createEndpointHandler(endpoint, { mustReturn = false } = {}) {
             if (err instanceof WebApiError) {
                 if (WebApiError.getCoreErrors().includes(err.codeName)) {
                     // Endpoint returns core error, not allowed!
-                    const errorMessage = "WebAPI endpoint action returned a core error code " + err.codeName;
+                    const errorMessage = "WebAPI endpoint action returned a core error code " + err.codeName + ". These may only be thrown from core WebAPI code!";
                     Logger.err(errorMessage);
                     reply({ status: 500, error: new WebApiError("Discotron encountered an unexpected error. This issue should be reported to the owner of this bot.", WebApiError.coreErrors.RTFM) });
                     throw new Error(errorMessage);
