@@ -1,4 +1,4 @@
-const PluginModel = require("./../../shared-models/plugin.js");
+const PluginModel = require("./../../shared/models/plugin.js");
 const Command = require("./command.js");
 const db = require("./../database/crud.js");
 const Logger = require("../utils/logger.js");

@@ -32,22 +32,17 @@ async function init() {
 
     global.discotron = discotron;
 
-    discotron.loadOwners();
-
     await discotron.loadGuilds();
     discotron.loadRepositories();
 
+    require("./core/login.js").updateHasBotOwner();
+
     // Web server
-    webserver.startAPIServer();
     webserver.serveDashboard();
 
     // Must register discordClient events before login or we will miss some
     registerEvents();
     await connectToDiscord();
-
-    // Register actions
-    const webAPI = require("./dashboard/backend/api.js");
-    webAPI.registerActions();
 
     /**
      * Attempts to connect the bot client to Discord

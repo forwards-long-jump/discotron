@@ -61,23 +61,13 @@ window.discotron.User = class {
      * @param {string} discordId  User id
      * @returns {Promise} resolve(user {User}), reject()
      */
-    static get(discordId) {
-        return new Promise((resolve, reject) => {
-            if (discotron.User._users[discordId] === undefined) {
-                // Since the user should be loaded if he was in a guild, we are here trying to fetch an out-of-guild user (typically for the owner)
-                return discotron.WebAPI.queryBot("discotron-dashboard", "get-user-info", {
-                    discordId: discordId
-                }).then((userObject) => {
-                    resolve(new discotron.User({
-                        name: userObject.name,
-                        discordId: userObject.discordId,
-                        avatarURL: userObject.avatarURL,
-                        discriminator: userObject.discriminator
-                    }));
-                });
-            } else {
-                resolve(discotron.User._users[discordId]);
-            }
+    static async get(discordId) {
+        const userObject = await discotron.WebApi.get("discord/user-info", { discordId: discordId });
+        return new discotron.User({
+            name: userObject.name,
+            discordId: userObject.discordId,
+            avatarURL: userObject.avatarURL,
+            discriminator: userObject.discriminator
         });
     }
 
@@ -87,6 +77,7 @@ window.discotron.User = class {
      * @returns {discotron.User} User if found
      */
     static getByTag(tag) {
+        // TODO: This should be using the webAPI cache instead, and maybe cache server-side discord API calls too
         for (const discordUserId in window.discotron.User._users) {
 
             if (Object.prototype.hasOwnProperty.call(window.discotron.User._users, discordUserId)) {

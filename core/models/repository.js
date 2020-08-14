@@ -1,6 +1,6 @@
 const fs = require("fs");
 
-const RepositoryModel = require("./../../shared-models/repository.js");
+const RepositoryModel = require("./../../shared/models/repository.js");
 const Plugin = require("./plugin.js");
 const webServer = require("../../dashboard/backend/webserver.js");
 const Logger = require("../utils/logger.js");

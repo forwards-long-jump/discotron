@@ -99,32 +99,27 @@ window.discotron.RepositoryListController = class extends window.discotron.Contr
                 }).catch(console.error);
 
                 // Update
-                container.querySelector(".pull-repository").onclick = (event) => {
+                container.querySelector(".pull-repository").onclick = async (event) => {
                     event.target.disabled = true;
                     event.target.value = "Updating...";
 
-                    discotron.WebAPI.queryBot("discotron-dashboard", "update-repository", {
-                        url: repo.url
-                    }).then((data) => {
-                        if (data) {
-                            event.target.value = "Update successful";
-                        } else {
-                            event.target.value = "Could not update";
-                        }
+                    try {
+                        await discotron.WebApi.put("repository", { url: repo.url });
+                        event.target.value = "Update successful";
+                    } catch (err) {
+                        event.target.value = "Could not update: " + err;
+                    }
 
-                        discotron.Repository.clearCache();
-                        discotron.Plugin.clearCache();
-                        discotron.Guild.clearCache();
-                        this._displayRepositories();
-                    }).catch(console.error);
+                    discotron.Repository.clearCache();
+                    discotron.Plugin.clearCache();
+                    discotron.Guild.clearCache();
+                    this._displayRepositories();
                 };
 
                 // Delete
                 container.querySelector(".delete-repository").onclick = (event) => {
                     if (confirm("Deleting a repository will erase all related settings, continue?")) {
-                        discotron.WebAPI.queryBot("discotron-dashboard", "remove-repository", {
-                            url: repo.url
-                        }).then((data) => {
+                        discotron.WebApi.delete("repository", { url: repo.url }).then(() => {
                             discotron.Repository.clearCache();
                             discotron.Plugin.clearCache();
                             discotron.Guild.clearCache();
@@ -141,28 +136,28 @@ window.discotron.RepositoryListController = class extends window.discotron.Contr
     /**
      * Called when add repository button is pressed
      */
-    _onAddRepository() {
+    async _onAddRepository() {
         const repoUrl = document.getElementById("repository-url").value;
         if (repoUrl !== "") {
             document.getElementById("add-repository").disabled = true;
-            discotron.WebAPI.queryBot("discotron-dashboard", "add-repository", {
-                url: repoUrl
-            }).then((err) => {
-                document.getElementById("add-repository").disabled = false;
-                if (err) {
-                    document.getElementById("repository-error").textContent = "Could not load repository: " + err;
-                    document.getElementById("repository-url").focus();
-                    document.getElementById("repository-url").select();
-                } else {
-                    document.getElementById("repository-url").value = "";
-                    document.getElementById("repository-url").focus();
+            
+            try {
+                await discotron.WebApi.post("repository", { url: repoUrl });
 
-                    discotron.Repository.clearCache();
-                    discotron.Plugin.clearCache();
-                    discotron.Guild.clearCache();
-                    this._displayRepositories();
-                }
-            }).catch(console.error);
+                document.getElementById("repository-url").value = "";
+                document.getElementById("repository-url").focus();
+
+                discotron.Repository.clearCache();
+                discotron.Plugin.clearCache();
+                discotron.Guild.clearCache();
+                this._displayRepositories();
+            } catch (err) {
+                document.getElementById("repository-error").textContent = "Could not load repository: " + err;
+                document.getElementById("repository-url").focus();
+                document.getElementById("repository-url").select();
+            } finally {
+                document.getElementById("add-repository").disabled = false;
+            }
         }
     }
 };
