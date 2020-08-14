@@ -55,7 +55,7 @@ function createEndpointHandler(endpoint, { mustReturn = false } = {}) {
 
         if (endpoint === undefined) {
             // Endpoint is undefined for this verb
-            Logger.log("[WebAPI] Endpoint __" + req.url + "__ accessed with incompatible HTTP verb", "warn");
+            Logger.warn("[WebAPI] Endpoint __" + req.url + "__ accessed with incompatible HTTP verb");
             reply({
                 status: 405, /* Method Not Allowed */
                 error: new WebApiError("Endpoint " + req.url + " accessed with incompatible HTTP verb", WebApiError.coreErrors.INVALID_VERB)
@@ -94,7 +94,7 @@ function createEndpointHandler(endpoint, { mustReturn = false } = {}) {
             trustedData = await getTrustedData(appToken, userData, endpoint.authentication);
         } catch (err) {
             if (err instanceof WebApiError) {
-                Logger.log("[WebAPI] Insufficient permission to execute " + req.url + " (authentication was set to " + endpoint.authentication + ").", "warn");
+                Logger.warn("[WebAPI] Insufficient permission to execute " + req.url + " (authentication was set to " + endpoint.authentication + ").");
                 reply({ status: 401, error: err });
                 return;
             } else {
