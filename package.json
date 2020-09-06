@@ -20,7 +20,7 @@
     "minimist": "^1.2.5",
     "nodegit": "^0.25.1",
     "readline-sync": "^1.4.10",
-    "sqlite3": "^4.1.1",
+    "sqlite3": "^4.2.0",
     "uuid": "^3.4.0"
   },
   "author": "Pierre Bürki, Loïck Jeanneret",
@@ -29,6 +29,6 @@
     "eslint": "^6.8.0",
     "eslint-plugin-jsdoc": "^15.12.2",
     "eslint-plugin-no-warning-comments-case": "git+https://gitlab.com/redmser/eslint-plugin-no-warning-comments-case.git",
-    "stylelint": "^12.0.0"
+    "stylelint": "^13.7.0"
   }
 }
