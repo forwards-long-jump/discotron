@@ -16,8 +16,21 @@ window.discotron.User = class {
         this._discordId = discordId;
         this._tag = name + "#" + discriminator;
         this._avatarURL = avatarURL;
+    }
 
-        discotron.User._users[discordId] = this;
+    /**
+     * Creates and registers a new user instance.
+     * @param {object} options Args
+     * @param {string} options.name Name of the user
+     * @param {string} options.discordId Id of the user
+     * @param {string} options.avatarURL Avatar of the user
+     * @param {string} options.discriminator Discriminator of the user (numbers after the #)
+     * @returns {object} New user instance
+     */
+    static create(options) {
+        const user = new discotron.User(options);
+        discotron.User._users[options.discordId] = user;
+        return user;
     }
 
     /**
@@ -68,7 +81,7 @@ window.discotron.User = class {
                 return discotron.WebAPI.queryBot("discotron-dashboard", "get-user-info", {
                     discordId: discordId
                 }).then((userObject) => {
-                    resolve(new discotron.User({
+                    resolve(discotron.User.create({
                         name: userObject.name,
                         discordId: userObject.discordId,
                         avatarURL: userObject.avatarURL,

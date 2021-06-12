@@ -10,9 +10,8 @@ const discordClientProvider = require("./../utils/discord-client-provider.js");
 class Plugin extends PluginModel {
     /**
      * @class
-     * @param {string} folder Folder name of the plugin in a repository 
      */
-    constructor(folder) {
+    constructor() {
         super();
         this._commands = {
             "command": [],
@@ -20,9 +19,24 @@ class Plugin extends PluginModel {
             "all": [],
             "reaction": []
         };
+    }
 
-        this._loadFromFolder(folder);
+    /**
+     * Creates and initializes a plugin from a given git folder.
+     * @param {string} folder Folder name of the plugin in a repository
+     * @returns {Plugin} New plugin instance
+     */
+    static createFromFolder(folder) {
+        const plugin = new Plugin();
+        plugin.loadFromFolder(folder);
+        plugin.load();
+        return plugin;
+    }
 
+    /**
+     * Registers the plugin and loads it.
+     */
+    load() {
         const oldVersion = Plugin._plugins[this.id];
         if (oldVersion !== undefined) {
             this._prefix = oldVersion._prefix;
@@ -62,7 +76,7 @@ class Plugin extends PluginModel {
      * Loads the plugin from a folder located in git/...
      * @param {string} folder Path of the folder
      */
-    _loadFromFolder(folder) {
+    loadFromFolder(folder) {
         delete require.cache[require.resolve(folder + "/index.js")];
         const pluginFile = require(folder + "/index.js");
 

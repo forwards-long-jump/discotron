@@ -17,7 +17,26 @@ window.discotron.Plugin = class extends window.discotron.PluginModel {
      */
     constructor({id, name, description, version, prefix, commands, defaultPermission, enabled, logs}) {
         super({id, name, description, version, prefix, commands, defaultPermission, enabled, logs});
-        discotron.Plugin._plugins[id] = this;
+    }
+
+    /**
+     * Creates and registers a new plugin.
+     * @param {object} options Args
+     * @param {string} options.id Id of the plugin
+     * @param {string} options.name Displayed name of the plugin
+     * @param {string} options.description Short description of the plugin
+     * @param {string} options.version Version of the plugin (format x.y.z)
+     * @param {string} options.prefix Prefix set by the owner for all servers
+     * @param {object} options.commands Object containing arrays of Command objects, grouped by trigger type
+     * @param {string} options.defaultPermission Who can access the command if no permissions are set by the server owner, can be *everyone*, *admin*
+     * @param {boolean} options.enabled True if plugin is enabled by the bot owner
+     * @param {Array} options.logs List of logs the plugin can output to
+     * @returns {object} New plugin instance
+     */
+    static create(options) {
+        const plugin = new discotron.Plugin(options);
+        discotron.Plugin._plugins[options.id] = plugin;
+        return plugin;
     }
 
     /**
@@ -30,7 +49,7 @@ window.discotron.Plugin = class extends window.discotron.PluginModel {
                 discotron.WebAPI.queryBot("discotron-dashboard", "get-plugins").then((data) => {
                     for (let i = 0; i < data.length; i++) {
                         const plugin = data[i];
-                        new discotron.Plugin({
+                        discotron.Plugin.create({
                             id: plugin.id,
                             name: plugin.name,
                             description: plugin.description,

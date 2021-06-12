@@ -25,8 +25,26 @@ window.discotron.Guild = class extends window.discotron.GuildModel {
         this._members = {}; // Id: User
         this._roles = {}; // Id: Role
         this._channels = {}; // Id: Channel
+    }
 
-        discotron.Guild._guilds[discordId] = this;
+    /**
+     * Creates and registers a new guild.
+     * @param {object} options Args
+     * @param {string} options.discordId Id of the guild
+     * @param {string} options.name Name of the guild
+     * @param {string} options.iconURL Icon of the guild
+     * @param {string} options.acronym Server acronym, used in case no icon is defined
+     * @param {string} options.commandPrefix Command prefix
+     * @param {Set} options.allowedChannelIds Array of channel ids on which the bot is allowed
+     * @param {Set} options.enabledPlugins Array of plugin ids that are enabled
+     * @param {Set} options.admins Array of UserRole who have admin privilege on the bot
+     * @param {object} options.permissions Object binding pluginsIds to userRole array
+     * @returns {object} New guild instance.
+     */
+    static create(options) {
+        const guild = new discotron.Guild(options);
+        discotron.Guild._guilds[options.discordId] = guild;
+        return guild;
     }
 
     /**
@@ -51,7 +69,7 @@ window.discotron.Guild = class extends window.discotron.GuildModel {
         return discotron.WebAPI.queryBot("discotron-dashboard", "get-members", {}, this.discordId).then((users) => {
             for (let i = 0; i < users.length; i++) {
                 const user = users[i];
-                this._members[user.discordId] = new discotron.User({
+                this._members[user.discordId] = discotron.User.create({
                     name: user.name,
                     discordId: user.discordId,
                     avatarURL: user.avatar,
@@ -118,7 +136,7 @@ window.discotron.Guild = class extends window.discotron.GuildModel {
                 }
 
                 // Guilds register themselves in window.discotron.Guild._guilds
-                new discotron.Guild({
+                discotron.Guild.create({
                     discordId: guild.discordId,
                     name: guild.name,
                     iconURL: guild.image,

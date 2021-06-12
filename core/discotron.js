@@ -9,7 +9,7 @@ const Login = require("./login.js");
 const db = require("./database/crud.js");
 const discordClientProvider = require("./utils/discord-client-provider.js");
 
-const botSettings = new BotSettings();
+const botSettings = BotSettings.create();
 
 const actions = {};
 
@@ -162,7 +162,7 @@ module.exports.loadGuilds = () => {
     return new Promise((resolve, reject) => {
         return db.select("GuildSettings", ["discordGuildId"]).then((rows) => {
             for (let i = 0; i < rows.length; ++i) {
-                new Guild(rows[i].discordGuildId);
+                Guild.create(rows[i].discordGuildId);
             }
             resolve();
         });
@@ -199,7 +199,7 @@ module.exports.updateGuilds = () => {
 
     for (let i = 0; i < addedGuilds.length; ++i) {
         const discordGuildId = addedGuilds[i];
-        new Guild(discordGuildId);
+        Guild.create(discordGuildId);
     }
     for (let i = 0; i < removedGuilds.length; ++i) {
         const discordGuildId = removedGuilds[i];

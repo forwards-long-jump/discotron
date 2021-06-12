@@ -12,7 +12,22 @@ class BotSettings extends BotSettingsModel {
      */
     constructor() {
         super();
+    }
 
+    /**
+     * Create a database-populated BotSettings instance.
+     * @returns {BotSettings} New instance.
+     */
+    static create() {
+        const bs = new BotSettings();
+        bs.load();
+        return bs;
+    }
+
+    /**
+     * Load or reload bot settings from database.
+     */
+    load() {
         // Each row in the database contains a key->setting so we have to make 3 queries
         // Everything could also be queried only once but then we have to iterate on everything to check the key
         // Both are bad, key settings should not be saved in the database like that
