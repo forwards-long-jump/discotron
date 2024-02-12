@@ -5,7 +5,6 @@ const Plugin = require("./models/plugin.js");
 const Owner = require("./models/owner.js");
 const SpamUser = require("./models/spam-user.js");
 const Logger = require("./utils/logger.js");
-const Login = require("./login.js");
 const db = require("./database/crud.js");
 const discordClientProvider = require("./utils/discord-client-provider.js");
 
@@ -213,47 +212,11 @@ module.exports.updateGuilds = () => {
     }
 };
 
-/**
- * Load owners
- * TODO: Move this in the owner class
- */
-module.exports.loadOwners = () => {
-    Owner.getOwners().then((owners) => {
-        if (owners.length === 0) {
-            Login.setFirstLaunch();
-        }
-    }).catch(Logger.err);
-};
-
 // TODO
 module.exports.onReaction = (reaction) => {};
 module.exports.onJoinGuild = (guild) => {};
 module.exports.onLeaveGuild = (guild) => {};
 module.exports.getBotInfo = () => {};
-
-/**
- * Retrieves user information from discord
- * TODO: Fix possible call to undefined
- * TODO: Cache the results
- * TODO: Move this in a new user class
- * @param {string} discordId Discord user id
- * @returns {Promise} resolve(user {object}), reject()
- */
-module.exports.getUserInfo = function (discordId) {
-    return new Promise((resolve, reject) => {
-        discordClientProvider.get().fetchUser(discordId).then((user) => {
-            resolve({
-                discordId: user.id,
-                name: user.username,
-                tag: user.tag,
-                discriminator: user.discriminator,
-                avatarURL: user.displayAvatarURL
-            });
-        }).catch((e) => {
-            Logger.err("Could not get user info", e);
-        });
-    });
-};
 
 /**
  * @returns {object} Bot settings

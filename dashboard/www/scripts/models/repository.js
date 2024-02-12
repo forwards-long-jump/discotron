@@ -19,24 +19,21 @@ window.discotron.Repository = class extends window.discotron.RepositoryModel {
      * @static
      * @returns {Array} Array of Repository
      */
-    static getAll() {
-        return new Promise((resolve, reject) => {
-            if (discotron.Repository._repositories.length === 0) {
-                return discotron.WebAPI.queryBot("discotron-dashboard", "get-repositories").then((data) => {
-                    for (let i = 0; i < data.length; i++) {
-                        const repository = data[i];
-                        new discotron.Repository({
-                            url: repository.url,
-                            pluginIds: repository.pluginIds,
-                            pages: repository.pages
-                        });
-                    }
-                    resolve(discotron.Repository._repositories);
+    static async getAll() {
+        // TODO: Use WebAPI cache (which must be invalidated OR updated when we create a new repository!)
+        if (discotron.Repository._repositories.length === 0) {
+            const data = await discotron.WebApi.get("repository");
+            for (let i = 0; i < data.length; i++) {
+                const repository = data[i];
+                new discotron.Repository({
+                    url: repository.url,
+                    pluginIds: repository.pluginIds,
+                    pages: repository.pages
                 });
-            } else {
-                resolve(discotron.Repository._repositories);
             }
-        });
+        }
+
+        return discotron.Repository._repositories;
     }
 
     /**

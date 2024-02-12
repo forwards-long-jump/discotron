@@ -1,4 +1,4 @@
-const GuildModel = require("./../../shared-models/guild.js");
+const GuildModel = require("./../../shared/models/guild.js");
 const UserRole = require("./user-role.js");
 const Permission = require("./permission.js");
 const Plugin = require("./plugin.js");
@@ -106,7 +106,12 @@ class Guild extends GuildModel {
      * @returns {boolean} True if the user is bot admin on the guild
      */
     static isGuildAdmin(discordUserId, discordGuildId) {
-        return Guild.get(discordGuildId).isAdmin(discordUserId);
+        if (!discordGuildId || !discordUserId) {
+            return false;
+        }
+
+        const guild = Guild.get(discordGuildId);
+        return guild.isAdmin(discordUserId);
     }
 
     /**

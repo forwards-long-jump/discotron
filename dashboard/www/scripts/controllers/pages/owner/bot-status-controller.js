@@ -12,36 +12,24 @@ window.discotron.BotStatusController = class extends window.discotron.Controller
     /**
      * Display current status of the bot
      */
-    _displayStatus() {
-        // TODO: Use WebAPI auto caching (advanced feature, not implemented yet)
-        if (discotron.BotStatusController.tag === undefined) {
-            discotron.WebAPI.queryBot("discotron-dashboard", "get-bot-info").then((data) => {
-                document.querySelector("#bot-avatar").src = data.avatar;
-                document.querySelector("#bot-name").textContent = data.tag;
+    async _displayStatus() {
+        const botInfo = await discotron.WebApi.get("discotron/bot-info");
+        document.querySelector("#bot-avatar").src = botInfo.avatar;
+        document.querySelector("#bot-name").textContent = botInfo.tag;
 
-                discotron.BotStatusController.tag = data.tag;
-                discotron.BotStatusController.avatar = data.avatar;
-            }).catch(console.error);
+        const botConfig = await discotron.WebApi.get("discotron/bot-config");
+        let status, classStatus;
+        if (botConfig.status === 0) {
+            status = "Online";
+            classStatus = "bot-status-online";
         } else {
-            document.querySelector("#bot-avatar").src = discotron.BotStatusController.avatar;
-            document.querySelector("#bot-name").textContent = discotron.BotStatusController.tag;
+            status = "Offline (Status: " + botConfig.status + ")";
+            classStatus = "bot-status-offline";
         }
 
-        discotron.WebAPI.queryBot("discotron-dashboard", "get-bot-config").then((data) => {
-            let status, classStatus;
-
-            if (data.status === 0) {
-                status = "Online";
-                classStatus = "bot-status-online";
-            } else {
-                status = "Offline (Status: " + data.status + ")";
-                classStatus = "bot-status-offline";
-            }
-
-            document.getElementById("bot-name").innerHTML += "<span class=\"bot-status " + classStatus + "\">" + status + "</span>";
-            document.getElementById("bot-presence").value = data.presenceText;
-            document.getElementById("maintenance-enabled").checked = data.maintenance;
-        }).catch(console.error);
+        document.getElementById("bot-name").innerHTML += "<span class=\"bot-status " + classStatus + "\">" + status + "</span>";
+        document.getElementById("bot-presence").value = botConfig.presenceText;
+        document.getElementById("maintenance-enabled").checked = botConfig.maintenance;
     }
 
     /**
@@ -69,21 +57,20 @@ window.discotron.BotStatusController = class extends window.discotron.Controller
         saveSettingsButton.onclick = () => {
             saveSettingsButton.disabled = true;
 
-            discotron.WebAPI.queryBot("discotron-dashboard", "set-bot-config", {
+            discotron.WebApi.put("discotron/bot-config", {
                 presenceText: document.getElementById("bot-presence").value,
                 maintenance: document.getElementById("maintenance-enabled").checked
-            }).catch(console.error);
+            });
         };
 
-        restartButton.onclick = () => {
+        restartButton.onclick = async () => {
             restartButton.disabled = true;
             restartButton.value = "Restarting...";
-            discotron.WebAPI.queryBot("discotron-dashboard", "restart-bot").then((data) => {
-                if (data === true) {
-                    restartButton.value = "Restart";
-                    restartButton.disabled = false;
-                }
-            }).catch(console.error);
+            
+            await discotron.WebApi.post("discotron/restart-bot"); 
+
+            restartButton.value = "Restart";
+            restartButton.disabled = false;
         };
 
         document.getElementById("owners-selector").onclick = () => {
