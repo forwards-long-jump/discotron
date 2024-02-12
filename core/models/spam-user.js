@@ -14,8 +14,16 @@ class SpamUser {
         this._lastActionTime = 0;
         this._deathTime = 0;
         this._discordUser = discordUser;
+    }
 
-        SpamUser._users[discordUser.id] = this;
+    /**
+     * @param {DiscordJS.User} discordUser User managed by this class
+     * @returns {object} New SpamUser instance
+     */
+    static create(discordUser) {
+        const spam = new SpamUser(discordUser);
+        SpamUser._users[discordUser.id] = spam;
+        return spam;
     }
 
     /**
@@ -24,10 +32,11 @@ class SpamUser {
      * @returns {boolean} True if the user has spammed too much and is being restricted
      */
     static isRestricted(discordUser) {
-        if (SpamUser._users[discordUser.id] !== undefined) {
-            return SpamUser._users[discordUser.id]._isDead();
+        const spamUser = SpamUser._users[discordUser.id];
+        if (spamUser !== undefined) {
+            return spamUser._isDead();
         } else {
-            new SpamUser(discordUser);
+            SpamUser.create(discordUser);
             return false;
         }
     }
@@ -38,11 +47,12 @@ class SpamUser {
      * @param {DiscordJS.User} discordUser DiscordJS user
      */
     static onAction(discordUser) {
-        if (SpamUser._users[discordUser.id] !== undefined) {
-            SpamUser._users[discordUser.id]._dealDamage();
+        let spamUser = SpamUser._users[discordUser.id];
+        if (spamUser !== undefined) {
+            spamUser._dealDamage();
         } else {
-            new SpamUser(discordUser);
-            SpamUser._users[discordUser.id]._dealDamage();
+            spamUser = SpamUser.create(discordUser);
+            spamUser._dealDamage();
         }
     }
 
